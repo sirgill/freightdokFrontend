@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800');
+
+.login {
+  padding-top: 20px;
+}
+
+.alert {
+  padding: 0.8rem;
+  margin: 1rem 0;
+  opacity: 0.9;
+  background: var(--light-color);
+  color: green;
+}
+
+.btn-danger,
+.bg-danger,
+.badge-danger,
+.alert-danger {
+  background: var(--danger-color);
+  color: red;
+}
+
+
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: left;
+}
+
+.auth-inner {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: left;
+  width: 450px;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 40px 55px 45px 55px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.auth-wrapper .form-control:focus {
+  border-color: #167bff;
+  box-shadow: none;
+}
+
+.auth-wrapper h3 {
+  text-align: center;
+  margin: 0;
+  line-height: 1;
+  padding-bottom: 20px;
+}
+
+.custom-control-label {
+  font-weight: 400;
+}
+
+.forgot-password,
+.forgot-password a {
+  text-align: right;
+  font-size: 13px;
+  padding-top: 10px;
+  color: #7f7d7d;
+  margin: 0;
+}
+
+.forgot-password a {
+  color: #167bff;
+}

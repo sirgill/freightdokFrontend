@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="287px" height="277px" viewBox="0 0 287 277" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>ProfileBackground</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M286.5,0 L286.500632,276.017396 C240.213281,262.460721 192.670012,260.536016 143.870824,270.243281 L142.338679,270.544324 C93.7337412,279.975861 46.454216,277.858682 0.500103563,264.192787 L0.5,0 L286.5,0 Z" id="path-1"></path>
+    </defs>
+    <g id="WebApp" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="ProfileBackground">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="Combined-Shape" fill="#0091FF" xlink:href="#path-1"></use>
+            <path d="M-5.5,255 C34.1666667,269.501488 83.7902746,272.082582 143.370824,262.743281 C202.951373,253.403981 252.661098,255.989553 292.5,270.5 L292.5,298.504464 L-5.5,298.504464 L-5.5,255 Z" id="Path-2-Copy" fill="#FFFFFF" opacity="0.14" mask="url(#mask-2)"></path>
+            <path d="M-5.50000003,246 C41.5,267 91.1236079,271.58149 143.370824,259.744469 C195.61804,247.907449 245.327765,250.493022 292.5,267.501188 L292.5,295.505652 L-5.50000003,295.505652 L-5.50000003,246 Z" id="Path-2-Copy-2" fill="#FFFFFF" opacity="0.14" mask="url(#mask-2)"></path>
+            <path d="M-7,242 C55,266.333333 112.123608,272.58149 164.370824,260.744469 C216.61804,248.907449 266.327765,251.493022 313.5,268.501188 L313.5,296.505652 L-7,293 L-7,242 Z" id="Path-2-Copy-3" fill="#FFFFFF" opacity="0.14" mask="url(#mask-2)"></path>
+        </g>
+    </g>
+</svg>

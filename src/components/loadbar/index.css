@@ -1,0 +1,8 @@
+.load-searchbar {
+    text-align: right;
+    padding-bottom: 10px;
+}
+
+.load-searchbar form div:first-child {
+    background: #ffffff;
+}
