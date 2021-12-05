@@ -28,8 +28,8 @@ import Background from './ProfileBackground.svg';
 // import Background from './logo.jpg';
 import Grid from "@material-ui/core/Grid";
 import { Loadcard } from '../loadcard/Loadcard.js';
-import AddLoadForm  from '../load-forms/AddLoad.js';
-import { Loadlistbar } from '../loadbar/Loadlistbar.js';
+import AddLoadForm from '../load-forms/AddLoad.js';
+import Loadlistbar from '../loadbar/Loadlistbar.js';
 import { Driverlistbar } from '../driverbar/Driverlistbar.js';
 import AddDriverForm from '../driver-forms/AddDriver.js';
 import DraftsIcon from '@material-ui/icons/Drafts';
@@ -41,7 +41,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { CircularIndeterminate } from  '../layout/Spinner.js';
+import { CircularIndeterminate } from '../layout/Spinner.js';
 import Avatar from '@material-ui/core/Avatar';
 import { connect } from "react-redux";
 import { logout } from "../../actions/auth";
@@ -52,12 +52,14 @@ import UsersList from '../users/UsersList';
 import UserForm from '../users/UserForm';
 import Alert from '../layout/Alert';
 import LoadsStatus from '../loads/LoadsStatus';
+import { Warehouse } from '../warehouse/Warehouse';
 import { getLoads } from '../../actions/load';
 import TextField from '@material-ui/core/TextField';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchLoads, resetLoadsSearch } from '../../actions/load.js';
 import InvoicesList from '../invoices/InvoicesList';
 import InvoicesWizard from '../invoices/InvoicesWizard';
+import { HouseOutlined } from '@material-ui/icons';
 
 const drawerWidth = 275;
 
@@ -85,9 +87,9 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: drawerWidth,
     },
     [theme.breakpoints.down("xs")]: {
-      color:"#1891FC"
+      color: "#1891FC"
     },
-    },
+  },
   tab: {
     ...theme.typography.tab,
     color: 'black',
@@ -150,7 +152,7 @@ const useStyles = makeStyles((theme) => ({
   },
   fab: {
     position: "absolute",
-    right:    20,
+    right: 20,
     // bottom:   0
   }
 
@@ -197,7 +199,7 @@ const Dashboard = ({
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!in_progress)
@@ -230,7 +232,7 @@ const Dashboard = ({
   }
 
   const resetSearchField = () => setSearch('');
-  const drawer = (   
+  const drawer = (
     <div>
       <div className={classes.profile}>
         <div className={classes.toolbar} />
@@ -238,65 +240,72 @@ const Dashboard = ({
           <Grid item align="center">
             {/* Setting the Avatar for Username. */}
             {profile && profile.imageUrl ? <div className="form-field">
-              <div className="form-profile-image" style={{'textAlign': 'center'}}>
-                  <img src={profile.imageUrl} alt="main-logo" style={{'width': '60px', 'height': '60px', 'objectFit': 'cover', 'borderRadius': '100%'}} />
+              <div className="form-profile-image" style={{ 'textAlign': 'center' }}>
+                <img src={profile.imageUrl} alt="main-logo" style={{ 'width': '60px', 'height': '60px', 'objectFit': 'cover', 'borderRadius': '100%' }} />
               </div>
-            </div> : 
-            <Avatar 
-              className={classes.avatar}
-              component={Link} 
-              to="/profile"
-            >H</Avatar>}
-            
+            </div> :
+              <Avatar
+                className={classes.avatar}
+                component={Link}
+                to="/profile"
+              >H</Avatar>}
+
             <Typography className={classes.username} gutterBottom>
-              { profile ? profile.name : '' }
+              {profile ? profile.name : ''}
             </Typography>
           </Grid>
         </Grid>
       </div>
       {/* Setting the Left Sidebar */}
       <List>
-        <ListItem button onClick={()=>{setListBarType('loads')}} >
+        <ListItem button onClick={() => { setListBarType('loads') }} >
           <ListItemIcon>
             <CalendarToday />
           </ListItemIcon>
           <ListItemText primary="Loads" />
         </ListItem>
 
-        { (user && (user.role === 'admin' || user.role === 'dispatch')) && <ListItem button onClick={()=>{setListBarType('drivers')}}>
+        <ListItem button onClick={() => { setListBarType('warehouse') }} >
+          <ListItemIcon>
+            <HouseOutlined />
+          </ListItemIcon>
+          <ListItemText primary="Warehouse" />
+        </ListItem>
+
+        {(user && (user.role === 'admin' || user.role === 'dispatch')) && <ListItem button onClick={() => { setListBarType('drivers') }}>
           <ListItemIcon>
             <People />
           </ListItemIcon>
           <ListItemText primary="Drivers" />
-        </ListItem> }
+        </ListItem>}
 
-        <ListItem button  onClick={()=>{setListBarType('loadsStatus')}}>
+        <ListItem button onClick={() => { setListBarType('loadsStatus') }}>
           <ListItemIcon>
             <HorizontalSplit />
           </ListItemIcon>
           <ListItemText primary="Load Status" />
         </ListItem>
 
-        { (user && (user.role === 'admin' || user.role === 'dispatch')) && <ListItem button onClick={()=>{setListBarType('users')}}>
+        {(user && (user.role === 'admin' || user.role === 'dispatch')) && <ListItem button onClick={() => { setListBarType('users') }}>
           <ListItemIcon>
             <People />
           </ListItemIcon>
           <ListItemText primary="Users" />
-        </ListItem> }
+        </ListItem>}
 
-        { (user && user.role === 'admin') && <ListItem button onClick={()=>{setListBarType('invoices')}}>
+        {(user && user.role === 'admin') && <ListItem button onClick={() => { setListBarType('invoices') }}>
           <ListItemIcon>
             <Receipt />
           </ListItemIcon>
           <ListItemText primary="Invoices" />
-        </ListItem> }
+        </ListItem>}
 
-        { (user && user.role === 'admin') && <ListItem button onClick={()=>{setListBarType('history')}}>
+        {(user && user.role === 'admin') && <ListItem button onClick={() => { setListBarType('history') }}>
           <ListItemIcon>
             <History />
           </ListItemIcon>
           <ListItemText primary="History" />
-        </ListItem> }
+        </ListItem>}
 
         <ListItem button component={Link} to="/edit-profile">
           <ListItemIcon>
@@ -311,163 +320,170 @@ const Dashboard = ({
           </ListItemIcon>
           <ListItemText onClick={logout} primary="Logout" />
         </ListItem>
-        
+
       </List>
     </div>
   );
 
   return (
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar position="fixed" elevation={0} color="secondary" className={classes.appBar}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              className={classes.menuButton}
-            >
-              <MenuIcon />
-            </IconButton>
-            {/* <Typography className={classes.tab}>
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar position="fixed" elevation={0} color="secondary" className={classes.appBar}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            className={classes.menuButton}
+          >
+            <MenuIcon />
+          </IconButton>
+          {/* <Typography className={classes.tab}>
               Schedules
             </Typography> */}
-            {listBarType === 'invoices' || <div className={classes.loadSearchbar}>
-              <form noValidate autoComplete="off" onSubmit={handleSubmit}>
-                <TextField
-                  style={{backgroundColor: '#fff', height: 50}} 
-                  id="outlined-basic" 
-                  label="Search" 
-                  variant="outlined"
-                  size="small"
-                  value={search}
-                  onChange={({ target: { value } }) => setSearch(value)} 
-                />
-                <Button style={{marginLeft: 15}} variant="contained" color="primary" onClick={handleSearch}>Search</Button>
-              </form>  
-            </div>}
-          </Toolbar>
-        </AppBar>
+          {listBarType === 'invoices' || <div className={classes.loadSearchbar}>
+            <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+              <TextField
+                style={{ backgroundColor: '#fff', height: 50 }}
+                id="outlined-basic"
+                label="Search"
+                variant="outlined"
+                size="small"
+                value={search}
+                onChange={({ target: { value } }) => setSearch(value)}
+              />
+              <Button style={{ marginLeft: 15 }} variant="contained" color="primary" onClick={handleSearch}>Search</Button>
+            </form>
+          </div>}
+        </Toolbar>
+      </AppBar>
 
-        <nav className={classes.drawer} aria-label="mailbox folders">
-          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-          <Hidden smUp implementation="css">
-            <Drawer
-              container={container}
-              variant="temporary"
-              anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-              ModalProps={{
-                keepMounted: true, // Better open performance on mobile.
-              }}
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-          <Hidden xsDown implementation="css">
-            <Drawer
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-              variant="permanent"
-              open
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-        </nav>
+      <nav className={classes.drawer} aria-label="mailbox folders">
+        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+        <Hidden smUp implementation="css">
+          <Drawer
+            container={container}
+            variant="temporary"
+            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+        <Hidden xsDown implementation="css">
+          <Drawer
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            variant="permanent"
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+      </nav>
 
-        <Grid container className={classes.dashboardContainer}>
-          <Grid item>
-            <Alert />
-          </Grid>
-          <Grid item>
-            {
-              listBarType === "loads" &&       
-              <main className={classes.contentLoadList}>
-                <div className={classes.toolbar} />
-                <Loadlistbar resetSearchField={resetSearchField} />
-                <div className={classes.fab}>
-                  { user && user.role === 'driver' || <AddLoadForm></AddLoadForm> }
-                </div>
-              </main>
-            }
-            {
-              listBarType === "loadsStatus" &&       
-              <main className={classes.contentLoadList}>
-                <div className={classes.toolbar} />
-                <LoadsStatus resetSearchField={resetSearchField} listBarType={listBarType} />
-              </main>
-            }
-            {
-              listBarType === "drivers" &&       
-              <main className={classes.contentLoadList}>
-                <div className={classes.toolbar} />
-                <Driverlistbar />
-                <div className={classes.fab}>
-                  <AddDriverForm></AddDriverForm>
-                </div>
-              </main> 
-            }
-            {
-              listBarType === "users" &&       
-              <main className={classes.contentLoadList}>
-                <div className={classes.toolbar} />
-                <UsersList />
-                <div className={classes.fab}>
-                  <UserForm />
-                </div>
-              </main> 
-            }
-            {
-              listBarType === "invoices" &&       
-              <main className={classes.contentLoadList}>
-                <div className={classes.toolbar} />
-                <InvoicesList 
-                  resetSearchField={resetSearchField} 
-                  listBarType={listBarType}
-                  setSelectedLoad={(data)=>setSelectedLoad(data)}
-                />
-                <div className={classes.fab}>
-                  <InvoicesWizard 
-                    invoiceGenerated={invoiceGenerated}
-                    load_selected={load_selected}
-                    updateDoc={(doc_type, documents) => setSelectedLoad(load => ({ ...load, [doc_type]: documents }))}
-                    deleteDoc={doc_type => setSelectedLoad(load => ({ ...load, [doc_type]: [] }))}
-                    handleOnClose={()=>setSelectedLoad(null)}
-                  />
-                </div>
-              </main> 
-            }
-            {
-              listBarType === "history" &&       
-              <main className={classes.contentLoadList}>
-                <div className={classes.toolbar} />
-                <LoadsStatus resetSearchField={resetSearchField} listBarType={listBarType} />
-              </main> 
-            }
-          </Grid>
-
-          <Grid item>
-            {
-              listBarType === "loads" && 
-              <main className={classes.contentLoadList}>
-                <div className={classes.toolbar} />
-                <Loadcard className={classes.loadcard} />
-              </main>
-            }
-          </Grid>
+      <Grid container className={classes.dashboardContainer}>
+        <Grid item>
+          <Alert />
         </Grid>
-      </div>
-    );
-  }
+        <Grid item xs={12}>
+          {
+            listBarType === "loads" &&
+            <main className={classes.contentLoadList}>
+              <div className={classes.toolbar} />
+              <Loadlistbar resetSearchField={resetSearchField} />
+              <div className={classes.fab}>
+                {user && user.role === 'driver' || <AddLoadForm></AddLoadForm>}
+              </div>
+            </main>
+          }
+          {
+            listBarType === "warehouse" &&
+            <main className={classes.contentLoadList}>
+              <div className={classes.toolbar} />
+              <Warehouse resetSearchField={resetSearchField} />
+            </main>
+          }
+          {
+            listBarType === "loadsStatus" &&
+            <main className={classes.contentLoadList}>
+              <div className={classes.toolbar} />
+              <LoadsStatus resetSearchField={resetSearchField} listBarType={listBarType} />
+            </main>
+          }
+          {
+            listBarType === "drivers" &&
+            <main className={classes.contentLoadList}>
+              <div className={classes.toolbar} />
+              <Driverlistbar />
+              <div className={classes.fab}>
+                <AddDriverForm></AddDriverForm>
+              </div>
+            </main>
+          }
+          {
+            listBarType === "users" &&
+            <main className={classes.contentLoadList}>
+              <div className={classes.toolbar} />
+              <UsersList />
+              <div className={classes.fab}>
+                <UserForm />
+              </div>
+            </main>
+          }
+          {
+            listBarType === "invoices" &&
+            <main className={classes.contentLoadList}>
+              <div className={classes.toolbar} />
+              <InvoicesList
+                resetSearchField={resetSearchField}
+                listBarType={listBarType}
+                setSelectedLoad={(data) => setSelectedLoad(data)}
+              />
+              <div className={classes.fab}>
+                <InvoicesWizard
+                  invoiceGenerated={invoiceGenerated}
+                  load_selected={load_selected}
+                  updateDoc={(doc_type, documents) => setSelectedLoad(load => ({ ...load, [doc_type]: documents }))}
+                  deleteDoc={doc_type => setSelectedLoad(load => ({ ...load, [doc_type]: [] }))}
+                  handleOnClose={() => setSelectedLoad(null)}
+                />
+              </div>
+            </main>
+          }
+          {
+            listBarType === "history" &&
+            <main className={classes.contentLoadList}>
+              <div className={classes.toolbar} />
+              <LoadsStatus resetSearchField={resetSearchField} listBarType={listBarType} />
+            </main>
+          }
+        </Grid>
 
-Dashboard.propTypes ={
+        <Grid item>
+          {
+            listBarType === "loads" &&
+            <main className={classes.contentLoadList}>
+              <div className={classes.toolbar} />
+              <Loadcard className={classes.loadcard} />
+            </main>
+          }
+        </Grid>
+      </Grid>
+    </div>
+  );
+}
+
+Dashboard.propTypes = {
   logout: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   getCurrentProfile: PropTypes.func.isRequired,
@@ -480,4 +496,4 @@ const mapStateToProps = state => ({
   invoiceGenerated: state.load.invoiceGenerated
 });
 
-export default connect(mapStateToProps, {logout, getCurrentProfile, getLoads} )(Dashboard);
+export default connect(mapStateToProps, { logout, getCurrentProfile, getLoads })(Dashboard);

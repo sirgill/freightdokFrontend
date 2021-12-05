@@ -15,7 +15,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
-import theme from "./ui/Theme";
+import { theme } from "./ui/Theme";
 
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
   },
   drawerItemSelected: {
     "& .MuiListItemText-root": {
-        opacity: 1
+      opacity: 1
     }
   },
   appbar: {
@@ -94,18 +94,18 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
     switch (window.location.pathname) {
       case "/":
         setValue(0);
-      break;
+        break;
       case "/about":
         setValue(1);
-      break;
+        break;
       case "/contact":
         setValue(2);
-      break;
+        break;
       case "/login":
         setValue(3);
-      break;
+        break;
       default:
-      break;
+        break;
     }
   }, []);
 
@@ -140,7 +140,7 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
         onClose={() => setOpenDrawer(false)}
         onOpen={() => setOpenDrawer(true)}
       >
-      <div className={classes.toolbarMargin} />
+        <div className={classes.toolbarMargin} />
         <List disablePadding>
           <ListItem
             onClick={() => {
@@ -151,7 +151,7 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
             component={Link}
             to="/"
             selected={value === 0}
-            classes={{selected: classes.drawerItemSelected}}
+            classes={{ selected: classes.drawerItemSelected }}
           >
             <ListItemText
               className={classes.drawerItem}
@@ -168,7 +168,7 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
             button
             component={Link}
             selected={value === 1}
-            classes={{selected: classes.drawerItemSelected}}
+            classes={{ selected: classes.drawerItemSelected }}
           >
             <ListItemText className={
               classes.drawerItem}
@@ -184,10 +184,10 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
             button
             component={Link}
             selected={value === 2}
-            classes={{selected: classes.drawerItemSelected}}
+            classes={{ selected: classes.drawerItemSelected }}
           >
             <ListItemText className={
-                classes.drawerItem
+              classes.drawerItem
             } disableTypography>
               contact
             </ListItemText>
@@ -201,10 +201,10 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
             component={Link}
             to="/login"
             selected={value === 3}
-            classes={{selected: classes.drawerItemSelected}}
+            classes={{ selected: classes.drawerItemSelected }}
           >
             <ListItemText className={
-                classes.drawerItem
+              classes.drawerItem
             } disableTypography>
               login
             </ListItemText>
