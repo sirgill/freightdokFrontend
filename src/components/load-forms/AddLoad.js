@@ -273,10 +273,10 @@ const AddLoadForm = ({ addLoad, user }) => {
 
   return (
     <div>
-      { (user && user.role === 'afterhours') || <Fab color="primary" onClick={handleClickOpen} style={{marginBottom: '20%'}}>
+      {(user && user.role === 'afterhours') || <Fab color="primary" onClick={handleClickOpen} style={{ marginBottom: '20%' }}>
         <AddIcon />
-      </Fab> }
-      
+      </Fab>}
+
       <Dialog fullWidth={true} maxWidth={"sm"} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogContent>
           <div className="">
@@ -394,7 +394,7 @@ const AddLoadForm = ({ addLoad, user }) => {
                   <div className="form-group">
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <CSSDatePicker
-                        style={{width: 195}}
+                        style={{ width: 195 }}
                         margin="normal"
                         id="date-picker-dialog"
                         label="Pickup Date"
@@ -408,7 +408,7 @@ const AddLoadForm = ({ addLoad, user }) => {
                   <div className="form-group">
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <CSSTimePicker
-                        style={{width: 195}}
+                        style={{ width: 195 }}
                         margin="normal"
                         id="time-picker"
                         label="Pickup Time"
@@ -417,7 +417,7 @@ const AddLoadForm = ({ addLoad, user }) => {
                       />
                     </MuiPickersUtilsProvider>
                   </div>
-
+                  {console.log(pickUp)}
                   <div className="form-group">
                     <CssTextField
                       id="outlined-basic"
@@ -453,7 +453,7 @@ const AddLoadForm = ({ addLoad, user }) => {
                       value={pickUp.pickupReference}
                     />
                   </div>
-                 
+
                 </div>
               ) : null}
 
@@ -531,7 +531,7 @@ const AddLoadForm = ({ addLoad, user }) => {
                   <div className="form-group">
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <CSSDatePicker
-                        style={{width: 195}}
+                        style={{ width: 195 }}
                         margin="normal"
                         id="date-picker-dialog"
                         label="Date"
@@ -545,7 +545,7 @@ const AddLoadForm = ({ addLoad, user }) => {
                   <div className="form-group">
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <CSSTimePicker
-                        style={{width: 195}}
+                        style={{ width: 195 }}
                         margin="normal"
                         id="time-picker"
                         label="Time"
@@ -593,9 +593,9 @@ const AddLoadForm = ({ addLoad, user }) => {
 
                 </div>
               ) : null}
-             
+
             </form>
-           
+
           </div>
         </DialogContent>
 
@@ -605,17 +605,17 @@ const AddLoadForm = ({ addLoad, user }) => {
 
         <div className={classes.outside}>
           {count !== 1 && <div className={classes.bottomLeft}>
-            <ArrowBack style={{color: '#1891FC', marginTop: '13%', height: 25, width: 25, cursor: 'pointer'}} onClick={handleBack} />
+            <ArrowBack style={{ color: '#1891FC', marginTop: '13%', height: 25, width: 25, cursor: 'pointer' }} onClick={handleBack} />
           </div>}
           {count !== 5 && <div className={classes.bottomRight}>
-            <ArrowForward style={{color: '#1891FC', marginTop: '13%', height: 25, width: 25, cursor: 'pointer'}} onClick={handleNext} />
+            <ArrowForward style={{ color: '#1891FC', marginTop: '13%', height: 25, width: 25, cursor: 'pointer' }} onClick={handleNext} />
           </div>}
 
-          {count === 5 && <div style={{textAlign: 'center', justifyItems: 'center'}}>
+          {count === 5 && <div style={{ textAlign: 'center', justifyItems: 'center' }}>
             <Grid item xs={12} style={{ marginBottom: "10px", display: 'flex' }}>
               <Grid item xs={4}></Grid>
               <Grid item xs={4}>
-                <Button className="" type="submit" variant="outlined" color="primary"  onClick={onSubmit}>
+                <Button className="" type="submit" variant="outlined" color="primary" onClick={onSubmit}>
                   Submit Load
                 </Button>
               </Grid>
@@ -626,7 +626,7 @@ const AddLoadForm = ({ addLoad, user }) => {
         </div>
       </Dialog>
 
-      
+
     </div>
   );
 };
