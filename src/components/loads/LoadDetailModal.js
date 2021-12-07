@@ -84,15 +84,16 @@ const LoadDetailModal = ({
         loadNumber,
         rate,
         trailorNumber,
-        rateConfirmation,
-        proofDelivery,
+        // rateConfirmation,
+        // proofDelivery,   
         pickup,
         drop,
         assignedTo = null,
         user,
         status = '',
         accessorials = [],
-        invoice_created
+        invoice_created,
+        bucketFiles
     }
 }) => {
     const classes = useStyles();
@@ -193,6 +194,19 @@ const LoadDetailModal = ({
             return '';
         }
     }
+
+    if (bucketFiles.length) {
+        const alpha = [...bucketFiles];
+        bucketFiles = {}
+        alpha.forEach(item => {
+            const { fileType = "", fileLocation = "" } = item;
+            Object.assign(bucketFiles, { [fileType]: fileLocation });
+        })
+    }
+    else bucketFiles = {}
+
+    const { rateConfirmation = '', proofDelivery = '' } = bucketFiles || {};
+
     return <>
         <Modal
             open={open}
@@ -687,16 +701,16 @@ const LoadDetailModal = ({
                         <Grid item xs={4} style={{ position: 'relative' }}>
                             <div className="load-checklist" style={{ position: 'absolute', top: '50%', left: '80%', transform: 'translate(-50%, -50%)' }}>
                                 <p style={{ margin: 0 }}>
-                                    <span>Rate Confirmation</span>
+                                    {rateConfirmation ? <span><a href={rateConfirmation} target='_blank'>Rate Confirmation</a></span> : <span>Rate Confirmation</span>}
                                     <span>
-                                        {Array.isArray(rateConfirmation) && rateConfirmation.length > 0 && typeof rateConfirmation[0] !== 'string' ? <CheckCircleIcon style={{ color: 'green' }} /> :
+                                        {rateConfirmation ? <CheckCircleIcon style={{ color: 'green' }} /> :
                                             <CancelIcon style={{ color: 'red' }} />}
                                     </span>
                                 </p>
                                 <p style={{ margin: 0 }}>
-                                    <span>Proof of Delivery</span>
+                                    {proofDelivery ? <span><a href={rateConfirmation} target='_blank'>Proof of Delivery</a></span> : <span>Proof of Delivery</span>}
                                     <span>
-                                        {Array.isArray(proofDelivery) && proofDelivery.length > 0 && typeof proofDelivery[0] !== 'string' ? <CheckCircleIcon style={{ color: 'green' }} /> :
+                                        {proofDelivery ? <CheckCircleIcon style={{ color: 'green' }} /> :
                                             <CancelIcon style={{ color: 'red' }} />}
                                     </span>
                                 </p>

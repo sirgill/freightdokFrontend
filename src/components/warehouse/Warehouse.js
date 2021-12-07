@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Link, useRouteMatch, Switch, Route, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -7,12 +7,13 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { getWarehouses } from '../../actions/warehouse';
+import { deleteWarehouse, getWarehouses } from '../../actions/warehouse';
 import Spinner from '../layout/Spinner';
-import { Button, Fab, Modal } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import Form from './Form';
 import Preview from './Preview';
+import { Delete } from '@material-ui/icons';
 
 const useStyles = makeStyles({
     table: {
@@ -31,12 +32,17 @@ const useStyles = makeStyles({
     }
 });
 
-const List = ({ data = {}, history, path }) => {
+const List = ({ data = {}, history, path, dispatch }) => {
     const { warehouses = [] } = data
 
     const onRowClick = (row = {}) => {
         const { _id: id = '' } = row;
         history.push(`${path}/warehouse/${id}`)
+    }
+
+    const onDelete = (id, e) => {
+        e.stopPropagation();
+        dispatch(deleteWarehouse(id));
     }
 
     const cells = warehouses.length && warehouses.map(data => {
@@ -49,6 +55,11 @@ const List = ({ data = {}, history, path }) => {
                 <TableCell align="center">{state}</TableCell>
                 <TableCell align="center">{zip}</TableCell>
                 <TableCell align="center">{averageLoadTime}</TableCell>
+                <TableCell component="th" scope="row" align="center">
+                    <IconButton onClick={onDelete.bind(this, data._id)}>
+                        <Delete style={{ color: "rgb(220, 0, 78)" }} />
+                    </IconButton>
+                </TableCell>
             </TableRow>
         )
     })
@@ -89,7 +100,7 @@ export const Warehouse = ({ resetSearchField, ...rest }) => {
                             <TableCell align="center">Average Load Time</TableCell>
                         </TableRow>
                     </TableHead>
-                    <List data={warehouses} history={history} path={path} />
+                    <List data={warehouses} history={history} path={path} dispatch={dispatch} />
                 </Table>
             </TableContainer>)}
             {hasPermission && <Button variant='outlined' component={Link} to={path + '/warehouse/add'} className={classes.addNewIcon}>+ Add Warehouse</Button>}

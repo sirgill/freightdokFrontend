@@ -1,4 +1,5 @@
 import axios from "axios"
+import { setAlert } from "./alert";
 import { FETCH_WAREHOUSEBYID, FETCH_WAREHOUSES } from "./types";
 
 const getWarehouses = () => async (dispatch) => {
@@ -41,8 +42,25 @@ const getWarehouseById = (id, cb) => async (dispatch) => {
     }
 }
 
+const deleteWarehouse = (id) => async (dispatch) => {
+    try {
+        const { status, data } = await axios.delete('/api/warehouse/' + id);
+        if (status === 200) {
+            dispatch(setAlert(data.message || 'Deleted', 'success'));
+            dispatch(getWarehouses());
+        }
+        else {
+            dispatch(setAlert(data.message, 'error'))
+        };
+    } catch (error) {
+        console.log(error.message)
+        dispatch(setAlert(error.message, 'error'))
+    }
+}
+
 export {
     addWarehouse,
     getWarehouses,
-    getWarehouseById
+    deleteWarehouse,
+    getWarehouseById,
 }
