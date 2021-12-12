@@ -1,6 +1,6 @@
 import axios from "axios"
 import { setAlert } from "./alert";
-import { FETCH_WAREHOUSEBYID, FETCH_WAREHOUSES } from "./types";
+import { FETCH_WAREHOUSEBYID, FETCH_WAREHOUSES, WAREHOUSE_LOCATION } from "./types";
 
 const getWarehouses = () => async (dispatch) => {
     try {
@@ -55,6 +55,18 @@ const deleteWarehouse = (id) => async (dispatch) => {
     } catch (error) {
         console.log(error.message)
         dispatch(setAlert(error.message, 'error'))
+    }
+}
+
+export const getGeoLocation = (obj) => async (dispatch) => {
+    const { status, data } = await axios.post('/api/warehouse/getLocation', obj)
+    dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: true } })
+    try {
+        if (status === 200 && data.success) {
+            dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: false, location: { ...data } } })
+        }
+    } catch (error) {
+        dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: false } })
     }
 }
 

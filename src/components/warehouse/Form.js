@@ -2,8 +2,8 @@ import { Button, Dialog, DialogContent, DialogTitle, FormControl, Grid, InputLab
 import { Fragment, useEffect, useState } from "react";
 import _ from 'lodash';
 import { ArrowBack, ArrowForward } from "@material-ui/icons";
-import { addWarehouse, getWarehouseById, getWarehouses } from "../../actions/warehouse";
-import { useDispatch } from "react-redux";
+import { addWarehouse, getGeoLocation, getWarehouseById, getWarehouses } from "../../actions/warehouse";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { blue } from "../layout/ui/Theme";
 
@@ -26,11 +26,13 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const PageTwoForm = ({ setData2, setPage, data, classes }) => {
+const PageTwoForm = ({ setData2, setPage, data, classes, getLocation }) => {
+
     const handleChange = (e) => {
         const { target: { name, value } } = e;
         setData2((prevState) => ({ ...prevState, [name]: value }));
     }
+
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -90,8 +92,9 @@ const PageTwoForm = ({ setData2, setPage, data, classes }) => {
                     </Select>
                 </FormControl>
             </Grid>
-            <Grid item xs={12} style={{ marginTop: 4 }}>
+            <Grid item xs={12} style={{ marginTop: 4 }} style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant='h6'>Warehouse Location</Typography>
+                <Button onClick={getLocation} variant="outlined" color="primary">Get Location</Button>
             </Grid>
             <Grid item xs={6} style={{ mt: 8 }}>
                 <TextField
@@ -128,7 +131,8 @@ const FormBody = ({ id = null }) => {
         [errors, setErrors] = useState(''),
         [page, setPage] = useState(1),
         history = useHistory(),
-        dispatch = useDispatch();
+        dispatch = useDispatch(),
+        { location: { data: { lat = 0, lng = 0 } = {} } = {} } = useSelector(state => state.warehouse);
 
     const onChange = (e) => {
         const { target: { name, value } } = e;
@@ -158,6 +162,10 @@ const FormBody = ({ id = null }) => {
         setPage(2);
     }
 
+    const getLocation = () => {
+        dispatch(getGeoLocation({ ...data }))
+    }
+
     const initializeForm = (response = {}) => {
         let form1 = { ...data }
         for (let key in form1) {
@@ -166,9 +174,8 @@ const FormBody = ({ id = null }) => {
         setData(form1);
         let form2 = { ...data2 }
         for (let key in data2) {
-            form2[key] = response[key] || '';
+            form2[key] = _.isBoolean(response[key]) ? Boolean(response[key]) : response[key] || '';
         }
-        console.log('fdfdjfl', form2)
         setData2(form2)
     }
 
@@ -177,6 +184,12 @@ const FormBody = ({ id = null }) => {
             dispatch(getWarehouseById(id, initializeForm))
         }
     }, [])
+
+    useEffect(() => {
+        if (lat && lng) {
+            setData2({ ...data2, latitude: lat, longitude: lng })
+        }
+    }, [lat, lng])
 
     return (
         <form onSubmit={onSubmit} className={classes.form} autoComplete="off">
@@ -242,7 +255,7 @@ const FormBody = ({ id = null }) => {
                     </Grid>
 
                 </Fragment>}
-                {page === 2 && <PageTwoForm setData2={setData2} setPage={setPage} data={data2} classes={classes} />}
+                {page === 2 && <PageTwoForm getLocation={getLocation} setData2={setData2} setPage={setPage} data={data2} classes={classes} />}
             </Grid>
         </form>
     )

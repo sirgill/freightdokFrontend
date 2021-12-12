@@ -1,4 +1,4 @@
-import { FETCH_WAREHOUSEBYID, FETCH_WAREHOUSES } from "../actions/types";
+import { FETCH_WAREHOUSEBYID, FETCH_WAREHOUSES, WAREHOUSE_LOCATION } from "../actions/types";
 
 const initialState = {
     totalCount: 0,
@@ -12,6 +12,11 @@ const warehouse = (state = initialState, { type, payload }) => {
                 ...payload
             }
         case FETCH_WAREHOUSEBYID:
+            return {
+                ...state,
+                ...payload
+            }
+        case WAREHOUSE_LOCATION:
             return {
                 ...state,
                 ...payload

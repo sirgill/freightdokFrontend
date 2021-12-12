@@ -17,11 +17,12 @@ import ArrowBack from "@material-ui/icons/ArrowBack";
 import LoadForm from "./LoadNumber";
 
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { addLoad } from "../../actions/load";
+import AsyncAutoComplete from "../Atoms/AsyncAutoComplete";
+import _ from "lodash";
 
 const CssTextField = withStyles({
   root: {
@@ -326,14 +327,20 @@ const AddLoadForm = ({ addLoad, user }) => {
                 <div>
                   <DialogTitle id="form-dialog-title">Pickup</DialogTitle>
                   <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="shipperName"
-                      className="form-control"
-                      name="shipperName"
-                      label="Shipper"
-                      onChange={(e) => updatePickUp(e)}
+                    <AsyncAutoComplete
+                      name='shipperName'
+                      label={'Shipper'}
+                      placeholder='Enter the name of warehouse'
                       value={pickUp.shipperName}
+                      handleChange={({ name, value = {} }) => {
+                        if (_.isObject(value)) {
+                          const { address = pickUp.pickupAddress, city = pickUp.pickupCity, zip = pickUp.pickupZip, state = pickUp.pickupState, name: shipperName = pickUp.name } = value
+                          setPickup({ ...pickUp, [name]: shipperName, pickupAddress: address, pickupCity: city, pickupState: state, pickupZip: zip })
+                        }
+                        else {
+                          setPickup({ ...pickUp, [name]: value })
+                        }
+                      }}
                     />
                   </div>
 
@@ -344,7 +351,7 @@ const AddLoadForm = ({ addLoad, user }) => {
                       className="form-control"
                       name="pickupAddress"
                       label="Address"
-                      onChange={(e) => updatePickUp(e)}
+                      onChange={updatePickUp}
                       value={pickUp.pickupAddress}
                     />
                   </div>
@@ -356,7 +363,7 @@ const AddLoadForm = ({ addLoad, user }) => {
                       className="form-control"
                       name="pickupCity"
                       label="City"
-                      onChange={(e) => updatePickUp(e)}
+                      onChange={updatePickUp}
                       value={pickUp.pickupCity}
                     />
                   </div>
@@ -368,7 +375,7 @@ const AddLoadForm = ({ addLoad, user }) => {
                       className="form-control"
                       name="pickupState"
                       label="State"
-                      onChange={(e) => updatePickUp(e)}
+                      onChange={updatePickUp}
                       value={pickUp.pickupState}
                     />
                   </div>
@@ -380,7 +387,7 @@ const AddLoadForm = ({ addLoad, user }) => {
                       className="form-control"
                       name="pickupZip"
                       label="Zip"
-                      onChange={(e) => updatePickUp(e)}
+                      onChange={updatePickUp}
                       value={pickUp.pickupZip}
                     />
                   </div>
@@ -462,14 +469,20 @@ const AddLoadForm = ({ addLoad, user }) => {
                   <DialogTitle id="form-dialog-title">Drop</DialogTitle>
 
                   <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="receiverName"
-                      className="form-control"
-                      name="receiverName"
-                      label="Receiver"
-                      onChange={(e) => updateDropOff(e)}
+                    <AsyncAutoComplete
+                      name='receiverName'
+                      label={'Receiver'}
+                      placeholder='Enter the name of warehouse'
                       value={dropOff.receiverName}
+                      handleChange={({ name, value = {} }) => {
+                        if (_.isObject(value)) {
+                          const { address = dropOff.dropAddress, city = dropOff.dropCity, zip = dropOff.dropZip, state = dropOff.dropState, name: receiverName = dropOff.receiverName } = value
+                          setDropOff({ ...dropOff, [name]: receiverName, dropAddress: address, dropCity: city, dropState: state, dropZip: zip })
+                        }
+                        else {
+                          setDropOff({ ...dropOff, [name]: value })
+                        }
+                      }}
                     />
                   </div>
 
