@@ -59,14 +59,19 @@ const deleteWarehouse = (id) => async (dispatch) => {
 }
 
 export const getGeoLocation = (obj) => async (dispatch) => {
-    const { status, data } = await axios.post('/api/warehouse/getLocation', obj)
+    const { status, data } = await axios.post('/api/warehouse/getLocation', obj);
     dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: true } })
     try {
         if (status === 200 && data.success) {
-            dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: false, location: { ...data } } })
+            dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: false, location: { ...data } } });
+        }
+        else if (!data.success) {
+            dispatch(setAlert(data.message, 'error'));
+            dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: false, location: {} } });
         }
     } catch (error) {
-        dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: false } })
+        dispatch(setAlert(data.message, 'error'));
+        dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: false, location: {} } });
     }
 }
 

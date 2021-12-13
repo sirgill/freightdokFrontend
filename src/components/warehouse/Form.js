@@ -70,7 +70,7 @@ const PageTwoForm = ({ setData2, setPage, data, classes, getLocation }) => {
             </Grid>
             <Grid item xs={12}>
                 <TextField
-                    label='Hours of Service'
+                    label='Warehouse Hours of Service'
                     name='serviceHours'
                     fullWidth
                     onChange={handleChange}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { Fragment, useEffect, useRef } from 'react';
 import { Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -15,13 +15,15 @@ import CloseIcon from "@material-ui/icons/Close";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { useDispatch, useSelector } from "react-redux";
-import { updateLoad } from '../../actions/load';
+import { addLoad, updateLoad } from '../../actions/load';
 import moment from "moment";
 import { getDrivers } from '../../actions/driver';
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
 import DeleteIcon from "@material-ui/icons/Delete";
 import './style.css';
+import { FileCopyOutlined } from '@material-ui/icons';
+import { changeObjectKey } from '../../utils/helper';
 
 const verticalAlignStyle = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
 const useStyles = makeStyles((theme) => ({
@@ -78,7 +80,9 @@ const LoadDetailModal = ({
     open,
     handleClose,
     listBarType,
-    load: {
+    load
+}) => {
+    let {
         _id,
         brokerage,
         loadNumber,
@@ -93,9 +97,8 @@ const LoadDetailModal = ({
         status = '',
         accessorials = [],
         invoice_created,
-        bucketFiles
-    }
-}) => {
+        bucketFiles = []
+    } = load || {};
     const classes = useStyles();
     const dispatch = useDispatch();
     const state = useSelector(state => state);
@@ -195,10 +198,17 @@ const LoadDetailModal = ({
         }
     }
 
+    const createCopy = () => {
+        let body = { ...load };
+        body = changeObjectKey(body, 'pickup', 'pickUp');
+        body = changeObjectKey(body, 'drop', 'dropOff');
+        dispatch(addLoad(body));
+    }
+
     if (bucketFiles.length) {
         const alpha = [...bucketFiles];
-        bucketFiles = {}
-        alpha.forEach(item => {
+        bucketFiles = {};
+        alpha.forEach((item = {}) => {
             const { fileType = "", fileLocation = "" } = item;
             Object.assign(bucketFiles, { [fileType]: fileLocation });
         })
@@ -648,9 +658,14 @@ const LoadDetailModal = ({
                     <Grid container spacing={2} className={classes.root} style={{ height: '100px' }}>
                         <Grid item xs={4} style={{ position: 'relative' }}>
                             <div style={{ position: 'absolute', top: '50%', left: '10%', transform: 'translate(-50%, -50%)' }}>
-                                {!edit ? <IconButton>
-                                    <EditIcon fontSize="large" color="primary" onClick={() => setEdit(true)} />
-                                </IconButton> : <>
+                                {!edit ? <Fragment>
+                                    <IconButton>
+                                        <EditIcon fontSize="large" color="primary" onClick={() => setEdit(true)} />
+                                    </IconButton>
+                                    <IconButton>
+                                        <FileCopyOutlined fontSize="large" color="primary" onClick={createCopy} />
+                                    </IconButton>
+                                </Fragment> : <>
                                     <IconButton>
                                         <DoneIcon fontSize="large" color="primary" onClick={handleSubmit} />
                                     </IconButton>

@@ -327,32 +327,32 @@ const AddLoadForm = ({ addLoad, user }) => {
                 <div>
                   <DialogTitle id="form-dialog-title">Pickup</DialogTitle>
                   <div className="form-group">
-                    <AsyncAutoComplete
-                      name='shipperName'
-                      label={'Shipper'}
-                      placeholder='Enter the name of warehouse'
+                    <CssTextField
+                      id="outlined-basic"
+                      type="shipperName"
+                      className="form-control"
+                      name="shipperName"
+                      label="Shipper"
+                      onChange={updatePickUp}
                       value={pickUp.shipperName}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <AsyncAutoComplete
+                      name='pickupAddress'
+                      label={'Address'}
+                      value={pickUp.pickupAddress}
+                      getOptionLabelKey='address'
                       handleChange={({ name, value = {} }) => {
                         if (_.isObject(value)) {
                           const { address = pickUp.pickupAddress, city = pickUp.pickupCity, zip = pickUp.pickupZip, state = pickUp.pickupState, name: shipperName = pickUp.name } = value
-                          setPickup({ ...pickUp, [name]: shipperName, pickupAddress: address, pickupCity: city, pickupState: state, pickupZip: zip })
+                          setPickup({ ...pickUp, shipperName: shipperName, [name]: address, pickupCity: city, pickupState: state, pickupZip: zip })
                         }
                         else {
                           setPickup({ ...pickUp, [name]: value })
                         }
                       }}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="pickupAddress"
-                      className="form-control"
-                      name="pickupAddress"
-                      label="Address"
-                      onChange={updatePickUp}
-                      value={pickUp.pickupAddress}
                     />
                   </div>
 
@@ -469,32 +469,29 @@ const AddLoadForm = ({ addLoad, user }) => {
                   <DialogTitle id="form-dialog-title">Drop</DialogTitle>
 
                   <div className="form-group">
-                    <AsyncAutoComplete
+                    <CssTextField
                       name='receiverName'
                       label={'Receiver'}
-                      placeholder='Enter the name of warehouse'
                       value={dropOff.receiverName}
+                      handleChange={updateDropOff}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <AsyncAutoComplete
+                      name='dropAddress'
+                      label={'Address'}
+                      value={pickUp.dropAddress}
+                      getOptionLabelKey='address'
                       handleChange={({ name, value = {} }) => {
                         if (_.isObject(value)) {
                           const { address = dropOff.dropAddress, city = dropOff.dropCity, zip = dropOff.dropZip, state = dropOff.dropState, name: receiverName = dropOff.receiverName } = value
-                          setDropOff({ ...dropOff, [name]: receiverName, dropAddress: address, dropCity: city, dropState: state, dropZip: zip })
+                          setDropOff({ ...dropOff, receiverName, [name]: address, dropCity: city, dropState: state, dropZip: zip })
                         }
                         else {
                           setDropOff({ ...dropOff, [name]: value })
                         }
                       }}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="dropAddress"
-                      className="form-control"
-                      name="dropAddress"
-                      label="Address"
-                      onChange={(e) => updateDropOff(e)}
-                      value={dropOff.dropAddress}
                     />
                   </div>
 

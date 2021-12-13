@@ -5,7 +5,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import axios from 'axios';
 
-export default function Asynchronous({ label = '', placeholder = '', handleChange, name = '', value: defaultValue = '' }) {
+export default function Asynchronous({ label = '', placeholder = '', handleChange, name = '', value: defaultValue = '', getOptionLabelKey = '' }) {
     const [open, setOpen] = React.useState(false);
     const [options, setOptions] = React.useState([]);
     const loading = open && options.length === 0;
@@ -57,7 +57,7 @@ export default function Asynchronous({ label = '', placeholder = '', handleChang
                 localStorage.setItem("shipperName", value.name);
                 return option.name === value.name
             }}
-            getOptionLabel={(option) => option.name}
+            getOptionLabel={(option) => option[getOptionLabelKey] || ''}
             options={options}
             inputValue={defaultValue || value}
             onChange={(event, newValue) => {
