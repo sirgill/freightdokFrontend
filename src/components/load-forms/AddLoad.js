@@ -1,136 +1,31 @@
 import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
-import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Grid from "@material-ui/core/Grid";
 import ArrowForward from "@material-ui/icons/ArrowForward";
 import ArrowBack from "@material-ui/icons/ArrowBack";
-import LoadForm from "./LoadNumber";
-
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-
+import {
+  CssTextField,
+  TextFieldHelper,
+  CSSDatePicker,
+  CSSTimePicker,
+  useStyles,
+} from "../HelperCells";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { addLoad } from "../../actions/load";
 import AsyncAutoComplete from "../Atoms/AsyncAutoComplete";
 import _ from "lodash";
 
-const CssTextField = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: '#1891FC',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: '#1891FC',
-    },
-    '& .MuiInput-underline:before': {
-      borderColor: '#1891FC'
-    },
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: '#1891FC',
-      },
-      '&:hover fieldset': {
-        borderColor: '#1891FC',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#1891FC',
-      },
-    },
-  },
-})(TextField);
-
-const CSSDatePicker = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: '#1891FC',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: '#1891FC',
-    },
-    '& .MuiInput-underline:before': {
-      borderColor: '#1891FC'
-    },
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: '#1891FC',
-      },
-      '&:hover fieldset': {
-        borderColor: '#1891FC',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#1891FC',
-      },
-    },
-  },
-})(KeyboardDatePicker);
-
-const CSSTimePicker = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: '#1891FC',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: '#1891FC',
-    },
-    '& .MuiInput-underline:before': {
-      borderColor: '#1891FC'
-    },
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: '#1891FC',
-      },
-      '&:hover fieldset': {
-        borderColor: '#1891FC',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#1891FC',
-      },
-    },
-  },
-})(KeyboardTimePicker);
-
-const useStyles = makeStyles((theme) => ({
-  backButton: {
-    marginRight: theme.spacing(1),
-  },
-  instructions: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    margin: "auto",
-    width: "fit-content",
-  },
-  outside: {
-    position: 'relative',
-    marginTop: '15%'
-  },
-  bottomRight: {
-    position: 'absolute',
-    bottom: '10px',
-    right: '10px'
-  },
-  bottomLeft: {
-    position: 'absolute',
-    bottom: '10px',
-    left: '10px'
-  },
-}));
-
 const AddLoadForm = ({ addLoad, user }) => {
-  const [text, setText] = useState("");
   const [open, setOpen] = React.useState(false);
 
   const classes = useStyles();
@@ -266,132 +161,112 @@ const AddLoadForm = ({ addLoad, user }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     handleNewPickDrop();
-
     addLoad(form);
-
     handleClose();
   };
 
   return (
     <div>
-      {(user && user.role === 'afterhours') || <Fab color="primary" onClick={handleClickOpen} style={{ marginBottom: '20%' }}>
-        <AddIcon />
-      </Fab>}
+      {(user && user.role === "afterhours") || (
+        <Fab
+          color="primary"
+          onClick={handleClickOpen}
+          style={{ marginBottom: "20%" }}
+        >
+          <AddIcon />
+        </Fab>
+      )}
 
-      <Dialog fullWidth={true} maxWidth={"sm"} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Dialog
+        fullWidth={true}
+        maxWidth={"sm"}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
         <DialogContent>
           <div className="">
             <form className={classes.form}>
               {count === 1 ? (
                 <div>
                   <DialogTitle id="form-dialog-title">Add Load</DialogTitle>
-                  <div className="form-group">
-                    <CssTextField
-                      id=""
-                      type="brokerage"
-                      className="form-control"
-                      name="brokerage"
-                      label="Brokerage"
-                      onChange={(e) => updateForm(e)}
-                      value={brokerage}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="loadNumber"
-                      className="form-control"
-                      name="loadNumber"
-                      label="Load Number"
-                      onChange={(e) => updateForm(e)}
-                      value={loadNumber}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="rate"
-                      className="form-control"
-                      name="rate"
-                      label="Rate"
-                      onChange={(e) => updateForm(e)}
-                      value={rate}
-                    />
-                  </div>
+                  <TextFieldHelper
+                    nameNType={"brokerage"}
+                    label={"Brokerage"}
+                    onChange={(e) => updateForm(e)}
+                    value={brokerage}
+                  />
+                  <TextFieldHelper
+                    nameNType={"loadNumber"}
+                    label={"Load Number"}
+                    onChange={(e) => updateForm(e)}
+                    value={loadNumber}
+                  />
+                  <TextFieldHelper
+                    nameNType={"rate"}
+                    label={"Rate"}
+                    onChange={(e) => updateForm(e)}
+                    value={rate}
+                  />
                 </div>
               ) : null}
 
               {count === 2 ? (
                 <div>
                   <DialogTitle id="form-dialog-title">Pickup</DialogTitle>
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="shipperName"
-                      className="form-control"
-                      name="shipperName"
-                      label="Shipper"
-                      onChange={updatePickUp}
-                      value={pickUp.shipperName}
-                    />
-                  </div>
-
+                  <TextFieldHelper
+                    nameNType={"shipperName"}
+                    label={"Shipper"}
+                    onChange={updatePickUp}
+                    value={pickUp.shipperName}
+                  />
                   <div className="form-group">
                     <AsyncAutoComplete
-                      name='pickupAddress'
-                      label={'Address'}
+                      name="pickupAddress"
+                      label={"Address"}
                       value={pickUp.pickupAddress}
-                      getOptionLabelKey='address'
+                      getOptionLabelKey="address"
                       handleChange={({ name, value = {} }) => {
                         if (_.isObject(value)) {
-                          const { address = pickUp.pickupAddress, city = pickUp.pickupCity, zip = pickUp.pickupZip, state = pickUp.pickupState, name: shipperName = pickUp.name } = value
-                          setPickup({ ...pickUp, shipperName: shipperName, [name]: address, pickupCity: city, pickupState: state, pickupZip: zip })
-                        }
-                        else {
-                          setPickup({ ...pickUp, [name]: value })
+                          const {
+                            address = pickUp.pickupAddress,
+                            city = pickUp.pickupCity,
+                            zip = pickUp.pickupZip,
+                            state = pickUp.pickupState,
+                            name: shipperName = pickUp.name,
+                          } = value;
+                          setPickup({
+                            ...pickUp,
+                            shipperName: shipperName,
+                            [name]: address,
+                            pickupCity: city,
+                            pickupState: state,
+                            pickupZip: zip,
+                          });
+                        } else {
+                          setPickup({ ...pickUp, [name]: value });
                         }
                       }}
                     />
                   </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="pickupCity"
-                      className="form-control"
-                      name="pickupCity"
-                      label="City"
-                      onChange={updatePickUp}
-                      value={pickUp.pickupCity}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="pickupState"
-                      className="form-control"
-                      name="pickupState"
-                      label="State"
-                      onChange={updatePickUp}
-                      value={pickUp.pickupState}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="pickupZip"
-                      className="form-control"
-                      name="pickupZip"
-                      label="Zip"
-                      onChange={updatePickUp}
-                      value={pickUp.pickupZip}
-                    />
-                  </div>
-
+                  <TextFieldHelper
+                    nameNType={"pickupCity"}
+                    label={"City"}
+                    onChange={updatePickUp}
+                    value={pickUp.pickupCity}
+                  />
+                  <TextFieldHelper
+                    nameNType={"pickupState"}
+                    label={"State"}
+                    onChange={updatePickUp}
+                    value={pickUp.pickupState}
+                  />
+                  <TextFieldHelper
+                    nameNType={"pickupZip"}
+                    label={"Zip"}
+                    onChange={updatePickUp}
+                    value={pickUp.pickupZip}
+                  />
                 </div>
               ) : null}
 
@@ -425,42 +300,24 @@ const AddLoadForm = ({ addLoad, user }) => {
                     </MuiPickersUtilsProvider>
                   </div>
                   {console.log(pickUp)}
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="pickupPo"
-                      className="form-control"
-                      name="pickupPo"
-                      label="PO#"
-                      onChange={(e) => updatePickUp(e)}
-                      value={pickUp.pickupPo}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="pickupDeliverNumber"
-                      className="form-control"
-                      name="pickupDeliverNumber"
-                      label="Delivery#"
-                      onChange={(e) => updatePickUp(e)}
-                      value={pickUp.pickupDeliverNumber}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="pickupReference"
-                      className="form-control"
-                      name="pickupReference"
-                      label="Ref#"
-                      onChange={(e) => updatePickUp(e)}
-                      value={pickUp.pickupReference}
-                    />
-                  </div>
-
+                  <TextFieldHelper
+                    nameNType={"pickupPo"}
+                    label={"PO#"}
+                    onChange={(e) => updatePickUp(e)}
+                    value={pickUp.pickupPo}
+                  />
+                  <TextFieldHelper
+                    nameNType={"pickupDeliverNumber"}
+                    label={"Delivery#"}
+                    onChange={(e) => updatePickUp(e)}
+                    value={pickUp.pickupDeliverNumber}
+                  />
+                  <TextFieldHelper
+                    nameNType={"pickupReference"}
+                    label={"Ref#"}
+                    onChange={(e) => updatePickUp(e)}
+                    value={pickUp.pickupReference}
+                  />
                 </div>
               ) : null}
 
@@ -470,8 +327,8 @@ const AddLoadForm = ({ addLoad, user }) => {
 
                   <div className="form-group">
                     <CssTextField
-                      name='receiverName'
-                      label={'Receiver'}
+                      name="receiverName"
+                      label={"Receiver"}
                       value={dropOff.receiverName}
                       handleChange={updateDropOff}
                     />
@@ -479,65 +336,57 @@ const AddLoadForm = ({ addLoad, user }) => {
 
                   <div className="form-group">
                     <AsyncAutoComplete
-                      name='dropAddress'
-                      label={'Address'}
+                      name="dropAddress"
+                      label={"Address"}
                       value={pickUp.dropAddress}
-                      getOptionLabelKey='address'
+                      getOptionLabelKey="address"
                       handleChange={({ name, value = {} }) => {
                         if (_.isObject(value)) {
-                          const { address = dropOff.dropAddress, city = dropOff.dropCity, zip = dropOff.dropZip, state = dropOff.dropState, name: receiverName = dropOff.receiverName } = value
-                          setDropOff({ ...dropOff, receiverName, [name]: address, dropCity: city, dropState: state, dropZip: zip })
-                        }
-                        else {
-                          setDropOff({ ...dropOff, [name]: value })
+                          const {
+                            address = dropOff.dropAddress,
+                            city = dropOff.dropCity,
+                            zip = dropOff.dropZip,
+                            state = dropOff.dropState,
+                            name: receiverName = dropOff.receiverName,
+                          } = value;
+                          setDropOff({
+                            ...dropOff,
+                            receiverName,
+                            [name]: address,
+                            dropCity: city,
+                            dropState: state,
+                            dropZip: zip,
+                          });
+                        } else {
+                          setDropOff({ ...dropOff, [name]: value });
                         }
                       }}
                     />
                   </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="dropCity"
-                      className="form-control"
-                      name="dropCity"
-                      label="City"
-                      onChange={(e) => updateDropOff(e)}
-                      value={dropOff.dropCity}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="dropState"
-                      className="form-control"
-                      name="dropState"
-                      label="State"
-                      onChange={(e) => updateDropOff(e)}
-                      value={dropOff.dropState}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="dropZip"
-                      className="form-control"
-                      name="dropZip"
-                      label="Zip"
-                      onChange={(e) => updateDropOff(e)}
-                      value={dropOff.dropZip}
-                    />
-                  </div>
-
+                  <TextFieldHelper
+                    nameNType={"dropCity"}
+                    label={"City"}
+                    onChange={(e) => updateDropOff(e)}
+                    value={dropOff.dropCity}
+                  />
+                  <TextFieldHelper
+                    nameNType={"dropState"}
+                    label={"State"}
+                    onChange={(e) => updateDropOff(e)}
+                    value={dropOff.dropState}
+                  />
+                  <TextFieldHelper
+                    nameNType={"dropZip"}
+                    label={"Zip"}
+                    onChange={(e) => updateDropOff(e)}
+                    value={dropOff.dropZip}
+                  />
                 </div>
               ) : null}
 
               {count === 5 ? (
                 <div>
                   <DialogTitle id="form-dialog-title">Drop</DialogTitle>
-
                   <div className="form-group">
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <CSSDatePicker
@@ -551,7 +400,6 @@ const AddLoadForm = ({ addLoad, user }) => {
                       />
                     </MuiPickersUtilsProvider>
                   </div>
-
                   <div className="form-group">
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <CSSTimePicker
@@ -564,48 +412,27 @@ const AddLoadForm = ({ addLoad, user }) => {
                       />
                     </MuiPickersUtilsProvider>
                   </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="dropPo"
-                      className="form-control"
-                      name="dropPo"
-                      label="PO#"
-                      onChange={(e) => updateDropOff(e)}
-                      value={dropOff.dropPo}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="dropDeliverNumber"
-                      className="form-control"
-                      name="dropDeliverNumber"
-                      label="Delivery#"
-                      onChange={(e) => updateDropOff(e)}
-                      value={dropOff.dropDeliverNumber}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <CssTextField
-                      id="outlined-basic"
-                      type="dropReference"
-                      className="form-control"
-                      name="dropReference"
-                      label="Ref#"
-                      onChange={(e) => updateDropOff(e)}
-                      value={dropOff.dropReference}
-                    />
-                  </div>
-
+                  <TextFieldHelper
+                    nameNType={"dropPo"}
+                    label={"PO#"}
+                    onChange={(e) => updateDropOff(e)}
+                    value={dropOff.dropPo}
+                  />
+                  <TextFieldHelper
+                    nameNType={"dropDeliverNumber"}
+                    label={"Delivery#"}
+                    onChange={(e) => updateDropOff(e)}
+                    value={dropOff.dropDeliverNumber}
+                  />
+                  <TextFieldHelper
+                    nameNType={"dropReference"}
+                    label={"Ref#"}
+                    onChange={(e) => updateDropOff(e)}
+                    value={dropOff.dropReference}
+                  />
                 </div>
               ) : null}
-
             </form>
-
           </div>
         </DialogContent>
 
@@ -614,29 +441,60 @@ const AddLoadForm = ({ addLoad, user }) => {
         <DialogActions></DialogActions>
 
         <div className={classes.outside}>
-          {count !== 1 && <div className={classes.bottomLeft}>
-            <ArrowBack style={{ color: '#1891FC', marginTop: '13%', height: 25, width: 25, cursor: 'pointer' }} onClick={handleBack} />
-          </div>}
-          {count !== 5 && <div className={classes.bottomRight}>
-            <ArrowForward style={{ color: '#1891FC', marginTop: '13%', height: 25, width: 25, cursor: 'pointer' }} onClick={handleNext} />
-          </div>}
+          {count !== 1 && (
+            <div className={classes.bottomLeft}>
+              <ArrowBack
+                style={{
+                  color: "#1891FC",
+                  marginTop: "13%",
+                  height: 25,
+                  width: 25,
+                  cursor: "pointer",
+                }}
+                onClick={handleBack}
+              />
+            </div>
+          )}
+          {count !== 5 && (
+            <div className={classes.bottomRight}>
+              <ArrowForward
+                style={{
+                  color: "#1891FC",
+                  marginTop: "13%",
+                  height: 25,
+                  width: 25,
+                  cursor: "pointer",
+                }}
+                onClick={handleNext}
+              />
+            </div>
+          )}
 
-          {count === 5 && <div style={{ textAlign: 'center', justifyItems: 'center' }}>
-            <Grid item xs={12} style={{ marginBottom: "10px", display: 'flex' }}>
-              <Grid item xs={4}></Grid>
-              <Grid item xs={4}>
-                <Button className="" type="submit" variant="outlined" color="primary" onClick={onSubmit}>
-                  Submit Load
-                </Button>
+          {count === 5 && (
+            <div style={{ textAlign: "center", justifyItems: "center" }}>
+              <Grid
+                item
+                xs={12}
+                style={{ marginBottom: "10px", display: "flex" }}
+              >
+                <Grid item xs={4}></Grid>
+                <Grid item xs={4}>
+                  <Button
+                    className=""
+                    type="submit"
+                    variant="outlined"
+                    color="primary"
+                    onClick={onSubmit}
+                  >
+                    Submit Load
+                  </Button>
+                </Grid>
+                <Grid item xs={4}></Grid>
               </Grid>
-              <Grid item xs={4}></Grid>
-            </Grid>
-          </div>}
-
+            </div>
+          )}
         </div>
       </Dialog>
-
-
     </div>
   );
 };
@@ -645,8 +503,8 @@ AddLoadForm.propTypes = {
   addLoad: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
-  user: state.auth.user
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
 });
 
 export default connect(mapStateToProps, { addLoad })(AddLoadForm);

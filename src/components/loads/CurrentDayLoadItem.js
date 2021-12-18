@@ -1,133 +1,27 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
-import Moment from "react-moment";
-import LoadPickup from "./LoadPickup";
-import LoadDrop from "./LoadDrop";
 import { connect } from "react-redux";
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-
-import Paper from "@material-ui/core/Paper";
-import Badge from "@material-ui/core/Badge";
-import { TablePagination } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import SkipNextIcon from "@material-ui/icons/SkipNext";
-import ArrowForwardRoundedIcon from "@material-ui/icons/ArrowForwardRounded";
 import EditIcon from "@material-ui/icons/Edit";
 import DoneIcon from "@material-ui/icons/Done";
 import CloseIcon from "@material-ui/icons/Close";
-import ArrowForward from "@material-ui/icons/ArrowForward";
-import SettingsOverscanIcon from "@material-ui/icons/SettingsOverscan";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
-import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker, DatePicker, TimePicker } from "@material-ui/pickers";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+  DatePicker,
+  TimePicker,
+} from "@material-ui/pickers";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import FormControl from "@material-ui/core/FormControl";
-
 import TextField from "@material-ui/core/TextField";
-
 import Grid from "@material-ui/core/Grid";
-
-import theme from "../layout/ui/Theme";
-import { SportsRugbySharp } from "@material-ui/icons";
-
 import { patchPickup, patchDrop, getLoads } from "../../actions/load";
 import LoadDetailModal from "./LoadDetailModal";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    // display: "flex",
-    minWidth: 200,
-    maxWidth: 350,
-    marginBottom: 10,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 5,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: 'grey',
-    // boxShadow: "1px 3px 1px #9E9E9E",
-  },
-  cardcontent: {
-    flexDirection: "row",
-    wrap: "wrap",
-    minWidth: 100,
-    maxWidth: 150,
-    paddingLeft: 20,
-    paddingTop: 15,
-    paddingBottom: 5,
-    "&:last-child": {
-      paddingBottom: 5,
-    },
-  },
-  pickup: {
-    fontSize: 12,
-    alignItems: "center",
-  },
-  h4: {
-    margin: 0,
-    padding: 0,
-  },
-  loadp: {
-    display: "flex",
-    margin: 0,
-    padding: 0,
-    paddingLeft: 150,
-    alignItems: "center",
-  },
-  playIcon: {
-    height: 38,
-    width: 30,
-    marginLeft: 0,
-  },
-  textField: {
-    "& input": {
-      color: "#000000",
-    },
-    "& input:disabled": {
-      color: "#000000",
-    },
-  },
-  textFieldDialog: {
-    "& input": {
-      color: "#000000",
-    },
-    "& input:disabled": {
-      color: "#000000",
-    },
-  },
-  textFieldDialogPickup: {
-    "& input": {
-      color: "#000000",
-    },
-    "& input:disabled": {
-      color: "#000000",
-    },
-    marginLeft: "75px"
-  },
-  textFieldDialogDrop: {
-    "& input": {
-      color: "#000000",
-    },
-    "& input:disabled": {
-      color: "#000000",
-    },
-    marginLeft: "25px"
-  },
-  resize: {
-    fontSize: 12,
-  },
-  resizeDialog: {
-    fontSize: 14,
-  },
-
-  newLoad: {
-    margin: 0
-  }
-}));
+import { useStyles } from "./styles";
 
 const CurrentDayLoadItem = ({
   load,
@@ -137,41 +31,26 @@ const CurrentDayLoadItem = ({
   load_id,
 }) => {
   const classes = useStyles();
-  const {
-    user: { _id, name },
-    brokerage,
-    loadNumber,
-    pickup,
-    drop,
-  } = load;
+  const { loadNumber, pickup, drop } = load;
   const [open, setOpen] = useState(false);
 
   const [editing, setEditing] = useState(false);
-
   const [firstPickup, setFirstPickup] = useState(pickup[0]);
-  const copyFirstPickup = {...pickup[0]};
-
+  const copyFirstPickup = { ...pickup[0] };
   const [firstDrop, setFirstDrop] = useState(drop[0]);
-
   const currentDate = new Date();
-
   const pickupDateFormat = new Date(copyFirstPickup.pickupDate);
-
 
   const match =
     currentDate.getMonth() === pickupDateFormat.getMonth() &&
     currentDate.getDate() === pickupDateFormat.getDate() &&
-    currentDate.getFullYear() === pickupDateFormat.getFullYear(); 
+    currentDate.getFullYear() === pickupDateFormat.getFullYear();
 
   const handlePatch = async () => {
     setEditing(false);
     await patchPickup(load_id, firstPickup);
     await patchDrop(load_id, firstDrop);
     getLoads();
-  };
-
-  const handleOpen = () => {
-    setOpen(true);
   };
 
   const handleClose = () => {
@@ -199,7 +78,7 @@ const CurrentDayLoadItem = ({
         ...firstPickup,
         [e.target.name]: e.target.value,
       });
-    };
+    }
   };
 
   const updateDrop = (e) => {
@@ -230,18 +109,31 @@ const CurrentDayLoadItem = ({
       });
     }
   };
-  
+
   return (
     <div>
       {match ? (
         <>
-          <LoadDetailModal 
-          open={open}
-          load={load} 
-          handleClose={()=>{setOpen(false)}} />
-          <Dialog fullWidth={true} maxWidth={"md"} open={false} onClose={handleClose}>
+          <LoadDetailModal
+            open={open}
+            load={load}
+            handleClose={() => {
+              setOpen(false);
+            }}
+          />
+          <Dialog
+            fullWidth={true}
+            maxWidth={"md"}
+            open={false}
+            onClose={handleClose}
+          >
             <DialogContent>
-              <Grid container justify="space-around" direction="row" alignItems="center">
+              <Grid
+                container
+                justify="space-around"
+                direction="row"
+                alignItems="center"
+              >
                 <Grid item xs={6} alignItems="center">
                   <TextField
                     className={classes.textFieldDialog}
@@ -259,7 +151,12 @@ const CurrentDayLoadItem = ({
                     <CloseIcon />
                   </IconButton>
                 </Grid>
-                <Grid item xs={6} alignItems="center" style={{ marginTop: "50px" }}>
+                <Grid
+                  item
+                  xs={6}
+                  alignItems="center"
+                  style={{ marginTop: "50px" }}
+                >
                   <TextField
                     className={classes.textFieldDialog}
                     id="standard-full-width"
@@ -273,7 +170,12 @@ const CurrentDayLoadItem = ({
                     value={"Pickup"}
                   />
                 </Grid>
-                <Grid item xs={6} alignItems="center" style={{ marginTop: "50px" }}>
+                <Grid
+                  item
+                  xs={6}
+                  alignItems="center"
+                  style={{ marginTop: "50px" }}
+                >
                   <TextField
                     className={classes.textFieldDialog}
                     id="standard-full-width"
@@ -310,7 +212,7 @@ const CurrentDayLoadItem = ({
                     InputProps={{
                       disableUnderline: !editing,
                       classes: { input: classes.resizeDialog },
-                      style: {  },
+                      style: {},
                     }}
                     disabled={!editing}
                     size="medium"
@@ -326,7 +228,7 @@ const CurrentDayLoadItem = ({
                     InputProps={{
                       disableUnderline: !editing,
                       classes: { input: classes.resizeDialog },
-                      style: {  },
+                      style: {},
                     }}
                     disabled={!editing}
                     size="medium"
@@ -671,19 +573,31 @@ const CurrentDayLoadItem = ({
                 <Grid item xs={6} style={{ marginTop: "50px" }}>
                   {!editing && (
                     <IconButton>
-                      <EditIcon fontSize="large" color="primary" onClick={handleEditOn} />
+                      <EditIcon
+                        fontSize="large"
+                        color="primary"
+                        onClick={handleEditOn}
+                      />
                     </IconButton>
                   )}
                   {editing && (
                     <IconButton>
-                      <DoneIcon fontSize="large" color="primary" onClick={handlePatch} />
+                      <DoneIcon
+                        fontSize="large"
+                        color="primary"
+                        onClick={handlePatch}
+                      />
                     </IconButton>
                   )}
                 </Grid>
                 <Grid item xs={6} style={{ marginTop: "50px" }}>
                   {editing && (
                     <IconButton>
-                      <CloseIcon fontSize="large" color="primary" onClick={handleUndoPatch} />
+                      <CloseIcon
+                        fontSize="large"
+                        color="primary"
+                        onClick={handleUndoPatch}
+                      />
                     </IconButton>
                   )}
                 </Grid>
@@ -705,4 +619,6 @@ CurrentDayLoadItem.propTypes = {
   getLoads: PropTypes.func.isRequired,
 };
 
-export default connect(null, { patchPickup, patchDrop, getLoads })(CurrentDayLoadItem);
+export default connect(null, { patchPickup, patchDrop, getLoads })(
+  CurrentDayLoadItem
+);

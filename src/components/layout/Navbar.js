@@ -4,7 +4,6 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
-import { makeStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -14,65 +13,24 @@ import MenuIcon from "@material-ui/icons/Menu";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-
 import { theme } from "./ui/Theme";
-
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { logout } from "../../actions/auth";
+import { useStyles } from "../HelperCells";
 
 function ElevationScroll(props) {
   const { children } = props;
 
   const trigger = useScrollTrigger({
     disableHysteresis: true,
-    threshold: 0
+    threshold: 0,
   });
 
   return React.cloneElement(children, {
-    elevation: trigger ? 4 : 0
+    elevation: trigger ? 4 : 0,
   });
 }
-
-const useStyles = makeStyles(theme => ({
-  toolbarMargin: {
-    ...theme.mixins.toolbar
-  },
-  tabContainer: {
-    marginLeft: "auto"
-  },
-
-  tab: {
-    ...theme.typography.tab,
-    minWidth: 10,
-    marginLeft: "15px"
-  },
-
-  drawerIconContainer: {
-    marginLeft: "auto",
-    "&:hover": {
-      backgroundColor: "transparent"
-    }
-  },
-  drawerIcon: {
-    color: "#1891FC",
-    height: "30px",
-    width: "30px"
-  },
-  drawerItem: {
-    ...theme.typography.tab,
-    color: "#1891FC",
-    opacity: 0.7
-  },
-  drawerItemSelected: {
-    "& .MuiListItemText-root": {
-      opacity: 1
-    }
-  },
-  appbar: {
-    zIndex: theme.zIndex.modal + 1,
-  }
-}));
 
 const Navbar = ({ auth: { isAuthenticated, loading } }) => {
   const classes = useStyles();
@@ -83,12 +41,9 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
 
   const [value, setValue] = useState(0);
 
-
-
   const handleChange = (e, value) => {
     setValue(value);
   };
-
 
   useEffect(() => {
     switch (window.location.pathname) {
@@ -108,8 +63,6 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
         break;
     }
   }, []);
-
-
 
   const tabs = (
     <React.Fragment>
@@ -153,10 +106,7 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
             selected={value === 0}
             classes={{ selected: classes.drawerItemSelected }}
           >
-            <ListItemText
-              className={classes.drawerItem}
-              disableTypography
-            >
+            <ListItemText className={classes.drawerItem} disableTypography>
               home
             </ListItemText>
           </ListItem>
@@ -170,9 +120,7 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
             selected={value === 1}
             classes={{ selected: classes.drawerItemSelected }}
           >
-            <ListItemText className={
-              classes.drawerItem}
-              disableTypography>
+            <ListItemText className={classes.drawerItem} disableTypography>
               about
             </ListItemText>
           </ListItem>
@@ -186,9 +134,7 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
             selected={value === 2}
             classes={{ selected: classes.drawerItemSelected }}
           >
-            <ListItemText className={
-              classes.drawerItem
-            } disableTypography>
+            <ListItemText className={classes.drawerItem} disableTypography>
               contact
             </ListItemText>
           </ListItem>
@@ -203,9 +149,7 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
             selected={value === 3}
             classes={{ selected: classes.drawerItemSelected }}
           >
-            <ListItemText className={
-              classes.drawerItem
-            } disableTypography>
+            <ListItemText className={classes.drawerItem} disableTypography>
               login
             </ListItemText>
           </ListItem>
@@ -224,7 +168,11 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
   return (
     <React.Fragment>
       <ElevationScroll>
-        <AppBar position="fixed" color="secondary" className={classes.appbar}>
+        <AppBar
+          position="fixed"
+          color="secondary"
+          className={classes.appbarNavbar}
+        >
           <Toolbar disablegutter>
             <Typography className={classes.tab}>freightdok.</Typography>
             {matches ? drawer : tabs}
@@ -236,16 +184,12 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
   );
 };
 
-
 Navbar.propTypes = {
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
-  auth: state.auth
+const mapStateToProps = (state) => ({
+  auth: state.auth,
 });
 
-export default connect(
-  mapStateToProps,
-  { logout }
-)(Navbar);
+export default connect(mapStateToProps, { logout })(Navbar);

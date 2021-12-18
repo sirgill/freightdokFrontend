@@ -3,7 +3,11 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getLoads } from "../../actions/load";
-import { patchDriverLoads, deleteDriverLoads, deleteDriver } from "../../actions/driver";
+import {
+  patchDriverLoads,
+  deleteDriverLoads,
+  deleteDriver,
+} from "../../actions/driver";
 
 //Material
 // import { withStyles } from "@material-ui/core/styles";
@@ -30,30 +34,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { useStyles } from "../HelperCells";
 
 var _ = require("lodash");
-
-const useStyles = makeStyles((theme) => ({
-  backButton: {
-    marginRight: theme.spacing(1),
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    margin: "auto",
-    width: "fit-content",
-  },
-  chips: {
-    display: "flex",
-    flexWrap: "wrap",
-  },
-  chip: {
-    margin: 2,
-  },
-  noLabel: {
-    marginTop: theme.spacing(3),
-  },
-}));
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -68,11 +51,21 @@ const MenuProps = {
 
 function getStyles(name, loads, theme) {
   return {
-    fontWeight: loads.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
+    fontWeight:
+      loads.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
   };
 }
 
-const DriverItem = ({ user, patchDriverLoads, deleteDriver, deleteDriverLoads, load: { loads, allLoads, loading }, driver }) => {
+const DriverItem = ({
+  user,
+  patchDriverLoads,
+  deleteDriver,
+  deleteDriverLoads,
+  load: { loads, allLoads, loading },
+  driver,
+}) => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -103,7 +96,7 @@ const DriverItem = ({ user, patchDriverLoads, deleteDriver, deleteDriverLoads, l
   };
 
   const onPatch = async () => {
-    const _id = typeof driver.user !== 'string' ? driver.user._id : driver.user;
+    const _id = typeof driver.user !== "string" ? driver.user._id : driver.user;
     const patchLoads = [...driver.loads, ...additionalLoads];
     await patchDriverLoads(_id, patchLoads);
     setAdditionalLoads([]);
@@ -111,11 +104,11 @@ const DriverItem = ({ user, patchDriverLoads, deleteDriver, deleteDriverLoads, l
   };
 
   const handleDeleteLoad = async (load_id) => {
-    const _id = typeof driver.user !== 'string' ? driver.user._id : driver.user;
+    const _id = typeof driver.user !== "string" ? driver.user._id : driver.user;
     await deleteDriverLoads(_id, load_id);
   };
   const handleDeleteDriver = async () => {
-    const _id = typeof driver.user !== 'string' ? driver.user._id : driver.user;
+    const _id = typeof driver.user !== "string" ? driver.user._id : driver.user;
     await deleteDriver(_id);
   };
 
@@ -151,9 +144,11 @@ const DriverItem = ({ user, patchDriverLoads, deleteDriver, deleteDriverLoads, l
             </IconButton> }
           </TableCell> */}
           <TableCell>
-            { (user && user.role === 'afterhours') || <IconButton onClick={handleDeleteDriver}>
-              <DeleteIcon style={{ color: "rgb(220, 0, 78)" }} />
-            </IconButton> }
+            {(user && user.role === "afterhours") || (
+              <IconButton onClick={handleDeleteDriver}>
+                <DeleteIcon style={{ color: "rgb(220, 0, 78)" }} />
+              </IconButton>
+            )}
           </TableCell>
         </TableRow>
         <TableRow>
@@ -181,13 +176,17 @@ const DriverItem = ({ user, patchDriverLoads, deleteDriver, deleteDriverLoads, l
                           {load.pickup.length}
                         </TableCell>
                         <TableCell component="th" scope="row" align="center">
-                          { (user && user.role === 'afterhours') || <IconButton
-                            onClick={() => {
-                              handleDeleteLoad(load._id);
-                            }}
-                          >
-                            <DeleteIcon style={{ color: "rgb(220, 0, 78)" }} />
-                          </IconButton> }
+                          {(user && user.role === "afterhours") || (
+                            <IconButton
+                              onClick={() => {
+                                handleDeleteLoad(load._id);
+                              }}
+                            >
+                              <DeleteIcon
+                                style={{ color: "rgb(220, 0, 78)" }}
+                              />
+                            </IconButton>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -198,11 +197,19 @@ const DriverItem = ({ user, patchDriverLoads, deleteDriver, deleteDriverLoads, l
           </TableCell>
         </TableRow>
       </TableBody>
-      <Dialog fullWidth={true} maxWidth={"sm"} open={loadDialog} onClose={() => setLoadDialog(false)} aria-labelledby="form-dialog-title">
+      <Dialog
+        fullWidth={true}
+        maxWidth={"sm"}
+        open={loadDialog}
+        onClose={() => setLoadDialog(false)}
+        aria-labelledby="form-dialog-title"
+      >
         <DialogTitle id="form-dialog-title">Add Load to Driver</DialogTitle>
         <DialogContent>
           <div className="form-group">
-            <InputLabel id="assignLoadsLabel">Assign Additional Loads</InputLabel>
+            <InputLabel id="assignLoadsLabel">
+              Assign Additional Loads
+            </InputLabel>
             <Select
               labelId="assignedLoadsLabel"
               id="assignedLoads"
@@ -214,15 +221,24 @@ const DriverItem = ({ user, patchDriverLoads, deleteDriver, deleteDriverLoads, l
               renderValue={(selected) => (
                 <div className={classes.chips}>
                   {selected.map((value) => (
-                    <Chip key={value._id} label={value.loadNumber} className={classes.chip} />
+                    <Chip
+                      key={value._id}
+                      label={value.loadNumber}
+                      className={classes.chip}
+                    />
                   ))}
                 </div>
               )}
               MenuProps={MenuProps}
             >
               {filteredLoads.map((load) => (
-                <MenuItem key={load._id} value={load} style={getStyles(load, filteredLoads, theme)}>
-                  Load Number: {load.loadNumber}, Number of Pickups: {load.pickup.length}
+                <MenuItem
+                  key={load._id}
+                  value={load}
+                  style={getStyles(load, filteredLoads, theme)}
+                >
+                  Load Number: {load.loadNumber}, Number of Pickups:{" "}
+                  {load.pickup.length}
                 </MenuItem>
               ))}
             </Select>
@@ -246,4 +262,9 @@ DriverItem.propTypes = {
 
 const mapStateToProps = ({ load, auth: { user } }) => ({ load, user });
 
-export default connect(mapStateToProps, { patchDriverLoads, getLoads, deleteDriverLoads, deleteDriver })(DriverItem);
+export default connect(mapStateToProps, {
+  patchDriverLoads,
+  getLoads,
+  deleteDriverLoads,
+  deleteDriver,
+})(DriverItem);
