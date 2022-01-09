@@ -57,7 +57,7 @@ export const register = ({ name, email, password }) => async dispatch => {
   } catch (err) {
     const errors = err.response.data.errors;
 
-    if(errors) {
+    if (errors) {
       errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     }
 
@@ -89,10 +89,10 @@ export const login = ({ email, password }) => async dispatch => {
 
     dispatch(loadUser());
   } catch (err) {
-    console.log("ERROR:         ", err);
+    console.log("ERROR:", err);
     const errors = err;
 
-    if(errors && Array.isArray(errors)) {
+    if (errors && Array.isArray(errors)) {
       errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     }
 
@@ -105,7 +105,7 @@ export const login = ({ email, password }) => async dispatch => {
 
 // Update user
 export const updateUser = (data) => async dispatch => {
-  dispatch({type: AUTH_UPDATE});
+  dispatch({ type: AUTH_UPDATE });
   const config = {
     headers: {
       'Content-Type': 'application/json'
@@ -129,6 +129,6 @@ export const updateUser = (data) => async dispatch => {
 //Logout / Clear Profile
 export const logout = () => dispatch => {
   delete axios.defaults.headers.common['x-auth-token'];
-  dispatch({ type: CLEAR_PROFILE});
-  dispatch({ type: LOGOUT});
+  dispatch({ type: CLEAR_PROFILE });
+  dispatch({ type: LOGOUT });
 };

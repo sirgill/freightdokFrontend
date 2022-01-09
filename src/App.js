@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
+import axios from "axios";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Navbar from './components/layout/Navbar';
 import Landing from "./components/layout/Landing";
@@ -20,10 +21,13 @@ import store from "./store";
 import { loadUser } from "./actions/auth";
 import setAuthToken from "./utils/setAuthToken";
 import Profile from "./components/users/Profile";
+import { SERVER_ADDRESS } from "./actions/load";
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
 }
+
+axios.defaults.baseURL = SERVER_ADDRESS;
 
 const App = () => {
   useEffect(() => {

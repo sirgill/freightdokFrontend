@@ -1,36 +1,37 @@
 import axios from "axios";
 import { setAlert } from "./alert";
-import { 
-GET_LOADS, 
-GET_LOAD, 
-LOAD_ERROR, 
-ADD_LOAD, 
-PATCH_PICKUP, 
-PICKUP_ERROR, 
-PATCH_DROP, 
-DROP_ERROR, 
-DELETE_LOAD, 
-DELETE_LOAD_ERROR, 
-UPDATE_LOAD, 
-UPDATE_LOAD_ERROR,
-LOAD_DOC_DELETE,
-LOAD_DOC_UPLOAD,
-RETURNED_SEARCHED_LOADS,
-RESET_SEARCHED_LOADS,
-INVOICE_CREATED,
-SELECT_LOAD,
-INVOICE_LOAD_FETCHED,
-MERGE_LOAD_DOCS,
-RESET_INVOICE_GENERATED
+import {
+  GET_LOADS,
+  GET_LOAD,
+  LOAD_ERROR,
+  ADD_LOAD,
+  PATCH_PICKUP,
+  PICKUP_ERROR,
+  PATCH_DROP,
+  DROP_ERROR,
+  DELETE_LOAD,
+  DELETE_LOAD_ERROR,
+  UPDATE_LOAD,
+  UPDATE_LOAD_ERROR,
+  LOAD_DOC_DELETE,
+  LOAD_DOC_UPLOAD,
+  RETURNED_SEARCHED_LOADS,
+  RESET_SEARCHED_LOADS,
+  INVOICE_CREATED,
+  SELECT_LOAD,
+  INVOICE_LOAD_FETCHED,
+  MERGE_LOAD_DOCS,
+  RESET_INVOICE_GENERATED
 } from "./types";
 
-import { proxy } from "../../package.json";
+// import { proxy } from "../../package.json";
 
+export const SERVER_ADDRESS = 'https://api.freightdok.io';
 // Get current users loads
 export const getLoads = (page = 0, limit = 15, module = '') => async (dispatch) => {
   try {
     axios.defaults.headers.common['x-auth-token'] = localStorage.token;
-    const url = `/api/load/me?page=${page+1}&limit=${limit}&module=${module}`;
+    const url = `/api/load/me?page=${page + 1}&limit=${limit}&module=${module}`;
     const res = await axios.get(url);
     dispatch({
       type: GET_LOADS,
@@ -43,7 +44,7 @@ export const getLoads = (page = 0, limit = 15, module = '') => async (dispatch) 
 
 export const getInvoiceLoads = (page = 0, limit = 5, search = '') => async dispatch => {
   try {
-    const url = `/api/load/invoice_loads?page=${page+1}&limit=${limit}&search=${search}`;
+    const url = `/api/load/invoice_loads?page=${page + 1}&limit=${limit}&search=${search}`;
     const response = await axios.get(url);
     const { loads, total, totalPages } = response.data;
     dispatch({
@@ -94,7 +95,7 @@ export const generateInvoice = (load_id, data) => async dispatch => {
 
 export const searchLoads = (page = 0, limit = 15, search = '', module = '') => async dispatch => {
   try {
-    const url = `/api/load/me?page=${page+1}&limit=15&search=${search}&module=${module}`;
+    const url = `/api/load/me?page=${page + 1}&limit=15&search=${search}&module=${module}`;
     const res = await axios.get(url);
     dispatch({
       type: RETURNED_SEARCHED_LOADS,
@@ -106,7 +107,7 @@ export const searchLoads = (page = 0, limit = 15, search = '', module = '') => a
 }
 
 export const resetLoadsSearch = (listBarType = '') => async (dispatch, getState) => {
-  dispatch({type: RESET_SEARCHED_LOADS});
+  dispatch({ type: RESET_SEARCHED_LOADS });
   const { load: { page, rowsPerPage } } = getState();
   dispatch(getLoads(+page, +rowsPerPage, listBarType));
 };
@@ -184,20 +185,20 @@ export const updateLoad = (formData, module = '') => async (dispatch, getState) 
 
 export const downloadDocuments = (file_name) => {
   axios({
-    url: proxy + "/api/load/download/" + file_name,
+    url: "/api/load/download/" + file_name,
     method: "GET",
     responseType: 'blob'
   })
-  .then(res => {
-    const parts = res.config.url.split('/');
-    const name = parts[parts.length - 1];
-    const url = window.URL.createObjectURL(new Blob([res.data]))
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', name);
-    document.body.appendChild(link);
-    link.click()
-  });
+    .then(res => {
+      const parts = res.config.url.split('/');
+      const name = parts[parts.length - 1];
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', name);
+      document.body.appendChild(link);
+      link.click()
+    });
 }
 
 //add pickup
@@ -232,7 +233,7 @@ export const patchDrop = (load_id, drop) => async (dispatch) => {
 export const deleteLoad = (load_id) => async (dispatch) => {
   try {
     const res = await axios.delete(`/api/load`, { data: { load_id: load_id } });
-    console.log("RES:                 ", res);
+    console.log("RES: ", res);
     dispatch({
       type: DELETE_LOAD,
       payload: load_id,
@@ -244,7 +245,7 @@ export const deleteLoad = (load_id) => async (dispatch) => {
 
 export const mergeDocuments = (data, headers) => async (dispatch) => {
   try {
-    const res = await axios.post(`${proxy}/api/load/invoice/merge_docs`, data, headers);
+    const res = await axios.post(`/api/load/invoice/merge_docs`, data, headers);
     console.log('Response :', res);
     dispatch({
       type: MERGE_LOAD_DOCS,
