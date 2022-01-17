@@ -22,6 +22,9 @@ import { loadUser } from "./actions/auth";
 import setAuthToken from "./utils/setAuthToken";
 import Profile from "./components/users/Profile";
 import { SERVER_ADDRESS } from "./actions/load";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import "./App.css"
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);

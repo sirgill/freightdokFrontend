@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 import 'typeface-roboto';
 import './Theme.css';
 
@@ -7,7 +7,7 @@ const font = "myriad-pro, sans-serif";
 export const blue = "#1891FC";
 const white = "#FFFFFF";
 
-export const theme = createMuiTheme({
+export const theme = createTheme({
   palette: {
     common: {
       blue: `${blue}`,
@@ -33,6 +33,9 @@ export const theme = createMuiTheme({
       fontWeight: 700,
       fontSize: '2.5rem',
       color: `${blue}`
+    },
+    button: {
+      textTransform: 'none'
     }
   }
 });
