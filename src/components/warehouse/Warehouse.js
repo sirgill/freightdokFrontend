@@ -15,8 +15,8 @@ import Form from './Form';
 import Preview from './Preview';
 import { Delete } from '@material-ui/icons';
 import { Box } from '@mui/material';
-import TablePagination from '../Atoms/table/Pagination';
 import { createTheme } from '@mui/material/styles';
+import EnhancedTable from "../../components/Atoms/table/Table"
 
 const useStyles = makeStyles({
     table: {
@@ -100,6 +100,39 @@ export const Warehouse = ({ resetSearchField }) => {
     const hasPermission = role === 'admin' || role === 'dispatch' || role === 'support',
         tableHeaderSx = { color: '#8898AA', height: 40 };
 
+    const config = {
+        hasDelete: true,
+        onRowClick: ({ _id }) => `${path}/warehouse/${_id}`,
+        hover: true,
+        onDelete: (id) => dispatch(deleteWarehouse(id)),
+        columns: [
+            {
+                id: 'name',
+                label: 'Warehouse'
+            },
+            {
+                id: 'address',
+                label: 'Address'
+            },
+            {
+                id: 'city',
+                label: 'City'
+            },
+            {
+                id: 'state',
+                label: 'State'
+            },
+            {
+                id: 'zip',
+                label: 'Zip Date'
+            },
+            {
+                id: 'averageLoadTime',
+                label: 'Average Load Time'
+            }
+        ]
+    }
+
     useEffect(() => {
         dispatch(getWarehouses())
         return () => {
@@ -112,23 +145,7 @@ export const Warehouse = ({ resetSearchField }) => {
             <div className={classes.table}>
                 {(loading || warehouses.length <= 0) ? <Spinner /> : (
                     <Box>
-                        <TableContainer component={Paper} className={classes.TableContainer}>
-                            <Table borderBottom="none" aria-label="caption table" hover>
-                                <TableHead className={classes.TableContainer} sx={{ backgroundColor: '#F6F9FC' }}>
-                                    <TableRow>
-                                        <TableCell padding={'none'} sx={tableHeaderSx}>WareHouse</TableCell>
-                                        <TableCell padding={'none'} sx={tableHeaderSx}>Address</TableCell>
-                                        <TableCell padding={'none'} sx={tableHeaderSx}>City</TableCell>
-                                        <TableCell padding={'none'} sx={tableHeaderSx}>State</TableCell>
-                                        <TableCell padding={'none'} sx={tableHeaderSx}>Zip Date</TableCell>
-                                        <TableCell padding={'none'} sx={tableHeaderSx}>Average Load Time</TableCell>
-                                        <TableCell padding={'none'} sx={tableHeaderSx}></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <List data={warehouses} history={history} path={path} dispatch={dispatch} />
-                            </Table>
-                        </TableContainer>
-                        <TablePagination data={warehouses} />
+                        <EnhancedTable config={config} data={warehouses.warehouses} />
                     </Box>
                 )}
                 {hasPermission && <Button variant='outlined' component={Link} to={path + '/warehouse/add'} className={classes.addNewIcon}>+ Add Warehouse</Button>}

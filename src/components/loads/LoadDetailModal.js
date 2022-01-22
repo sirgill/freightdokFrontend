@@ -224,7 +224,6 @@ const LoadDetailModal = ({
             onClick={handleClose}
             style={{
               color: "black",
-              marginTop: "13%",
               height: 50,
               cursor: "pointer",
               float: "right",

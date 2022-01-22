@@ -1,7 +1,7 @@
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
+import TextField from "@mui/material/TextField";
 import Background from "./dashboard/ProfileBackground.svg";
-import ListItem from "@material-ui/core/ListItem";
+import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { StyleSheet } from "@react-pdf/renderer";
@@ -107,7 +107,6 @@ export const useStyles = makeStyles((theme) => ({
     width: "fit-content",
   },
   formControl: {
-    margin: theme.spacing(1),
     minWidth: 120,
     marginTop: 0,
     margin: 0,
@@ -152,7 +151,6 @@ export const useStyles = makeStyles((theme) => ({
   //   fontSize: 25
   // },
   menuButton: {
-    marginRight: theme.spacing(2),
     [theme.breakpoints.up("sm")]: {
       display: "none",
     },
@@ -277,9 +275,11 @@ export const useStyles = makeStyles((theme) => ({
   },
 
   tab: {
-    ...theme.typography.tab,
     minWidth: 10,
     marginLeft: "15px",
+    fontSize: 20,
+    color: '#32325D',
+    width: '100%'
   },
 
   drawerIconContainer: {
@@ -364,9 +364,11 @@ export const TextFieldHelper = ({
   );
 };
 
-export const ListItemHelper = ({ onClick, icon, primary, to, component }) => {
+export const ListItemHelper = ({ onClick, icon, primary, to, component, listBarType='', customStyles={}, className }) => {
+  const selectStyle = listBarType.replace(/\s/g, "").toLowerCase() === primary.replace(/\s/g, "").toLowerCase() ? {background: '#F6F9FC'}: {},
+      commonStyles = {borderTopRightRadius: 8, borderBottomRightRadius: 8, cursor: 'pointer', background: '#fff', transition: 'all 0.3s ease'}
   return (
-    <ListItem button onClick={onClick} to={to} component={component}>
+    <ListItem onClick={onClick} to={to} component={component} className={className} sx={{...commonStyles, ...selectStyle, ...customStyles,'&:hover': {background: '#f8fbfd'}}}>
       <ListItemIcon>{icon}</ListItemIcon>
       <ListItemText primary={primary} />
     </ListItem>

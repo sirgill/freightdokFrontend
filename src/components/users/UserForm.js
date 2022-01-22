@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -115,13 +114,14 @@ const UserForm = () => {
   return (
     <>
       {(auth && ["user"].indexOf(auth.role) > -1) || (
-        <Fab
+        <Button
           color="primary"
+          variant={'contained'}
           onClick={handleClickOpen}
           style={{ marginBottom: "20%" }}
         >
-          <AddIcon />
-        </Fab>
+          Add User
+        </Button>
       )}
       <Dialog
         fullWidth={true}

@@ -1,6 +1,15 @@
 body {
   margin: 0;
   box-sizing: border-box;
+  background-color: #fff !important;
+}
+
+.accountDashboardLink {
+  color: #000;
+}
+.accountDashboardLink:hover{
+  color: #000;
+  text-decoration: none;
 }
 
 .App {

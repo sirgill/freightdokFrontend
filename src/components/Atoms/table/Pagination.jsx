@@ -1,7 +1,9 @@
 import Pagination from "@mui/material/Pagination"
-import { useState, useEffect } from "react"
+import Stack from "@mui/material/Stack"
+import Typography from "@mui/material/Typography"
+import React, {useEffect, useState} from "react"
 
-const TablePagination = ({ data = [] }) => {
+const TablePagination = ({data = [], onPageChange, page, count, limit = 1 }) => {
     const [length, setLength] = useState(0);
 
     useEffect(() => {
@@ -10,17 +12,27 @@ const TablePagination = ({ data = [] }) => {
         }
     }, [data]);
 
-    if (length <= 10) {
+    const onChange = (e, pgNum) => {
+        if (onPageChange) {
+            onPageChange(e, pgNum)
+        }
+    }
+
+    if (length < 5) {
         return null;
     }
     return (
-        <Pagination
-            count={10}
-            color="primary"
-            variant="outlined"
-            size="medium"
-            sx={{ display: 'flex', justifyContent: 'end' }}
-        />
+        <Stack direction='row' sx={{display: 'flex', justifyContent: 'space-between', p: 3}} alignItems={'center'}>
+            <Typography sx={{color: '#525F7F'}} fontSize={13}>Showing {limit} of {count} entries</Typography>
+            <Pagination
+                count={Math.ceil(count/limit)}
+                color="primary"
+                variant="contained"
+                page={page+1}
+                size="medium"
+                onChange={onChange}
+            />
+            </Stack>
     )
 }
 
