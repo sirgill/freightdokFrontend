@@ -55,7 +55,6 @@ const Driverlistbar = (props={}) => {
       }
     ]
   }
-  console.log(props)
 
   return (
     <div className={classes.table}>
