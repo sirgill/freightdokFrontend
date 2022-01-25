@@ -21,7 +21,7 @@ import Grid from "@material-ui/core/Grid";
 import {Loadcard} from "../loadcard/Loadcard.js";
 import AddLoadForm from "../load-forms/AddLoad.js";
 import Loadlistbar from "../loadbar/Loadlistbar.js";
-import {Driverlistbar} from "../driverbar/Driverlistbar.js";
+import Driverlistbar from "../driverbar/Driverlistbar.js";
 import AddDriverForm from "../driver-forms/AddDriver.js";
 import {Link} from "react-router-dom";
 import AccountCircle from "@material-ui/icons/AccountCircle";
@@ -43,6 +43,7 @@ import InvoicesWizard from "../invoices/InvoicesWizard";
 import {HouseOutlined} from "@material-ui/icons";
 import {useStyles, ListItemHelper} from "../HelperCells";
 import {capitalizeFirstLetter} from '../../utils/helper';
+import CustomTextField from "../Atoms/CustomTextField";
 
 const Dashboard = ({
   auth: { isAuthenticated, user = {} },
@@ -150,12 +151,22 @@ const Dashboard = ({
                 />
                 <ListItemHelper
                     onClick={() => {
-                        setListBarType("warehouse");
+                        setListBarType("load Status");
                     }}
-                    icon={<HouseOutlined/>}
-                    primary={"Warehouse"}
+                    icon={<HorizontalSplit/>}
+                    primary={"Load Status"}
                     listBarType={listBarType}
                 />
+                {user && user.role === "admin" && (
+                    <ListItemHelper
+                        onClick={() => {
+                            setListBarType("invoices");
+                        }}
+                        icon={<Receipt/>}
+                        primary={"Invoices"}
+                        listBarType={listBarType}
+                    />
+                )}
                 {user && (user.role === "admin" || user.role === "dispatch") && (
                     <ListItemHelper
                         onClick={() => {
@@ -166,14 +177,6 @@ const Dashboard = ({
                         listBarType={listBarType}
                     />
                 )}
-                <ListItemHelper
-                    onClick={() => {
-                        setListBarType("load Status");
-                    }}
-                    icon={<HorizontalSplit/>}
-                    primary={"Load Status"}
-                    listBarType={listBarType}
-                />
                 {user && (user.role === "admin" || user.role === "dispatch") && (
                     <ListItemHelper
                         onClick={() => {
@@ -181,16 +184,6 @@ const Dashboard = ({
                         }}
                         icon={<People/>}
                         primary={"Users"}
-                        listBarType={listBarType}
-                    />
-                )}
-                {user && user.role === "admin" && (
-                    <ListItemHelper
-                        onClick={() => {
-                            setListBarType("invoices");
-                        }}
-                        icon={<Receipt/>}
-                        primary={"Invoices"}
                         listBarType={listBarType}
                     />
                 )}
@@ -211,6 +204,14 @@ const Dashboard = ({
                     primary={"Account"}
                     listBarType={listBarType}
                     className='accountDashboardLink'
+                />
+                <ListItemHelper
+                    onClick={() => {
+                        setListBarType("warehouse");
+                    }}
+                    icon={<HouseOutlined/>}
+                    primary={"Warehouse"}
+                    listBarType={listBarType}
                 />
                 <ListItemHelper icon={<Block/>} onClick={logout} primary={"Logout"}/>
             </List>
@@ -242,23 +243,13 @@ const Dashboard = ({
                     {listBarType === "invoices" || (
                         <div className={classes.loadSearchbar}>
                             <form noValidate autoComplete="off" onSubmit={handleSubmit}>
-                                <TextField
-                                    style={{backgroundColor: "#fff", height: 50}}
-                                    id="outlined-basic"
+                                <CustomTextField
                                     label="Search"
-                                    variant="outlined"
-                                    size="small"
                                     value={search}
                                     onChange={({target: {value}}) => setSearch(value)}
+                                    placeholder={'Search'}
+                                    style={{width: 250}}
                                 />
-                                <Button
-                                    style={{marginLeft: 15}}
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleSearch}
-                                >
-                                    Search
-                                </Button>
                             </form>
                         </div>
                     )}
@@ -304,15 +295,9 @@ const Dashboard = ({
                             <Loadlistbar resetSearchField={resetSearchField}/>
                             <div className={classes.fab}>
                                 {(user && user.role === "driver") || (
-                                    <AddLoadForm></AddLoadForm>
+                                    <AddLoadForm/>
                                 )}
                             </div>
-                        </main>
-                    )}
-                    {listBarType === "warehouse" && (
-                        <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar}/>
-                            <Warehouse resetSearchField={resetSearchField}/>
                         </main>
                     )}
                     {listBarType === "load Status" && (
@@ -322,24 +307,6 @@ const Dashboard = ({
                                 resetSearchField={resetSearchField}
                                 listBarType={listBarType}
                             />
-                        </main>
-                    )}
-                    {listBarType === "drivers" && (
-                        <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar}/>
-                            <Driverlistbar/>
-                            <div className={classes.fab}>
-                                <AddDriverForm></AddDriverForm>
-                            </div>
-                        </main>
-                    )}
-                    {listBarType === "users" && (
-                        <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar}/>
-                            <UsersList/>
-                            <div className={classes.fab}>
-                                <UserForm/>
-                            </div>
                         </main>
                     )}
                     {listBarType === "invoices" && (
@@ -365,6 +332,30 @@ const Dashboard = ({
                                     }
                                     handleOnClose={() => setSelectedLoad(null)}
                                 />
+                            </div>
+                        </main>
+                    )}
+                    {listBarType === "warehouse" && (
+                        <main className={classes.contentLoadList}>
+                            <div className={classes.toolbar}/>
+                            <Warehouse resetSearchField={resetSearchField}/>
+                        </main>
+                    )}
+                    {listBarType === "drivers" && (
+                        <main className={classes.contentLoadList}>
+                            <div className={classes.toolbar}/>
+                            <Driverlistbar/>
+                            <div className={classes.fab}>
+                                <AddDriverForm></AddDriverForm>
+                            </div>
+                        </main>
+                    )}
+                    {listBarType === "users" && (
+                        <main className={classes.contentLoadList}>
+                            <div className={classes.toolbar}/>
+                            <UsersList/>
+                            <div className={classes.fab}>
+                                <UserForm/>
                             </div>
                         </main>
                     )}

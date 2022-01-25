@@ -1,3 +1,7 @@
+:root{
+  --PRIMARY_BLUE: #4691FF;
+}
+
 body {
   margin: 0;
   box-sizing: border-box;

@@ -18,7 +18,7 @@ const TablePagination = ({data = [], onPageChange, page, count, limit = 1 }) => 
         }
     }
 
-    if (length < 5) {
+    if (length < 10) {
         return null;
     }
     return (

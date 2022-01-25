@@ -1,0 +1,13 @@
+.customTextField {
+    background-color: var(--PRIMARY_BLUE);
+    padding: 8px 12px;
+    border-radius: 20px;
+    color: #fff;
+    outline: none;
+    border: none;
+}
+
+.customTextField::placeholder {
+    color: #FDFEFE;
+    opacity: 1; /* Firefox */
+}

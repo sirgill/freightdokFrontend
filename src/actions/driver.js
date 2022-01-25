@@ -76,6 +76,7 @@ export const deleteDriver = (driver_id) => async (dispatch, getState) => {
     if (index !== -1) {
       drivers.splice(index, 1);
     }
+    dispatch(setAlert('Deleted Successfully', 'success'));
     dispatch({
       type: DELETE_DRIVER,
       payload: drivers,
