@@ -4,7 +4,9 @@ import './Theme.css';
 
 const font = "myriad-pro, sans-serif";
 
-export const blue = "#4691FF";
+export const blue = "#4691FF",
+  successIconColor= '#2DCE89',
+  errorIconColor = '#F97A5D';
 const white = "#FFFFFF";
 
 export const theme = createTheme({

@@ -143,11 +143,9 @@ export const Warehouse = ({ resetSearchField }) => {
     return (
         <ThemeProvider theme={theme}>
             <div className={classes.table}>
-                {(loading || warehouses.length <= 0) ? <Spinner /> : (
                     <Box>
-                        <EnhancedTable config={config} data={warehouses.warehouses} />
+                        <EnhancedTable config={config} data={warehouses.warehouses} loading={loading} />
                     </Box>
-                )}
                 {hasPermission && <Button variant='outlined' component={Link} to={path + '/warehouse/add'} className={classes.addNewIcon}>+ Add Warehouse</Button>}
                 <Switch>
                     <Route component={Form} path={path + '/warehouse/add'} />

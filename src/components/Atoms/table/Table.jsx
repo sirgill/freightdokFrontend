@@ -136,7 +136,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
     }
 
     const getLoader = () => {
-        return <Grid container alignItem={'center'} justifyContent='center' sx={{height: tableState.height || 300}}>
+        return <Grid container alignItem={'center'} justifyContent='center' sx={{height: tableState.height || window.innerHeight - 180}}>
             <Grid item alignItems='center' sx={{position: 'relative'}}>
                 <Spinner/>
             </Grid>
@@ -153,6 +153,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
             </TableHead>
             <TableBody>
                 <TableData
+                    key={Date.now()}
                     columns={columns}
                     data={data}
                     config={config}
