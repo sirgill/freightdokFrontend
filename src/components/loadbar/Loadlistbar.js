@@ -26,7 +26,7 @@ const Loadlistbar = ({
   classes = useStyles();
   const { query, loads: sLoads, page: sPage, limit, total: sTotal } = search;
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = useState({open: true, data: {}});
+  const [open, setOpen] = useState({open: false, data: {}});
   const { total } = loads_pagination;
   const [rawLoades, setRawLoads] = useState([]);
   const { auth: {user={}} = {}, driver: {drivers = []} = {} } = useSelector((state) => state);
@@ -134,7 +134,7 @@ const Loadlistbar = ({
       <EnhancedTable config={tableConfig} data={rawLoades} loading={loading} />
       {open.open && <LoadDetailModal
           modalEdit={false}
-          open={true}
+          open={open.open}
           load={open.data}
           handleClose={() => {
             setOpen({open: false, data: {}});
