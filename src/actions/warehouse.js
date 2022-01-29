@@ -1,5 +1,5 @@
 import axios from "axios"
-import { setAlert } from "./alert";
+import {notification} from "./alert";
 import { FETCH_WAREHOUSEBYID, FETCH_WAREHOUSES, WAREHOUSE_LOCATION } from "./types";
 
 const getWarehouses = () => async (dispatch) => {
@@ -23,17 +23,18 @@ const addWarehouse = (data, callback) => async () => {
     try {
         const response = await axios.post('/api/warehouse', data)
         if (response.status === 200) {
+            notification(data.message || data._id ? 'Warehouse Updated' : 'Warehouse Added')
             if (callback) callback(response);
         }
     } catch (error) {
-
+        console.log(error)
     }
 }
 
 const getWarehouseById = (id, cb) => async (dispatch) => {
     try {
         const response = await axios.get('/api/warehouse/' + id);
-        if (response.status == 200) {
+        if (response.status === 200) {
             dispatch({ type: FETCH_WAREHOUSEBYID, payload: { warehouseById: response.data } });
             if (cb) cb(response.data.data)
         }
@@ -46,15 +47,15 @@ const deleteWarehouse = (id) => async (dispatch) => {
     try {
         const { status, data } = await axios.delete('/api/warehouse/' + id);
         if (status === 200) {
-            dispatch(setAlert(data.message || 'Deleted', 'success'));
+            notification(data.message || 'Deleted');
             dispatch(getWarehouses());
         }
         else {
-            dispatch(setAlert(data.message, 'error'))
-        };
+            notification(data.message, 'error');
+        }
     } catch (error) {
         console.log(error.message)
-        dispatch(setAlert(error.message, 'error'))
+        notification(error.message, 'error');
     }
 }
 
@@ -66,11 +67,11 @@ export const getGeoLocation = (obj) => async (dispatch) => {
             dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: false, location: { ...data } } });
         }
         else if (!data.success) {
-            dispatch(setAlert(data.message, 'error'));
+            notification(data.message, 'error');
             dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: false, location: {} } });
         }
     } catch (error) {
-        dispatch(setAlert(data.message, 'error'));
+        notification(data.message, 'error');
         dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: false, location: {} } });
     }
 }

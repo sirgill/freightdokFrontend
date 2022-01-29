@@ -110,7 +110,4 @@ export const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     minWidth: 120,
   },
-  resizeDialog: {
-    fontSize: 14,
-  },
 }));

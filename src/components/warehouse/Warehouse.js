@@ -103,7 +103,6 @@ export const Warehouse = ({ resetSearchField }) => {
     const config = {
         hasDelete: true,
         onRowClick: ({ _id }) => `${path}/warehouse/${_id}`,
-        hover: true,
         onDelete: (id) => dispatch(deleteWarehouse(id)),
         columns: [
             {
@@ -146,7 +145,7 @@ export const Warehouse = ({ resetSearchField }) => {
                     <Box>
                         <EnhancedTable config={config} data={warehouses.warehouses} loading={loading} />
                     </Box>
-                {hasPermission && <Button variant='outlined' component={Link} to={path + '/warehouse/add'} className={classes.addNewIcon}>+ Add Warehouse</Button>}
+                {hasPermission && <Button variant='outlined' component={Link} to={path + '/warehouse/add'} sx={{position: 'absolute', right: 0}}>Add Warehouse</Button>}
                 <Switch>
                     <Route component={Form} path={path + '/warehouse/add'} />
                     <Route component={Form} path={path + '/warehouse/edit/:id'} />

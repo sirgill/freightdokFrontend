@@ -6,6 +6,7 @@ import load from './load';
 import driver from './driver';
 import users from './users';
 import warehouse from '../reducers/warehouse.reducer';
+import {app} from "./app.reducer";
 
 const appReducer = combineReducers({
   alert,
@@ -14,7 +15,8 @@ const appReducer = combineReducers({
   load,
   driver,
   users,
-  warehouse
+  warehouse,
+  app
 })
 
 const rootReducer = (state, action) => {

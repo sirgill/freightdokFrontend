@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { Provider } from "react-redux";
 import Navbar from './components/layout/Navbar';
 import Landing from "./components/layout/Landing";
 import Footer from "./components/layout/Footer";
@@ -16,13 +17,13 @@ import EditProfile from "./components/profile-forms/EditProfile";
 
 import Loads from './components/loads/Loads';
 
-import { Provider } from "react-redux";
 import store from "./store";
 import { loadUser } from "./actions/auth";
 import setAuthToken from "./utils/setAuthToken";
 import Profile from "./components/users/Profile";
 import { SERVER_ADDRESS } from "./actions/load";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Notification from "./components/layout/Notification";
 
 import "./App.css"
 
@@ -39,6 +40,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
+        <Notification />
         <BrowserRouter>
           <Route exact path="/" component={Navbar} />
           <Route exact path="/" component={Landing} />
