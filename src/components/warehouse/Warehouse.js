@@ -102,6 +102,7 @@ export const Warehouse = ({ resetSearchField }) => {
 
     const config = {
         hasDelete: true,
+        count: totalCount,
         onRowClick: ({ _id }) => `${path}/warehouse/${_id}`,
         onDelete: (id) => dispatch(deleteWarehouse(id)),
         columns: [

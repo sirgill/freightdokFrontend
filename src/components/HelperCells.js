@@ -279,7 +279,8 @@ export const useStyles = makeStyles((theme) => ({
     marginLeft: "15px",
     fontSize: 20,
     color: '#32325D',
-    width: '100%'
+    width: '100%',
+    fontWeight: 700
   },
 
   drawerIconContainer: {

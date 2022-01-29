@@ -1,5 +1,6 @@
-import { Dialog, DialogContent, DialogTitle, Grid, IconButton, makeStyles, Typography } from '@material-ui/core'
+import { Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material'
 import { Edit } from '@material-ui/icons';
+import {makeStyles} from '@material-ui/core';
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -9,7 +10,8 @@ const useStyles = makeStyles((theme) => ({
     formTitle: {
         textAlign: 'center',
         fontSize: '2.5rem',
-        fontWeight: 550
+        fontWeight: 700,
+        fontFamily: 'Myriad-Pro Regular'
     },
     editIcon: {
         color: '#1891FC',
@@ -42,7 +44,7 @@ const InfoComponent = ({ data = {}, hasPermission }) => {
             <Grid item xs={12}>
                 <Grid container className={classes.infoComponent} display='flex'>
                     <Grid item xs={5} className={classes.infoContainer}>
-                        <div style={{ fontSize: '20px', fontWeight: 550, textAlign: 'center' }}>INFO</div>
+                        <div style={{ fontSize: '20px', fontWeight: 600, textAlign: 'center' }}>INFO</div>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <div className={classes.infoValues}>
                                 <span>Address: </span><span>{address}</span>
@@ -58,11 +60,11 @@ const InfoComponent = ({ data = {}, hasPermission }) => {
                         </div>
                     </Grid>
                     <Grid xs={2} item className={classes.loadTimeContainer}>
-                        <div style={{ fontSize: '20px', fontWeight: 550, textAlign: 'center', marginTop: '50%' }}>Average Load Time</div>
+                        <div style={{ fontSize: '20px', fontWeight: 600, textAlign: 'center', marginTop: '50%' }}>Average Load Time</div>
                         <Typography style={{ textAlign: 'center' }} variant='h5'>{averageLoadTime}</Typography>
                     </Grid>
                     <Grid item xs={5} className={classes.infoContainer}>
-                        <div style={{ fontSize: '20px', fontWeight: 550, textAlign: 'center' }}>Recent Loading Times</div>
+                        <div style={{ fontSize: '20px', fontWeight: 600, textAlign: 'center' }}>Recent Loading Times</div>
                     </Grid>
                 </Grid>
             </Grid>
@@ -97,7 +99,7 @@ function Preview(props) {
             <Dialog maxWidth='xl' onClose={closeModal} aria-labelledby="customized-dialog-title" open>
                 <DialogContent dividers>
                     <DialogTitle className={classes.formTitle} id="customized-dialog-title" onClose={() => null}>
-                        {data.name || 'Warehouse'}
+                        <Typography sx={{fontWeight: 600}}>{data.name || 'Warehouse'}</Typography>
                     </DialogTitle>
                     <InfoComponent data={data} hasPermission={hasPermission} />
                 </DialogContent>

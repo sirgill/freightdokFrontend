@@ -12,7 +12,9 @@ const useStyles = makeStyles((theme) => ({
         marginRight: theme.spacing(1),
     },
     formTitle: {
-        textAlign: 'center'
+        textAlign: 'center',
+        padding: theme.spacing(3),
+        color: '#4691FF'
     },
     errorText: {
         color: 'red'
@@ -266,10 +268,10 @@ const Form = (props = {}) => {
         { match: { params: { id = null } = {} } = {}, history } = props;
     return (
         <Dialog maxWidth='sm' onClose={() => history.push('/dashboard')} aria-labelledby="customized-dialog-title" open>
+            <DialogTitle className={classes.formTitle} id="dialog-title" onClose={() => null}>
+                Warehouse
+            </DialogTitle>
             <DialogContent dividers>
-                <DialogTitle className={classes.formTitle} id="customized-dialog-title" onClose={() => null}>
-                    Warehouse
-                </DialogTitle>
                 <FormBody id={id} />
             </DialogContent>
         </Dialog>

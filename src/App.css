@@ -2,6 +2,28 @@
   --PRIMARY_BLUE: #4691FF;
 }
 
+@font-face {
+  font-family: "Myriad-Pro Light";
+  font-weight: normal;
+  src: url("assets/MyriadPro-Light.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Myriad-Pro Regular";
+  font-weight: inherit;
+  src: url("assets/MYRIADPRO-REGULAR.OTF") format("opentype");
+}
+
+@font-face {
+  font-family: "Myriad-Pro Bold";
+  font-weight: inherit;
+  src: url("assets/MYRIADPRO-BOLDCOND.OTF") format("opentype");
+}
+
+* {
+  font-family: "Myriad-Pro Light", "Myriad-Pro Regular";
+}
+
 body {
   margin: 0;
   box-sizing: border-box;
