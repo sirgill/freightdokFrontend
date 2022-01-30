@@ -35,7 +35,6 @@ import Alert from "../layout/Alert";
 import LoadsStatus from "../loads/LoadsStatus";
 import {Warehouse} from "../warehouse/Warehouse";
 import {getLoads} from "../../actions/load";
-import TextField from "@material-ui/core/TextField";
 import {useDispatch, useSelector} from "react-redux";
 import {searchLoads, resetLoadsSearch} from "../../actions/load.js";
 import InvoicesList from "../invoices/InvoicesList";
@@ -44,6 +43,7 @@ import {HouseOutlined} from "@material-ui/icons";
 import {useStyles, ListItemHelper} from "../HelperCells";
 import {capitalizeFirstLetter} from '../../utils/helper';
 import CustomTextField from "../Atoms/CustomTextField";
+import '../../assets/vendor/nucleo/css/nucleo.css';
 
 const Dashboard = ({
   auth: { isAuthenticated, user = {} },
@@ -145,7 +145,7 @@ const Dashboard = ({
                     onClick={() => {
                         setListBarType("loads");
                     }}
-                    icon={<CalendarToday/>}
+                    icon={<i className={'ni ni-delivery-fast loadsIcon font-25'}/>}
                     primary={"Loads"}
                     listBarType={listBarType}
                 />
@@ -153,7 +153,7 @@ const Dashboard = ({
                     onClick={() => {
                         setListBarType("load Status");
                     }}
-                    icon={<HorizontalSplit/>}
+                    icon={<i className='ni ni-ungroup font-25' style={{color: '#FB6340'}}/>}
                     primary={"Load Status"}
                     listBarType={listBarType}
                 />
@@ -162,7 +162,7 @@ const Dashboard = ({
                         onClick={() => {
                             setListBarType("invoices");
                         }}
-                        icon={<Receipt/>}
+                        icon={<i className='ni ni-single-copy-04 font-25' style={{color: '#F3A4B5'}}/>}
                         primary={"Invoices"}
                         listBarType={listBarType}
                     />
@@ -172,7 +172,7 @@ const Dashboard = ({
                         onClick={() => {
                             setListBarType("drivers");
                         }}
-                        icon={<People/>}
+                        icon={<i className='ni ni-badge font-25' style={{color: '#2DCE89'}}/>}
                         primary={"Drivers"}
                         listBarType={listBarType}
                     />
@@ -182,7 +182,7 @@ const Dashboard = ({
                         onClick={() => {
                             setListBarType("users");
                         }}
-                        icon={<People/>}
+                        icon={<i className='ni ni-circle-08 font-25' style={{color: '#16294A'}}/>}
                         primary={"Users"}
                         listBarType={listBarType}
                     />
@@ -192,7 +192,7 @@ const Dashboard = ({
                         onClick={() => {
                             setListBarType("history");
                         }}
-                        icon={<History/>}
+                        icon={<i className='ni ni-bag-17 font-25' style={{color: '#5E72E4'}}/>}
                         primary={"History"}
                         listBarType={listBarType}
                     />
@@ -200,17 +200,17 @@ const Dashboard = ({
                 <ListItemHelper
                     component={Link}
                     to={"/edit-profile"}
-                    icon={<AccountCircle/>}
+                    icon={<i className='ni ni-settings-gear-65 font-25' style={{color: '#172B4D'}}/>}
                     primary={"Account"}
                     listBarType={listBarType}
                     className='accountDashboardLink'
                 />
                 <ListItemHelper
                     onClick={() => {
-                        setListBarType("warehouse");
+                        setListBarType("facilities");
                     }}
-                    icon={<HouseOutlined/>}
-                    primary={"Warehouse"}
+                    icon={<i className='ni ni-building facilityIcon'/>}
+                    primary={"Facilities"}
                     listBarType={listBarType}
                 />
                 <ListItemHelper icon={<Block/>} onClick={logout} primary={"Logout"}/>
@@ -335,7 +335,7 @@ const Dashboard = ({
                             </div>
                         </main>
                     )}
-                    {listBarType === "warehouse" && (
+                    {listBarType === "facilities" && (
                         <main className={classes.contentLoadList}>
                             <div className={classes.toolbar}/>
                             <Warehouse resetSearchField={resetSearchField}/>

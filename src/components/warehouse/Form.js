@@ -80,7 +80,7 @@ const PageTwoForm = ({setData2, setPage, data, classes, getLocation}) => {
                 valueKey={'value'}
             />
             <Grid item xs={12} style={{display: 'flex', justifyContent: 'space-between'}}>
-                <Typography variant='h6'>Warehouse Location</Typography>
+                <Typography variant='h6'>Facility Location</Typography>
                 <Button onClick={getLocation} className='font-14' color="success">Get Location</Button>
             </Grid>
             <InputField

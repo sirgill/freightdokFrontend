@@ -108,7 +108,7 @@ export const Warehouse = ({ resetSearchField }) => {
         columns: [
             {
                 id: 'name',
-                label: 'Warehouse'
+                label: 'Facility'
             },
             {
                 id: 'address',

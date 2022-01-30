@@ -75,3 +75,15 @@ body {
 .font-14 {
   font-size: 14px;
 }
+
+.font-25 {
+  font-size: 25px;
+}
+
+.facilityIcon {
+  color: #E5C000;
+}
+
+.loadsIcon {
+  color: #4691FF
+}
