@@ -5,18 +5,12 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
-import CalendarToday from "@material-ui/icons/CalendarToday";
-import People from "@material-ui/icons/People";
-import HorizontalSplit from "@material-ui/icons/HorizontalSplit";
-import Receipt from "@material-ui/icons/Receipt";
 import History from "@material-ui/icons/History";
-import Block from "@material-ui/icons/Block";
 import List from "@mui/material/List";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import {makeStyles, useTheme} from "@material-ui/core/styles";
+import {useTheme} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import {Loadcard} from "../loadcard/Loadcard.js";
 import AddLoadForm from "../load-forms/AddLoad.js";
@@ -24,7 +18,6 @@ import Loadlistbar from "../loadbar/Loadlistbar.js";
 import Driverlistbar from "../driverbar/Driverlistbar.js";
 import AddDriverForm from "../driver-forms/AddDriver.js";
 import {Link} from "react-router-dom";
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import Avatar from "@material-ui/core/Avatar";
 import {connect} from "react-redux";
 import {logout} from "../../actions/auth";
@@ -39,10 +32,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {searchLoads, resetLoadsSearch} from "../../actions/load.js";
 import InvoicesList from "../invoices/InvoicesList";
 import InvoicesWizard from "../invoices/InvoicesWizard";
-import {HouseOutlined} from "@material-ui/icons";
 import {useStyles, ListItemHelper} from "../HelperCells";
 import {capitalizeFirstLetter} from '../../utils/helper';
 import CustomTextField from "../Atoms/CustomTextField";
+import {blue} from "../layout/ui/Theme";
 import '../../assets/vendor/nucleo/css/nucleo.css';
 
 const Dashboard = ({
@@ -213,7 +206,7 @@ const Dashboard = ({
                     primary={"Facilities"}
                     listBarType={listBarType}
                 />
-                <ListItemHelper icon={<Block/>} onClick={logout} primary={"Logout"}/>
+                <ListItemHelper icon={<i className='ni ni-curved-next font-25' style={{color: blue}}/>} onClick={logout} primary={"Logout"}/>
             </List>
         </div>
     );
