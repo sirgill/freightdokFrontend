@@ -21,7 +21,7 @@
 }
 
 * {
-  font-family: "Myriad-Pro Light", "Myriad-Pro Regular";
+  font-family: "Myriad-Pro Light", "Myriad-Pro Regular", sans-serif;
 }
 
 body {
@@ -68,15 +68,10 @@ body {
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .makeStyles-formControl-82 {
   margin: 0 !important;
+}
+
+.font-14 {
+  font-size: 14px;
 }

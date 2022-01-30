@@ -42,7 +42,7 @@ const Notification = () => {
         {open, type = 'success', message = '', id, delay = 3000} = notification;
 
     const handleClose = (e, reason) => {
-        if (reason === 'clickAway') {
+        if (reason === 'clickaway') {
             return
         }
         dispatch({type: NOTIFICATION, payload: {...notification, open: false}})

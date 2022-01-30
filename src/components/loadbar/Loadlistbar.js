@@ -55,7 +55,6 @@ const Loadlistbar = ({
   }, [loads]);
 
   const handleChangePage = (event, newPage) => {
-    console.log(newPage, query);
     if (query) searchLoads(newPage, limit, query);
     else getLoads(newPage, rowsPerPage);
   };

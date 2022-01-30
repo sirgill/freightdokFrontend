@@ -20,7 +20,6 @@ const Login = ({ login, isAuthenticated }) => {
   const useStyles = makeStyles((theme) => ({
     root: {
       textAlign: "center",
-      width: '100%',
       width: '445px',
       margin: 'auto',
       background: '#F7FAFC 0% 0% no-repeat padding-box',

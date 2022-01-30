@@ -23,6 +23,7 @@ export const theme = createTheme({
     }
   },
   typography: {
+    fontFamily: ['Myriad-Pro Light', 'Myriad-Pro Regular',  "Myriad-Pro Bold"].join(','),
     tab: {
       fontweight: 700,
       color: "#1891FC",
