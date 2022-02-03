@@ -11,12 +11,13 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import { TextFieldHelper, useStyles } from "../HelperCells.js";
+import InputField from "../Atoms/form/InputField";
+import {Button} from "reactstrap";
 
 const AddDriverForm = ({
   user,
@@ -98,21 +99,20 @@ const AddDriverForm = ({
                   <DialogTitle id="form-dialog-title">Add Driver</DialogTitle>
 
                   <div>
-                    <TextFieldHelper
-                      nameNType={"firstName"}
+                    <InputField
+                      name={"firstName"}
                       label={"First Name"}
                       onChange={(e) => updateForm(e)}
                       value={form.firstName}
-                      style={{ marginRight: "10px" }}
                     />
-                    <TextFieldHelper
-                      nameNType={"lastName"}
+                    <InputField
+                      name={"lastName"}
                       label={"Last Name"}
                       onChange={(e) => updateForm(e)}
                       value={form.lastName}
                     />
-                    <TextFieldHelper
-                      nameNType={"phoneNumber"}
+                    <InputField
+                      name={"phoneNumber"}
                       label={"Phone Number"}
                       onChange={(e) => updateForm(e)}
                       value={form.phoneNumber}
@@ -141,19 +141,19 @@ const AddDriverForm = ({
                   </div>
 
                   <Grid container spacing={1} style={{ marginTop: "20px" }}>
-                    <Grid item xs={4}></Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}></Grid>
+                    <Grid item xs={6}>
                       <Button
                         className=""
                         type="submit"
-                        variant="outlined"
                         color="primary"
                         onClick={onSubmit}
+                        style={{width: '100%'}}
                       >
                         Submit
                       </Button>
                     </Grid>
-                    <Grid item xs={4}></Grid>
+                    <Grid item xs={3}></Grid>
                   </Grid>
                 </div>
               ) : null}

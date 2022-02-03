@@ -58,7 +58,7 @@ const Driverlistbar = (props={}) => {
 
   return (
     <div className={classes.table}>
-      <EnhancedTable  config={tableConfig} data={drivers} />
+      <EnhancedTable  config={tableConfig} data={drivers} loading={loading} />
       {/*<TableContainer component={Paper} className={classes.TableContainer}>*/}
       {/*  <Table borderBottom="none" aria-label="caption table">*/}
       {/*    <TableHead className={classes.TableContainer}>*/}

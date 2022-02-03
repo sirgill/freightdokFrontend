@@ -339,7 +339,7 @@ const Dashboard = ({
                             <div className={classes.toolbar}/>
                             <Driverlistbar/>
                             <div className={classes.fab}>
-                                <AddDriverForm></AddDriverForm>
+                                <AddDriverForm/>
                             </div>
                         </main>
                     )}

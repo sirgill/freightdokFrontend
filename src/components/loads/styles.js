@@ -104,7 +104,6 @@ export const useStyles = makeStyles((theme) => ({
   rootLoadDetailModal: {
     flexGrow: 1,
     flexDirection: "row",
-    textAlign: "center",
   },
   formControl: {
     margin: theme.spacing(1),

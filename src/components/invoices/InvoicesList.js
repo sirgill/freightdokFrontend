@@ -12,6 +12,7 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import LoadDetailModal from "../loads/LoadDetailModal";
 import InvoiceEditItem from "./InvoiceEditItem";
+import {errorIconColor, successIconColor} from "../layout/ui/Theme";
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -83,8 +84,8 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
                 label: 'Rate Con',
                 renderer: ({row}) => {
                     return Array.isArray(row.rateConfirmation) && row.rateConfirmation.length > 0 && typeof row.rateConfirmation[0] !== 'string' ?
-                        <CheckCircleIcon style={{color: 'green'}}/>
-                        : <CancelIcon style={{color: 'red'}}/>
+                        <CheckCircleIcon style={{color: successIconColor}}/>
+                        : <CancelIcon style={{color: errorIconColor}}/>
                 }
             },
             {
@@ -92,8 +93,8 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
                 label: 'POD',
                 renderer: ({row: {proofDelivery = []}}) => {
                     return Array.isArray(proofDelivery) && proofDelivery.length > 0 && typeof proofDelivery[0] !== 'string' ?
-                        <CheckCircleIcon style={{color: 'green'}}/>
-                        : <CancelIcon style={{color: 'red'}}/>
+                        <CheckCircleIcon style={{color: successIconColor}}/>
+                        : <CancelIcon style={{color: errorIconColor}}/>
                 }
             },
             {
