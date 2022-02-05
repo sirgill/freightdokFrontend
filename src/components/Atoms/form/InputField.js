@@ -2,7 +2,7 @@ import React from "react";
 import {FormGroup, Input} from "reactstrap";
 
 const InputPure = (props) => {
-    const {label = '', type = 'text', options = [], labelKey = 'label', valueKey = 'id', onChangeSelect} = props;
+    const {label = '', type = 'text', options = [], labelKey = 'label', valueKey = 'id', onChangeSelect, showFirstBlank = false} = props;
 
     if (type.toLowerCase() === 'select') {
         if (!Array.isArray(options) || !options.length) {
@@ -13,7 +13,12 @@ const InputPure = (props) => {
             onChange={onChangeSelect}
             id={label}
             type={type}
-        >{options.map(opt => <option value={opt[valueKey]}>{opt[labelKey]}</option>)}</Input>
+        >{options.map((opt, i) => {
+            if (i === 0 && showFirstBlank) {
+                return <option value=''>{'Select an option'}</option>
+            }
+            return <option value={opt[valueKey]}>{opt[labelKey]}</option>
+        })}</Input>
     }
     return <Input
         id={label}

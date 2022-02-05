@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setAlert } from "./alert";
+import {notification, setAlert} from "./alert";
 import { GET_DRIVERS, GET_DRIVER, ADD_DRIVER, PATCH_DRIVER, DELETE_DRIVER, DRIVER_ERROR, DELETE_DRIVER_LOAD } from "./types.js";
 
 //get current users drivers
@@ -34,8 +34,7 @@ export const addDriver = (formData) => async (dispatch) => {
       type: ADD_DRIVER,
       payload: res.data,
     });
-
-    dispatch(setAlert("Driver Created", "success"));
+    notification("Driver Created");
   } catch (err) {
     let error = err.errors && Array.isArray(err.errors) && err.errors.length ? err.errors[0].msg : err.message;
     dispatch(setAlert( error, "error"));

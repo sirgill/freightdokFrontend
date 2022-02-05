@@ -363,14 +363,14 @@ const Dashboard = ({
                     )}
                 </Grid>
 
-                <Grid item>
-                    {listBarType === "loads" && (
-                        <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar}/>
-                            <Loadcard className={classes.loadcard}/>
-                        </main>
-                    )}
-                </Grid>
+                {/*<Grid item>*/}
+                {/*    {listBarType === "loads" && (*/}
+                {/*        <main className={classes.contentLoadList}>*/}
+                {/*            <div className={classes.toolbar}/>*/}
+                {/*            <Loadcard className={classes.loadcard}/>*/}
+                {/*        </main>*/}
+                {/*    )}*/}
+                {/*</Grid>*/}
             </Grid>
         </div>
     );
