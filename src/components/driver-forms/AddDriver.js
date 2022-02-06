@@ -7,10 +7,10 @@ import { getLoads } from "../../actions/load";
 //Material
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Grid from "@material-ui/core/Grid";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Grid from "@mui/material/Grid";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -18,6 +18,8 @@ import FormControl from "@material-ui/core/FormControl";
 import { TextFieldHelper, useStyles } from "../HelperCells.js";
 import InputField from "../Atoms/form/InputField";
 import {Button} from "reactstrap";
+import {blue} from "../layout/ui/Theme";
+import SubmitButton from "../Atoms/form/SubmitButton";
 
 const AddDriverForm = ({
   user,
@@ -91,59 +93,48 @@ const AddDriverForm = ({
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
+        <DialogTitle id="form-dialog-title" sx={{color: blue, textAlign: 'center', fontWeight: 400, letterSpacing: 1}}>Add Driver</DialogTitle>
         <DialogContent>
           <div className="">
             <form className={classes.form}>
               {count === 1 ? (
                 <div>
-                  <DialogTitle id="form-dialog-title">Add Driver</DialogTitle>
 
                   <div>
                     <InputField
                       name={"firstName"}
                       label={"First Name"}
-                      onChange={(e) => updateForm(e)}
+                      onChange={updateForm}
                       value={form.firstName}
                     />
                     <InputField
                       name={"lastName"}
                       label={"Last Name"}
-                      onChange={(e) => updateForm(e)}
+                      onChange={updateForm}
                       value={form.lastName}
                     />
                     <InputField
                       name={"phoneNumber"}
                       label={"Phone Number"}
-                      onChange={(e) => updateForm(e)}
+                      onChange={updateForm}
                       value={form.phoneNumber}
                     />
-
-                    <div className="form-group">
-                      <FormControl className={classes.formControl}>
-                        <InputLabel id="demo-simple-select-label">
-                          Select Driver
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          value={form.user}
-                          name="user"
-                          onChange={(e) => updateForm(e)}
-                          className={classes.select}
-                        >
-                          {all_drivers.map((driver) => (
-                            <MenuItem key={driver._id} value={driver._id}>
-                              {driver.email}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
+                    <InputField
+                        value={form.user}
+                        name="user"
+                        onChange={updateForm}
+                        className={classes.select}
+                        label='Select Driver'
+                        type={'select'}
+                        showFirstBlank={true}
+                        options={all_drivers.map(driver => ({id: driver._id, label: driver.email}))}
+                    />
                   </div>
 
                   <Grid container spacing={1} style={{ marginTop: "20px" }}>
                     <Grid item xs={3}></Grid>
                     <Grid item xs={6}>
-                      <Button
+                      <SubmitButton
                         className=""
                         type="submit"
                         color="primary"
@@ -151,7 +142,7 @@ const AddDriverForm = ({
                         style={{width: '100%'}}
                       >
                         Submit
-                      </Button>
+                      </SubmitButton>
                     </Grid>
                     <Grid item xs={3}></Grid>
                   </Grid>

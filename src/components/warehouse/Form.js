@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router";
 import InputField from "../Atoms/form/InputField";
 import {Button, Form as ReactForm} from "reactstrap";
+import SubmitButton from "../Atoms/form/SubmitButton";
 
 const useStyles = makeStyles((theme) => ({
     backButton: {
@@ -101,7 +102,7 @@ const PageTwoForm = ({setData2, setPage, data, classes, getLocation}) => {
                   xs={12}>
                 <ArrowBack onClick={() => setPage(1)}
                            style={{color: '#1891FC', height: 25, width: 25, cursor: 'pointer'}}/>
-                <Button type='submit' color='primary' className={classes.submitButton}>Submit</Button>
+                <SubmitButton type='submit' color='primary' className={classes.submitButton}>Submit</SubmitButton>
             </Grid>
         </div>
     )
