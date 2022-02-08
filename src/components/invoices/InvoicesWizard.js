@@ -18,6 +18,9 @@ import {
 import { Page, Text, View, Document, pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import { useStyles, styles } from "../HelperCells";
+import InputField from "../Atoms/form/InputField";
+import {Typography} from "@mui/material";
+import {blue} from "../layout/ui/Theme";
 
 const generatePDFDocument = async ({ from, to, load_number, broker, rate }) => {
   return new Promise(async (resolve) => {
@@ -224,7 +227,7 @@ export default function InvoiceWizard({
             <div className={classes.modalBody}>
               {step !== 3 ? (
                 <Grid item xs={12}>
-                  <h3>{step === 1 ? "From" : "To"}</h3>
+                  <Typography variant='h5' color={blue} sx={{mb:3}}>{step === 1 ? "From" : "To"}</Typography>
                 </Grid>
               ) : (
                 ""
@@ -234,9 +237,8 @@ export default function InvoiceWizard({
                   <Grid container spacing={2}>
                     <Grid item xs={3}></Grid>
                     <Grid item xs={6}>
-                      <TextField
+                      <InputField
                         id="outlined-basic"
-                        variant="outlined"
                         label="Name"
                         name="name"
                         value={form[step === 1 ? "from" : "to"].name}
@@ -257,9 +259,8 @@ export default function InvoiceWizard({
                     <Grid container spacing={2}>
                       <Grid item xs={3}></Grid>
                       <Grid item xs={6}>
-                        <TextField
+                        <InputField
                           id="outlined-basic"
-                          variant="outlined"
                           label="Company Name"
                           name="company_name"
                           value={form[step === 1 ? "from" : "to"].company_name}
@@ -275,9 +276,8 @@ export default function InvoiceWizard({
                     <Grid container spacing={2}>
                       <Grid item xs={3}></Grid>
                       <Grid item xs={6}>
-                        <TextField
+                        <InputField
                           id="outlined-basic"
-                          variant="outlined"
                           label="Email"
                           name="email"
                           value={form[step === 1 ? "from" : "to"].email}

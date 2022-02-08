@@ -27,7 +27,7 @@ const InputPure = (props) => {
     />
 }
 const InputField = (props = {}) => {
-    const {label = '', type = 'text', multiple = false, onChange, labelStyle = {}, direction = 'column'} = props;
+    const {label = '', type = 'text', multiple = false, onChange, labelStyle = {}, direction = 'column', formGrpStyle={}} = props;
 
     const onChangeSelect = (e) => {
         if (type.toLowerCase() === 'select' && multiple) {
@@ -42,7 +42,7 @@ const InputField = (props = {}) => {
         } else if (onChange) onChange(e)
     }
     return (
-        <FormGroup style={direction === 'row' ? {display: 'flex', alignItems: 'center'} : {}}>
+        <FormGroup style={direction === 'row' ? {display: 'flex', alignItems: 'center', ...formGrpStyle} : {...formGrpStyle}}>
             {label && <label
                 className="form-control-label"
                 htmlFor={label}

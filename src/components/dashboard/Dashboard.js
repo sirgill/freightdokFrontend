@@ -17,7 +17,7 @@ import AddLoadForm from "../load-forms/AddLoad.js";
 import Loadlistbar from "../loadbar/Loadlistbar.js";
 import Driverlistbar from "../driverbar/Driverlistbar.js";
 import AddDriverForm from "../driver-forms/AddDriver.js";
-import {Link} from "react-router-dom";
+import {Link, Route, Switch, useRouteMatch} from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
 import {connect} from "react-redux";
 import {logout} from "../../actions/auth";
@@ -37,6 +37,7 @@ import {capitalizeFirstLetter} from '../../utils/helper';
 import CustomTextField from "../Atoms/CustomTextField";
 import {blue} from "../layout/ui/Theme";
 import '../../assets/vendor/nucleo/css/nucleo.css';
+import Settings from "../../views/settings/Settings.js";
 
 const Dashboard = ({
   auth: { isAuthenticated, user = {} },
@@ -59,7 +60,8 @@ const Dashboard = ({
     const dispatch = useDispatch();
     const [search, setSearch] = useState("");
     const [in_progress, setInProgress] = useState(false);
-    const [load_selected, setSelectedLoad] = useState(null);
+    const [load_selected, setSelectedLoad] = useState(null),
+        {path} = useRouteMatch();
 
     useEffect(() => {
         getCurrentProfile();
@@ -190,11 +192,19 @@ const Dashboard = ({
                         listBarType={listBarType}
                     />
                 )}
-                <ListItemHelper
+                {false && <ListItemHelper
                     component={Link}
                     to={"/edit-profile"}
                     icon={<i className='ni ni-settings-gear-65 font-25' style={{color: '#172B4D'}}/>}
                     primary={"Account"}
+                    listBarType={listBarType}
+                    className='accountDashboardLink'
+                />}
+                <ListItemHelper
+                    component={Link}
+                    to={path + "/settings"}
+                    icon={<i className='ni ni-settings-gear-65 font-25' style={{color: '#172B4D'}}/>}
+                    primary={"Settings"}
                     listBarType={listBarType}
                     className='accountDashboardLink'
                 />
@@ -372,6 +382,9 @@ const Dashboard = ({
                 {/*    )}*/}
                 {/*</Grid>*/}
             </Grid>
+            <Switch>
+                <Route path={path+'/settings'} component={Settings} />
+            </Switch>
         </div>
     );
 };
