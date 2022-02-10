@@ -18,9 +18,6 @@ import {errorIconColor, successIconColor} from "../layout/ui/Theme";
 import LoadDetailModal from "./LoadDetailModal";
 
 const useStyles = makeStyles({
-    table: {
-        width: "calc(100vw - 278px)",
-    },
     TableContainer: {
         borderBottom: "none",
     },

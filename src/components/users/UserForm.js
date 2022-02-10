@@ -93,7 +93,8 @@ const UserForm = () => {
         return diffWithVal;
     };
 
-    const onSubmit = () => {
+    const onSubmit = (e) => {
+        e.preventDefault();
         if (!loading) {
             if (!user) {
                 const {email, password, role} = form;
