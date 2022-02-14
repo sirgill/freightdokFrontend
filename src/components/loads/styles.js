@@ -93,13 +93,13 @@ export const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    padding: theme.spacing(3, 2, 3),
     top: "50%",
     left: "50%",
     width: "80%",
     transform: "translate(-50%, -50%)",
     overflowY: "auto",
-    height: "calc(100vh - 50px)",
+    maxHeight: '90%'
   },
   rootLoadDetailModal: {
     flexGrow: 1,
