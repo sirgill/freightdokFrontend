@@ -874,6 +874,14 @@ const LoadDetailModal = ({
                       )}
                     </span>
                   </Stack>
+                  {!edit && <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
+                    <span>Accessorials</span>
+                    {accessorials.length ? (
+                        <CheckCircleIcon style={{color: successIconColor}}/>
+                    ) : (
+                        <CancelIcon style={{color: errorIconColor}}/>
+                    )}
+                  </Stack>}
                 </Stack>
               </Grid>
             </Grid>
