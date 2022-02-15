@@ -17,7 +17,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import { TextFieldHelper, useStyles } from "../HelperCells.js";
 import InputField from "../Atoms/form/InputField";
-import {Button} from "reactstrap";
+import {Button} from "@material-ui/core";
 import {blue} from "../layout/ui/Theme";
 import SubmitButton from "../Atoms/form/SubmitButton";
 
@@ -77,13 +77,14 @@ const AddDriverForm = ({
   return (
     <>
       {(user && user.role === "afterhours") || (
-        <Fab
+        <Button
           color="primary"
           onClick={handleClickOpen}
           style={{ marginBottom: "20%" }}
+          variant={'contained'}
         >
-          <AddIcon />
-        </Fab>
+          Add Driver
+        </Button>
       )}
 
       <Dialog

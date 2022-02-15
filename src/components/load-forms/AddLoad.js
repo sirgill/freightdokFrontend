@@ -176,13 +176,14 @@ const AddLoadForm = ({addLoad, user}) => {
     return (
         <div>
             {(user && user.role === "afterhours") || (
-                <Fab
+                <Button
+                    variant='contained'
                     color="primary"
                     onClick={handleClickOpen}
                     style={{marginBottom: "20%"}}
                 >
-                    <AddIcon/>
-                </Fab>
+                    Add User
+                </Button>
             )}
 
             <Dialog

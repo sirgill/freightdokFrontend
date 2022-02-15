@@ -17,6 +17,7 @@ import { Delete } from '@material-ui/icons';
 import { Box } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import EnhancedTable from "../../components/Atoms/table/Table"
+import {blue} from "../layout/ui/Theme";
 
 const useStyles = makeStyles({
     table: {
@@ -27,7 +28,6 @@ const useStyles = makeStyles({
         borderBottom: "none"
     },
     addNewIcon: {
-        color: '#1891FC',
         // color: 'white',
         textTransform: 'none',
         position: 'absolute',
@@ -36,7 +36,27 @@ const useStyles = makeStyles({
 });
 
 const theme = createTheme({
+    palette: {
+        primary: {
+            main: blue
+        }
+    },
+    typography: {
+        fontFamily: ['Myriad-Pro Light', 'Myriad-Pro Regular',  "Myriad-Pro Bold"].join(','),
+        button: {
+            textTransform: 'none'
+        }
+    },
     components: {
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    '&:hover': {
+                        color: 'white'
+                    }
+                }
+            }
+        },
         MuiTableCell: {
             styleOverrides: {
                 root: {
@@ -146,7 +166,7 @@ export const Warehouse = ({ resetSearchField }) => {
                     <Box>
                         <EnhancedTable config={config} data={warehouses.warehouses} loading={loading} />
                     </Box>
-                {hasPermission && <Button variant='outlined' component={Link} to={path + '/warehouse/add'} sx={{position: 'absolute', right: 0}}>Add Warehouse</Button>}
+                {hasPermission && <Button variant='contained' component={Link} to={path + '/warehouse/add'} sx={{position: 'absolute', right: 0}}>Add Warehouse</Button>}
                 <Switch>
                     <Route component={Form} path={path + '/warehouse/add'} />
                     <Route component={Form} path={path + '/warehouse/edit/:id'} />
