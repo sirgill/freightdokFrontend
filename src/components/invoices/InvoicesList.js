@@ -113,7 +113,7 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
                         color="primary"
                         onClick={() => setSelectedLoad(row)}
                     >
-                        Invoice
+                        Create Invoice
                     </Button>
                 }
             },
@@ -139,15 +139,15 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
                     {/*    onChangeRowsPerPage={handleChangeRowsPerPage}*/}
                     {/*/>*/}
 
-                    <LoadDetailModal
-                        modalEdit={modalEdit}
-                        open={!!open.show}
-                        load={open?.data}
-                        handleClose={() => {
-                            setOpen(false);
-                            enableEdit(false);
-                        }}
-                    />
+                    {/*<LoadDetailModal*/}
+                    {/*    modalEdit={true}*/}
+                    {/*    open={!!open.show}*/}
+                    {/*    load={open?.data}*/}
+                    {/*    handleClose={() => {*/}
+                    {/*        setOpen(false);*/}
+                    {/*        enableEdit(false);*/}
+                    {/*    }}*/}
+                    {/*/>*/}
                 </Fragment>
             {/*// )}*/}
         </div>
