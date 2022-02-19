@@ -29,11 +29,12 @@ export const getCurrentProfile = () => async dispatch => {
 export const createProfile = (formData, history, edit = false) => async dispatch => {
   try {
     const { image, company, name, title } = formData;
+    debugger
     const myHeaders = new Headers();
     myHeaders.append("x-auth-token", localStorage.getItem('token'));
 
     const formdata = new FormData();
-    image && formdata.append("file", image[0], image.fileName);
+    Array.isArray(image) && formdata.append("file", image[0], image.fileName);
     formdata.append("name", name);
     formdata.append("title", title);
 
