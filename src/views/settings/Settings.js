@@ -17,7 +17,7 @@ const Settings = ({ history = {} }) => {
             'objectFit': 'cover',
             'borderRadius': '100%'
     }
-    const { company = '', title = '', name, image, imageUrl } = formData;
+    const { company = '', title = '', name = '', image, imageUrl='' } = formData || '';
 
 
     const onChange = e => {

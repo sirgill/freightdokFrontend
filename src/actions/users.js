@@ -48,7 +48,6 @@ export const registerUser = ({email, password, role}) => async (dispatch, getSta
         };
         const body = JSON.stringify({email, password, role});
         const api = await axios.post('/api/users', body, config);
-        debugger
         if (api.status === 200) {
             notification("User Added")
             const {limit} = getState().users;
