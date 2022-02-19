@@ -35,8 +35,9 @@ const Settings = ({ history = {} }) => {
 
     const onSubmit = e => {
         e.preventDefault();
-        console.log(formData)
-        dispatch(createProfile(formData, history, true))
+        const data = {...formData};
+        if(!imageURL) delete data.image
+        dispatch(createProfile(data, history, true))
     };
 
     return <Dialog open={true} maxWidth='md' fullScreen={window.innerWidth <= 550}>

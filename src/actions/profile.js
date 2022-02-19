@@ -28,13 +28,12 @@ export const getCurrentProfile = () => async dispatch => {
 //Create or Update PROFILE_ERROR
 export const createProfile = (formData, history, edit = false) => async dispatch => {
   try {
-    const { image, company, name, title } = formData;
-    debugger
+    const { image = undefined, company, name, title } = formData;
     const myHeaders = new Headers();
     myHeaders.append("x-auth-token", localStorage.getItem('token'));
 
     const formdata = new FormData();
-    Array.isArray(image) && formdata.append("file", image[0], image.fileName);
+    image && formdata.append("file", image[0], image.fileName);
     formdata.append("name", name);
     formdata.append("title", title);
 
