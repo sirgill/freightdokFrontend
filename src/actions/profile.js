@@ -33,7 +33,7 @@ export const createProfile = (formData, history, edit = false) => async dispatch
     myHeaders.append("x-auth-token", localStorage.getItem('token'));
 
     const formdata = new FormData();
-    formdata.append("file", image[0], image.fileName);
+    image && formdata.append("file", image[0], image.fileName);
     formdata.append("name", name);
     formdata.append("title", title);
 
