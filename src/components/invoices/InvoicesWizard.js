@@ -122,7 +122,6 @@ export default function InvoiceWizard({
         load_selected.rateConfirmation &&
         load_selected.rateConfirmation.length > 0
       ) {
-        console.log("Rate Confirmation :", load_selected.rateConfirmation[0]);
         dataToSend.docs.push(load_selected.rateConfirmation[0].name);
       }
 

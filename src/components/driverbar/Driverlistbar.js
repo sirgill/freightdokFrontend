@@ -30,6 +30,7 @@ const Driverlistbar = (props={}) => {
 
   const tableConfig = {
     rowCellPadding: 'inherit',
+    emptyMessage: 'No drivers found',
     columns: [
       {
         id: 'firstName',

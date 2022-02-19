@@ -13,6 +13,8 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import LoadDetailModal from "../loads/LoadDetailModal";
 import InvoiceEditItem from "./InvoiceEditItem";
 import {errorIconColor, successIconColor} from "../layout/ui/Theme";
+import {Link, Route} from "react-router-dom";
+import Invoice from "./NewInvoice";
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -109,9 +111,10 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
                 label: 'Invoice',
                 renderer: ({row}) => {
                     return <Button
+                        component={Link}
+                        to={'/dashboard/invoice/' + row._id}
                         variant="outlined"
                         color="primary"
-                        onClick={() => setSelectedLoad(row)}
                     >
                         Create Invoice
                     </Button>
@@ -125,6 +128,7 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
             {/*{loading ? <Spinner/> : (*/}
                 <Fragment>
                     <EnhancedTable loading={loading} config={config} data={invoices}/>
+                    <Route path={'/dashboard/invoice/:id'} component={Invoice} />
                     {/*<TablePagination*/}
                     {/*    rowsPerPageOptions={[5, 10, 15]}*/}
                     {/*    colSpan={3}*/}
