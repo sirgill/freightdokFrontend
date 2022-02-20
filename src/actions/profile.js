@@ -45,7 +45,7 @@ export const createProfile = (formData, history, edit = false) => async dispatch
       redirect: 'follow'
     };
 
-    fetch(SERVER_ADDRESS, requestOptions)
+    fetch(SERVER_ADDRESS + "/api/profile", requestOptions)
         .then(response => response.text())
         .then(result => {
           if(!_.isEmpty(result)) {
