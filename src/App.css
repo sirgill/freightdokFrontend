@@ -87,3 +87,7 @@ body {
 .loadsIcon {
   color: #4691FF
 }
+
+.display-none {
+  display: none !important;
+}
