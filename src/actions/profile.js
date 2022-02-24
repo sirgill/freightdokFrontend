@@ -6,6 +6,7 @@ import {
   GET_PROFILE,
   PROFILE_ERROR
 } from './types';
+import {SERVER_ADDRESS} from "./load";
 
 // Get current users profile
 export const getCurrentProfile = () => async dispatch => {
@@ -44,7 +45,7 @@ export const createProfile = (formData, history, edit = false) => async dispatch
       redirect: 'follow'
     };
 
-    fetch("http://localhost:5000/api/profile", requestOptions)
+    fetch(SERVER_ADDRESS + "/api/profile", requestOptions)
         .then(response => response.text())
         .then(result => {
           if(!_.isEmpty(result)) {
