@@ -182,7 +182,7 @@ const AddLoadForm = ({addLoad, user}) => {
                     onClick={handleClickOpen}
                     style={{marginBottom: "20%"}}
                 >
-                    Add User
+                    Add Load
                 </Button>
             )}
 

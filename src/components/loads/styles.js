@@ -79,7 +79,7 @@ export const useStyles = makeStyles((theme) => ({
     marginLeft: "25px",
   },
   resize: {
-    fontSize: 12,
+    fontSize: 13,
   },
   resizeDialog: {
     fontSize: 14,

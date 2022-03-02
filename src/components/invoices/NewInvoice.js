@@ -36,9 +36,9 @@ const DialogComponent = ({transition, handleClose, open, data, pdf, setPdf}) => 
                             <Stack>
                                 <Typography sx={{textAlign: 'left'}} variant='h5'>{brokerage}</Typography>
                             </Stack>
-                            <Stack>
-                                {pickupAddress}
-                            </Stack>
+                            // <Stack>
+                            //     {pickupAddress}
+                            // </Stack>
                             <Stack>
                                 {pickupCity}, {pickupState} {pickupZip}
                             </Stack>
@@ -67,11 +67,8 @@ const DialogComponent = ({transition, handleClose, open, data, pdf, setPdf}) => 
                             </Stack>
                             <Stack>
                                 <Title sx={{fontWeight: 700}}>
-                                    {receiverName}
+                                    {brokerage}
                                 </Title>
-                            </Stack>
-                            <Stack>
-                                <Title name={'Services'}/>
                             </Stack>
                         </Stack>
                     </Grid>
