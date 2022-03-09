@@ -1,11 +1,10 @@
 import React, { Fragment, useEffect, useRef } from "react";
-import {Divider, Grid, Modal, Stack, Typography, TextField, Box, Button} from "@mui/material";
+import {Divider, Grid, Modal, Stack, Typography, TextField, Box, Button, Select} from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
+import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import DoneIcon from "@material-ui/icons/Done";
@@ -22,6 +21,8 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+import FilledInput from '@mui/material/FilledInput';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import DeleteIcon from "@material-ui/icons/Delete";
 import "./style.css";
 import { FileCopyOutlined } from "@material-ui/icons";
@@ -55,6 +56,17 @@ const formInitialState = {
   invoice_created: false,
 };
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 const TextPlaceHolder = ({ value }) => (value ? value : "--");
 
 const LoadDetailModal = ({
@@ -86,7 +98,8 @@ const LoadDetailModal = ({
   const [edit, setEdit] = React.useState(true);
   const [form, setForm] = React.useState({ ...formInitialState });
   const rateConfirmationRef = useRef();
-  const proofDeliveryRef = useRef();
+  const proofDeliveryRef = useRef(),
+    SelectElement = edit ? OutlinedInput : FilledInput;
   const assignedToOptions = state.driver.drivers.map(({user = {}}) => {
     const {name = '', _id = ''} = user || '';
     if(!_id) return {
@@ -290,27 +303,36 @@ const LoadDetailModal = ({
                     />
                   </Grid>
                   <Grid item xs={4}>
-                    <InputField
-                        id="demo-simple-select-outlined"
-                        name="accessorials"
-                        value={form.accessorials}
-                        disabled={!edit || state.auth.user.role === "driver"}
-                        multiple={true}
-                        onChange={(e, values, name) => {
-                          setForm({...form, [name]: values})
-                        }}
-                        label='Accessorials'
-                        type={'select'}
-                        options={[
+                    <InputLabel id="demo-multiple-name-label">Name</InputLabel>
+                    <FormControl sx={{ m: 0, width: 225 }}>
+                      <Select
+                          labelId="demo-multiple-name-label"
+                          id="demo-multiple-name"
+                          multiple
+                          value={form.accessorials}
+                          onChange={({target: {value}}) => setForm({...form, accessorials: typeof value === 'string' ? value.split(',') : value,})}
+                          input={<SelectElement size='small' label="" notched={false} sx={{width: 225}} />}
+                          MenuProps={MenuProps}
+                          disabled={!edit}
+                      >
+                        {[
                           {id: 'Tonu', label: 'Tonu'},
                           {id: 'Detention', label: 'Detention'},
                           {id: 'Lumper', label: 'Lumper'},
                           {id: 'Lumper-by-Broker', label: 'Lumper by Broker'},
                           {id: 'Lumper-by-Carrier', label: 'Lumper by Carrier'},
                           {id: 'Layover', label: 'Layover'},
-                        ]}
-                    >
-                    </InputField>
+                        ].map((name) => (
+                            <MenuItem
+                                key={name.id}
+                                value={name.id}
+                                // style={getStyles(name, personName, theme)}
+                            >
+                              {name.label}
+                            </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Grid>
                 </Grid>
               </Grid>
