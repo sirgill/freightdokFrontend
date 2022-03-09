@@ -84,7 +84,7 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick}) => 
             </IconButton>
         </TableCell>;
 
-    const cell = columns.map(column => {
+    const cell = columns.map((column, i) => {
         const {id = '', renderer} = column || {};
         let cell;
         if (_.isFunction(renderer)) {
@@ -92,7 +92,7 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick}) => 
         } else {
             cell = row[id]
         }
-        return <TableCell key={id} padding={rowCellPadding} component="th" scope="row">
+        return <TableCell key={id+ i} padding={rowCellPadding} component="th" scope="row">
             {cell}
         </TableCell>
     });

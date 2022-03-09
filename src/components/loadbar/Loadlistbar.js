@@ -24,12 +24,14 @@ const Loadlistbar = ({
 }) => {
   const dispatch = useDispatch(),
   classes = useStyles();
-  const { query, loads: sLoads, page: sPage, limit, total: sTotal } = search;
+  // const { query, loads: sLoads, page: sPage, limit, total: sTotal } = search;
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState({open: false, data: {}});
   const { total } = loads_pagination;
   const [rawLoades, setRawLoads] = useState([]);
-  const { auth: {user={}} = {}, driver: {drivers = []} = {} } = useSelector((state) => state);
+  const { auth: {user={}} = {}, driver: {drivers = []} = {} } = useSelector((state) => state),
+      { query, loads: sLoads, page: sPage, limit, total: sTotal } = useSelector(state => state.load.search);
+
 
   useEffect(() => {
     setTimeout(() => {
@@ -49,10 +51,13 @@ const Loadlistbar = ({
         }
       });
       setRawLoads(filterredLoads);
-    } else {
+    } else if(query){
+      setRawLoads(sLoads)
+    }
+    else {
       setRawLoads(loads);
     }
-  }, [loads]);
+  }, [loads, sLoads]);
 
   const handleChangePage = (event, newPage) => {
     if (query) searchLoads(newPage, limit, query);
@@ -68,9 +73,9 @@ const Loadlistbar = ({
   const tableConfig = {
     onRowClick: (row) => setOpen({open: true, data: row}) ,
     rowCellPadding: 'inherit',
-    count: total,
+    count: query ? sTotal: total,
     page: page,
-    limit: rowsPerPage,
+    limit: query ? sPage : rowsPerPage,
     onPageChange: (e, newPage)=> getLoads(newPage - 1, rowsPerPage),
     columns: [
       {
