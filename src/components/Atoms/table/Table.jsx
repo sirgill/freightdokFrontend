@@ -52,7 +52,7 @@ const theme = createTheme({
 })
 
 function Headers({columns = [], config = {}}) {
-    const {headerCellSx = {}} = config;
+    const {headerCellSx = {}, hasDelete} = config;
     const headers = useMemo(() => {
         return columns.map(column => {
             const {label = '', id = '', visible = true} = column || {};
@@ -64,7 +64,7 @@ function Headers({columns = [], config = {}}) {
     }, [columns])
     return <TableRow>
         {headers}
-        <TableCell padding={'none'} sx={{headerCellSx}}/>
+        {hasDelete && <TableCell padding={'none'} sx={{headerCellSx}}/>}
     </TableRow>;
 }
 
