@@ -35,6 +35,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TimePicker from '@mui/lab/TimePicker';
 import DatePicker from '@mui/lab/DatePicker';
 import {blue, errorIconColor, successIconColor} from "../layout/ui/Theme";
+import {logger} from "redux-logger/src";
 
 const verticalAlignStyle = {
   position: "absolute",
@@ -300,6 +301,8 @@ const LoadDetailModal = ({
                         onChange={handleOnChange}
                         type={'select'}
                         options={assignedToOptions}
+                        labelKey={'name'}
+                        valueKey={'_id'}
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -896,14 +899,41 @@ const LoadDetailModal = ({
                       )}
                     </span>
                   </Stack>
-                  {!edit && <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
-                    <span>Accessorials</span>
+                  <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
                     {accessorials.length ? (
-                        <CheckCircleIcon style={{color: successIconColor}}/>
+                        <span>
+                        <a href={"#"} target="_blank">
+                          Accessorials
+                        </a>
+                      </span>
                     ) : (
-                        <CancelIcon style={{color: errorIconColor}}/>
+                        <span>Accessorials</span>
                     )}
-                  </Stack>}
+                    <span>
+                      {edit ? <Fragment>
+                            <label htmlFor="contained-button-file">
+                              <input
+                                  style={{display: 'none'}}
+                                  type="file"
+                                  multiple
+                                  name="accessorials"
+                                  disabled={!edit || state.auth.user.role === "driver"}
+                                  onChange={handleFileChange}
+                                  ref={rateConfirmationRef}
+                                  id="contained-button-file"
+                              />
+                              <Button variant="outlined" component="span" size='small'>
+                                Attach
+                              </Button>
+                            </label>
+                          </Fragment>
+                          :  accessorials.length ? (
+                              <CheckCircleIcon style={{color: successIconColor}}/>
+                          ) : (
+                              <CancelIcon style={{color: errorIconColor}}/>
+                          )}
+                    </span>
+                  </Stack>
                 </Stack>
               </Grid>
             </Grid>
