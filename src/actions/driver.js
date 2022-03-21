@@ -20,21 +20,19 @@ export const getDrivers = () => async (dispatch) => {
 };
 
 //add load
-export const addDriver = (formData) => async (dispatch) => {
+export const addDriver = (formData, isEdit) => async (dispatch) => {
   try {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-    console.log("===================")
+
     const res = await axios.post("/api/drivers", formData, config);
 
-    dispatch({
-      type: ADD_DRIVER,
-      payload: res.data,
-    });
-    notification("Driver Created");
+    notification(res.data.message);
+    dispatch(getDrivers());
+
   } catch (err) {
     let error = err.errors && Array.isArray(err.errors) && err.errors.length ? err.errors[0].msg : err.message;
     dispatch(setAlert( error, "error"));
@@ -75,7 +73,7 @@ export const deleteDriver = (driver_id) => async (dispatch, getState) => {
     if (index !== -1) {
       drivers.splice(index, 1);
     }
-    dispatch(setAlert('Deleted Successfully', 'success'));
+    notification('Deleted Successfully')
     dispatch({
       type: DELETE_DRIVER,
       payload: drivers,
