@@ -38,6 +38,8 @@ import CustomTextField from "../Atoms/CustomTextField";
 import {blue} from "../layout/ui/Theme";
 import '../../assets/vendor/nucleo/css/nucleo.css';
 import Settings from "../../views/settings/Settings.js";
+import OwnerOperator from "../../views/ownerOperator/OwnerOperator";
+import OwnerOpForm from "../../views/ownerOperator/Form";
 
 const Dashboard = ({
   auth: { isAuthenticated, user = {} },
@@ -169,6 +171,16 @@ const Dashboard = ({
                         }}
                         icon={<i className='ni ni-badge font-25' style={{color: '#2DCE89'}}/>}
                         primary={"Drivers"}
+                        listBarType={listBarType}
+                    />
+                )}
+                {user && (user.role === "admin" || user.role === "dispatch") && (
+                    <ListItemHelper
+                        onClick={() => {
+                            setListBarType("ownerOp");
+                        }}
+                        icon={<i className='ni ni-badge font-25' style={{color: '#2DCE89'}}/>}
+                        primary={"Owner Operators"}
                         listBarType={listBarType}
                     />
                 )}
@@ -350,6 +362,15 @@ const Dashboard = ({
                             <Driverlistbar/>
                             <div className={classes.fab}>
                                 <AddDriverForm/>
+                            </div>
+                        </main>
+                    )}
+                    {listBarType === "ownerOp" && (
+                        <main className={classes.contentLoadList}>
+                            <div className={classes.toolbar}/>
+                            <OwnerOperator />
+                            <div className={classes.fab}>
+                                <OwnerOpForm />
                             </div>
                         </main>
                     )}
