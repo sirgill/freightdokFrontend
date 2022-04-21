@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setAlert } from "./alert";
+import { notification, setAlert } from "./alert";
 import {
   GET_LOADS,
   GET_LOAD,
@@ -179,7 +179,7 @@ export const updateLoad = (formData, module = '') => async (dispatch, getState) 
       dispatch(searchLoads(page, limit, query));
     dispatch(setAlert("Load Updated", "success"));
   } catch (err) {
-    dispatch(setAlert(err.message, "error"));
+    notification(err.message, "error")
   }
 }
 
