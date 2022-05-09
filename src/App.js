@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { Provider } from "react-redux";
-import Navbar from './components/layout/Navbar';
+import Navbar from "./components/layout/Navbar";
 import Landing from "./components/layout/Landing";
 import Footer from "./components/layout/Footer";
 import Login from "./components/auth/Login";
@@ -15,17 +15,17 @@ import PrivateRoute from "./components/routing/PrivateRoute";
 import ProfileForm from "./components/profile-forms/CreateProfile";
 import EditProfile from "./components/profile-forms/EditProfile";
 
-import Loads from './components/loads/Loads';
+import Loads from "./components/loads/Loads";
 
 import store from "./store";
 import { loadUser } from "./actions/auth";
 import setAuthToken from "./utils/setAuthToken";
 import Profile from "./components/users/Profile";
 import { SERVER_ADDRESS } from "./actions/load";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import Notification from "./components/layout/Notification";
 
-import "./App.css"
+import "./App.css";
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -46,7 +46,7 @@ const App = () => {
           <Route exact path="/" component={Landing} />
           <Route exact path="/" component={Footer} />
           <Switch>
-            <Redirect exact from="/" to={{ pathname: '/login' }} />
+            <Redirect exact from="/" to={{ pathname: "/login" }} />
             <Route exact path="/register" component={Register} />
             <Route exact path="/login" component={Login} />
             <PrivateRoute exact path="/profile" component={Profile} />
