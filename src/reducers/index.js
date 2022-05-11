@@ -6,6 +6,7 @@ import load from './load';
 import driver from './driver';
 import users from './users';
 import warehouse from '../reducers/warehouse.reducer';
+import openBoard from '../reducers/openBoard.reducer';
 import {app} from "./app.reducer";
 
 const appReducer = combineReducers({
@@ -16,7 +17,8 @@ const appReducer = combineReducers({
   driver,
   users,
   warehouse,
-  app
+  app,
+  openBoard
 })
 
 const rootReducer = (state, action) => {
