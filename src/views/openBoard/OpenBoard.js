@@ -104,13 +104,7 @@ const OpenBoard = () => {
                         }
                     }
                     return (
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleBookNow.bind(this, {...row})}
-                        >
-                            $ {1500}
-                        </Button>
+                        null
                     );
                 },
             },
