@@ -155,7 +155,7 @@ const Dashboard = ({
           primary={"Loads"}
           listBarType={listBarType}
         />
-        <ListItemHelper
+        {/* <ListItemHelper
           onClick={() => {
             setListBarType("load Status");
           }}
@@ -164,7 +164,7 @@ const Dashboard = ({
           }
           primary={"Load Status"}
           listBarType={listBarType}
-        />
+        /> */}
         {user && user.role === "admin" && (
           <ListItemHelper
             onClick={() => {
