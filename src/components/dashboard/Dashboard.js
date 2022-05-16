@@ -9,7 +9,7 @@ import History from "@material-ui/icons/History";
 import List from "@mui/material/List";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import { useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { Loadcard } from "../loadcard/Loadcard.js";
@@ -98,43 +98,45 @@ const Dashboard = ({
   const drawer = (
     <div>
       <div className={classes.profile}>
-        <div className={classes.toolbar} />
+        {/*<div className={classes.toolbar} />*/}
         <Grid
           container
           spacing={24}
           justify="center"
           style={{ minHeight: "100vh", maxWidth: "100%" }}
         >
-          <Grid item align="center">
-            {/* Setting the Avatar for Username. */}
-            {profile && profile.imageUrl ? (
-              <div className="form-field">
-                <div
-                  className="form-profile-image"
-                  style={{ textAlign: "center" }}
-                >
-                  <img
-                    src={profile.imageUrl}
-                    alt="main-logo"
-                    style={{
-                      width: "60px",
-                      height: "60px",
-                      objectFit: "cover",
-                      borderRadius: "100%",
-                    }}
-                  />
-                </div>
-              </div>
-            ) : (
-              <Avatar className={classes.avatar} component={Link} to="/profile">
-                H
-              </Avatar>
-            )}
+          <Typography sx={{color: '#fff', fontWeight: 900, mt: 4, fontSize: 25}}>freightdok</Typography>
+          {/*Below component is  commented will be removed in future*/}
+          {/*<Grid item align="center">*/}
+          {/*  /!* Setting the Avatar for Username. *!/*/}
+          {/*  {profile && profile.imageUrl ? (*/}
+          {/*    <div className="form-field">*/}
+          {/*      <div*/}
+          {/*        className="form-profile-image"*/}
+          {/*        style={{ textAlign: "center" }}*/}
+          {/*      >*/}
+          {/*        <img*/}
+          {/*          src={profile.imageUrl}*/}
+          {/*          alt="main-logo"*/}
+          {/*          style={{*/}
+          {/*            width: "60px",*/}
+          {/*            height: "60px",*/}
+          {/*            objectFit: "cover",*/}
+          {/*            borderRadius: "100%",*/}
+          {/*          }}*/}
+          {/*        />*/}
+          {/*      </div>*/}
+          {/*    </div>*/}
+          {/*  ) : (*/}
+          {/*    <Avatar className={classes.avatar} component={Link} to="/profile">*/}
+          {/*      H*/}
+          {/*    </Avatar>*/}
+          {/*  )}*/}
 
-            <Typography className={classes.username} gutterBottom>
-              {profile ? profile.name : ""}
-            </Typography>
-          </Grid>
+          {/*  <Typography className={classes.username} gutterBottom>*/}
+          {/*    {profile ? profile.name : ""}*/}
+          {/*  </Typography>*/}
+          {/*</Grid>*/}
         </Grid>
       </div>
       {/* Setting the Left Sidebar */}

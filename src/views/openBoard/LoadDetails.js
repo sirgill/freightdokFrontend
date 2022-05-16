@@ -32,8 +32,9 @@ const LoadDetails = (props) => {
     const {location: {state: data = {}} = {}} = props,
         {
             loadNumber = '', distance: {miles = ''} = {}, weight: {pounds = ''} = {},
-            origin: {name = '', stateCode, postalCode = '', county = ''} = {},
-            destination: {name: destinationName = '', stateCode: destinationStateCode, postalCode: destinationPostal = '', county: destinationCounty = ''} = {},
+            origin: {name = '', stateCode, postalCode = '', county = '', pickupScheduleRequest} = {},
+            destination: {name: destinationName = '', stateCode: destinationStateCode, postalCode: destinationPostal = '',
+                county: destinationCounty = '', scheduleRequest: dropScheduleRequest = ''} = {},
             pickUpByDate = '',
             deliverBy = ''
         } = data;
@@ -59,7 +60,7 @@ const LoadDetails = (props) => {
                                 location={county + ", " + stateCode + " " + postalCode}
                                 type={'Pickup Date'}
                                 date={moment(pickUpByDate).format('MM/DD/yyyy')}
-                                appointment={'NA'}
+                                appointment={pickupScheduleRequest === 'A' ? 'Yes' : 'No'}
                                 avgLoadTime={'3h'}
                             />
                         </Grid>
@@ -73,7 +74,7 @@ const LoadDetails = (props) => {
                                 location={destinationCounty + ", " + destinationStateCode + " " + destinationPostal}
                                 type={'Delivery Date'}
                                 date={moment(deliverBy).format('MM/DD/yyyy')}
-                                appointment={'NA'}
+                                appointment={dropScheduleRequest === 'A' ? 'Yes' : 'No'}
                                 avgLoadTime={'3h'}
                             />
                         </Grid>

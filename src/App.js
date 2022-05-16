@@ -9,8 +9,8 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
 import Alert from "./components/layout/Alert";
-import { ThemeProvider } from "@material-ui/core/styles";
-import { theme } from "./components/layout/ui/Theme";
+import { ThemeProvider as MUI4ThemeProvider } from "@material-ui/core/styles";
+import {theme, themeNew} from "./components/layout/ui/Theme";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import ProfileForm from "./components/profile-forms/CreateProfile";
 import EditProfile from "./components/profile-forms/EditProfile";
@@ -24,8 +24,10 @@ import Profile from "./components/users/Profile";
 import { SERVER_ADDRESS } from "./actions/load";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Notification from "./components/layout/Notification";
+import {createTheme, ThemeProvider} from "@mui/material/styles";
 
 import "./App.css";
+import {orange} from "@mui/material/colors";
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -38,9 +40,10 @@ const App = () => {
     store.dispatch(loadUser());
   }, []);
   return (
-    <ThemeProvider theme={theme}>
+    <MUI4ThemeProvider theme={theme}>
       <Provider store={store}>
         <Notification />
+        <ThemeProvider theme={themeNew}>
         <BrowserRouter>
           <Route exact path="/" component={Navbar} />
           <Route exact path="/" component={Landing} />
@@ -56,8 +59,9 @@ const App = () => {
             <PrivateRoute exact path="/loads" component={Loads} />
           </Switch>
         </BrowserRouter>
+        </ThemeProvider>
       </Provider>
-    </ThemeProvider>
+    </MUI4ThemeProvider>
   );
 };
 

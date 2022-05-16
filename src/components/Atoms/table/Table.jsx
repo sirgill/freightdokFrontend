@@ -1,6 +1,5 @@
 import {Delete} from '@material-ui/icons';
 import {
-    createTheme,
     Grid,
     IconButton,
     Paper,
@@ -9,47 +8,13 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow,
-    ThemeProvider
+    TableRow
 } from '@mui/material';
 import _ from 'lodash';
 import React, {Fragment, memo, useEffect, useMemo, useState} from 'react';
 import {withRouter} from 'react-router-dom';
 import TablePagination from './Pagination';
 import Spinner from "../../layout/Spinner";
-import load from "../../../reducers/load";
-
-const theme = createTheme({
-    typography: {
-        fontFamily: ['Myriad-Pro Light', 'Myriad-Pro Regular',  "Myriad-Pro Bold"].join(','),
-        button: {
-            textTransform: 'none'
-        }
-    },
-    components: {
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    fontSize: 10,
-                    minWidth: 80,
-                    height: 25
-                }
-            }
-        },
-        MuiTableCell: {
-            styleOverrides: {
-                root: {
-                    fontSize: '11px',
-                    fontWeight: 400,
-                    borderBottom: '1px solid #0000000D',
-                    paddingLeft: '1rem',
-                    align: 'left',
-                    color: '#525F7F'
-                }
-            }
-        }
-    }
-})
 
 function Headers({columns = [], config = {}}) {
     const {headerCellSx = {}, hasDelete} = config;
@@ -58,7 +23,7 @@ function Headers({columns = [], config = {}}) {
             const {label = '', id = '', visible = true} = column || {};
             if (!visible) return;
             return (
-                <TableCell padding={'none'} sx={{color: '#8898AA', ...headerCellSx}} key={id}>{label}</TableCell>
+                <TableCell padding={'normal'} sx={{color: '#000', fontWeight: 800, ...headerCellSx}} key={id}>{label}</TableCell>
             )
         })
     }, [columns])
@@ -92,7 +57,7 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick}) => 
         } else {
             cell = row[id]
         }
-        return <TableCell key={id+ i} padding={rowCellPadding} component="th" scope="row">
+        return <TableCell key={id + i} padding={rowCellPadding} component="th" scope="row">
             {cell}
         </TableCell>
     });
@@ -145,7 +110,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
             </tbody>)
         }
         return <Fragment>
-            <TableHead className={''} sx={{backgroundColor: '#F6F9FC ', borderTop: '1px solid rgba(224, 224, 224, 1)'}}>
+            <TableHead className={''} sx={{backgroundColor: '#fafafa', borderTop: '1px solid rgba(224, 224, 224, 1)'}}>
                 <Headers columns={columns} config={config}/>
             </TableHead>
             <TableBody>
@@ -168,21 +133,19 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
     }, [])
 
     return <div>
-        <ThemeProvider theme={theme}>
-            <TableContainer
-                component={Paper}
-                className={''}
-                sx={{boxShadow: '0px 0px 32px #8898AA26', mb: 2}}
-            >
-                {loading
-                    ? getLoader()
-                    : <Table ref={el => ref.current['table'] = el} borderBottom="none" aria-label="caption table">
-                        {getTableContent}
-                    </Table>}
-                {!loading && data.length > 0 &&
-                <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit}/>}
-            </TableContainer>
-        </ThemeProvider>
+        <TableContainer
+            component={Paper}
+            className={''}
+            sx={{boxShadow: '0px 0px 32px #8898AA26', mb: 2}}
+        >
+            {loading
+                ? getLoader()
+                : <Table ref={el => ref.current['table'] = el} borderBottom="none" aria-label="caption table">
+                    {getTableContent}
+                </Table>}
+            {!loading && data.length > 0 &&
+            <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit}/>}
+        </TableContainer>
     </div>;
 };
 

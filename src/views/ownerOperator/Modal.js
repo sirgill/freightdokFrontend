@@ -23,25 +23,25 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const BootstrapDialogTitle = (props) => {
-  const { children, onClose, ...other } = props;
+  const { children, onClose,showClose, ...other } = props;
 
   return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-      {children}
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          onClick={onClose}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
+    <DialogTitle sx={{ m: 0, p: 2, textAlign: 'center' }} {...other}>
+      {showClose ? (
+          <IconButton
+              aria-label="close"
+              onClick={onClose}
+              sx={{
+                position: "absolute",
+                left: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+          >
+            <CloseIcon />
+          </IconButton>
       ) : null}
+      {children}
     </DialogTitle>
   );
 };
@@ -57,6 +57,7 @@ export default function Modal(props) {
       title = "",
       closeUrl = "",
       okButtonText = "Save",
+        showClose = true,
       onOk = _.noop(),
     } = config;
   const [open, setOpen] = React.useState(false);
@@ -104,12 +105,13 @@ export default function Modal(props) {
         TransitionComponent={Transition}
       >
         <BootstrapDialogTitle
-          id="customized-dialog-title"
-          onClose={handleClose}
+            id="customized-dialog-title"
+            onClose={handleClose}
+            showClose={showClose}
         >
           {title}
         </BootstrapDialogTitle>
-        <DialogContent dividers>{children}</DialogContent>
+        <DialogContent dividers sx={{borderTop: 'none'}}>{children}</DialogContent>
         {/* <DialogActions>
           <Button autoFocus onClick={onOkHandler}>
             {okButtonText}

@@ -1,12 +1,10 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect } from "react";
 import { Button } from "@mui/material";
 import { Route, useHistory, useRouteMatch } from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
-import axios from "axios";
 import LoadDetails from "./LoadDetails";
 import {
   bookNow,
-  getShipments,
   getBiddings,
 } from "../../actions/openBoard.action";
 import Form from "./Form";
@@ -31,7 +29,7 @@ const OpenBoard = () => {
 
   useEffect(() => {
     dispatch(getBiddings(payload));
-  }, []);
+  }, [dispatch]);
 
   const afterBookNow = ({ success = false }) => {
     if (success) {
@@ -133,7 +131,7 @@ const OpenBoard = () => {
                   history.push(path + `/${row.loadNumber}/bid`, row);
                 }}
               >
-                Bid
+                Bid +
               </Button>
             </Fragment>
           );

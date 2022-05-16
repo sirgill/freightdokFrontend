@@ -42,3 +42,49 @@ export const theme = createTheme({
     }
   }
 });
+
+export const themeNew = createTheme({
+  palette: {
+    primary: {
+      main: 'rgb(0, 123, 255)',
+    },
+    success: {
+      main: 'rgb(40, 167, 69)'
+    }
+  },
+  typography: {
+    fontFamily: ['Myriad-Pro Light', 'Myriad-Pro Regular',  "Myriad-Pro Bold"].join(','),
+    button: {
+      textTransform: 'none'
+    }
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          fontSize: 10,
+          minWidth: 80,
+          height: 25
+        }
+      }
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          fontSize: 16,
+          fontWeight: 400,
+          borderBottom: '1px solid #0000000D',
+          paddingLeft: '1rem',
+          align: 'left',
+        }
+      }
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          fontWeight: 600
+        }
+      }
+    }
+  }
+});

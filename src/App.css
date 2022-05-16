@@ -91,3 +91,28 @@ body {
 .display-none {
   display: none !important;
 }
+
+.form_bidding .form-group {
+  margin-bottom: 0;
+}
+
+.dollarInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dollarInput input {
+  padding-left: 18px;
+  text-align: center;
+}
+
+.dollarSign {
+  position: absolute;
+  content: '$';
+  left: 36%;
+  z-index: 1;
+  display: block;
+  padding: 0 8px;
+}
