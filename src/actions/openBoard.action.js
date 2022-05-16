@@ -29,7 +29,12 @@ export const getShipments = (payload) => (dispatch) => {
     try {
         axios(config)
             .then(function (response) {
-                dispatch({type: GET_SHIPMENTS, payload: {data: response.data, loading: false}});
+                const {data = {} } = response || {},
+                    {statusCode, message = ''} = data;
+                dispatch({type: GET_SHIPMENTS, payload: {data, loading: false}});
+                if(statusCode === 401){
+                    notification(message, 'error')
+                }
             })
             .catch(function (error) {
                 console.log(error);
