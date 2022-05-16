@@ -39,7 +39,7 @@ const LoadDetails = (props) => {
             deliverBy = ''
         } = data;
     const config = {
-        title: "Open Board",
+        title: "",
     };
 
     return (
