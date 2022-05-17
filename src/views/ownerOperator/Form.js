@@ -46,7 +46,7 @@ const Form = ({ isEdit = false }) => {
                 </Button>
             )}
             <Dialog
-                fullWidth={true}
+                fullWidth={false}
                 maxWidth={"sm"}
                 open={open}
                 onClose={handleClose}

@@ -10,8 +10,7 @@ const useStyles = makeStyles((theme) => ({
     formTitle: {
         textAlign: 'center',
         fontSize: '2.5rem',
-        fontWeight: 700,
-        fontFamily: 'Myriad-Pro Regular'
+        fontWeight: 700
     },
     editIcon: {
         color: '#1891FC',
@@ -96,7 +95,7 @@ function Preview(props) {
 
     return (
         <div>
-            <Dialog maxWidth='xl' onClose={closeModal} aria-labelledby="customized-dialog-title" open>
+            <Dialog maxWidth='xl' onClose={closeModal} aria-labelledby="customized-dialog-title" open={true}>
                 <DialogContent dividers>
                     <DialogTitle className={classes.formTitle} id="customized-dialog-title" onClose={() => null}>
                         <Typography sx={{fontWeight: 600}}>{data.name || 'Warehouse'}</Typography>

@@ -53,7 +53,7 @@ export const themeNew = createTheme({
     }
   },
   typography: {
-    fontFamily: ['Myriad-Pro Light', 'Myriad-Pro Regular',  "Myriad-Pro Bold"].join(','),
+    fontFamily: ['Myriad-Pro Regular',  "Sans-serif"].join(','),
     button: {
       textTransform: 'none'
     }

@@ -1,19 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Loads from "../loads/Loads.js";
-import Spinner from "../layout/Spinner";
-import { TableFooter, TablePagination } from "@material-ui/core";
+import moment from 'moment';
 import {connect, useDispatch, useSelector} from "react-redux";
 import {deleteLoad, getLoads, searchLoads, selectLoad} from "../../actions/load";
 import { useStyles } from "../HelperCells.js";
 import EnhancedTable from "../Atoms/table/Table";
-import Moment from "react-moment";
 import LoadDetailModal from "../loads/LoadDetailModal";
 
 const Loadlistbar = ({
@@ -95,7 +85,7 @@ const Loadlistbar = ({
         label: 'Pickup Date',
         renderer: ({row: {pickup = []} = {}}) => {
           const [{pickupDate=''}] = pickup;
-          return <Moment format='MM/DD'>{pickupDate}</Moment>
+          return moment(pickupDate).format('MM/DD')
         }
       },
       {
@@ -111,7 +101,7 @@ const Loadlistbar = ({
         label: 'Drop Date',
         renderer: ({row: {drop = []} = {}}) => {
           const [{dropDate=''}] = drop;
-          return <Moment format='MM/DD'>{dropDate}</Moment>
+          return moment(dropDate).format('MM/DD')
         }
       },
       {

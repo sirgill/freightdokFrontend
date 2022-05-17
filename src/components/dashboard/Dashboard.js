@@ -96,7 +96,7 @@ const Dashboard = ({
 
   const resetSearchField = () => setSearch("");
   const drawer = (
-    <div>
+    <Fragment>
       <div className={classes.profile}>
         {/*<div className={classes.toolbar} />*/}
         <Grid
@@ -140,13 +140,13 @@ const Dashboard = ({
         </Grid>
       </div>
       {/* Setting the Left Sidebar */}
-      <List sx={{ pr: 3 }}>
+      <List sx={{ pr: 3, height: 'calc(100% - 277px)', overflow:'auto', mt: 2 }}>
         <ListItemHelper
           onClick={() => {
-            setListBarType("openboard");
+            setListBarType("Open Load Board");
           }}
           icon={<i className={"ni ni-delivery-fast loadsIcon font-25"} />}
-          primary={"Open Board"}
+          primary={"Open Load Board"}
           listBarType={listBarType}
         />
         <ListItemHelper
@@ -280,7 +280,7 @@ const Dashboard = ({
           primary={"Logout"}
         />
       </List>
-    </div>
+    </Fragment>
   );
 
   return (
@@ -302,7 +302,7 @@ const Dashboard = ({
           >
             <MenuIcon />
           </IconButton>
-          <Typography className={classes.tab}>
+          <Typography className={classes.tab} sx={{fontWeight: 700, fontSize: 20}}>
             {capitalizeFirstLetter(listBarType || "")}
           </Typography>
           {listBarType === "invoices" || (
@@ -354,7 +354,7 @@ const Dashboard = ({
           <Alert />
         </Grid>
         <Grid item xs={12}>
-          {listBarType === "openboard" && (
+          {listBarType === "Open Load Board" && (
             <main className={classes.contentLoadList}>
               <div className={classes.toolbar} />
               <OpenBoard resetSearchField={resetSearchField} />
