@@ -61,7 +61,7 @@ const LoadDetails = (props) => {
                                 type={'Pickup Date'}
                                 date={moment(pickUpByDate).format('MM/DD/yyyy')}
                                 appointment={pickupScheduleRequest === 'A' ? 'Yes' : 'No'}
-                                avgLoadTime={'3h'}
+                                avgLoadTime={'--'}
                             />
                         </Grid>
                         <Grid xs={4} textAlign={'center'}>
@@ -75,7 +75,7 @@ const LoadDetails = (props) => {
                                 type={'Delivery Date'}
                                 date={moment(deliverBy).format('MM/DD/yyyy')}
                                 appointment={dropScheduleRequest === 'A' ? 'Yes' : 'No'}
-                                avgLoadTime={'3h'}
+                                avgLoadTime={'--'}
                             />
                         </Grid>
                     </Grid>

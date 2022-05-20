@@ -24,14 +24,14 @@ const TablePagination = ({data = [], onPageChange, page, count, limit = 1}) => {
     return (
         <Stack direction='row' sx={{display: 'flex', justifyContent: 'space-between', p: 3}} alignItems={'center'}>
             {count > 10 && <Typography sx={{color: '#525F7F'}} fontSize={13}>Showing {data.length} of {count} entries</Typography>}
-            <Pagination
+            {data.length !== count && <Pagination
                 count={Math.ceil(count / limit)}
                 color="primary"
                 variant="contained"
                 page={page + 1}
-                size="medium"
+                size="large"
                 onChange={onChange}
-            />
+            />}
         </Stack>
     )
 }

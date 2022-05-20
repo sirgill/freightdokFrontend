@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import moment from 'moment';
 import {Button} from "@mui/material";
 import {Route, useHistory, useRouteMatch} from "react-router-dom";
@@ -14,7 +14,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 const payload = JSON.stringify({
     pageIndex: 0,
-    pageSize: 100,
+    pageSize: 20,
     regionCode: "NA",
     modes: ["V", "R"],
     carrierCode: "T2244688",
@@ -22,6 +22,9 @@ const payload = JSON.stringify({
 
 const OpenBoard = () => {
     const {path} = useRouteMatch(),
+        [filters, setFilters] = useState({
+            regionCode: "NA", modes: ["V", "R"], carrierCode: "T2244688",pageIndex: 0, pageSize: 100
+        }),
         dispatch = useDispatch(),
         {data: {results, totalResults} = {}, loading = false} = useSelector(
             (state) => state.openBoard
@@ -29,12 +32,12 @@ const OpenBoard = () => {
         history = useHistory();
 
     useEffect(() => {
-        dispatch(getBiddings(payload));
-    }, [dispatch]);
+        dispatch(getBiddings(filters));
+    }, [dispatch, filters]);
 
     const afterBookNow = ({success = false}) => {
         if (success) {
-            dispatch(getBiddings(payload));
+            dispatch(getBiddings(filters));
         }
     };
 
@@ -44,12 +47,18 @@ const OpenBoard = () => {
         bookNow(row, afterBookNow);
     };
 
+    const onPageChange = (e, pgNum) => {
+        setFilters({...filters, pageIndex: pgNum - 1})
+    }
+
     const tableConfig = {
         rowCellPadding: "inherit",
         emptyMessage: "No Shipments Found",
         onRowClick: ({loadNumber}) => `${path}/${loadNumber}`,
-        // count: totalResults,
-        // limit: 10,
+        count: totalResults,
+        limit: filters.pageSize,
+        page: filters.pageIndex,
+        onPageChange,
         columns: [
             {
                 id: "loadNumber",
@@ -128,7 +137,7 @@ const OpenBoard = () => {
             },
             {
                 id: "company",
-                label: "company",
+                label: "Company",
                 renderer: ({row}) => {
                     return <Fragment>{'C.H Robinson'}</Fragment>;
                 },

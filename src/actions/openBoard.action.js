@@ -56,7 +56,7 @@ export const getBiddings = (payload) => (dispatch) => {
       .then(async function ({ data: { data: dbData = [] } = {} }) {
         const shipmentsResData = await getShipments(payload);
 
-        const { data: { results = [], totalResults } = {} } = shipmentsResData;
+        const { data: { results = [] } = {} } = shipmentsResData;
 
         results.forEach(function (shipment, index) {
           const { loadNumber } = shipment;
@@ -72,7 +72,7 @@ export const getBiddings = (payload) => (dispatch) => {
         //--------------------------
         dispatch({
           type: GET_SHIPMENTS,
-          payload: { data: { results, totalResults }, loading: false },
+          payload: { data: { results, totalResults: results.length }, loading: false },
         });
         //--------------------------
       })

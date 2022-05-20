@@ -98,14 +98,10 @@ body {
 
 .dollarInput {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .dollarInput input {
-  padding-left: 18px;
-  text-align: center;
+  text-align: center  ;
 }
 
 .dollarSign {
