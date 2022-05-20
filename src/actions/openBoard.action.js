@@ -1,10 +1,11 @@
 import axios from "axios";
 import { notification } from "./alert";
 import { GET_SHIPMENTS } from "./types";
+import { getBaseUrl, getGoUrl, production } from "../config";
 
 export const bookNow = async (body, callback) => {
   try {
-    const response = await axios.post("http://localhost:9999/sendMail", body);
+    const response = await axios.post(production.mailServerUrl, body);
     const { data, status } = response;
     if (data.success) {
       notification(data.message);
@@ -20,7 +21,7 @@ export const bookNow = async (body, callback) => {
 export const getShipments = (payload) => {
   const config = {
     method: "post",
-    url: "https://go.freightdok.io/shipments",
+    url: production.goLangServerUrl + "/shipments",
     data: payload,
     headers: {
       "Content-Type": "application/json",
@@ -44,7 +45,7 @@ export const getShipments = (payload) => {
 export const getBiddings = (payload) => (dispatch) => {
   const config = {
     method: "get",
-    url: "http://localhost:5000/api/bid/biddings",
+    url: getBaseUrl() + "/api/bid/biddings",
     headers: {
       "Content-Type": "application/json",
     },
@@ -72,7 +73,10 @@ export const getBiddings = (payload) => (dispatch) => {
         //--------------------------
         dispatch({
           type: GET_SHIPMENTS,
-          payload: { data: { results, totalResults: results.length }, loading: false },
+          payload: {
+            data: { results, totalResults: results.length },
+            loading: false,
+          },
         });
         //--------------------------
       })

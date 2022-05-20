@@ -26,7 +26,7 @@ import {
 
 // import { proxy } from "../../package.json";
 
-export const SERVER_ADDRESS = "http://localhost:5000";
+export const SERVER_ADDRESS = "https://api.freightdok.io";
 // Get current users loads
 export const getLoads =
   (page = 0, limit = 15, module = "") =>
