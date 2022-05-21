@@ -6,13 +6,14 @@ import { getBaseUrl, getGoUrl, production } from "../config";
 export const bookNow = async (body, callback) => {
   try {
     const response = await axios.post(production.mailServerUrl, body);
-    const { data, status } = response;
+    const { data } = response;
     if (data.success) {
       notification(data.message);
     } else {
       notification(data.message, "error");
     }
     if (callback) callback(data);
+    return response;
   } catch (error) {
     console.log(error);
   }

@@ -19,7 +19,7 @@ const Form = (props) => {
         const {availableLoadCosts = []} = row || {};
         const [item] = availableLoadCosts || [];
         if (item) {
-            defaultCost = item
+            defaultCost = item.sourceCostPerUnit
         }
     }
     const [amount, setAmount] = useState(defaultCost);

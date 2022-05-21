@@ -59,6 +59,7 @@ export default function Modal(props) {
       okButtonText = "Save",
         showClose = true,
       onOk = _.noop(),
+      paperProps = {}
     } = config;
   const [open, setOpen] = React.useState(false);
 
@@ -93,6 +94,7 @@ export default function Modal(props) {
         />
       );
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -103,6 +105,7 @@ export default function Modal(props) {
         open={open}
         maxWidth={"xl"}
         TransitionComponent={Transition}
+        PaperProps={paperProps}
       >
         <BootstrapDialogTitle
             id="customized-dialog-title"

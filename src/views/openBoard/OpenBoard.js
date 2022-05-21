@@ -9,6 +9,8 @@ import Form from "./Form";
 import { withRouter } from "react-router-dom/cjs/react-router-dom.min";
 import { useDispatch, useSelector } from "react-redux";
 import { developmentPayload, productionPayload } from "./constants";
+import BookNowForm from "./BookNowForm";
+import {addEvent, removeEvent} from "../../utils/utils";
 
 let payload = developmentPayload;
 
@@ -25,20 +27,21 @@ const OpenBoard = () => {
     ),
     history = useHistory();
 
-  useEffect(() => {
+  const getBiddingList = () => {
     dispatch(getBiddings(filters));
+  }
+
+  useEffect(() => {
+    getBiddingList();
+    addEvent(window, 'getBiddings', getBiddingList);
+
+    return () => removeEvent(window, 'getBiddings', getBiddingList);
   }, [dispatch, filters]);
 
   const afterBookNow = ({ success = false }) => {
     if (success) {
       dispatch(getBiddings(filters));
     }
-  };
-
-  const handleBookNow = (row, e) => {
-    e.stopPropagation();
-    Object.assign(row, { defaultEmail: "vy4693@gmail.com", env: "dev" });
-    bookNow(row, afterBookNow);
   };
 
   const onPageChange = (e, pgNum) => {
