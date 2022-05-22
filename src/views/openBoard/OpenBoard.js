@@ -158,7 +158,10 @@ const OpenBoard = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={handleBookNow.bind(this, row)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    history.push(path + `/${row.loadNumber}/bookNow`, row)
+                  }}
                 >
                   $ {item.sourceCostPerUnit}
                 </Button>
@@ -200,6 +203,7 @@ const OpenBoard = () => {
       />
       <Route path={path + "/:loadNumber"} exact component={LoadDetails} />
       <Route path={path + "/:loadNumber/bid"} component={Form} />
+      <Route path={path + "/:loadNumber/bookNow"} component={BookNowForm} />
     </div>
   );
 };
