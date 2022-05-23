@@ -58,7 +58,10 @@ export const getBiddings = (payload) => (dispatch) => {
       .then(async function ({ data: { data: dbData = [] } = {} }) {
         const shipmentsResData = await getShipments(payload);
 
-        const { data: { results = [] } = {} } = shipmentsResData;
+        const { data: { results = [], statusCode, message = '' } = {} } = shipmentsResData;
+        if(statusCode === 401){
+          notification(message, 'error');
+        }
 
         results.forEach(function (shipment, index) {
           const { loadNumber } = shipment;

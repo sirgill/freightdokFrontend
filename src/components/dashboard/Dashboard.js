@@ -52,7 +52,7 @@ const Dashboard = ({
   match,
   invoiceGenerated,
 }) => {
-  const [listBarType, setListBarType] = React.useState("loads");
+  const [listBarType, setListBarType] = React.useState("Open Load Board");
 
   const classes = useStyles();
   const theme = useTheme();
@@ -428,9 +428,9 @@ const Dashboard = ({
             <main className={classes.contentLoadList}>
               <div className={classes.toolbar} />
               <OwnerOperator />
-              <div className={classes.fab}>
-                <OwnerOpForm />
-              </div>
+              {/*<div className={classes.fab}>*/}
+              {/*  <OwnerOpForm />*/}
+              {/*</div>*/}
             </main>
           )}
           {listBarType === "users" && (

@@ -1,15 +1,45 @@
-import React, { Fragment, useEffect } from "react";
-import { Button } from "@mui/material";
-import { Route, useHistory, useRouteMatch } from "react-router-dom";
+import React, {Fragment, useEffect, useState} from "react";
+import {Button} from "@mui/material";
+import {Link, Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import axios from "axios";
-import OwnerOpDetails from "./OwnerOpLoadDetail";
+import {getBaseUrl} from "../../config";
+import FormModal from "./FormModal";
+import {notification} from "../../actions/alert";
+import {addEvent, removeEvent} from "../../utils/utils";
 
 
 const OwnerOperator = () => {
   const { path } = useRouteMatch(),
+      [row, setRow] = useState([]),
     history = useHistory();
 
+  function fetchOwnerOp() {
+      axios.get(getBaseUrl() + '/api/ownerOperator').then(r => {
+          const {data: {data = []} = {}} = r;
+          setRow(data);
+      })
+          .catch(err => {
+              console.log(err.message)
+          })
+  }
+
+  useEffect(() => {
+      fetchOwnerOp();
+      addEvent(window, 'refreshOwnerOp', fetchOwnerOp)
+
+      return () => removeEvent(window, 'refreshOwnerOp', fetchOwnerOp)
+  }, [])
+
+    const onDelete = (id, e) => {
+      e.stopPropagation();
+      axios.delete(getBaseUrl() + "/api/ownerOperator/"+id)
+          .then(({data = {}}) => {
+              notification(data.message)
+              fetchOwnerOp()
+          })
+        .catch(err => console.log(err.message))
+    }
 
   const tableConfig = {
     rowCellPadding: "inherit",
@@ -41,7 +71,7 @@ const OwnerOperator = () => {
                 variant="contained"
                 onClick={(e) => {
                   e.stopPropagation();
-                  history.push(`/${row.loadNumber}/bid`);
+                  history.push(path + `/ownerOp/edit/${row._id}`);
                 }}
                 sx={{mr: 1}}
               >
@@ -50,6 +80,7 @@ const OwnerOperator = () => {
               <Button
                   variant="contained"
                   color={'error'}
+                  onClick={onDelete.bind(this, row._id)}
               >
                 Delete
               </Button>
@@ -64,10 +95,13 @@ const OwnerOperator = () => {
     <div>
       <EnhancedTable
         config={tableConfig}
-        data={[]}
+        data={row}
         loading={false}
       />
-      <Route path={path + "/:loadNumber"} component={OwnerOpDetails} />
+        <Button variant='contained' component={Link} to={path + '/ownerOp/add'} className={'addNewOwnerOp'}
+                sx={{position: 'absolute', right: 10, "& a:hover": {color: 'none !important' }}}>Add Owner Operator</Button>
+      <Route path={path + "/ownerOp/add"} component={FormModal} />
+      <Route path={path + "/ownerOp/edit/:id"} component={FormModal} />
     </div>
   );
 };
