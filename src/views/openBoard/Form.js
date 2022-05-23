@@ -19,7 +19,7 @@ const Form = (props) => {
         const {availableLoadCosts = []} = row || {};
         const [item] = availableLoadCosts || [];
         if (item) {
-            defaultCost = item.sourceCostPerUnit
+            defaultCost = item.sourceCostPerUnit || 0
         }
     }
     const [amount, setAmount] = useState(defaultCost);
@@ -49,8 +49,9 @@ const Form = (props) => {
     }
 
     const onAdd = () => {
-        if (Number.isInteger(amount)) {
-            setAmount(amount + 1)
+        console.log(amount)
+        if (amount) {
+            setAmount(parseInt(amount) + 1)
         }
     }
 
