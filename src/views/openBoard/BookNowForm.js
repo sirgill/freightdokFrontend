@@ -7,6 +7,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import {bookNow} from "../../actions/openBoard.action";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import {notification} from "../../actions/alert";
 
 const CARRIER_CODE = "T2244688";
 
@@ -87,16 +88,28 @@ const BookNowForm = (props) => {
                 "country": "NA",
                 "zip": "46143"
             },
-            "rateConfirmation":{
+            "rateConfirmation": {
                 "email": contact?.emailAddress || '',
                 "name": contact?.name || ''
             }
         }
         // Object.assign(payload, {defaultEmail: "vy4693@gmail.com", env: "dev"});
-        bookNow(payload).then(r => {
-            setIsProcessingAsyncReq(false);
-            afterBookNow(r.data);
-        });
+        bookNow(payload)
+            .then(r => {
+                setIsProcessingAsyncReq(false);
+                if (r.status === 200) {
+                    afterBookNow({success: true});
+                    notification('Booking successful');
+                }
+                else {
+                    notification('Something went wrong', 'error')
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                setIsProcessingAsyncReq(false);
+                notification(err.message, 'error');
+            })
     }
 
     return (

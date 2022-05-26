@@ -7,11 +7,6 @@ export const bookNow = async (body, callback) => {
   try {
     const response = await axios.post(production.goLangMail, body);
     const { data } = response;
-    if (data.success) {
-      notification(data.message);
-    } else {
-      notification(data.message, "error");
-    }
     if (callback) callback(data);
     return response;
   } catch (error) {
