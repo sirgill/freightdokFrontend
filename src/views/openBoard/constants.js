@@ -27,8 +27,8 @@ export const productionPayload = {
     max: 53,
   },
   availableForPickUpByDateRange: {
-    min: "2022-05-25",
-    max: "2022-05-26",
+    min: "2022-05-27",
+    max: "2022-06-02",
   },
   teamLoad: false,
   stfLoad: false,

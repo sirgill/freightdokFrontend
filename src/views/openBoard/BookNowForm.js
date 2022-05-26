@@ -77,7 +77,13 @@ const BookNowForm = (props) => {
             loadNumber,
             carrierCode: CARRIER_CODE,
             emptyDateTime: new Date(date + " " + time).toISOString(),
-            availableLoadCosts
+            availableLoadCosts,
+            emptyLocation: {
+                "city": "Indianapolis",
+                "state": "IN",
+                "country": "NA",
+                "zip": "46143"
+            },
         }
         Object.assign(payload, {defaultEmail: "vy4693@gmail.com", env: "dev"});
         bookNow(payload).then(r => {
