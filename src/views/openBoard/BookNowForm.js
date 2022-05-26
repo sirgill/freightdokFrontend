@@ -102,7 +102,8 @@ const BookNowForm = (props) => {
                     notification('Booking successful');
                 }
                 else {
-                    notification('Something went wrong', 'error')
+                    console.log(r)
+                    notification(r.data?.message || '', 'error')
                 }
             })
             .catch(err => {
