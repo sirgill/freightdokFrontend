@@ -69,7 +69,8 @@ const BookNowForm = (props) => {
     const onBookNow = (e) => {
         e.preventDefault();
         setIsProcessingAsyncReq(true)
-        const {loadNumber, availableLoadCosts} = row
+        const {loadNumber, availableLoadCosts, contact = {}} = row,
+            {type, code, description, units, currencyCode, sourceCostPerUnit} = availableLoadCosts[0] || {};
         const date = new Date().toDateString(),
             time = new Date().toTimeString();
 
@@ -77,15 +78,21 @@ const BookNowForm = (props) => {
             loadNumber,
             carrierCode: CARRIER_CODE,
             emptyDateTime: new Date(date + " " + time).toISOString(),
-            availableLoadCosts,
+            availableLoadCosts: [{
+                type, code, description, units, currencyCode, sourceCostPerUnit
+            }],
             emptyLocation: {
-                "city": "Indianapolis",
+                "city": "Greenwood",
                 "state": "IN",
                 "country": "NA",
                 "zip": "46143"
             },
+            "rateConfirmation":{
+                "email": contact?.emailAddress || '',
+                "name": contact?.name || ''
+            }
         }
-        Object.assign(payload, {defaultEmail: "vy4693@gmail.com", env: "dev"});
+        // Object.assign(payload, {defaultEmail: "vy4693@gmail.com", env: "dev"});
         bookNow(payload).then(r => {
             setIsProcessingAsyncReq(false);
             afterBookNow(r.data);

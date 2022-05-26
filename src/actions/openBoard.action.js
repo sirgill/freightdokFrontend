@@ -5,7 +5,7 @@ import { getBaseUrl, getGoUrl, production } from "../config";
 
 export const bookNow = async (body, callback) => {
   try {
-    const response = await axios.post(production.mailServerUrl, body);
+    const response = await axios.post(production.goLangMail, body);
     const { data } = response;
     if (data.success) {
       notification(data.message);
