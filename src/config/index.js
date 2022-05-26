@@ -1,11 +1,11 @@
 const production = {
-  mailServerUrl: "https://mail.freightdok.io",
+  mailServerUrl: "https://mail.freightdok.io/sendMail",
   goLangServerUrl: "https://go.freightdok.io",
   nodeServerUrl: "https://api.freightdok.io",
 };
 
 const development = {
-  mailServerUrl: "http://localhost:9999",
+  mailServerUrl: "http://localhost:9999/sendMail",
   goLangServerUrl: "http://localhost:8080",
   nodeServerUrl: "http://localhost:5000",
 };
