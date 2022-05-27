@@ -1,9 +1,9 @@
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import TextField from "@mui/material/TextField";
-import Background from "./dashboard/ProfileBackground.svg";
+import Background from "./dashboard/ProfileBackground.png";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import ListItemText from "@mui/material/ListItemText";
 import { StyleSheet } from "@react-pdf/renderer";
 import { KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
 
@@ -366,12 +366,12 @@ export const TextFieldHelper = ({
 };
 
 export const ListItemHelper = ({ onClick, icon, primary, to, component, listBarType='', customStyles={}, className }) => {
-  const selectStyle = listBarType.replace(/\s/g, "").toLowerCase() === primary.replace(/\s/g, "").toLowerCase() ? {background: '#F6F9FC'}: {},
-      commonStyles = {borderTopRightRadius: 8, borderBottomRightRadius: 8, cursor: 'pointer', background: '#fff', transition: 'all 0.3s ease'}
+  const selectStyle = listBarType.replace(/\s/g, "").toLowerCase() === primary.replace(/\s/g, "").toLowerCase() ? {background: 'rgba(218, 218, 218, 0.33)'}: {},
+      commonStyles = {borderRadius: '8px', cursor: 'pointer', background: '#fff', transition: 'all 0.3s ease', gap: '10px'}
   return (
-    <ListItem onClick={onClick} to={to} component={component} className={className} sx={{...commonStyles, ...selectStyle, ...customStyles,'&:hover': {background: '#f8fbfd'}}}>
-      <ListItemIcon>{icon}</ListItemIcon>
-      <ListItemText primary={primary} />
+    <ListItem onClick={onClick} to={to} component={component} className={className} sx={{ ...commonStyles, ...selectStyle, ...customStyles }}>
+      <img src={icon} alt={primary} />
+      <ListItemText primary={primary} className='listItemTextMenu' />
     </ListItem>
   );
 };

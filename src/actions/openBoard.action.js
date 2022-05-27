@@ -31,6 +31,8 @@ export const getShipments = (payload) => {
         })
         .catch(function (error) {
           console.log(error);
+          reject(error)
+          notification(error.message||'', 'error')
         });
     });
   } catch (e) {
@@ -53,7 +55,7 @@ export const getBiddings = (payload) => (dispatch) => {
       .then(async function ({ data: { data: dbData = [] } = {} }) {
         const shipmentsResData = await getShipments(payload);
 
-        const { data: { results = [], statusCode, message = '' } = {} } = shipmentsResData;
+        const { data: { results = [], totalResults, statusCode, message = '' } = {} } = shipmentsResData;
         if(statusCode === 401){
           notification(message, 'error');
         }
@@ -73,7 +75,7 @@ export const getBiddings = (payload) => (dispatch) => {
         dispatch({
           type: GET_SHIPMENTS,
           payload: {
-            data: { results, totalResults: results.length },
+            data: { results, totalResults: totalResults },
             loading: false,
           },
         });
@@ -81,6 +83,7 @@ export const getBiddings = (payload) => (dispatch) => {
       })
       .catch(function (error) {
         console.log(error);
+        notification(error.message, 'error')
         dispatch({
           type: GET_SHIPMENTS,
           payload: { data: {}, loading: false, message: error.message },

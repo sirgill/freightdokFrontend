@@ -14,7 +14,7 @@ export const getDrivers = () => async (dispatch) => {
     console.log(err);
     dispatch({
       type: DRIVER_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
+      payload: { msg: err?.response?.statusText, status: err?.response?.status },
     });
   }
 };

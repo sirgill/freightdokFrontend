@@ -18,7 +18,6 @@ import Loadlistbar from "../loadbar/Loadlistbar.js";
 import Driverlistbar from "../driverbar/Driverlistbar.js";
 import AddDriverForm from "../driver-forms/AddDriver.js";
 import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
-import Avatar from "@material-ui/core/Avatar";
 import { connect } from "react-redux";
 import { logout } from "../../actions/auth";
 import { getCurrentProfile } from "../../actions/profile";
@@ -39,8 +38,15 @@ import { blue } from "../layout/ui/Theme";
 import "../../assets/vendor/nucleo/css/nucleo.css";
 import Settings from "../../views/settings/Settings.js";
 import OwnerOperator from "../../views/ownerOperator/OwnerOperator";
-import OwnerOpForm from "../../views/ownerOperator/Form";
 import OpenBoard from "../../views/openBoard/OpenBoard.js";
+import OpenBoardIcon from '../../assets/icons/openBoard.svg'
+import InvoiceIcon from '../../assets/icons/folder-20-1-1-1-1.svg'
+import FacilitiesIcon from '../../assets/icons/home-20-1-1-1-1.svg'
+import LoadHistoryIcon from '../../assets/icons/list-19-1-1-1-1.svg'
+import MyLoads from '../../assets/icons/shipping-18-1-1-1-1-1.svg'
+import OwnerOperatorIcon from '../../assets/icons/person-43-1-1-1.svg'
+import UsersIcon from '../../assets/icons/account-circle-12-1-1-1-1-1-1-1-1.svg'
+import CarrierProfileIcon from '../../assets/icons/settings-18-1-1-1-1-1.svg'
 
 const Dashboard = ({
   auth: { isAuthenticated, user = {} },
@@ -140,21 +146,21 @@ const Dashboard = ({
         </Grid>
       </div>
       {/* Setting the Left Sidebar */}
-      <List sx={{ pr: 3, height: 'calc(100% - 277px)', overflow:'auto', mt: 2 }}>
+      <List sx={{ px: 3, height: 'calc(100% - 277px)', overflow:'auto', mt: 2 }}>
         <ListItemHelper
           onClick={() => {
             setListBarType("Open Load Board");
           }}
-          icon={<i className={"ni ni-delivery-fast loadsIcon font-25"} />}
+          icon={OpenBoardIcon}
           primary={"Open Load Board"}
           listBarType={listBarType}
         />
         <ListItemHelper
           onClick={() => {
-            setListBarType("loads");
+            setListBarType("My Loads");
           }}
-          icon={<i className={"ni ni-delivery-fast loadsIcon font-25"} />}
-          primary={"Loads"}
+          icon={MyLoads}
+          primary={"My Loads"}
           listBarType={listBarType}
         />
         {/* <ListItemHelper
@@ -172,12 +178,7 @@ const Dashboard = ({
             onClick={() => {
               setListBarType("invoices");
             }}
-            icon={
-              <i
-                className="ni ni-single-copy-04 font-25"
-                style={{ color: "#F3A4B5" }}
-              />
-            }
+            icon={InvoiceIcon}
             primary={"Invoices"}
             listBarType={listBarType}
           />
@@ -187,9 +188,7 @@ const Dashboard = ({
             onClick={() => {
               setListBarType("drivers");
             }}
-            icon={
-              <i className="ni ni-badge font-25" style={{ color: "#2DCE89" }} />
-            }
+            icon={OwnerOperatorIcon}
             primary={"Drivers"}
             listBarType={listBarType}
           />
@@ -199,9 +198,7 @@ const Dashboard = ({
             onClick={() => {
               setListBarType("ownerOp");
             }}
-            icon={
-              <i className="ni ni-badge font-25" style={{ color: "#2DCE89" }} />
-            }
+            icon={OwnerOperatorIcon}
             primary={"Owner Operators"}
             listBarType={listBarType}
           />
@@ -211,12 +208,7 @@ const Dashboard = ({
             onClick={() => {
               setListBarType("users");
             }}
-            icon={
-              <i
-                className="ni ni-circle-08 font-25"
-                style={{ color: "#16294A" }}
-              />
-            }
+            icon={UsersIcon}
             primary={"Users"}
             listBarType={listBarType}
           />
@@ -226,13 +218,8 @@ const Dashboard = ({
             onClick={() => {
               setListBarType("history");
             }}
-            icon={
-              <i
-                className="ni ni-bag-17 font-25"
-                style={{ color: "#5E72E4" }}
-              />
-            }
-            primary={"History"}
+            icon={LoadHistoryIcon}
+            primary={"Load History"}
             listBarType={listBarType}
           />
         )}
@@ -254,12 +241,7 @@ const Dashboard = ({
         <ListItemHelper
           component={Link}
           to={path + "/settings"}
-          icon={
-            <i
-              className="ni ni-settings-gear-65 font-25"
-              style={{ color: "#172B4D" }}
-            />
-          }
+          icon={CarrierProfileIcon}
           primary={"Settings"}
           listBarType={listBarType}
           className="accountDashboardLink"
@@ -268,7 +250,7 @@ const Dashboard = ({
           onClick={() => {
             setListBarType("facilities");
           }}
-          icon={<i className="ni ni-building facilityIcon" />}
+          icon={FacilitiesIcon}
           primary={"Facilities"}
           listBarType={listBarType}
         />
@@ -314,6 +296,7 @@ const Dashboard = ({
                   onChange={({ target: { value } }) => setSearch(value)}
                   placeholder={"Search"}
                   style={{ width: 250 }}
+                  className='searchDashboard'
                 />
               </form>
             </div>
@@ -365,7 +348,7 @@ const Dashboard = ({
                             </div> */}
             </main>
           )}
-          {listBarType === "loads" && (
+          {listBarType === "My Loads" && (
             <main className={classes.contentLoadList}>
               <div className={classes.toolbar} />
               <Loadlistbar resetSearchField={resetSearchField} />

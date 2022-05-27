@@ -1,7 +1,7 @@
 .customTextField {
     background-color: var(--PRIMARY_BLUE);
     padding: 8px 12px;
-    border-radius: 20px;
+    border-radius: 10px;
     color: #fff;
     outline: none;
     border: none;
@@ -10,4 +10,23 @@
 .customTextField::placeholder {
     color: #FDFEFE;
     opacity: 1; /* Firefox */
+}
+
+.searchDashboard {
+    padding-left: 3rem;
+}
+
+.label_searchDashboard {
+    position: relative;
+    margin: 0;
+}
+
+.label_searchDashboard::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 5px;
+    bottom: 0;
+    width: 20px;
+    background: url("../../assets/icons/search-8-1-1-1-1-1-1-1-1-1-1.svg") no-repeat;
 }

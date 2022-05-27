@@ -93,8 +93,9 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
     }
 
     const getLoader = () => {
-        return <Grid container alignItem={'center'} justifyContent='center'
-                     sx={{height: tableState.height || window.innerHeight - 180}}>
+        const innerHeight = window.innerHeight - 180,
+            height = (tableState.height ? tableState.height > innerHeight ? innerHeight : tableState.height : innerHeight ) || innerHeight;
+        return <Grid container alignItem={'center'} justifyContent='center' sx={{height}}>
             <Grid item alignItems='center' sx={{position: 'relative'}}>
                 <Spinner/>
             </Grid>
