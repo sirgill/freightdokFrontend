@@ -370,7 +370,7 @@ export const ListItemHelper = ({ onClick, icon, primary, to, component, listBarT
       commonStyles = {borderRadius: '8px', cursor: 'pointer', background: '#fff', transition: 'all 0.3s ease', gap: '10px'}
   return (
     <ListItem onClick={onClick} to={to} component={component} className={className} sx={{ ...commonStyles, ...selectStyle, ...customStyles }}>
-      <img src={icon} alt={primary} />
+      {icon && <img src={icon} alt={primary}/>}
       <ListItemText primary={primary} className='listItemTextMenu' />
     </ListItem>
   );

@@ -56,7 +56,7 @@ export const getBiddings = (payload) => (dispatch) => {
         const shipmentsResData = await getShipments(payload);
 
         const { data: { results = [], totalResults, statusCode, message = '' } = {} } = shipmentsResData;
-        if(statusCode === 401){
+        if (statusCode === 401){
           notification(message, 'error');
         }
 
