@@ -2,7 +2,7 @@ const production = {
   mailServerUrl: "https://mail.freightdok.io/sendMail",
   goLangServerUrl: "https://go.freightdok.io",
   nodeServerUrl: "https://api.freightdok.io",
-  goLangMail: "https://go.freightdok.io/bookload"
+  goLangBookNow: "https://go.freightdok.io/bookload"
 };
 
 const development = {

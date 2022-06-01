@@ -5,9 +5,10 @@ import TimePicker from '@mui/lab/TimePicker';
 import DatePicker from '@mui/lab/DatePicker';
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import {bookNow} from "../../actions/openBoard.action";
+import {bookNow, saveCHLoadToDb} from "../../actions/openBoard.action";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {notification} from "../../actions/alert";
+import {getUserDetail, triggerCustomEvent} from "../../utils/utils";
 
 const CARRIER_CODE = "T2244688";
 
@@ -64,6 +65,8 @@ const BookNowForm = (props) => {
     const afterBookNow = ({success = false}) => {
         if (success) {
             setIsBookingDone(true);
+            saveCHLoadToDb(row, true);
+            triggerCustomEvent('getBiddings')
         }
     };
 
@@ -73,7 +76,8 @@ const BookNowForm = (props) => {
         const {loadNumber, availableLoadCosts, contact = {}} = row,
             {type, code, description, units, currencyCode, sourceCostPerUnit} = availableLoadCosts[0] || {};
         const date = new Date().toDateString(),
-            time = new Date().toTimeString();
+            time = new Date().toTimeString(),
+            {user: {name, email} = {}} = getUserDetail();
 
         const payload = {
             loadNumber,
@@ -89,27 +93,36 @@ const BookNowForm = (props) => {
                 "zip": "46143"
             },
             "rateConfirmation": {
-                "email": contact?.emailAddress || '',
-                "name": contact?.name || ''
+                email,
+                name
             }
         }
         // Object.assign(payload, {defaultEmail: "vy4693@gmail.com", env: "dev"});
-        bookNow(payload)
-            .then(r => {
-                setIsProcessingAsyncReq(false);
-                if (r.status === 200) {
-                    afterBookNow({success: true});
-                    notification('Booking successful');
+        saveCHLoadToDb(row, false)
+            .then((response) => {
+                const {success, message} = response?.data || {}
+                if (success) {
+                    bookNow(payload)
+                        .then(r => {
+                            setIsProcessingAsyncReq(false);
+                            if (r.status === 200) {
+                                afterBookNow({success: true});
+                                notification('Booking successful');
+                            } else {
+                                console.log(r)
+                                notification(r.data?.message || '', 'error')
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            setIsProcessingAsyncReq(false);
+                            notification(err.message, 'error');
+                        })
+                } else {
+                    notification(message, 'error')
+                    setIsProcessingAsyncReq(false);
+
                 }
-                else {
-                    console.log(r)
-                    notification(r.data?.message || '', 'error')
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                setIsProcessingAsyncReq(false);
-                notification(err.message, 'error');
             })
     }
 

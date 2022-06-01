@@ -13,7 +13,7 @@ import BookNowForm from "./BookNowForm";
 import {addEvent, removeEvent} from "../../utils/utils";
 import Filters from "./Filters";
 
-let payload = productionPayload;
+let payload = developmentPayload;
 
 if (process.env.NODE_ENV === "production") {
     payload = productionPayload;
