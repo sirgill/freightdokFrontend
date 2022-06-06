@@ -1,26 +1,30 @@
 import React, { Fragment, useEffect, useRef } from "react";
-import {Divider, Grid, Modal, Stack, Typography, TextField, Box, Button, Select} from "@mui/material";
-import { makeStyles } from "@material-ui/core/styles";
+import {
+  Divider,
+  Grid,
+  Stack,
+  Typography,
+  TextField,
+  Box,
+  MenuItem,
+  Button,
+  IconButton,
+  Select,
+  Modal
+} from "@mui/material";
+import { ArrowForwardIos as ArrowForwardIosIcon, Close as CloseIcon, Edit as EditIcon, Done as DoneIcon, Cancel as CancelIcon } from '@mui/icons-material'
 import FormControl from "@material-ui/core/FormControl";
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import IconButton from "@material-ui/core/IconButton";
-import EditIcon from "@material-ui/icons/Edit";
-import DoneIcon from "@material-ui/icons/Done";
-import CloseIcon from "@material-ui/icons/Close";
+// import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import InputLabel from "@mui/material/InputLabel";
+// import EditIcon from "@material-ui/icons/Edit";
+// import DoneIcon from "@material-ui/icons/Done";
+// import CloseIcon from "@material-ui/icons/Close";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import CancelIcon from "@material-ui/icons/Cancel";
+// import CancelIcon from "@material-ui/icons/Cancel";
 import { useDispatch, useSelector } from "react-redux";
 import { addLoad, updateLoad } from "../../actions/load";
 import moment from "moment";
 import { getDrivers } from "../../actions/driver";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
 import FilledInput from '@mui/material/FilledInput';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -29,13 +33,11 @@ import { FileCopyOutlined } from "@material-ui/icons";
 import { changeObjectKey } from "../../utils/helper";
 import { useStyles } from "./styles";
 import InputField from "../Atoms/form/InputField";
-import DriverItem from "../drivers/Driveritem";
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TimePicker from '@mui/lab/TimePicker';
 import DatePicker from '@mui/lab/DatePicker';
 import {blue, errorIconColor, successIconColor} from "../layout/ui/Theme";
-import {logger} from "redux-logger/src";
 
 const verticalAlignStyle = {
   position: "absolute",
@@ -252,20 +254,16 @@ const LoadDetailModal = ({
       >
         <div className={classes.paper}>
           <Stack direction={'row'} justifyContent={'space-between'} sx={{mb:2}}>
-            <DeleteIcon
-                onClick={(e) => deleteLoad(_id, e)}
-                style={{ color: "rgb(220, 0, 78)", cursor: "pointer" }}
-            />
-            <CloseIcon
-                id="server-modal-title"
-                onClick={handleClose}
-                style={{
-                  color: "black",
-                  cursor: "pointer",
-                  float: "right",
-                  width: "20px",
-                }}
-            />
+            {/*<DeleteIcon*/}
+            {/*    onClick={(e) => deleteLoad(_id, e)}*/}
+            {/*    style={{ color: "rgb(220, 0, 78)", cursor: "pointer" }}*/}
+            {/*/>*/}
+            <IconButton>
+              <CloseIcon
+                  id="server-modal-title"
+                  onClick={handleClose}
+              />
+            </IconButton>
           </Stack>
           <form onSubmit={handleSubmit}>
 
@@ -281,11 +279,13 @@ const LoadDetailModal = ({
                         type={'select'}
                         label={'Status'}
                         options={[
-                            {id: 'Loading', label: 'Loading'},
-                            {id: 'Unloading', label: 'Unloading'},
-                            {id: 'Cancelled', label: 'Cancelled'},
-                            {id: 'Picked', label: 'Picked'},
-                            {id: 'Delivered', label: 'Delivered'},
+                            {id: 'loadCheckIn', label: 'Load Check-In'},
+                            {id: 'pickupCompete', label: 'Pickup Complete'},
+                            {id: 'arrivedAtDelivery', label: 'Arrived at Delivery'},
+                            {id: 'arrivedAtPickup', label: 'Arrived at Pickup'},
+                            {id: 'empty', label: 'Empty'},
+                            {id: 'unloadComplete', label: 'Unload Complete'},
+                            {id: 'enRoute', label: 'En Route to Delivery'},
                         ]}
                         labelKey='label'
                         valueKey='id'

@@ -16,7 +16,7 @@ import { blue, errorIconColor, successIconColor } from "../layout/ui/Theme";
 import InputField from "../Atoms/form/InputField";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
-import Pdf from "react-to-pdf";
+import ReactToPrint from "react-to-print";
 import "../../App.css";
 
 const Title = ({ name, sx = {}, variant = "body1", children }) => {
@@ -49,11 +49,25 @@ const DialogComponent = ({
     [{ receiverName = "" }] = drop,
     [{ pickupAddress, pickupCity, pickupState, pickupZip }] = pickup;
 
-  const options = {
-    orientation: "landscape",
-    unit: "in",
-    format: [6, 9],
-  };
+
+  const reactToPrintContent = React.useCallback(() => {
+    return ref.current;
+  }, [ref.current]);
+
+  const reactToPrintTrigger = React.useCallback(() => {
+    // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
+    // to the root node of the returned component as it will be overwritten.
+
+    // Bad: the `onClick` here will be overwritten by `react-to-print`
+    // return <button onClick={() => alert('This will not work')}>Print this out!</button>;
+
+    // Good
+    return (
+        <Button variant={'contained'}>
+          Create Invoice
+        </Button>
+    );
+  }, []);
 
   return (
     <Dialog
@@ -65,104 +79,16 @@ const DialogComponent = ({
       TransitionComponent={transition}
       maxWidth={"lg"}
     >
-      <Grid
-        container
-        direction="column"
-        ref={ref}
-        className={pdf ? "" : "display-none"}
-      >
-        <Grid item xs={12} sx={{ p: 3 }}>
-          <Grid container justifyContent={"space-between"}>
-            <Grid item sx={{ flexGrow: 1 }}>
-              <Stack spacing={1}>
-                <Stack>
-                  <Typography sx={{ textAlign: "left" }} variant="h5">
-                    {brokerage}
-                  </Typography>
-                </Stack>
-                //{" "}
-                <Stack>
-                  // {pickupAddress}
-                  //{" "}
-                </Stack>
-                <Stack>
-                  {pickupCity}, {pickupState} {pickupZip}
-                </Stack>
-              </Stack>
-            </Grid>
-            <Grid item>
-              <Stack>
-                <Stack>
-                  <Typography variant="h5" sx={{ textAlign: "right" }}>
-                    Invoice
-                  </Typography>
-                </Stack>
-                <Stack>
-                  <InputField label="Notes" type="textarea" />
-                </Stack>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Divider sx={{ borderBottomWidth: "thin", borderColor: blue }} />
-        <Grid xs={12} item sx={{ p: 3 }}>
-          <Grid container justifyContent={"space-between"}>
-            <Grid item>
-              <Stack spacing={1}>
-                <Stack>
-                  <Typography>Bill To:</Typography>
-                </Stack>
-                <Stack>
-                  <Title sx={{ fontWeight: 700 }}>{brokerage}</Title>
-                </Stack>
-              </Stack>
-            </Grid>
-            <Grid item>
-              <Stack justifyContent={"space-between"} sx={{ height: "100%" }}>
-                <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                  <Title>Load Number</Title>
-                  <InputField value={loadNumber} />
-                </Stack>
-                <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                  <Title>Rate</Title>
-                  <div>{rate}</div>
-                </Stack>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Divider sx={{ borderBottomWidth: "thick", borderColor: blue }} />
-        <Grid xs={12} item sx={{ p: 3 }}>
-          <Grid container justifyContent={"space-between"}>
-            <Grid item>
-              <Stack>
-                <Stack>
-                  <InputField value={"Loads"} readOnly />
-                </Stack>
-                <Stack>
-                  <InputField value={"Lumper by Carrier"} readOnly />
-                </Stack>
-              </Stack>
-            </Grid>
-            <Grid item>
-              <Stack>
-                <Stack>
-                  <InputField value={rate} />
-                </Stack>
-                <Stack>
-                  <InputField value={"hardcode"} />
-                </Stack>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
       <DialogContent sx={{ p: 0 }}>
         <Grid
           container
           direction="column"
-          sx={{ display: pdf ? "none" : "inline-flex" }}
+          ref={ref}
+          sx={{ display: pdf ? "inline-flex" : "inline-flex" }}
         >
+            <style type="text/css" media="print">{"\
+                 @page {\ size: landscape;\ }\
+            "}</style>
           <Grid item xs={12} sx={{ p: 3 }}>
             <Grid container justifyContent={"space-between"}>
               <Grid item sx={{ flexGrow: 1 }}>
@@ -171,10 +97,6 @@ const DialogComponent = ({
                     <Typography sx={{ textAlign: "left" }} variant="h5">
                       {brokerage}
                     </Typography>
-                  </Stack>
-                  <Stack>{pickupAddress}</Stack>
-                  <Stack>
-                    {pickupCity}, {pickupState} {pickupZip}
                   </Stack>
                 </Stack>
               </Grid>
@@ -222,7 +144,7 @@ const DialogComponent = ({
               </Grid>
             </Grid>
           </Grid>
-          <Divider sx={{ borderBottomWidth: "thick", borderColor: blue }} />
+          <Divider sx={{ borderBottomWidth: "thin", borderColor: blue }} />
           <Grid xs={12} item sx={{ p: 3 }}>
             <Grid container justifyContent={"space-between"}>
               <Grid item>
@@ -250,18 +172,18 @@ const DialogComponent = ({
           <Divider sx={{ borderBottomWidth: "thin", borderColor: "#000" }} />
           <Grid item sx={{ p: 2 }} display={"inherit"} direction="column">
             <Stack sx={{ textAlign: "right" }}>
-              <Title>Total: 1061</Title>
+              <Title>Total: - -</Title>
             </Stack>
             <Grid container alignItems={"end"} justifyContent={"space-between"}>
               <Grid xs={3} item>
                 <Button variant={"contained"} size={"small"}>
-                  Add Service
+                  Add Services
                 </Button>
               </Grid>
               <Grid xs={6} item>
-                <Stack justifyContent={"center"}>
-                  <Stack direction={"row"}>
-                    <Typography>Rate Con</Typography>
+                <Stack justifyContent={"center"} gap={"10px"}>
+                  <Stack direction={"row"} justifyContent={'center'} gap={'10px'}>
+                    <Typography textAlign={'center'} sx={{width: 150, background: 'rgb(0, 123, 255)', color: '#FFF', borderRadius: '4px'}}>Rate Con</Typography>
                     <div>
                       {rateConfirmation.length ? (
                         <CheckCircleIcon style={{ color: successIconColor }} />
@@ -270,8 +192,10 @@ const DialogComponent = ({
                       )}
                     </div>
                   </Stack>
-                  <Stack direction={"row"}>
-                    <Typography>POD</Typography>
+                  <Stack direction={"row"} justifyContent={'center'} gap={'10px'}>
+                    <Typography textAlign={'center'} sx={{width: 150, background: 'rgb(0, 123, 255)', color: '#FFF', borderRadius: '4px'}}>
+                        Proof Of Delivery
+                    </Typography>
                     <div>
                       {proofDelivery.length ? (
                         <CheckCircleIcon style={{ color: successIconColor }} />
@@ -280,8 +204,8 @@ const DialogComponent = ({
                       )}
                     </div>
                   </Stack>
-                  <Stack direction={"row"}>
-                    <Typography>Accessorials</Typography>
+                  <Stack direction={"row"} justifyContent={'center'} gap={'10px'}>
+                    <Typography textAlign={'center'} sx={{width: 150, background: 'rgb(0, 123, 255)', color: '#FFF', borderRadius: '4px'}}>Accessorials</Typography>
                     <div>
                       {accessorials.length ? (
                         <CheckCircleIcon style={{ color: successIconColor }} />
@@ -293,28 +217,15 @@ const DialogComponent = ({
                 </Stack>
               </Grid>
               <Grid xs={3} item display={"flex"} justifyContent={"end"}>
-                <Pdf
-                  targetRef={ref}
-                  filename={`${loadNumber}_${brokerage}` + ".pdf"}
-                  options={options}
-                  onComplete={() => {
-                    setPdf(false);
-                    handleClose();
-                  }}
-                >
-                  {({ toPdf }) => (
-                    <Button
-                      variant={"contained"}
-                      size={"small"}
-                      onClick={() => {
-                        setPdf(true);
-                        toPdf();
-                      }}
-                    >
-                      Generate Pdf
-                    </Button>
-                  )}
-                </Pdf>
+                <ReactToPrint
+                    content={reactToPrintContent}
+                    documentTitle="AwesomeFileName"
+                    // onBeforeGetContent={handleOnBeforeGetContent}
+                    // onBeforePrint={handleBeforePrint}
+                    removeAfterPrint
+                    trigger={reactToPrintTrigger}
+                />
+
               </Grid>
             </Grid>
           </Grid>

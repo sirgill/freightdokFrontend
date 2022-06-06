@@ -43,12 +43,13 @@ export const theme = createTheme({
   }
 });
 
-export const SUCCESS_COLOR = 'rgb(40, 167, 69)';
+export const SUCCESS_COLOR = 'rgb(40, 167, 69)',
+  PRIMARY_BLUE = 'rgb(0, 123, 255)';
 
 export const themeNew = createTheme({
   palette: {
     primary: {
-      main: 'rgb(0, 123, 255)',
+      main: PRIMARY_BLUE,
     },
     success: {
       main: SUCCESS_COLOR
