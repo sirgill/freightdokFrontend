@@ -1,7 +1,6 @@
 import {
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   Divider,
   Grid,
@@ -35,7 +34,7 @@ const DialogComponent = ({
   pdf,
   setPdf,
 }) => {
-  const ref = React.createRef();
+  const ref = React.useRef(null);
   const {
       brokerage = "",
       loadNumber = "",
@@ -54,6 +53,7 @@ const DialogComponent = ({
     return ref.current;
   }, [ref.current]);
 
+
   const reactToPrintTrigger = React.useCallback(() => {
     // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
     // to the root node of the returned component as it will be overwritten.
@@ -63,7 +63,7 @@ const DialogComponent = ({
 
     // Good
     return (
-        <Button variant={'contained'}>
+        <Button className='printInvoice' variant={'contained'}>
           Create Invoice
         </Button>
     );
@@ -176,7 +176,7 @@ const DialogComponent = ({
             </Stack>
             <Grid container alignItems={"end"} justifyContent={"space-between"}>
               <Grid xs={3} item>
-                <Button variant={"contained"} size={"small"}>
+                <Button variant={"contained"} size={"small"} className={'addServicesInvoice'}>
                   Add Services
                 </Button>
               </Grid>

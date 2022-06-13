@@ -20,18 +20,22 @@ import InputField from "../Atoms/form/InputField";
 import {Button} from "@material-ui/core";
 import {blue} from "../layout/ui/Theme";
 import SubmitButton from "../Atoms/form/SubmitButton";
+import Modal from "../../views/ownerOperator/Modal";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
-const AddDriverForm = ({
-                           user,
-                           addDriver,
-                           all_drivers,
-                           getLoads,
-                           isEdit = false,
-                           data = {},
-                           closeEditForm,
-                           load: {loads, allLoads, loading},
-                       }) => {
-    const classes = useStyles();
+const AddDriverForm = (props) => {
+    const classes = useStyles(),
+        {
+            user,
+            addDriver,
+            all_drivers,
+            getLoads,
+            isEdit = false,
+            data = {},
+            closeEditForm,
+            load: {loads, allLoads, loading},
+        } = props;
 
     const formTemplate = {
         firstName: "",
@@ -105,69 +109,89 @@ const AddDriverForm = ({
             )}
 
             <Dialog
-                fullWidth={true}
-                maxWidth={"sm"}
+                fullWidth={false}
+                maxWidth={"md"}
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="form-dialog-title"
+                PaperProps={{
+                    sx: {
+                        width: 400
+                    }
+                }}
             >
                 <DialogTitle id="form-dialog-title" sx={{
                     color: blue,
                     textAlign: 'center',
                     fontWeight: 400,
                     letterSpacing: 1
-                }}>{isEdit ? 'Edit' : 'Add'} Driver</DialogTitle>
+                }}>
+
+                        <IconButton
+                            aria-label="close"
+                            onClick={handleClose}
+                            sx={{
+                                position: "absolute",
+                                left: 8,
+                                top: 8,
+                                color: (theme) => theme.palette.grey[500],
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+
+                    {isEdit ? 'Edit' : 'Add'} Driver
+                </DialogTitle>
                 <DialogContent>
                     <div className="">
                         <form className={classes.form}>
                             {count === 1 ? (
                                 <div>
 
-                                    <div>
-                                        <InputField
-                                            name={"firstName"}
-                                            label={"First Name"}
-                                            onChange={updateForm}
-                                            value={form.firstName}
-                                        />
-                                        <InputField
-                                            name={"lastName"}
-                                            label={"Last Name"}
-                                            onChange={updateForm}
-                                            value={form.lastName}
-                                        />
-                                        <InputField
-                                            name={"phoneNumber"}
-                                            label={"Phone Number"}
-                                            onChange={updateForm}
-                                            value={form.phoneNumber}
-                                        />
-                                        {!isEdit && <InputField
-                                            value={form.user}
-                                            name="user"
-                                            onChange={updateForm}
-                                            className={classes.select}
-                                            label='Select Driver'
-                                            type={'select'}
-                                            showFirstBlank={true}
-                                            options={all_drivers.map(driver => ({id: driver._id, label: driver.email}))}
-                                        />}
-                                    </div>
+                            <div>
+                                <InputField
+                                    name={"firstName"}
+                                    label={"First Name"}
+                                    onChange={updateForm}
+                                    value={form.firstName}
+                                />
+                                <InputField
+                                    name={"lastName"}
+                                    label={"Last Name"}
+                                    onChange={updateForm}
+                                    value={form.lastName}
+                                />
+                                <InputField
+                                    name={"phoneNumber"}
+                                    label={"Phone Number"}
+                                    onChange={updateForm}
+                                    value={form.phoneNumber}
+                                />
+                                {!isEdit && <InputField
+                                    value={form.user}
+                                    name="user"
+                                    onChange={updateForm}
+                                    className={classes.select}
+                                    label='Select Driver'
+                                    type={'select'}
+                                    showFirstBlank={true}
+                                    options={all_drivers.map(driver => ({id: driver._id, label: driver.email}))}
+                                />}
+                            </div>
 
-                                    <Grid container spacing={1} style={{marginTop: "20px"}}>
-                                        <Grid item xs={3}></Grid>
-                                        <Grid item xs={6}>
-                                            <SubmitButton
+                                    <Grid container spacing={1} style={{marginTop: "20px"}} justifyContent={'center'}>
+                                        <Grid item xs={12}>
+                                            <Button
+                                                variant={'contained'}
                                                 className=""
                                                 type="submit"
                                                 color="primary"
                                                 onClick={onSubmit}
                                                 style={{width: '100%'}}
                                             >
-                                                Submit
-                                            </SubmitButton>
+                                                {isEdit ? 'Update ' : 'Add ' + 'Driver'}
+                                            </Button>
                                         </Grid>
-                                        <Grid item xs={3}></Grid>
                                     </Grid>
                                 </div>
                             ) : null}

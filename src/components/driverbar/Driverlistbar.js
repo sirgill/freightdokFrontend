@@ -26,15 +26,21 @@ const Driverlistbar = (props = {}) => {
     const classes = useStyles();
 
     const handleDeleteDriver = (driver = {}, e) => {
-      e.stopPropagation();
+        e.stopPropagation();
         const _id = typeof driver.user !== "string" ? driver.user._id : driver.user;
         deleteDriver(_id);
     };
 
+    const handleUpdate = (row = {}, e) => {
+        e.stopPropagation();
+        setEdit({open: true, data: row})
+    };
+
+
     const tableConfig = {
         rowCellPadding: 'inherit',
         emptyMessage: 'No drivers found',
-        onRowClick: (row) => setEdit({open: true, data: row}),
+        // onRowClick: (row) => setEdit({open: true, data: row}),
         columns: [
             {
                 id: 'firstName',
@@ -52,7 +58,11 @@ const Driverlistbar = (props = {}) => {
                 id: 'delete',
                 renderer: ({row}) => {
                     return <Fragment>
-                        <Button onClick={handleDeleteDriver.bind(this, row)} variant='outlined' color='error'>
+                        <Button variant={'contained'} sx={{mr: 2}} onClick={handleUpdate.bind(this, row)}
+                                color='primary'>
+                            Update
+                        </Button>
+                        <Button variant={'contained'} onClick={handleDeleteDriver.bind(this, row)} color='error'>
                             Delete
                         </Button>
                     </Fragment>

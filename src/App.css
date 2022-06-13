@@ -145,3 +145,9 @@ body {
   -o-animation: rotating 2s linear infinite;
   animation: rotating 2s linear infinite;
 }
+
+@media print {
+  .addServicesInvoice, .printInvoice {
+    display: none !important;
+  }
+}
