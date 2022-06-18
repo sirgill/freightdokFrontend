@@ -78,14 +78,14 @@ const UsersList = () => {
                 renderer: ({row: {_id, email, role} = {}}) => {
                     return <Fragment>
                         {user && user.role !== "dispatch" ? (
-                            <Button sx={{mr: 1}} variant='outlined' onClick={() => {
+                            <Button sx={{mr: 1}} variant='contained' onClick={() => {
                                 dispatch(selectUserToEdit({_id, email, role}))
                             }}>
                                 Update
                             </Button>
                         ) : (
                             allowedRolesForDispatch.includes(role) && (
-                                <Button variant='outlined' onClick={() => {
+                                <Button variant='contained' onClick={() => {
                                     dispatch(selectUserToEdit({_id, email, role}))
                                 }}>
                                     Update
@@ -95,7 +95,7 @@ const UsersList = () => {
                         {user &&
                         (user.role === "user" || user.role === "admin") &&
                         user.role !== "dispatch" &&
-                        <Button variant='outlined' color='error' onClick={() => {
+                        <Button variant='contained' color='error' onClick={() => {
                             dispatch(deleteUser(_id));
                         }}>
                             Delete
@@ -109,107 +109,6 @@ const UsersList = () => {
     return (
         <Fragment>
             <EnhancedTable loading={loading} data={list} config={config}/>
-            {/*<TablePagination*/}
-            {/*    rowsPerPageOptions={[5, 10, 15]}*/}
-            {/*    colSpan={3}*/}
-            {/*    count={total}*/}
-            {/*    rowsPerPage={+limit}*/}
-            {/*    page={page}*/}
-            {/*    SelectProps={{*/}
-            {/*        inputProps: {"aria-label": "rows per page"},*/}
-            {/*        native: true,*/}
-            {/*    }}*/}
-            {/*    onChangePage={handleChangePage}*/}
-            {/*    onChangeRowsPerPage={handleChangeRowsPerPage}*/}
-            {/*/>*/}
-            {/*<TableContainer component={Paper} className={classes.TableContainer}>*/}
-            {/*    <Table borderBottom="none" aria-label="caption table">*/}
-            {/*        <TableHead className={classes.TableContainer}>*/}
-            {/*            <TableRow>*/}
-            {/*                <TableCell/>*/}
-            {/*                <TableCell align="center">Name</TableCell>*/}
-            {/*                <TableCell align="center">Email</TableCell>*/}
-            {/*                <TableCell align="center">Role</TableCell>*/}
-            {/*                <TableCell align="center">Actions</TableCell>*/}
-            {/*                <TableCell align="center"/>*/}
-            {/*            </TableRow>*/}
-            {/*        </TableHead>*/}
-            {/*        <TableBody>*/}
-            {/*            {!loading ? (*/}
-            {/*                list.length > 0 ? (*/}
-            {/*                    list.map(({_id, name, email, role}) => (*/}
-            {/*                        <TableRow key={_id}>*/}
-            {/*                            <TableCell align="center"/>*/}
-            {/*                            <TableCell align="center">{name ? name : "--"}</TableCell>*/}
-            {/*                            <TableCell align="center">{email}</TableCell>*/}
-            {/*                            <TableCell align="center">*/}
-            {/*                                {capitalizeFirstLetter(role)}*/}
-            {/*                            </TableCell>*/}
-            {/*                            <TableCell align="center">*/}
-            {/*                                {user && user.role !== "dispatch" ? (*/}
-            {/*                                    <IconButton>*/}
-            {/*                                        <EditIcon*/}
-            {/*                                            color="primary"*/}
-            {/*                                            onClick={() => {*/}
-            {/*                                                dispatch(selectUserToEdit({_id, email, role}));*/}
-            {/*                                            }}*/}
-            {/*                                        />*/}
-            {/*                                    </IconButton>*/}
-            {/*                                ) : (*/}
-            {/*                                    allowedRolesForDispatch.includes(role) && (*/}
-            {/*                                        <IconButton>*/}
-            {/*                                            <EditIcon*/}
-            {/*                                                color="primary"*/}
-            {/*                                                onClick={() => {*/}
-            {/*                                                    dispatch(selectUserToEdit({_id, email, role}));*/}
-            {/*                                                }}*/}
-            {/*                                            />*/}
-            {/*                                        </IconButton>*/}
-            {/*                                    )*/}
-            {/*                                )}*/}
-
-            {/*                                {user &&*/}
-            {/*                                (user.role === "user" || user.role === "admin") &&*/}
-            {/*                                user.role !== "dispatch" && (*/}
-            {/*                                    <IconButton>*/}
-            {/*                                        <DeleteIcon*/}
-            {/*                                            onClick={() => {*/}
-            {/*                                                dispatch(deleteUser(_id));*/}
-            {/*                                            }}*/}
-            {/*                                            style={{color: "rgb(220, 0, 78)"}}*/}
-            {/*                                        />*/}
-            {/*                                    </IconButton>*/}
-            {/*                                )}*/}
-            {/*                            </TableCell>*/}
-            {/*                            <TableCell align="center"/>*/}
-            {/*                        </TableRow>*/}
-            {/*                    ))*/}
-            {/*                ) : (*/}
-            {/*                    <h4>No Users</h4>*/}
-            {/*                )*/}
-            {/*            ) : (*/}
-            {/*                <Spinner/>*/}
-            {/*            )}*/}
-            {/*        </TableBody>*/}
-            {/*        <TableFooter>*/}
-            {/*            <TableRow>*/}
-            {/*                <TablePagination*/}
-            {/*                    rowsPerPageOptions={[5, 10, 15]}*/}
-            {/*                    colSpan={3}*/}
-            {/*                    count={total}*/}
-            {/*                    rowsPerPage={+limit}*/}
-            {/*                    page={page}*/}
-            {/*                    SelectProps={{*/}
-            {/*                        inputProps: {"aria-label": "rows per page"},*/}
-            {/*                        native: true,*/}
-            {/*                    }}*/}
-            {/*                    onChangePage={handleChangePage}*/}
-            {/*                    onChangeRowsPerPage={handleChangeRowsPerPage}*/}
-            {/*                />*/}
-            {/*            </TableRow>*/}
-            {/*        </TableFooter>*/}
-            {/*    </Table>*/}
-            {/*</TableContainer>*/}
         </Fragment>
     );
 };

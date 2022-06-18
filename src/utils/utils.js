@@ -51,9 +51,18 @@ const getUserDetail = () => {
     return {...parseToken(localStorage.getItem('token'))}
 }
 
+const checkObjProperties = (obj) => {
+    for (const key in obj) {
+        if (obj[key] !== null && obj[key] != "")
+            return true;
+    }
+    return false;
+}
+
 export {
     addEvent,
     removeEvent,
     getUserDetail,
+    checkObjProperties,
     triggerCustomEvent
 }

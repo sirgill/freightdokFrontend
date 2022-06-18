@@ -184,6 +184,16 @@ const Dashboard = ({
           />
         )}
         {user && (user.role === "admin" || user.role === "dispatch") && (
+            <ListItemHelper
+                onClick={() => {
+                  setListBarType("users");
+                }}
+                icon={UsersIcon}
+                primary={"Users"}
+                listBarType={listBarType}
+            />
+        )}
+        {user && (user.role === "admin" || user.role === "dispatch") && (
           <ListItemHelper
             onClick={() => {
               setListBarType("drivers");
@@ -200,16 +210,6 @@ const Dashboard = ({
             }}
             icon={OwnerOperatorIcon}
             primary={"Owner Operators"}
-            listBarType={listBarType}
-          />
-        )}
-        {user && (user.role === "admin" || user.role === "dispatch") && (
-          <ListItemHelper
-            onClick={() => {
-              setListBarType("users");
-            }}
-            icon={UsersIcon}
-            primary={"Users"}
             listBarType={listBarType}
           />
         )}

@@ -92,7 +92,8 @@ export const updateUser = (user, id) => async dispatch => {
 export const deleteUser = (id) => async (dispatch, getState) => {
     try {
         dispatch({type: INIT_ADMIN_DELETE_USER});
-        await axios.delete(`/api/users/${id}`);
+        const {status, data: message = ''} = await axios.delete(`/api/users/${id}`);
+        if(status === 200) notification(message)
         const {page, limit} = getState().users;
         dispatch(fetchUsers(+page, +limit));
     } catch (e) {

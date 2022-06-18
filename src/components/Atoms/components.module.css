@@ -30,3 +30,9 @@
     width: 20px;
     background: url("../../assets/icons/search-8-1-1-1-1-1-1-1-1-1-1.svg") no-repeat;
 }
+
+@media screen and (max-width: 695px) {
+    .searchDashboard {
+        width: 200px !important;
+    }
+}

@@ -2,30 +2,54 @@ import DialogTitle from "@mui/material/DialogTitle";
 import _ from 'lodash';
 import {blue} from "../../components/layout/ui/Theme";
 import DialogContent from "@mui/material/DialogContent";
+import Typography from "@mui/material/Typography";
 import InputField from "../../components/Atoms/form/InputField";
 import Grid from "@mui/material/Grid";
 import SubmitButton from "../../components/Atoms/form/SubmitButton";
 import Dialog from "@mui/material/Dialog";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {getBaseUrl} from "../../config";
 import {notification} from "../../actions/alert";
-import {triggerCustomEvent} from "../../utils/utils";
+import {checkObjProperties, triggerCustomEvent} from "../../utils/utils";
+import {Button} from "@mui/material";
+
+const validateForm = ({firstName, lastName, phoneNumber}) => {
+    let errors = {}
+    if (!firstName) {
+        errors.firstName = 'Please provide the First Name'
+    }
+    if (!lastName) {
+        errors.lastName = 'Please provide the Last Name'
+        // return [false, 'Please provide the Last Name', 'lastName']
+    }
+    if (!phoneNumber) {
+        errors.phoneNumber = 'Please provide the Phone Number'
+    }
+    return errors
+}
+const formTemplate = {
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+}
+
 
 const FormModal = (props) => {
-    const { history, match: {params: {id = ''} = {}} = {} } = props;
-    const [form, setForm] = React.useState({});
+    const {history, match: {params: {id = ''} = {}} = {}} = props;
+    const [form, setForm] = React.useState(formTemplate);
+    const [errors, setErrors] = useState(formTemplate);
     const updateForm = (e) => {
         const {target: {name, value} = {}} = e
         setForm({...form, [name]: value});
     }
 
     useEffect(() => {
-        if(id){
-            axios.get(getBaseUrl() + "/api/ownerOperator/"+id)
+        if (id) {
+            axios.get(getBaseUrl() + "/api/ownerOperator/" + id)
                 .then(res => {
-                    const {data : {data = {}} = {}} = res;
-                    if(data) {
+                    const {data: {data = {}} = {}} = res;
+                    if (data) {
                         setForm(data);
                     }
                 })
@@ -35,21 +59,34 @@ const FormModal = (props) => {
         }
     }, [])
 
+    const onBlur = (e) => {
+        const {target: {name, value}} = e;
+        if (value) {
+            setErrors({...errors, [name]: ''});
+        }
+    }
+
     const onSubmit = (e) => {
         e.preventDefault();
         const data = {...form};
-        axios.post(getBaseUrl() + "/api/ownerOperator", data)
-            .then(res => {
-                const {data: {success, message} = {} = {}} = res || {};
-                if (success) {
-                    notification(message);
-                    handleClose();
-                    setTimeout(() => {
-                        triggerCustomEvent('refreshOwnerOp')
-                    }, 500)
-                }
-            })
-            .catch(err => err.message)
+        const errors = validateForm(data);
+        if (_.isEmpty(errors)) {
+            axios.post(getBaseUrl() + "/api/ownerOperator", data)
+                .then(res => {
+                    const {data: {success, message} = {} = {}} = res || {};
+                    if (success) {
+                        notification(message);
+                        handleClose();
+                        setTimeout(() => {
+                            triggerCustomEvent('refreshOwnerOp')
+                        }, 500)
+                    }
+                })
+                .catch(err => err.message)
+        }
+        else {
+            setErrors({...errors})
+        }
     };
 
     const handleClose = () => {
@@ -85,35 +122,41 @@ const FormModal = (props) => {
                                 name={"firstName"}
                                 label={"First Name"}
                                 onChange={updateForm}
-                                value={form.firstName}
+                                value={form.firstName || ''}
+                                errorText={errors['firstName']}
+                                onBlur={onBlur}
                             />
                             <InputField
                                 name={"lastName"}
                                 label={"Last Name"}
                                 onChange={updateForm}
-                                value={form.lastName}
+                                value={form.lastName || ''}
+                                errorText={errors['lastName']}
+                                onBlur={onBlur}
                             />
                             <InputField
                                 name={"phoneNumber"}
                                 label={"Phone Number"}
                                 onChange={updateForm}
-                                value={form.phoneNumber}
+                                value={form.phoneNumber || ''}
+                                onBlur={onBlur}
+                                errorText={errors['phoneNumber']}
                             />
                         </div>
 
                         <Grid container spacing={1} style={{marginTop: "20px"}}>
                             <Grid item xs={3}></Grid>
                             <Grid item xs={6}>
-                                <SubmitButton
+                                <Button
                                     className=""
                                     type="submit"
-                                    color="primary"
+                                    variant={'contained'}
                                     onClick={onSubmit}
                                     style={{width: '100%'}}
-                                    disabled={_.isEmpty(form)}
+                                    disabled={!checkObjProperties(form)}
                                 >
                                     Save
-                                </SubmitButton>
+                                </Button>
                             </Grid>
                             <Grid item xs={3}></Grid>
                         </Grid>
