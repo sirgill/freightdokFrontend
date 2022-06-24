@@ -3,7 +3,7 @@ import Stack from "@mui/material/Stack"
 import Typography from "@mui/material/Typography"
 import React, {useEffect, useState} from "react"
 
-const TablePagination = ({data = [], onPageChange, page, count, limit = 1}) => {
+const TablePagination = ({data = [], onPageChange, page = 0, count = 0, limit = 1}) => {
     const [length, setLength] = useState(0);
 
     useEffect(() => {

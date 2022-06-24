@@ -6,6 +6,7 @@ import { GET_DRIVERS, GET_DRIVER, ADD_DRIVER, PATCH_DRIVER, DELETE_DRIVER, DRIVE
 export const getDrivers = () => async (dispatch) => {
   try {
     const res = await axios.get("/api/drivers/me");
+    Object.assign(res.data, {timestamp: new Date()})
     dispatch({
       type: GET_DRIVERS,
       payload: res.data,

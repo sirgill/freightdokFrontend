@@ -1,13 +1,7 @@
-import React, {Fragment, useState} from "react";
-import {connect} from "react-redux";
+import React, {Fragment, useEffect, useState} from "react";
+import {connect, shallowEqual, useDispatch, useSelector} from "react-redux";
 import {Button} from "@mui/material";
-import {makeStyles} from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
+import moment from "moment";
 
 import Drivers from "../drivers/Drivers.js";
 import {useStyles} from "../HelperCells.js";
@@ -21,9 +15,11 @@ import {
 import EditDriver from "../driver-forms/AddDriver";
 
 const Driverlistbar = (props = {}) => {
-    const {driver: {drivers = [], loading = false}, deleteDriver} = props;
+    const {deleteDriver} = props;
+    const {drivers = [], loading = false, timestamp} = useSelector((state) => state.driver, shallowEqual);
     const [edit, setEdit] = useState({open: false, data: {}});
-    const classes = useStyles();
+    const classes = useStyles(),
+        dispatch = useDispatch();
 
     const handleDeleteDriver = (driver = {}, e) => {
         e.stopPropagation();
@@ -35,6 +31,16 @@ const Driverlistbar = (props = {}) => {
         e.stopPropagation();
         setEdit({open: true, data: row})
     };
+
+    useEffect(() => {
+        const now = moment(new Date());
+        const end = moment(timestamp);
+        const duration = moment.duration(now.diff(end));
+        if(duration.asMinutes() > 5 || typeof timestamp === 'undefined'){
+            dispatch(getDrivers());
+        }
+
+    }, [])
 
 
     const tableConfig = {

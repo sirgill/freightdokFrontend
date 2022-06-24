@@ -12,15 +12,19 @@ import {addEvent, removeEvent} from "../../utils/utils";
 const OwnerOperator = () => {
   const { path } = useRouteMatch(),
       [row, setRow] = useState([]),
+      [loading, setLoading] = useState(false),
     history = useHistory();
 
   function fetchOwnerOp() {
+      setLoading(true);
       axios.get(getBaseUrl() + '/api/ownerOperator').then(r => {
           const {data: {data = []} = {}} = r;
           setRow(data);
+          setLoading(false);
       })
           .catch(err => {
               console.log(err.message)
+              setLoading(false);
           })
   }
 
@@ -96,10 +100,10 @@ const OwnerOperator = () => {
       <EnhancedTable
         config={tableConfig}
         data={row}
-        loading={false}
+        loading={loading}
       />
         <Button variant='contained' component={Link} to={path + '/ownerOp/add'} className={'addNewOwnerOp'}
-                sx={{position: 'absolute', right: 10, "& a:hover": {color: 'none !important' }}}>Add Owner Operator</Button>
+                sx={{position: 'absolute', right: 10, "& .addNewOwnerOp:hover": {color: 'none !important' }}}>Add Owner Operator</Button>
       <Route path={path + "/ownerOp/add"} component={FormModal} />
       <Route path={path + "/ownerOp/edit/:id"} component={FormModal} />
     </div>

@@ -18,6 +18,7 @@ export default function (state = initialState, action) {
         drivers: payload.drivers,
         all_drivers: payload.users,
         loading: false,
+        timestamp: payload.timestamp
       };
     case GET_DRIVER:
       return {
