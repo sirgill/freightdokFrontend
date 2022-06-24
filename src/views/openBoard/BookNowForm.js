@@ -70,14 +70,19 @@ const BookNowForm = (props) => {
         }
     };
 
-    const onBookNow = (e) => {
+    const onSubmit = (e) => {
         e.preventDefault();
-        setIsProcessingAsyncReq(true)
-        const {loadNumber, availableLoadCosts, contact = {}} = row,
-            {type, code, description, units, currencyCode, sourceCostPerUnit} = availableLoadCosts[0] || {};
         const date = new Date().toDateString(),
             time = new Date().toTimeString(),
-            {user: {name, email} = {}} = getUserDetail();
+            dateTime =  new Date(date + " " + time);
+
+        if(dateTime < new Date()){
+            return notification('Empty Date and Time cannot be a past', 'error')
+        }
+        setIsProcessingAsyncReq(true)
+        const {loadNumber, availableLoadCosts} = row,
+            {type, code, description, units, currencyCode, sourceCostPerUnit} = availableLoadCosts[0] || {};
+        const {user: {name = '', email = ''} = {}} = getUserDetail();
 
         const payload = {
             loadNumber,
@@ -92,7 +97,7 @@ const BookNowForm = (props) => {
                 "country": "NA",
                 "zip": "46143"
             },
-            "rateConfirmation": {
+            rateConfirmation: {
                 email,
                 name
             }
@@ -128,7 +133,7 @@ const BookNowForm = (props) => {
 
     return (
         <Modal config={config}>
-            <form noValidate onSubmit={onBookNow}>
+            <form noValidate onSubmit={onSubmit}>
                 <Grid container direction={'column'} textAlign={'center'} px={8} pb={4} gap={'10px'}>
                     <Grid item>
                         <Typography sx={{fontSize: 32}}>C.H Robinson</Typography>
@@ -149,6 +154,7 @@ const BookNowForm = (props) => {
                             <CustomGrid label={'Empty Date'}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <DatePicker
+                                        disablePast={true}
                                         value={
                                             form.emptyDate || new Date()
                                         }
@@ -179,7 +185,7 @@ const BookNowForm = (props) => {
                     </>}
                     {!isBookingDone && <Grid item mt={2}>
                         <Button type='submit' disabled={isProcessingAsyncReq} variant={'contained'}
-                                sx={{p: 2, fontSize: 16, px: 3, py: 3}}>Book Now ${defaultCost}</Button>
+                                sx={{p: 2, fontSize: 16, px: 3, py: 2}}>Book Now ${defaultCost}</Button>
                     </Grid>}
                 </Grid>
             </form>

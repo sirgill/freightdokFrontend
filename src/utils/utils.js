@@ -44,7 +44,7 @@ function parseToken (token = '') {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
 
-    return JSON.parse(jsonPayload);
+    return JSON.parse(jsonPayload) || {};
 }
 
 const getUserDetail = () => {
@@ -53,7 +53,7 @@ const getUserDetail = () => {
 
 const checkObjProperties = (obj) => {
     for (const key in obj) {
-        if (obj[key] !== null && obj[key] != "")
+        if (obj.hasOwnProperty(key) && obj[key] !== null && obj[key] !== "")
             return true;
     }
     return false;

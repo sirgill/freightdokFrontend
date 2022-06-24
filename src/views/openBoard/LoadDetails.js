@@ -7,6 +7,7 @@ import moment from 'moment'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Modal from "../ownerOperator/Modal";
 import Details from "./PickupDetails";
+import {getParsedLoadEquipment} from "./constants";
 
 const Typo = ({label = '', value = '', labelSx = {}}) => {
     return <Stack direction={'row'}>
@@ -15,12 +16,12 @@ const Typo = ({label = '', value = '', labelSx = {}}) => {
     </Stack>
 }
 
-const BasicLoadDetails = ({loadNumber = '', trip, weight}) => {
+const BasicLoadDetails = ({loadNumber = '', trip, weight, equipment = ''}) => {
     return (
         <Box display={'flex'} justifyContent={'center'}>
             <Stack alignItems={'center'}>
                 <Typo value={loadNumber} label={'Load Number'} labelSx={{fontSize: 32}}/>
-                <Typo value={loadNumber} label={'Equipment'} labelSx={{fontSize: 24}}/>
+                <Typo value={equipment} label={'Equipment'} labelSx={{fontSize: 24}}/>
                 <Typo value={weight + ' lbs'} label={'Weight'} labelSx={{fontSize: 24}}/>
                 <Typo value={trip + ' miles'} label={'Trip'} labelSx={{fontSize: 24}}/>
             </Stack>
@@ -30,11 +31,13 @@ const BasicLoadDetails = ({loadNumber = '', trip, weight}) => {
 
 const LoadDetails = (props) => {
     const {location: {state: data = {}} = {}} = props,
+        {modesString = '', standard = ''} = getParsedLoadEquipment(data),
+        equipment = modesString + ' ' + standard,
         {
             loadNumber = '', distance: {miles = ''} = {}, weight: {pounds = ''} = {},
-            origin: {name = '', stateCode, postalCode = '', county = '', pickupScheduleRequest} = {},
+            origin: {name = '', stateCode, postalCode = '', city = '', pickupScheduleRequest} = {},
             destination: {name: destinationName = '', stateCode: destinationStateCode, postalCode: destinationPostal = '',
-                county: destinationCounty = '', scheduleRequest: dropScheduleRequest = ''} = {},
+                city: destinationCity = '', scheduleRequest: dropScheduleRequest = ''} = {},
             pickUpByDate = '',
             deliverBy = ''
         } = data;
@@ -49,7 +52,7 @@ const LoadDetails = (props) => {
                     <Typography align='center' variant='h4'>CH Robinson</Typography>
                 </Grid>
                 <Grid item xs={12} textAlign={'center'}>
-                    <BasicLoadDetails loadNumber={loadNumber} trip={miles} weight={pounds}/>
+                    <BasicLoadDetails loadNumber={loadNumber} trip={miles} weight={pounds} equipment={equipment}/>
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container justifyContent={'center'}>
@@ -57,7 +60,7 @@ const LoadDetails = (props) => {
                             <Details
                                 title={'Pickup'}
                                 name={name}
-                                location={county + ", " + stateCode + " " + postalCode}
+                                location={`${city}${stateCode? ", "+stateCode : ''} ${postalCode}`}
                                 type={'Pickup Date'}
                                 date={moment(pickUpByDate).format('MM/DD/yyyy')}
                                 appointment={pickupScheduleRequest === 'A' ? 'Yes' : 'No'}
@@ -71,7 +74,7 @@ const LoadDetails = (props) => {
                             <Details
                                 title={'Delivery'}
                                 name={destinationName}
-                                location={destinationCounty + ", " + destinationStateCode + " " + destinationPostal}
+                                location={`${destinationCity}${destinationStateCode? ", "+destinationStateCode : ''} ${destinationPostal}`}
                                 type={'Delivery Date'}
                                 date={moment(deliverBy).format('MM/DD/yyyy')}
                                 appointment={dropScheduleRequest === 'A' ? 'Yes' : 'No'}

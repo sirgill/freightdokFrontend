@@ -3,7 +3,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 import MenuItem from "@material-ui/core/MenuItem";
 import {useDispatch, useSelector} from "react-redux";
 import {
@@ -122,17 +122,22 @@ const UserForm = () => {
                 </Button>
             )}
             <Dialog
-                fullWidth={true}
-                maxWidth={"xs"}
+                fullWidth={false}
+                maxWidth={"md"}
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="form-dialog-title"
+                PaperProps={{
+                    sx: {
+                        width: 400
+                    }
+                }}
             >
                 <DialogTitle id="form-dialog-title" sx={{textAlign: 'center', color: blue}}>
                     {user ? "Update" : "Add"} User
                 </DialogTitle>
                 {error ? <p style={{textAlign: "center"}}>{error}</p> : ""}
-                <DialogContent>
+                <DialogContent sx={{p: 0, overflow: 'hidden'}}>
                     <div className="">
                         <form noValidate onSubmit={onSubmit}>
                             <Grid container spacing={1} direction={'column'} sx={{p: 3}}>
@@ -143,7 +148,6 @@ const UserForm = () => {
                                         autoComplete={"off"}
                                         onChange={handleChange}
                                         value={form.email}
-                                        labelStyle={{fontWeight: 600}}
                                         autoFocus
                                     />
                                 </Grid>
@@ -154,7 +158,6 @@ const UserForm = () => {
                                         autoComplete={"off"}
                                         onChange={handleChange}
                                         value={form.password}
-                                        labelStyle={{fontWeight: 600}}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -167,7 +170,6 @@ const UserForm = () => {
                                         type='select'
                                         options={userRoles &&
                                         userRoles.map((role) => ({id: role, label: capitalizeFirstLetter(role)}))}
-                                        labelStyle={{fontWeight: 600}}
                                     />
                                 </Grid>
                                 <Grid item xs={12} justifyContent='center' display={'flex'}>

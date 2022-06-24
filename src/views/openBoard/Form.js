@@ -29,6 +29,7 @@ const Form = (props) => {
     };
 
     const onSubmit = (e) => {
+        //submit bidding
         e.preventDefault();
         Object.assign(row, {
             defaultEmail: "vy4693@gmail.com",
@@ -36,7 +37,7 @@ const Form = (props) => {
             bidAmount: amount,
         });
         const afterSubmit = (data) => {
-            if(data?.success){
+            if (data?.success) {
                 history.goBack();
             }
         }
@@ -49,10 +50,7 @@ const Form = (props) => {
     }
 
     const onAdd = () => {
-        console.log(amount)
-        if (amount) {
-            setAmount(parseInt(amount) + 1)
-        }
+        setAmount(parseInt(amount) + 1)
     }
 
     return (
@@ -66,7 +64,7 @@ const Form = (props) => {
                         Load Number: {loadNumber}
                     </Typography>
                     <Stack direction={'row'} sx={{py: 5}} alignItems={'end'} gap={'10px'} justifyContent={'center'}>
-                        <IconButton onClick={onSubtract} disabled={amount <=0}>
+                        <IconButton onClick={onSubtract} disabled={amount <= 0}>
                             <RemoveIcon/>
                         </IconButton>
                         <div className='dollarInput'>
@@ -83,7 +81,7 @@ const Form = (props) => {
                             <AddIcon/>
                         </IconButton>
                     </Stack>
-                    <Button variant="contained" color="success" onClick={onSubmit} sx={{px: 3, py: 2, fontSize: 16}}>
+                    <Button variant="contained" color="success" onClick={onSubmit} sx={{px: 3, py: 1, fontSize: 16}}>
                         Submit Bid
                     </Button>
                 </form>

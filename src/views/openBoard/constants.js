@@ -51,3 +51,21 @@ export const developmentPayload = {
   modes: ["V", "R"],
   carrierCode: "T2244688",
 };
+
+export const getParsedLoadEquipment = (row = {}) => {
+  let {
+        equipment: {length: {standard = ""} = {}} = {},
+        modes = [],
+      } = row || {},
+      modesString = modes.join(", ");
+  if (standard) {
+    standard = standard + "ft";
+  }
+  if (modesString) {
+    modesString = modesString + ",";
+  }
+
+  return {
+    modesString, standard
+  }
+}

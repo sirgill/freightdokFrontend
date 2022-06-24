@@ -8,7 +8,7 @@ import {bookNow, getBiddings} from "../../actions/openBoard.action";
 import Form from "./Form";
 import {withRouter} from "react-router-dom/cjs/react-router-dom.min";
 import {useDispatch, useSelector} from "react-redux";
-import {developmentPayload, productionPayload} from "./constants";
+import {developmentPayload, getParsedLoadEquipment, productionPayload} from "./constants";
 import BookNowForm from "./BookNowForm";
 import {addEvent, removeEvent} from "../../utils/utils";
 import Filters from "./Filters";
@@ -146,17 +146,7 @@ const OpenBoard = () => {
                 id: "equipment",
                 label: "Equipment",
                 renderer: ({row}) => {
-                    let {
-                            equipment: {length: {standard = ""} = {}} = {},
-                            modes = [],
-                        } = row || {},
-                        modesString = modes.join(", ");
-                    if (standard) {
-                        standard = standard + "ft";
-                    }
-                    if (modesString) {
-                        modesString = modesString + ",";
-                    }
+                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row)
                     return (
                         <Fragment>
                             {modesString} {standard}

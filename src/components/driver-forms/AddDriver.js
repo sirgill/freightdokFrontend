@@ -5,28 +5,19 @@ import {connect} from "react-redux";
 import {addDriver} from "../../actions/driver.js";
 import {getLoads} from "../../actions/load";
 //Material
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import {TextFieldHelper, useStyles} from "../HelperCells.js";
 import InputField from "../Atoms/form/InputField";
-import {Button} from "@material-ui/core";
+import Button from "@mui/material/Button";
 import {blue} from "../layout/ui/Theme";
-import SubmitButton from "../Atoms/form/SubmitButton";
-import Modal from "../../views/ownerOperator/Modal";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import {Box} from "@mui/material";
 
 const AddDriverForm = (props) => {
-    const classes = useStyles(),
-        {
+    const {
             user,
             addDriver,
             all_drivers,
@@ -109,7 +100,6 @@ const AddDriverForm = (props) => {
             )}
 
             <Dialog
-                fullWidth={false}
                 maxWidth={"md"}
                 open={open}
                 onClose={handleClose}
@@ -144,7 +134,7 @@ const AddDriverForm = (props) => {
                 </DialogTitle>
                 <DialogContent>
                     <div className="">
-                        <form className={classes.form}>
+                        <Box component={'form'} sx={{px: 4, pb: 3}}>
                             {count === 1 ? (
                                 <div>
 
@@ -171,7 +161,6 @@ const AddDriverForm = (props) => {
                                     value={form.user}
                                     name="user"
                                     onChange={updateForm}
-                                    className={classes.select}
                                     label='Select Driver'
                                     type={'select'}
                                     showFirstBlank={true}
@@ -195,7 +184,7 @@ const AddDriverForm = (props) => {
                                     </Grid>
                                 </div>
                             ) : null}
-                        </form>
+                        </Box>
                     </div>
                 </DialogContent>
             </Dialog>
