@@ -7,14 +7,18 @@ const PrivateRoute = ({
   component: Component,
   auth: { isAuthenticated, loading },
   ...rest
-}) => (
-  <Route
-    {...rest}
-    render={props =>
-      isAuthenticated ? <Component {...props} /> : <Redirect to="/login" />
-    }
-  />
-);
+}) => {
+  const token = localStorage.getItem('token') || null;
+  console.log(token, isAuthenticated)
+  return (
+      <Route
+          {...rest}
+          render={props =>
+              !!token ? <Component {...props} /> : <Redirect to={{pathname: "/login", state: {from: props.location}}} />
+          }
+      />
+  )
+};
 
 PrivateRoute.propTypes = {
   auth: PropTypes.object.isRequired

@@ -5,7 +5,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
-import History from "@material-ui/icons/History";
 import List from "@mui/material/List";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -271,7 +270,6 @@ const Dashboard = ({
       <AppBar
         position="fixed"
         elevation={0}
-        color="secondary"
         className={classes.appBar}
       >
         <Toolbar>

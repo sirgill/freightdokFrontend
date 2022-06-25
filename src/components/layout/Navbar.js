@@ -170,7 +170,6 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
       <ElevationScroll>
         <AppBar
           position="fixed"
-          color="secondary"
           className={classes.appbarNavbar}
         >
           <Toolbar disablegutter>
