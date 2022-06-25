@@ -105,6 +105,7 @@ export const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     margin: "auto",
     width: "fit-content",
+    padding: theme.spacing(2)
   },
   formControl: {
     minWidth: 120,
@@ -137,6 +138,7 @@ export const useStyles = makeStyles((theme) => ({
     height: 500,
   },
   appBar: {
+    background: '#fff',
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
@@ -280,7 +282,10 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: 20,
     color: '#32325D',
     width: '100%',
-    fontWeight: 700
+    fontWeight: 700,
+    '@media and (max-width: 695px)': {
+      fontSize: 16
+    }
   },
 
   drawerIconContainer: {
@@ -306,6 +311,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   appbarNavbar: {
     zIndex: theme.zIndex.modal + 1,
+    background: '#fff'
   },
   outside: {
     position: "relative",
