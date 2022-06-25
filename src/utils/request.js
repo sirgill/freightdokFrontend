@@ -38,13 +38,14 @@ const regulateService = (config, callback, showTriggers = true) => {
         })
 }
 
-const getConfig = (uri, baseUrl, method, data = {}) => {
+const getConfig = (uri, baseUrl, method, data = {}, headers ={}) => {
     return {
         url: uri,
         baseURL: baseUrl,
         headers: {
             'x-auth-token': localStorage.getItem('token'),
-            'Content-Type': "application/json"
+            'Content-Type': "application/json",
+            ...headers
         },
         method,
         data
@@ -61,6 +62,10 @@ export function requestPut({uri, body, callback, showTriggers, baseUrl = getBase
 
 export function requestDelete({uri, body, callback, showTriggers, baseUrl = getBaseUrl()}) {
     return regulateService(getConfig(uri, baseUrl, 'DELETE', body), callback, showTriggers)
+}
+
+export function requestPatch({uri, body, callback, showTriggers, baseUrl = getBaseUrl()}) {
+    return regulateService(getConfig(uri, baseUrl, 'PATCH', body), callback, showTriggers)
 }
 
 export function requestPost({uri, body, callback, showTriggers, baseUrl = getBaseUrl()}) {

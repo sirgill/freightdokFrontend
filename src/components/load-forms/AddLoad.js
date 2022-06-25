@@ -1,7 +1,6 @@
 import React, {Fragment, useState} from "react";
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import {Stack, Divider} from "@mui/material"
@@ -187,11 +186,15 @@ const AddLoadForm = ({addLoad, user}) => {
             )}
 
             <Dialog
-                fullWidth={true}
                 maxWidth={"sm"}
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="form-dialog-title"
+                PaperProps={{
+                    sx: {
+                        minWidth: 440
+                    }
+                }}
             >
                 <DialogContent>
                     <div className="">

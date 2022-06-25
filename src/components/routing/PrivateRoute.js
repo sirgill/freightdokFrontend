@@ -9,7 +9,6 @@ const PrivateRoute = ({
   ...rest
 }) => {
   const token = localStorage.getItem('token') || null;
-  console.log(token, isAuthenticated)
   return (
       <Route
           {...rest}

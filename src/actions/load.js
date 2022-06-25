@@ -23,6 +23,7 @@ import {
   MERGE_LOAD_DOCS,
   RESET_INVOICE_GENERATED,
 } from "./types";
+import {requestPatch} from "../utils/request";
 
 // import { proxy } from "../../package.json";
 
@@ -178,8 +179,7 @@ export const addLoad = (formData) => async (dispatch) => {
   }
 };
 
-export const updateLoad =
-  (formData, module = "") =>
+export const updateLoad = (formData, module = "") =>
   async (dispatch, getState) => {
     try {
       const form = new FormData();
@@ -196,7 +196,11 @@ export const updateLoad =
         const files = formData[key];
         if (files) for (let file of files) form.append(key, file);
       }
-      await axios.patch("/api/load/modify", form);
+
+      const {success, data} = await requestPatch({uri: "/api/load/modify", body: form})
+      if(success){
+        notification('Load Updated')
+      }
       const {
         load: {
           search: { page, limit, query },
@@ -204,7 +208,6 @@ export const updateLoad =
       } = getState();
       if (!query) dispatch(getLoads(0, 5, module));
       else dispatch(searchLoads(page, limit, query));
-      dispatch(setAlert("Load Updated", "success"));
     } catch (err) {
       notification(err.message, "error");
     }
