@@ -13,7 +13,8 @@ import {getBaseUrl} from "../../config";
 import {notification} from "../../actions/alert";
 import {checkObjProperties, triggerCustomEvent} from "../../utils/utils";
 import {Button} from "@mui/material";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {getDrivers} from "../../actions/driver";
 
 const validateForm = ({firstName, lastName, phoneNumber}) => {
     let errors = {}
@@ -40,6 +41,7 @@ const FormModal = (props) => {
     const {history, match: {params: {id = ''} = {}} = {}} = props;
     const [form, setForm] = React.useState(formTemplate);
     const [errors, setErrors] = useState(formTemplate);
+    const dispatch = useDispatch();
     const updateForm = (e) => {
         const {target: {name, value} = {}} = e
         setForm({...form, [name]: value});
@@ -58,6 +60,9 @@ const FormModal = (props) => {
                 .catch(err => {
                     notification(err.message)
                 })
+        }
+        if(_.isEmpty(allDrivers) && !allDrivers.length){
+            dispatch(getDrivers());
         }
     }, [])
 
