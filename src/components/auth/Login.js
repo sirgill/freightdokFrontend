@@ -42,7 +42,6 @@ import { Form, FormGroup, Input, InputGroup, InputGroupText, InputGroupAddon } f
   const verticalAlignStyle = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
 
 const Login = (props) => {
-  console.log('props login', props)
   const dispatch = useDispatch(),
     history = useHistory();
   const classes = useStyles();

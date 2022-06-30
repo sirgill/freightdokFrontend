@@ -285,7 +285,7 @@ const Dashboard = ({
           <Typography className={classes.tab} sx={{fontWeight: 700, fontSize: 20}}>
             {capitalizeFirstLetter(listBarType || "")}
           </Typography>
-          {listBarType === "invoices" || (
+          {listBarType === "invoices" || listBarType === "Open Load Board" || (
             <div className={classes.loadSearchbar}>
               <form noValidate autoComplete="off" onSubmit={handleSubmit}>
                 <CustomTextField
