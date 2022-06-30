@@ -21,7 +21,7 @@ import {blue} from "../layout/ui/Theme";
 const initialState = {
     email: "",
     password: "",
-    role: "",
+    role: "dispatch",
 };
 
 const UserForm = () => {

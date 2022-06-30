@@ -23,7 +23,6 @@ import {Button} from "@mui/material";
 import Pagination from "../Atoms/table/Pagination";
 
 const UsersList = () => {
-    const classes = useStyles();
     const {list, loading, page, limit, total} = useSelector(
         (state) => state.users
     );

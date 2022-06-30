@@ -13,6 +13,7 @@ import {getBaseUrl} from "../../config";
 import {notification} from "../../actions/alert";
 import {checkObjProperties, triggerCustomEvent} from "../../utils/utils";
 import {Button} from "@mui/material";
+import {useSelector} from "react-redux";
 
 const validateForm = ({firstName, lastName, phoneNumber}) => {
     let errors = {}
@@ -43,6 +44,7 @@ const FormModal = (props) => {
         const {target: {name, value} = {}} = e
         setForm({...form, [name]: value});
     }
+    const allDrivers = useSelector(state => state.driver.all_drivers)
 
     useEffect(() => {
         if (id) {
@@ -142,6 +144,15 @@ const FormModal = (props) => {
                                 onBlur={onBlur}
                                 errorText={errors['phoneNumber']}
                             />
+                            {!id && <InputField
+                                value={form.user}
+                                name="user"
+                                onChange={updateForm}
+                                label='Select Driver'
+                                type={'select'}
+                                showFirstBlank={true}
+                                options={allDrivers.map(driver => ({id: driver._id, label: driver.email}))}
+                            />}
                         </div>
 
                         <Grid container spacing={1} style={{marginTop: "20px"}}>
