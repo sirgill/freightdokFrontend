@@ -178,7 +178,7 @@ const AddDriverForm = (props) => {
                                                 onClick={onSubmit}
                                                 style={{width: '100%'}}
                                             >
-                                                {isEdit ? 'Update ' : 'Add ' + 'Driver'}
+                                                {(isEdit ? 'Update ' : 'Add ') + 'Driver'}
                                             </Button>
                                         </Grid>
                                     </Grid>

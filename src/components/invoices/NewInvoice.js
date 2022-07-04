@@ -8,7 +8,7 @@ import {
     Typography,
     Zoom,
 } from "@mui/material";
-import React, {useEffect, useState, useMemo} from "react";
+import React, {useEffect, useState, useMemo, useCallback} from "react";
 import {useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import {blue, errorIconColor, successIconColor} from "../layout/ui/Theme";
@@ -35,8 +35,11 @@ const DialogComponent = ({
                              data,
                              pdf,
                              setPdf,
+                             getTotal,
                              services,
-                             addService
+                             addService,
+                             onChangeService,
+                             deleteService
                          }) => {
     const ref = React.useRef(null);
     const {
@@ -176,11 +179,14 @@ const DialogComponent = ({
                     <Divider sx={{borderBottomWidth: "thin", borderColor: "#000"}}/>
                     <Grid item sx={{p: 2}} display={"inherit"} direction="column">
                         <Stack sx={{textAlign: "right"}}>
-                            <Title>Total: - -</Title>
+                            <Title>Total: {getTotal() || '- -'}</Title>
                         </Stack>
                         <Grid container alignItems={"end"} justifyContent={"space-between"}>
                             <Grid item xs={12}>
-                                <InvoiceServiceWrapper services={services}/>
+                                <InvoiceServiceWrapper
+                                    onChangeService={onChangeService} services={services} onAddNewService={addService}
+                                    deleteService={deleteService}
+                                />
                             </Grid>
                             <Grid xs={3} item>
                                 <Button variant={"contained"} size={"small"} className={'addServicesInvoice'}
@@ -277,16 +283,24 @@ const Invoice = ({match: {params: {id = ""} = {}} = {}, history}) => {
         setOpen(false);
     };
 
-    const addService = () => {
+    const addService = (service) => {
+        const {label, cost} = service;
         let obj = {
-            serviceName: '',
+            serviceName: label,
             description: '',
             quantity: 1,
-            price: '500',
-            amount: '1100'
+            price: cost,
+            amount: cost
         }
         setServices([...services, obj])
-        // services.push(obj);
+    }
+
+    const onChangeService = (index, {name, value}) => {
+        const row = services[index];
+        row[name] = value;
+        const clone = [...services];
+        clone[index] = row
+        setServices(clone);
     }
 
     const Transition = useMemo(() => {
@@ -303,6 +317,17 @@ const Invoice = ({match: {params: {id = ""} = {}} = {}, history}) => {
             );
         });
     }, []);
+
+    const getTotal = useCallback(() => {
+        const total = services.reduce((acc, service) => parseFloat(service.price) + acc, 0)
+        return total.toFixed(2)
+    }, [services])
+
+    const deleteService = (index) => {
+        const data = services
+        data.splice(index, 1)
+        setServices([...data])
+    }
 
     const createInvoice = async () => {
         // const blob = await pdf(
@@ -328,6 +353,9 @@ const Invoice = ({match: {params: {id = ""} = {}} = {}, history}) => {
                 setPdf={setPdf}
                 services={services}
                 addService={addService}
+                onChangeService={onChangeService}
+                getTotal={getTotal}
+                deleteService={deleteService}
             />
         </div>
     );

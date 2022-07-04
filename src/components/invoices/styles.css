@@ -10,8 +10,8 @@
     font-size: 14px;
 }
 
-.invoiceServiceRow tr {
-    padding: 5px;
+.invoiceServiceRow td {
+    padding: 10px 10px;
 }
 
 .invoiceServiceTable > th{
@@ -28,4 +28,9 @@
 
 .addNewItemRow {
     border-bottom: 1px solid grey;
+}
+
+.listButtonPickerCost {
+    font-weight: 500;
+    font-size: 16px;
 }
