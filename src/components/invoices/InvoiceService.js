@@ -12,7 +12,7 @@ const LOOKUP_DATA = [
 ]
 
 const InvoiceService = ({serviceName, amount, price, quantity, description, index, deleteService, onChangeService}) => {
-    const handleChange= (e) => {
+    const handleChange = (e) => {
         const name = e.target.name
         const value = e.target.value
         if(onChangeService) {
@@ -20,16 +20,40 @@ const InvoiceService = ({serviceName, amount, price, quantity, description, inde
         }
     }
 
+    const handleQuantity = (e) => {
+        const name = e.target.name
+        const value = parseInt(e.target.value)
+        onChangeService(index, {name, value})
+    }
+
+    const onBlur = (e) => {
+        const value = parseInt(e.target.value)
+        const name = e.target.name
+        if(value < 1) {
+            if(onChangeService) {
+                onChangeService(index, {name, value: 1})
+                onChangeService(index, {name: 'price', value: parseInt(amount)});
+
+            }
+        } else {
+            if(onChangeService) {
+                onChangeService(index, {name, value});
+                onChangeService(index, {name: 'price', value: parseInt(amount) * value});
+            }
+        }
+    }
+
     return (
         <Fragment>
             <tr className='invoiceServiceRow'>
                 <td>{serviceName}</td>
-                <td><InputField name={'description'} value={description} onChange={handleChange} placeholder={'Enter item description'} /></td>
-                <td><InputField name={'quantity'} onChange={handleChange} value={quantity} /></td>
-                <td><InputField name={'price'} onChange={handleChange} value={price} /></td>
+                <td><InputField name={'description'} value={description} onChange={handleChange}
+                                placeholder={'Enter item description'}/></td>
+                <td><InputField name={'quantity'} onChange={handleQuantity} onBlur={onBlur} type='number' value={quantity}/></td>
+                <td><InputField name={'price'} onChange={handleChange} value={price}/></td>
                 <td>{price ? `$${parseFloat(price).toFixed(2)}` : '$0.00'}</td>
                 <td><IconButton onClick={deleteService.bind(null, index)}>
-                    <DeleteOutlineIcon color={'error'} />
+                    <DeleteOutlineIcon color={'error'}/>
                 </IconButton></td>
             </tr>
         </Fragment>
@@ -40,15 +64,14 @@ const LookUp = ({handleClose, anchorEl, onAddNewService}) => {
     const [list, setList] = useState(LOOKUP_DATA)
     const onChange = (e) => {
         const val = e.target.value.toLowerCase();
-        if(val){
+        if (val) {
             const filtered = list.filter(item => item.label.toLowerCase().includes(val));
             setList(filtered)
-        }
-        else setList(LOOKUP_DATA)
+        } else setList(LOOKUP_DATA)
     }
 
     const handleClick = (selected) => {
-        if(onAddNewService){
+        if (onAddNewService) {
             onAddNewService(selected)
         }
         handleClose()
@@ -70,14 +93,15 @@ const LookUp = ({handleClose, anchorEl, onAddNewService}) => {
     >
         <Stack sx={{p: 2, width: 500}}>
             <Stack>
-                <InputField name={'search'} autoFocus placeholder='Type on item name' onChange={onChange} />
+                <InputField name={'search'} autoFocus placeholder='Type on item name' onChange={onChange}/>
             </Stack>
             <Stack>
                 <List>
                     {list.map(data => {
                         return <ListItemButton key={data.label} onClick={handleClick.bind(null, data)}>
-                            <ListItem disablePadding secondaryAction={<span className={'listButtonPickerCost'}>{"$" + data.cost}</span>}>
-                                <ListItemText primary={data.label} />
+                            <ListItem disablePadding secondaryAction={<span
+                                className={'listButtonPickerCost'}>{"$" + data.cost}</span>}>
+                                <ListItemText primary={data.label}/>
                             </ListItem>
                         </ListItemButton>
                     })}
@@ -97,7 +121,8 @@ const InvoiceServiceWrapper = ({services, onAddNewService, onChangeService, dele
     const [anchorEl, setAnchorEl] = React.useState(null);
     const servicesComp = useMemo(() => {
         return services.map((s, index) => {
-            return <InvoiceService {...s} index={index} onChangeService={onChangeService} deleteService={deleteService} />
+            return <InvoiceService {...s} index={index} onChangeService={onChangeService}
+                                   deleteService={deleteService}/>
         })
     }, [services])
 
@@ -114,11 +139,11 @@ const InvoiceServiceWrapper = ({services, onAddNewService, onChangeService, dele
             <table className='invoiceServiceTable'>
                 <tr className='tableHeader'>
                     <th>Services</th>
-                    <th></th>
+                    <th/>
                     <th>Quantity</th>
                     <th>Price</th>
                     <th>Amount</th>
-                    <th></th>
+                    <th/>
                 </tr>
                 {servicesComp}
                 <tr className='addNewItemRow'>
