@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {setAlert} from './alert.js';
+import { setAlert } from './alert.js';
 import {
     REGISTER_SUCCESS,
     REGISTER_FAIL,
@@ -15,8 +15,8 @@ import {
 } from './types';
 
 import setAuthToken from '../utils/setAuthToken';
-import {requestPost} from "../utils/request";
-import {notification} from "./alert";
+import { requestPost } from "../utils/request";
+import { notification } from "./alert";
 
 //Load user
 export const loadUser = () => async dispatch => {
@@ -39,14 +39,14 @@ export const loadUser = () => async dispatch => {
 };
 
 // Register user
-export const register = ({name, email, password}) => async dispatch => {
+export const register = ({ name, email, password }) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     };
 
-    const body = JSON.stringify({name, email, password});
+    const body = JSON.stringify({ name, email, password });
 
     try {
         const res = await axios.post('/api/users', body, config);
@@ -71,17 +71,17 @@ export const register = ({name, email, password}) => async dispatch => {
 };
 
 // Login user
-export const login = ({email, password}, history) => async dispatch => {
+export const login = ({ email, password }, history) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     };
 
-    const body = JSON.stringify({email, password});
+    const body = JSON.stringify({ email, password });
 
     try {
-        const {success, data} = await requestPost({uri: '/api/auth', body, showTriggers: false});
+        const { success, data } = await requestPost({ uri: '/api/auth', body, showTriggers: false });
         if (success) {
             setAuthToken(data.token)
 
@@ -97,8 +97,8 @@ export const login = ({email, password}, history) => async dispatch => {
             }
         }
         else {
-            const {errors = []} = data,
-                [{msg = ''}] = errors;
+            const { errors = [] } = data || {},
+                [{ msg = '' }] = errors || [{}];
             notification(msg, 'error')
         }
     } catch (err) {
@@ -118,7 +118,7 @@ export const login = ({email, password}, history) => async dispatch => {
 
 // Update user
 export const updateUser = (data) => async dispatch => {
-    dispatch({type: AUTH_UPDATE});
+    dispatch({ type: AUTH_UPDATE });
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -142,6 +142,6 @@ export const updateUser = (data) => async dispatch => {
 //Logout / Clear Profile
 export const logout = () => dispatch => {
     delete axios.defaults.headers.common['x-auth-token'];
-    dispatch({type: CLEAR_PROFILE});
-    dispatch({type: LOGOUT});
+    dispatch({ type: CLEAR_PROFILE });
+    dispatch({ type: LOGOUT });
 };
