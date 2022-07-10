@@ -13,7 +13,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { theme } from "./ui/Theme";
+import { themeNew } from "./ui/Theme";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { logout } from "../../actions/auth";
@@ -35,7 +35,7 @@ function ElevationScroll(props) {
 const Navbar = ({ auth: { isAuthenticated, loading } }) => {
   const classes = useStyles();
   const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
-  const matches = useMediaQuery(theme.breakpoints.down("md"));
+  const matches = useMediaQuery(themeNew.breakpoints.down("md"));
 
   const [openDrawer, setOpenDrawer] = useState(false);
 

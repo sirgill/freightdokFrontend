@@ -10,7 +10,7 @@ import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
 import Alert from "./components/layout/Alert";
 import {ThemeProvider as MUI4ThemeProvider} from "@material-ui/core/styles";
-import {theme, themeNew} from "./components/layout/ui/Theme";
+import {themeNew} from "./components/layout/ui/Theme";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import ProfileForm from "./components/profile-forms/CreateProfile";
 import EditProfile from "./components/profile-forms/EditProfile";
@@ -28,6 +28,7 @@ import {createTheme, ThemeProvider} from "@mui/material/styles";
 
 import "./App.css";
 import {getBaseUrl} from "./config";
+import LandingPage from "./views/LandingPage/LandingPage";
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -40,26 +41,25 @@ const App = () => {
         store.dispatch(loadUser());
     }, []);
     return (
-        <ThemeProvider theme={themeNew}>
-            <Provider store={store}>
-                <Notification/>
-                <BrowserRouter>
-                    <Route exact path="/" component={Navbar}/>
-                    <Route exact path="/" component={Landing}/>
-                    <Route exact path="/" component={Footer}/>
-                    <Switch>
-                        <Route path="/register" component={Register}/>
-                        <Route path="/login" component={Login}/>
-                        <PrivateRoute path="/profile" component={Profile}/>
-                        <PrivateRoute path="/dashboard" component={Dashboard}/>
-                        <PrivateRoute path="/create-profile" component={ProfileForm}/>
-                        <PrivateRoute path="/edit-profile" component={EditProfile}/>
-                        <PrivateRoute path="/loads" component={Loads}/>
-                        <Route exact path={'/'}><Redirect to='/dashboard'/></Route>
-                    </Switch>
-                </BrowserRouter>
-            </Provider>
-        </ThemeProvider>
+        <Fragment>
+            <Notification/>
+            <BrowserRouter>
+                <Route exact path="/" component={Navbar}/>
+                <Route exact path="/" component={Landing}/>
+                <Route exact path="/" component={Footer}/>
+                <Route exact path={'/home'} component={LandingPage} />
+                <Switch>
+                    <Route path="/register" component={Register}/>
+                    <Route path="/login" component={Login}/>
+                    <PrivateRoute path="/profile" component={Profile}/>
+                    <PrivateRoute path="/dashboard" component={Dashboard}/>
+                    <PrivateRoute path="/create-profile" component={ProfileForm}/>
+                    <PrivateRoute path="/edit-profile" component={EditProfile}/>
+                    <PrivateRoute path="/loads" component={Loads}/>
+                    <Route exact path={'/'}><Redirect to='/dashboard'/></Route>
+                </Switch>
+            </BrowserRouter>
+        </Fragment>
     );
 };
 
