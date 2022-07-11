@@ -36,10 +36,13 @@ const LoadDetails = (props) => {
         {
             loadNumber = '', distance: {miles = ''} = {}, weight: {pounds = ''} = {},
             origin: {name = '', stateCode, postalCode = '', city = '', pickupScheduleRequest} = {},
-            destination: {name: destinationName = '', stateCode: destinationStateCode, postalCode: destinationPostal = '',
-                city: destinationCity = '', scheduleRequest: dropScheduleRequest = ''} = {},
+            destination: {
+                name: destinationName = '', stateCode: destinationStateCode, postalCode: destinationPostal = '',
+                city: destinationCity = '', scheduleRequest: dropScheduleRequest = ''
+            } = {},
             pickUpByDate = '',
-            deliverBy = ''
+            deliverBy = '',
+            readyBy = ''
         } = data;
     const config = {
         title: "",
@@ -60,25 +63,29 @@ const LoadDetails = (props) => {
                             <Details
                                 title={'Pickup'}
                                 name={name}
-                                location={`${city}${stateCode? ", "+stateCode : ''} ${postalCode}`}
+                                location={`${city}${stateCode ? ", " + stateCode : ''} ${postalCode}`}
                                 type={'Pickup Date'}
                                 date={moment(pickUpByDate).format('MM/DD/yyyy')}
                                 appointment={pickupScheduleRequest === 'A' ? 'Yes' : 'No'}
                                 avgLoadTime={'--'}
+                                loadBy={new Date(readyBy).toLocaleDateString()}
+                                loadByType='Ready By'
                             />
                         </Grid>
                         <Grid xs={4} textAlign={'center'}>
-                            <ArrowForwardIcon sx={{fontSize: '8rem'}} />
+                            <ArrowForwardIcon sx={{fontSize: '8rem'}}/>
                         </Grid>
                         <Grid xs={4} textAlign={'center'}>
                             <Details
                                 title={'Delivery'}
                                 name={destinationName}
-                                location={`${destinationCity}${destinationStateCode? ", "+destinationStateCode : ''} ${destinationPostal}`}
+                                location={`${destinationCity}${destinationStateCode ? ", " + destinationStateCode : ''} ${destinationPostal}`}
                                 type={'Delivery Date'}
                                 date={moment(deliverBy).format('MM/DD/yyyy')}
                                 appointment={dropScheduleRequest === 'A' ? 'Yes' : 'No'}
                                 avgLoadTime={'--'}
+                                loadBy={new Date(deliverBy).toLocaleDateString()}
+                                loadByType='Deliver By'
                             />
                         </Grid>
                     </Grid>
