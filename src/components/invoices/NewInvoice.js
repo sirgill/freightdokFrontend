@@ -122,10 +122,10 @@ const DialogComponent = ({
                         </Grid>
                     </Grid>
                     <Divider sx={{borderBottomWidth: "thin", borderColor: blue}}/>
-                    <Grid xs={12} item sx={{p: 3}}>
+                    <Grid xs={12} item>
                         <Grid container justifyContent={"space-between"}>
                             <Grid item>
-                                <Stack spacing={1}>
+                                <Stack spacing={1} sx={{p: 3}}>
                                     <Stack>
                                         <Typography>Bill To:</Typography>
                                     </Stack>
@@ -133,19 +133,21 @@ const DialogComponent = ({
                                         <Title sx={{fontWeight: 700}}>{receiverName}</Title>
                                     </Stack>
                                     <Stack>
-                                        <Title name={"Services"}/>
+                                        <Title sx={{fontWeight: 700}}>{"C.H. Robinson"}</Title>
                                     </Stack>
+                                </Stack>
+                                <Stack sx={{px: 3}}>
+                                    <Title name={"Services"}/>
                                 </Stack>
                             </Grid>
                             <Grid item>
                                 <Stack justifyContent={"space-between"} sx={{height: "100%"}}>
-                                    <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                                        <Title>Load Number</Title>
-                                        <InputField value={loadNumber}/>
+                                    <Stack direction={"row"} alignItems={"center"} spacing={2} p={3}>
+                                        <Title>Load Number: </Title>
+                                        <Title>{loadNumber}</Title>
                                     </Stack>
-                                    <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                                    <Stack sx={{px: 3}}>
                                         <Title>Rate</Title>
-                                        <div>{rate}</div>
                                     </Stack>
                                 </Stack>
                             </Grid>
@@ -197,12 +199,15 @@ const DialogComponent = ({
                             <Grid xs={6} item>
                                 <Stack justifyContent={"center"} gap={"10px"}>
                                     <Stack direction={"row"} justifyContent={'center'} gap={'10px'}>
-                                        <Typography textAlign={'center'} sx={{
-                                            width: 150,
-                                            background: 'rgb(0, 123, 255)',
-                                            color: '#FFF',
-                                            borderRadius: '4px'
-                                        }}>Rate Con</Typography>
+                                        <label htmlFor={'rateCon'}>
+                                            <Typography textAlign={'center'} sx={{
+                                                width: 150,
+                                                background: 'rgb(0, 123, 255)',
+                                                color: '#FFF',
+                                                borderRadius: '4px'
+                                            }}>Rate Con</Typography>
+                                            <input type={'file'} accept={'pdf'} id={'rateCon'} style={{display: 'none'}}/>
+                                        </label>
                                         <div>
                                             {rateConfirmation.length ? (
                                                 <CheckCircleIcon style={{color: successIconColor}}/>
@@ -212,6 +217,7 @@ const DialogComponent = ({
                                         </div>
                                     </Stack>
                                     <Stack direction={"row"} justifyContent={'center'} gap={'10px'}>
+                                        <label htmlFor={'pod'}>
                                         <Typography textAlign={'center'} sx={{
                                             width: 150,
                                             background: 'rgb(0, 123, 255)',
@@ -220,6 +226,8 @@ const DialogComponent = ({
                                         }}>
                                             Proof Of Delivery
                                         </Typography>
+                                            <input type={'file'} accept={'pdf'} id={'pod'} style={{display: 'none'}}/>
+                                        </label>
                                         <div>
                                             {proofDelivery.length ? (
                                                 <CheckCircleIcon style={{color: successIconColor}}/>
@@ -229,12 +237,15 @@ const DialogComponent = ({
                                         </div>
                                     </Stack>
                                     <Stack direction={"row"} justifyContent={'center'} gap={'10px'}>
+                                        <label htmlFor={'accessorials'}>
                                         <Typography textAlign={'center'} sx={{
                                             width: 150,
                                             background: 'rgb(0, 123, 255)',
                                             color: '#FFF',
                                             borderRadius: '4px'
                                         }}>Accessorials</Typography>
+                                            <input type={'file'} accept={'pdf'} id={'accessorials'} style={{display: 'none'}}/>
+                                        </label>
                                         <div>
                                             {accessorials.length ? (
                                                 <CheckCircleIcon style={{color: successIconColor}}/>
@@ -320,7 +331,7 @@ const Invoice = ({match: {params: {id = ""} = {}} = {}, history}) => {
 
     const getTotal = useCallback(() => {
         const total = services.reduce((acc, service) => parseFloat(service.price) + acc, 0)
-        return total.toFixed(2)
+        return "$" + total.toFixed(2)
     }, [services])
 
     const deleteService = (index) => {
