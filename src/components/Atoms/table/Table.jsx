@@ -33,7 +33,7 @@ function Headers({columns = [], config = {}}) {
     </TableRow>;
 }
 
-const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick}) => {
+const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowIndex}) => {
     const {hasDelete = false, onDelete, hover = false, rowCellPadding = 'none', onRowClick = undefined} = config;
     const handleDelete = (id, e) => {
             e.stopPropagation();
@@ -50,19 +50,19 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick}) => 
         </TableCell>;
 
     const cell = columns.map((column, i) => {
-        const {id = '', renderer} = column || {};
+        const {id = '', renderer, emptyState = ''} = column || {};
         let cell;
         if (_.isFunction(renderer)) {
             cell = renderer({row});
         } else {
-            cell = row[id]
+            cell = row[id] || emptyState;
         }
         return <TableCell key={id + i} padding={rowCellPadding} component="th" scope="row">
             {cell}
         </TableCell>
     });
 
-    return <TableRow hover={!!onRowClick} onClick={rowClickHandler} sx={!!onRowClick ? {cursor: 'pointer'} : {}}>
+    return <TableRow key={rowIndex} hover={!!onRowClick} onClick={rowClickHandler} sx={!!onRowClick ? {cursor: 'pointer'} : {}}>
         {cell}
         {hasDelete && deleteCell}
     </TableRow>;
@@ -70,8 +70,12 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick}) => 
 
 const TableData = ({columns, data = [], config = {}, handleRowClick}) => {
 
-    const rows = data.map(row => {
-        return getTableCell({row, columns, config, handleRowClick})
+    const rows = data.map((row, index) => {
+        const {dataKey = ''} = config;
+        if(dataKey) {
+            row = row[dataKey];
+        }
+        return getTableCell({row, columns, config, handleRowClick, rowIndex: index})
     });
 
     return rows

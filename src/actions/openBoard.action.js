@@ -1,7 +1,8 @@
 import axios from "axios";
 import {notification} from "./alert";
-import {GET_SHIPMENTS} from "./types";
-import {getBaseUrl, getGoUrl, production} from "../config";
+import {GET_CHROBINSON_LOADS, GET_SHIPMENTS} from "./types";
+import {getBaseUrl, production} from "../config";
+import {requestGet} from "../utils/request";
 
 export const bookNow = async (body, callback) => {
     try {
@@ -104,5 +105,21 @@ export const saveCHLoadToDb = async (row = {}, isBooked = false) => {
         return response;
     } catch (e) {
         console.log('response', e.response)
+    }
+}
+
+export const getCHLoads = (onlyDelivered = false) => async (dispatch) => {
+    try {
+        let {success, data} = await requestGet({uri: '/api/chRobinson'})
+        if(success) {
+            if(onlyDelivered) {
+                const {loads} = data;
+                data.loads = loads.filter(load => load.isDelivered)
+            }
+            dispatch({type: GET_CHROBINSON_LOADS, payload: data});
+        }
+    }
+    catch (e) {
+        console.log(e.message)
     }
 }

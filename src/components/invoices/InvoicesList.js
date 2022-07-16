@@ -3,18 +3,20 @@ import Button from '@mui/material/Button';
 import TablePagination from '@material-ui/core/TablePagination';
 import {makeStyles} from '@material-ui/core/styles';
 import {resetLoadsSearch} from '../../actions/load.js';
-import {useDispatch, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import Spinner from "../layout/Spinner";
 import Invoices from './Invoices.js';
 import {getInvoiceLoads} from "../../actions/load";
 import EnhancedTable from "../Atoms/table/Table";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
-import LoadDetailModal from "../loads/LoadDetailModal";
 import InvoiceEditItem from "./InvoiceEditItem";
 import {errorIconColor, successIconColor} from "../layout/ui/Theme";
 import {Link, Route} from "react-router-dom";
 import Invoice from "./NewInvoice";
+import {getCHLoads} from "../../actions/openBoard.action";
+import moment from "moment";
+import {getParsedLoadEquipment} from "../../views/openBoard/constants";
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -35,14 +37,16 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
     const [modalEdit, enableEdit] = useState(false);
     const [open, setOpen] = useState({show: false, data: {}});
     const loads = useSelector(state => state.load.loads);
+    const {loads: chLoads = [], totalCount} = useSelector(state => state.openBoard.chRobinsonLoads, shallowEqual);
 
     useEffect(() => {
         setTimeout(() => {
             setLoading(false);
         }, 1000);
         resetSearchField();
-        dispatch(resetLoadsSearch(listBarType));
-        dispatch(getInvoiceLoads());
+        // dispatch(resetLoadsSearch(listBarType));
+        // dispatch(getInvoiceLoads());
+        dispatch(getCHLoads(true));
         return () => {
             resetSearchField();
             dispatch(resetLoadsSearch(listBarType));
@@ -62,49 +66,94 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
     };
 
     const config = {
-        rowCellPadding: 'none',
+        rowCellPadding: "inherit",
         headerCellSx:{pt:1, pb:1},
+        emptyMessage: 'No Invoices found',
+        dataKey: 'loadDetail',
         page,
-        count: total,
+        count: totalCount,
         limit,
         columns: [
             {
                 id: 'loadNumber',
-                label: 'Load #'
+                label: 'Load Number',
             },
             {
-                id: 'brokerage',
-                label: 'Broker'
+                id: "country",
+                label: "Pickup City/State",
+                renderer: ({row}) => {
+                    return (
+                        <Fragment>
+                            {row.origin.city}, {row.origin.stateCode}
+                        </Fragment>
+                    );
+                },
+            },
+            {
+                id: "pickupDate",
+                label: "Pickup Date",
+                renderer: ({row}) => {
+                    let date = "";
+                    if (moment(row.pickUpByDate).isValid()) {
+                        date = moment(row.pickUpByDate).format("M/DD/YYYY");
+                    }
+                    return <Fragment>{date}</Fragment>;
+                },
+            },
+            {
+                id: "deliveryCountry",
+                label: "Delivery City/State",
+                renderer: ({row}) => {
+                    return (
+                        <Fragment>
+                            {row.destination.city}, {row.destination.stateCode}
+                        </Fragment>
+                    );
+                },
+            },
+            {
+                id: "deliveryDate",
+                label: "Delivery Date",
+                renderer: ({row}) => {
+                    let date = "";
+                    if (moment(row.deliverBy).isValid()) {
+                        date = moment(row.deliverBy).format("M/DD/YYYY");
+                    }
+                    return <Fragment>{date}</Fragment>;
+                },
+            },
+            {
+                id: "equipment",
+                label: "Equipment",
+                renderer: ({row}) => {
+                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row)
+                    return (
+                        <Fragment>
+                            {modesString} {standard}
+                        </Fragment>
+                    );
+                },
+            },
+            {
+                id: "weight",
+                label: "Weight",
+                renderer: ({row}) => {
+                    let {weight: {pounds = ""} = {}} = row || {};
+                    if (pounds) pounds = pounds + " lbs";
+                    return <Fragment>{pounds}</Fragment>;
+                },
+            },
+            {
+                id: "company",
+                label: "Company",
+                renderer: () => {
+                    return"C.H Robinson"
+                },
             },
             {
                 id: 'rate',
-                label: 'Rate Amount',
-                renderer: ({row: {rate = ''}}) => rate || '--'
-            },
-            {
-                id: 'rateConfirmation',
-                label: 'Rate Con',
-                renderer: ({row}) => {
-                    return Array.isArray(row.rateConfirmation) && row.rateConfirmation.length > 0 && typeof row.rateConfirmation[0] !== 'string' ?
-                        <CheckCircleIcon style={{color: successIconColor}}/>
-                        : <CancelIcon style={{color: errorIconColor}}/>
-                }
-            },
-            {
-                id: 'loadNumber',
-                label: 'POD',
-                renderer: ({row: {proofDelivery = []}}) => {
-                    return Array.isArray(proofDelivery) && proofDelivery.length > 0 && typeof proofDelivery[0] !== 'string' ?
-                        <CheckCircleIcon style={{color: successIconColor}}/>
-                        : <CancelIcon style={{color: errorIconColor}}/>
-                }
-            },
-            {
-                id: 'edit',
-                label: 'Edit',
-                renderer: ({row}) => {
-                    return <InvoiceEditItem invoice={row} />
-                }
+                label: 'Rate',
+                emptyState: '--'
             },
             {
                 id: '',
@@ -126,33 +175,33 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
     return (
         <div className={classes.table}>
             {/*{loading ? <Spinner/> : (*/}
-                <Fragment>
-                    <EnhancedTable loading={loading} config={config} data={invoices}/>
-                    <Route path={'/dashboard/invoice/:id'} component={Invoice} />
-                    {/*<TablePagination*/}
-                    {/*    rowsPerPageOptions={[5, 10, 15]}*/}
-                    {/*    colSpan={3}*/}
-                    {/*    count={+total}*/}
-                    {/*    rowsPerPage={+limit}*/}
-                    {/*    page={+page}*/}
-                    {/*    SelectProps={{*/}
-                    {/*        inputProps: {'aria-label': 'rows per page'},*/}
-                    {/*        native: false,*/}
-                    {/*    }}*/}
-                    {/*    onChangePage={handleChangePage}*/}
-                    {/*    onChangeRowsPerPage={handleChangeRowsPerPage}*/}
-                    {/*/>*/}
+            <Fragment>
+                <EnhancedTable config={config} data={chLoads} />
+                <Route path={'/dashboard/invoice/:id'} component={Invoice} />
+                {/*<TablePagination*/}
+                {/*    rowsPerPageOptions={[5, 10, 15]}*/}
+                {/*    colSpan={3}*/}
+                {/*    count={+total}*/}
+                {/*    rowsPerPage={+limit}*/}
+                {/*    page={+page}*/}
+                {/*    SelectProps={{*/}
+                {/*        inputProps: {'aria-label': 'rows per page'},*/}
+                {/*        native: false,*/}
+                {/*    }}*/}
+                {/*    onChangePage={handleChangePage}*/}
+                {/*    onChangeRowsPerPage={handleChangeRowsPerPage}*/}
+                {/*/>*/}
 
-                    {/*<LoadDetailModal*/}
-                    {/*    modalEdit={true}*/}
-                    {/*    open={!!open.show}*/}
-                    {/*    load={open?.data}*/}
-                    {/*    handleClose={() => {*/}
-                    {/*        setOpen(false);*/}
-                    {/*        enableEdit(false);*/}
-                    {/*    }}*/}
-                    {/*/>*/}
-                </Fragment>
+                {/*<LoadDetailModal*/}
+                {/*    modalEdit={true}*/}
+                {/*    open={!!open.show}*/}
+                {/*    load={open?.data}*/}
+                {/*    handleClose={() => {*/}
+                {/*        setOpen(false);*/}
+                {/*        enableEdit(false);*/}
+                {/*    }}*/}
+                {/*/>*/}
+            </Fragment>
             {/*// )}*/}
         </div>
     )
