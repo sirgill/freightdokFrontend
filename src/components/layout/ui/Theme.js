@@ -5,7 +5,7 @@ import './Theme.css';
 
 const font = "myriad-pro, sans-serif";
 
-export const blue = "#4691FF",
+export const blue = "#0091ff",
   successIconColor= '#2DCE89',
   errorIconColor = '#F97A5D';
 const white = "#FFFFFF";
@@ -27,7 +27,7 @@ export const theme = createTheme({
     fontFamily: ['Myriad-Pro Light', 'Myriad-Pro Regular',  "Myriad-Pro Bold"].join(','),
     tab: {
       fontweight: 700,
-      color: "#1891FC",
+      color: "#0091ff",
       fontFamily: font,
       fontSize: '1.1rem',
       textTransform: "none"
@@ -45,7 +45,7 @@ export const theme = createTheme({
 });
 
 export const SUCCESS_COLOR = 'rgb(40, 167, 69)',
-  PRIMARY_BLUE = 'rgb(0, 123, 255)';
+  PRIMARY_BLUE = 'rgb(0, 145, 255)';
 
 export const themeNew = createTheme({
   palette: {

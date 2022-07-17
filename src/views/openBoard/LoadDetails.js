@@ -42,7 +42,7 @@ const LoadDetails = (props) => {
             } = {},
             pickUpByDate = '',
             deliverBy = '',
-            readyBy = ''
+            calculatedPickUpByDateTime = ''
         } = data;
     const config = {
         title: "",
@@ -68,7 +68,7 @@ const LoadDetails = (props) => {
                                 date={moment(pickUpByDate).format('MM/DD/yyyy')}
                                 appointment={pickupScheduleRequest === 'A' ? 'Yes' : 'No'}
                                 avgLoadTime={'--'}
-                                loadBy={new Date(readyBy).toLocaleDateString()}
+                                loadBy={new Date(calculatedPickUpByDateTime).getTime()}
                                 loadByType='Ready By'
                             />
                         </Grid>
