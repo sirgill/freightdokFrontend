@@ -44,9 +44,9 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
             setLoading(false);
         }, 1000);
         resetSearchField();
-        // dispatch(resetLoadsSearch(listBarType));
-        // dispatch(getInvoiceLoads());
-        dispatch(getCHLoads(true));
+        dispatch(resetLoadsSearch(listBarType));
+        dispatch(getInvoiceLoads());
+        // dispatch(getCHLoads(true));
         return () => {
             resetSearchField();
             dispatch(resetLoadsSearch(listBarType));
@@ -69,7 +69,6 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
         rowCellPadding: "inherit",
         headerCellSx:{pt:1, pb:1},
         emptyMessage: 'No Invoices found',
-        dataKey: 'loadDetail',
         page,
         count: totalCount,
         limit,
@@ -84,7 +83,7 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
                 renderer: ({row}) => {
                     return (
                         <Fragment>
-                            {row.origin.city}, {row.origin.stateCode}
+                            {row.pickup[0].pickupCity}, {row.pickup[0].pickupState}
                         </Fragment>
                     );
                 },
@@ -104,9 +103,10 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
                 id: "deliveryCountry",
                 label: "Delivery City/State",
                 renderer: ({row}) => {
+                    console.log(row)
                     return (
                         <Fragment>
-                            {row.destination.city}, {row.destination.stateCode}
+                            {row.drop[0].dropCity}, {row.drop[0].dropState}
                         </Fragment>
                     );
                 },
@@ -126,7 +126,7 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
                 id: "equipment",
                 label: "Equipment",
                 renderer: ({row}) => {
-                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row)
+                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row) || {}
                     return (
                         <Fragment>
                             {modesString} {standard}
@@ -176,7 +176,7 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
         <div className={classes.table}>
             {/*{loading ? <Spinner/> : (*/}
             <Fragment>
-                <EnhancedTable config={config} data={chLoads} />
+                <EnhancedTable config={config} data={invoices} />
                 <Route path={'/dashboard/invoice/:id'} component={Invoice} />
                 {/*<TablePagination*/}
                 {/*    rowsPerPageOptions={[5, 10, 15]}*/}
