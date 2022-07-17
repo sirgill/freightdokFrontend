@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useRef } from "react";
+import _ from 'lodash'
 import {
   Divider,
   Grid,
@@ -95,6 +96,7 @@ const LoadDetailModal = ({
     invoice_created,
     bucketFiles = [],
   } = load || {};
+  const bktFiles = _.cloneDeep(bucketFiles)
   const classes = useStyles();
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
@@ -166,7 +168,7 @@ const LoadDetailModal = ({
     if (form.status !== "Delivered") {
       form.invoice_created = false;
     }
-    dispatch(updateLoad({ ...form, _id }, listBarType));
+    dispatch(updateLoad({ ...form, _id }, listBarType, bktFiles));
     // resetFileInputs();
   };
   const handleOnChange = (event) => {

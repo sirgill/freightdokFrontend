@@ -179,7 +179,7 @@ export const addLoad = (formData) => async (dispatch) => {
   }
 };
 
-export const updateLoad = (formData, module = "") =>
+export const updateLoad = (formData, module = "", bucketFiles = {}) =>
   async (dispatch, getState) => {
     try {
       const form = new FormData();
@@ -192,6 +192,7 @@ export const updateLoad = (formData, module = "") =>
           form.append(key, dataToSend);
         }
       }
+      form.append('bucketFiles', JSON.stringify(bucketFiles))
       for (let key of ["rateConfirmation", "proofDelivery"]) {
         const files = formData[key];
         if (files) for (let file of files) form.append(key, file);
