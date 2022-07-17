@@ -42,7 +42,7 @@ const SuccessElement = () => {
 const BookNowForm = (props) => {
     const {location: {state: row = {}} = {}} = props,
         {loadNumber} = row;
-    const [form, setForm] = useState({emptyDate: '', emptyTime: ''}),
+    const [form, setForm] = useState({emptyDate: new Date(), emptyTime: new Date()}),
         [isBookingDone, setIsBookingDone] = useState(false),
         [isProcessingAsyncReq, setIsProcessingAsyncReq] = useState(false);
 
@@ -72,8 +72,8 @@ const BookNowForm = (props) => {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        const date = new Date().toDateString(),
-            time = new Date().toTimeString(),
+        const date = form.emptyDate.toDateString(),
+            time = form.emptyTime.toTimeString(),
             dateTime =  new Date(date + " " + time);
 
         if(dateTime < new Date()){

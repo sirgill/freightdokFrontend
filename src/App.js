@@ -28,7 +28,7 @@ import {createTheme, ThemeProvider} from "@mui/material/styles";
 
 import "./App.css";
 import {getBaseUrl} from "./config";
-import LandingPage from "./views/LandingPage/LandingPage";
+import LandingPage from "./views/landingPage/LandingPage";
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);

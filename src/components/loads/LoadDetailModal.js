@@ -106,7 +106,7 @@ const LoadDetailModal = ({
   const assignedToOptions = state.driver.drivers.map(({user = {}}) => {
     const {name = '', _id = ''} = user || '';
     if(!_id) return {
-      name: 'Invalid Driver', _id: null
+      name: 'Invalid Driver', _id: ''
     };
     return {
       name, _id
@@ -842,7 +842,7 @@ const LoadDetailModal = ({
                     )}
                     <span>
                       {edit ? <Fragment>
-                            <label htmlFor="contained-button-file">
+                            <label htmlFor="contained-button-file1">
                               <input
                                   style={{display: 'none'}}
                                   type="file"
@@ -851,7 +851,7 @@ const LoadDetailModal = ({
                                   disabled={!edit || state.auth.user.role === "driver"}
                                   onChange={handleFileChange}
                                   ref={rateConfirmationRef}
-                                  id="contained-button-file"
+                                  id="contained-button-file1"
                               />
                               <Button variant="outlined" component="span" size='small'>
                                 Attach
@@ -868,7 +868,7 @@ const LoadDetailModal = ({
                   <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
                     {proofDelivery ? (
                         <span>
-                        <a href={rateConfirmation} target="_blank">
+                        <a href={proofDelivery} target="_blank">
                           POD
                         </a>
                       </span>
@@ -877,7 +877,7 @@ const LoadDetailModal = ({
                     )}
                     <span>
                       {edit ?
-                          <label htmlFor="contained-button-file">
+                          <label htmlFor="contained-button-file2">
                             <input
                                 style={{display: 'none'}}
                                 type="file"
@@ -886,7 +886,7 @@ const LoadDetailModal = ({
                                 disabled={!edit}
                                 onChange={handleFileChange}
                                 ref={proofDeliveryRef}
-                                id="contained-button-file"
+                                id="contained-button-file2"
                             />
                             <Button variant="outlined" component="span" size='small'>
                               Attach
@@ -911,7 +911,7 @@ const LoadDetailModal = ({
                     )}
                     <span>
                       {edit ? <Fragment>
-                            <label htmlFor="contained-button-file">
+                            <label htmlFor="contained-button-file3">
                               <input
                                   style={{display: 'none'}}
                                   type="file"
@@ -920,7 +920,7 @@ const LoadDetailModal = ({
                                   disabled={!edit || state.auth.user.role === "driver"}
                                   onChange={handleFileChange}
                                   ref={rateConfirmationRef}
-                                  id="contained-button-file"
+                                  id="contained-button-file3"
                               />
                               <Button variant="outlined" component="span" size='small'>
                                 Attach

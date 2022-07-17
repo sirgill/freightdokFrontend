@@ -97,10 +97,7 @@ export const getBiddings = (payload) => (dispatch) => {
 
 export const saveCHLoadToDb = async (row = {}, isBooked = false) => {
     try {
-        let payload = {isBooked, loadNumber: row.loadNumber};
-        if (!isBooked) {
-            Object.assign(payload, {loadDetail: row})
-        }
+        let payload = {isBooked, loadNumber: row.loadNumber, loadDetail: row};
         const response = await axios.post(getBaseUrl() + '/api/chRobinson', payload);
         return response;
     } catch (e) {
