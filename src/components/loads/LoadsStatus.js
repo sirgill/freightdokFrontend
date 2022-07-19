@@ -16,6 +16,8 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import {errorIconColor, successIconColor} from "../layout/ui/Theme";
 import LoadDetailModal from "./LoadDetailModal";
+import {getParsedLoadEquipment} from "../../views/openBoard/constants";
+import moment from "moment";
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -72,10 +74,8 @@ export default function LoadsStatus({resetSearchField, listBarType}) {
             {
                 id: 'loadNumber',
                 label: 'Load Number'
-            }, {
-                id: 'status',
-                label: 'Load Status'
             },
+
             {
                 id: 'pickupCity',
                 label: 'Pickup City/State',
@@ -84,6 +84,17 @@ export default function LoadsStatus({resetSearchField, listBarType}) {
                         {pickupCity = ''} = pickupData;
                     return <span>{pickupCity}</span>
                 }
+            },
+            {
+                id: "pickupDate",
+                label: "Pickup Date",
+                renderer: ({row}) => {
+                    let date = "";
+                    if (moment(row.pickUpByDate).isValid()) {
+                        date = moment(row.pickUpByDate).format("M/DD/YYYY");
+                    }
+                    return <Fragment>{date}</Fragment>;
+                },
             },
             {
                 id: 'dropCity',
@@ -95,34 +106,44 @@ export default function LoadsStatus({resetSearchField, listBarType}) {
                     return <span>{dropCity}</span>
                 }
             },
+
             {
-                id: 'rateCon',
-                label: 'Rate Con',
-                renderer: ({row: {rateConfirmation = []} = {}}) => {
-                    // console.log('row for pickup city', row)
-                    return Array.isArray(rateConfirmation) && rateConfirmation.length > 0 && typeof rateConfirmation[0] !== 'string' ?
-                        <CheckCircleIcon style={{color: successIconColor}}/>
-                        : <CancelIcon style={{color: errorIconColor}}/>
-                }
+                id: "deliveryDate",
+                label: "Delivery Date",
+                renderer: ({row}) => {
+                    let date = "";
+                    if (moment(row.deliverBy).isValid()) {
+                        date = moment(row.deliverBy).format("M/DD/YYYY");
+                    }
+                    return <Fragment>{date}</Fragment>;
+                },
             },
             {
-                id: 'proofDelivery',
-                label: 'POD',
-                renderer: ({row: {proofDelivery = []} = {}}) => {
-                    // console.log('row for pickup city', row)
-                    return Array.isArray(proofDelivery) && proofDelivery.length > 0 && typeof proofDelivery[0] !== 'string' ?
-                        <CheckCircleIcon style={{color: successIconColor}}/>
-                        : <CancelIcon style={{color: errorIconColor}}/>
-                }
+                id: "equipment",
+                label: "Equipment",
+                renderer: ({row}) => {
+                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row) || {}
+                    return (
+                        <Fragment>
+                            {modesString} {standard}
+                        </Fragment>
+                    );
+                },
+            },
+
+            {
+                id: "company",
+                label: "Company",
+                renderer: () => {
+                    return"C.H Robinson"
+                },
             },
             {
-                id: 'accessorials',
-                label: 'Accessorials',
-                renderer: ({row: {accessorials = []} = {}}) => {
-                    // console.log('row for pickup city', row)
-                    return accessorials.length ? accessorials.join(', ') : '-';
-                }
+                id: 'rate',
+                label: 'Rate',
+                emptyState: '--'
             },
+
         ]
     }
     return (
