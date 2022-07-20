@@ -39,13 +39,15 @@ import Settings from "../../views/settings/Settings.js";
 import OwnerOperator from "../../views/ownerOperator/OwnerOperator";
 import OpenBoard from "../../views/openBoard/OpenBoard.js";
 import OpenBoardIcon from '../../assets/icons/openBoard.svg'
-import InvoiceIcon from '../../assets/icons/folder-20-1-1-1-1.svg'
-import FacilitiesIcon from '../../assets/icons/home-20-1-1-1-1.svg'
-import LoadHistoryIcon from '../../assets/icons/list-19-1-1-1-1.svg'
-import MyLoads from '../../assets/icons/shipping-18-1-1-1-1-1.svg'
-import OwnerOperatorIcon from '../../assets/icons/person-43-1-1-1.svg'
-import UsersIcon from '../../assets/icons/account-circle-12-1-1-1-1-1-1-1-1.svg'
+import InvoiceIcon from '../../assets/icons/icons8-invoices-24.png'
+import FacilitiesIcon from '../../assets/icons/icons8-warehouse-24.png'
+import LoadHistoryIcon from '../../assets/icons/icons8-bulleted-list-24.png'
+import MyLoads from '../../assets/icons/icons8-delivered-24.png'
+import OwnerOperatorIcon from '../../assets/icons/icons8-engineer-24.png'
+import DriverIcon from '../../assets/icons/icons8-driver-24.png'
+import UsersIcon from '../../assets/icons/icons8-user-account-24.png'
 import CarrierProfileIcon from '../../assets/icons/settings-18-1-1-1-1-1.svg'
+import LogoutIcon from '../../assets/icons/icons8-logout-24.png'
 
 const Dashboard = ({
                        auth: {isAuthenticated, user = {}},
@@ -207,7 +209,7 @@ const Dashboard = ({
                         onClick={() => {
                             setListBarType("drivers");
                         }}
-                        icon={OwnerOperatorIcon}
+                        icon={DriverIcon}
                         primary={"Drivers"}
                         listBarType={listBarType}
                     />
@@ -264,9 +266,7 @@ const Dashboard = ({
                     listBarType={listBarType}
                 />
                 <ListItemHelper
-                    icon={
-                        <i className="ni ni-curved-next font-25" style={{color: blue}}/>
-                    }
+                    icon={LogoutIcon}
                     onClick={logout}
                     primary={"Logout"}
                 />

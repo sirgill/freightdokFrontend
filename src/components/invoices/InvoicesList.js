@@ -69,7 +69,6 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
         rowCellPadding: "inherit",
         headerCellSx: { pt: 1, pb: 1 },
         emptyMessage: 'No Invoices found',
-        dataKey: '',
         page,
         count: totalCount,
         limit,
@@ -126,7 +125,7 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
                 id: "equipment",
                 label: "Equipment",
                 renderer: ({ row }) => {
-                    const { modesString = '', standard = '' } = getParsedLoadEquipment(row)
+                    const { modesString = '', standard = '' } = getParsedLoadEquipment(row) || {}
                     return (
                         <Fragment>
                             {modesString} {standard}

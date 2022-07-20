@@ -35,14 +35,15 @@ const LoadDetails = (props) => {
         equipment = modesString + ' ' + standard,
         {
             loadNumber = '', distance: {miles = ''} = {}, weight: {pounds = ''} = {},
-            origin: {name = '', stateCode, postalCode = '', city = '', pickupScheduleRequest} = {},
+            origin: {name = '', stateCode, postalCode = '', city = '', pickupScheduleRequest } = {},
             destination: {
                 name: destinationName = '', stateCode: destinationStateCode, postalCode: destinationPostal = '',
                 city: destinationCity = '', scheduleRequest: dropScheduleRequest = ''
             } = {},
             pickUpByDate = '',
             deliverBy = '',
-            calculatedPickUpByDateTime = ''
+            calculatedPickUpByDateTime = '',
+            calculatedDeliverByDateTime = '',
         } = data;
     const config = {
         title: "",
@@ -84,7 +85,7 @@ const LoadDetails = (props) => {
                                 date={moment(deliverBy).format('MM/DD/yyyy')}
                                 appointment={dropScheduleRequest === 'A' ? 'Yes' : 'No'}
                                 avgLoadTime={'--'}
-                                loadBy={new Date(deliverBy).toLocaleDateString()}
+                                loadBy={new Date(calculatedDeliverByDateTime).getTime()}
                                 loadByType='Deliver By'
                             />
                         </Grid>
