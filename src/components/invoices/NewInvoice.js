@@ -8,10 +8,10 @@ import {
     Typography,
     Zoom,
 } from "@mui/material";
-import React, {useEffect, useState, useMemo, useCallback} from "react";
-import {useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {blue, errorIconColor, successIconColor} from "../layout/ui/Theme";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { blue, errorIconColor, successIconColor } from "../layout/ui/Theme";
 import InputField from "../Atoms/form/InputField";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
@@ -19,41 +19,76 @@ import ReactToPrint from "react-to-print";
 import "../../App.css";
 import "./styles.css";
 import InvoiceServiceWrapper from "./InvoiceService";
+import DocViewer from "./fileViewer/DocViewer";
+import EnhancedTable from "../Atoms/table/Table"
 
-const Title = ({name, sx = {}, variant = "body1", children}) => {
+const Title = ({ name, sx = {}, variant = "body1", children }) => {
     return (
-        <Typography sx={{fontWeight: 700, ...sx}} variant={variant}>
+        <Typography sx={{ fontWeight: 700, ...sx }} variant={variant}>
             {children || name}
         </Typography>
     );
 };
 
+const config = {
+    rowCellPadding: "inherit",
+    columns: [
+        {
+            id: 'serviceName',
+            label: 'Service'
+        },
+        {
+            id: 'quantity',
+            label: 'Quanity'
+        },
+        {
+            id: 'price',
+            label: 'Price'
+        },
+        {
+            id: 'amount',
+            label: 'Amount'
+        },
+    ]
+}
+
 const DialogComponent = ({
-                             transition,
-                             handleClose,
-                             open,
-                             data,
-                             pdf,
-                             setPdf,
-                             getTotal,
-                             services,
-                             addService,
-                             onChangeService,
-                             deleteService
-                         }) => {
+    transition,
+    handleClose,
+    open,
+    data,
+    pdf,
+    setPdf,
+    getTotal,
+    services,
+    addService,
+    onChangeService,
+    deleteService
+}) => {
     const ref = React.useRef(null);
     const {
-            brokerage = "",
-            loadNumber = "",
-            pickup = [],
-            drop = [],
-            rate = "",
-            accessorials = [],
-            proofDelivery = [],
-            rateConfirmation = [],
-        } = data || {},
-        [{receiverName = ""}] = drop || [],
-        [{pickupAddress, pickupCity, pickupState, pickupZip}] = pickup;
+        brokerage = "",
+        loadNumber = "",
+        pickup = [],
+        drop = [],
+        rate = "",
+        accessorials = [],
+        proofDelivery = [],
+        rateConfirmation = [],
+        bucketFiles
+    } = data || {},
+        [{ receiverName = "" }] = drop || [],
+        [{ pickupAddress, pickupCity, pickupState, pickupZip }] = pickup;
+    console.log(bucketFiles)
+
+    const docFileViewer = React.useMemo(() => {
+        return bucketFiles && bucketFiles.map(doc => {
+            return (<>
+                <img className="printThisFull" src={doc.fileLocation} alt={doc.fileName} />
+            </>)
+        })
+    }, [bucketFiles])
+
 
 
     const reactToPrintContent = React.useCallback(() => {
@@ -78,30 +113,31 @@ const DialogComponent = ({
 
     return (
         <Dialog
+            class="printThisFull"
             PaperProps={{
-                sx: {width: "70%"},
+                sx: { width: "70 % " },
             }}
             open={open}
             onClose={handleClose}
             TransitionComponent={transition}
             maxWidth={"lg"}
         >
-            <DialogContent sx={{p: 0}}>
+            <DialogContent sx={{ p: 0 }}>
                 <Grid
                     container
                     direction="column"
                     ref={ref}
-                    sx={{display: pdf ? "inline-flex" : "inline-flex"}}
+                    sx={{ display: pdf ? "inline-flex" : "inline-flex" }}
                 >
                     <style type="text/css" media="print">{"\
                  @page {\ size: landscape;\ }\
             "}</style>
-                    <Grid item xs={12} sx={{p: 3}}>
+                    <Grid item xs={12} sx={{ p: 3 }}>
                         <Grid container justifyContent={"space-between"}>
-                            <Grid item sx={{flexGrow: 1}}>
+                            <Grid item sx={{ flexGrow: 1 }}>
                                 <Stack spacing={1}>
                                     <Stack>
-                                        <Typography sx={{textAlign: "left"}} variant="h5">
+                                        <Typography sx={{ textAlign: "left" }} variant="h5">
                                             {'Sunny Freight'}
                                         </Typography>
                                     </Stack>
@@ -110,94 +146,94 @@ const DialogComponent = ({
                             <Grid item>
                                 <Stack>
                                     <Stack>
-                                        <Typography variant="h5" sx={{textAlign: "right"}}>
+                                        <Typography variant="h5" sx={{ textAlign: "right" }}>
                                             Invoice
                                         </Typography>
                                     </Stack>
                                     <Stack>
-                                        <InputField label="Notes" type="textarea"/>
+                                        <InputField label="Notes" type="textarea" />
                                     </Stack>
                                 </Stack>
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Divider sx={{borderBottomWidth: "thin", borderColor: blue}}/>
+                    <Divider sx={{ borderBottomWidth: "thin", borderColor: blue }} />
                     <Grid xs={12} item>
                         <Grid container justifyContent={"space-between"}>
                             <Grid item>
-                                <Stack spacing={1} sx={{p: 3}}>
+                                <Stack spacing={1} sx={{ p: 3 }}>
                                     <Stack>
                                         <Typography>Bill To:</Typography>
                                     </Stack>
                                     <Stack>
-                                        <Title sx={{fontWeight: 700}}>{receiverName}</Title>
+                                        <Title sx={{ fontWeight: 700 }}>{receiverName}</Title>
                                     </Stack>
                                     <Stack>
-                                        <Title sx={{fontWeight: 700}}>{"C.H. Robinson"}</Title>
+                                        <Title sx={{ fontWeight: 700 }}>{"C.H. Robinson"}</Title>
                                     </Stack>
                                 </Stack>
-                                <Stack sx={{px: 3}}>
-                                    <Title name={"Services"}/>
+                                <Stack sx={{ px: 3 }}>
+                                    <Title name={"Services"} />
                                 </Stack>
                             </Grid>
                             <Grid item>
-                                <Stack justifyContent={"space-between"} sx={{height: "100%"}}>
+                                <Stack justifyContent={"space-between"} sx={{ height: "100%" }}>
                                     <Stack direction={"row"} alignItems={"center"} spacing={2} p={3}>
                                         <Title>Load Number: </Title>
                                         <Title>{loadNumber}</Title>
                                     </Stack>
-                                    <Stack sx={{px: 3}}>
+                                    <Stack sx={{ px: 3 }}>
                                         <Title>Rate</Title>
                                     </Stack>
                                 </Stack>
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Divider sx={{borderBottomWidth: "thin", borderColor: blue}}/>
-                    <Grid xs={12} item sx={{p: 3}}>
+                    <Divider sx={{ borderBottomWidth: "thin", borderColor: blue }} />
+                    <Grid xs={12} item sx={{ p: 3 }}>
                         <Grid container justifyContent={"space-between"}>
                             <Grid item>
                                 <Stack>
                                     <Stack>
-                                        <InputField value={"Loads"} readOnly/>
+                                        <InputField value={"Loads"} readOnly />
                                     </Stack>
                                     <Stack>
-                                        <InputField value={"Lumper by Carrier"} readOnly/>
+                                        <InputField value={"Lumper by Carrier"} readOnly />
                                     </Stack>
                                 </Stack>
                             </Grid>
                             <Grid item>
                                 <Stack>
                                     <Stack>
-                                        <InputField value={rate}/>
+                                        <InputField value={rate} />
                                     </Stack>
                                     <Stack>
-                                        <InputField value={"hardcode"}/>
+                                        <InputField value={"hardcode"} />
                                     </Stack>
                                 </Stack>
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Divider sx={{borderBottomWidth: "thin", borderColor: "#000"}}/>
-                    <Grid item sx={{p: 2}} display={"inherit"} direction="column">
-                        <Stack sx={{textAlign: "right"}}>
+                    <Divider sx={{ borderBottomWidth: "thin", borderColor: "#000" }} />
+                    <Grid item sx={{ p: 2 }} display={"inherit"} direction="column">
+                        <Stack sx={{ textAlign: "right" }}>
                             <Title>Total: {getTotal() || '- -'}</Title>
                         </Stack>
                         <Grid container alignItems={"end"} justifyContent={"space-between"}>
-                            <Grid item xs={12}>
+                            <Grid item xs={12} className='invoiceServiceWrapperGrid'>
                                 <InvoiceServiceWrapper
                                     onChangeService={onChangeService} services={services} onAddNewService={addService}
                                     deleteService={deleteService}
                                 />
                             </Grid>
                             <Grid xs={3} item>
-                                <Button variant={"contained"} size={"small"} className={'addServicesInvoice'}
-                                        onClick={addService}>
+                                {/* <Button variant={"contained"} size={"small"} className={'addServicesInvoice'}
+                                    onClick={addService}>
                                     Add Services
-                                </Button>
+                                </Button> */}
                             </Grid>
                             <Grid xs={6} item>
-                                <Stack justifyContent={"center"} gap={"10px"}>
+                                <Stack justifyContent={"center"} gap={"10px"} className='stack_Uploaders'>
                                     <Stack direction={"row"} justifyContent={'center'} gap={'10px'}>
                                         <label htmlFor={'rateCon'}>
                                             <Typography textAlign={'center'} sx={{
@@ -206,51 +242,51 @@ const DialogComponent = ({
                                                 color: '#FFF',
                                                 borderRadius: '4px'
                                             }}>Rate Con</Typography>
-                                            <input type={'file'} accept={'pdf'} id={'rateCon'} style={{display: 'none'}}/>
+                                            <input type={'file'} accept={'pdf'} id={'rateCon'} style={{ display: 'none' }} />
                                         </label>
                                         <div>
                                             {rateConfirmation.length ? (
-                                                <CheckCircleIcon style={{color: successIconColor}}/>
+                                                <CheckCircleIcon style={{ color: successIconColor }} />
                                             ) : (
-                                                <CancelIcon style={{color: errorIconColor}}/>
+                                                <CancelIcon style={{ color: errorIconColor }} />
                                             )}
                                         </div>
                                     </Stack>
                                     <Stack direction={"row"} justifyContent={'center'} gap={'10px'}>
                                         <label htmlFor={'pod'}>
-                                        <Typography textAlign={'center'} sx={{
-                                            width: 150,
-                                            background: 'rgb(0, 123, 255)',
-                                            color: '#FFF',
-                                            borderRadius: '4px'
-                                        }}>
-                                            Proof Of Delivery
-                                        </Typography>
-                                            <input type={'file'} accept={'pdf'} id={'pod'} style={{display: 'none'}}/>
+                                            <Typography textAlign={'center'} sx={{
+                                                width: 150,
+                                                background: 'rgb(0, 123, 255)',
+                                                color: '#FFF',
+                                                borderRadius: '4px'
+                                            }}>
+                                                Proof Of Delivery
+                                            </Typography>
+                                            <input type={'file'} accept={'pdf'} id={'pod'} style={{ display: 'none' }} />
                                         </label>
                                         <div>
                                             {proofDelivery.length ? (
-                                                <CheckCircleIcon style={{color: successIconColor}}/>
+                                                <CheckCircleIcon style={{ color: successIconColor }} />
                                             ) : (
-                                                <CancelIcon style={{color: errorIconColor}}/>
+                                                <CancelIcon style={{ color: errorIconColor }} />
                                             )}
                                         </div>
                                     </Stack>
                                     <Stack direction={"row"} justifyContent={'center'} gap={'10px'}>
                                         <label htmlFor={'accessorials'}>
-                                        <Typography textAlign={'center'} sx={{
-                                            width: 150,
-                                            background: 'rgb(0, 123, 255)',
-                                            color: '#FFF',
-                                            borderRadius: '4px'
-                                        }}>Accessorials</Typography>
-                                            <input type={'file'} accept={'pdf'} id={'accessorials'} style={{display: 'none'}}/>
+                                            <Typography textAlign={'center'} sx={{
+                                                width: 150,
+                                                background: 'rgb(0, 123, 255)',
+                                                color: '#FFF',
+                                                borderRadius: '4px'
+                                            }}>Accessorials</Typography>
+                                            <input type={'file'} accept={'pdf'} id={'accessorials'} style={{ display: 'none' }} />
                                         </label>
                                         <div>
                                             {accessorials.length ? (
-                                                <CheckCircleIcon style={{color: successIconColor}}/>
+                                                <CheckCircleIcon style={{ color: successIconColor }} />
                                             ) : (
-                                                <CancelIcon style={{color: errorIconColor}}/>
+                                                <CancelIcon style={{ color: errorIconColor }} />
                                             )}
                                         </div>
                                     </Stack>
@@ -259,7 +295,7 @@ const DialogComponent = ({
                             <Grid xs={3} item display={"flex"} justifyContent={"end"}>
                                 <ReactToPrint
                                     content={reactToPrintContent}
-                                    documentTitle="AwesomeFileName"
+                                    documentTitle="Invoice"
                                     // onBeforeGetContent={handleOnBeforeGetContent}
                                     // onBeforePrint={handleBeforePrint}
                                     removeAfterPrint
@@ -267,15 +303,18 @@ const DialogComponent = ({
                                 />
 
                             </Grid>
+                            <Grid sx={{ height: 750, width: '100%', margin: '8px', display: 'flex', alignItems: 'center', flexDirection: 'column', position: 'relative' }} className="pg-viewer">
+                                {docFileViewer}
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
             </DialogContent>
-        </Dialog>
+        </Dialog >
     );
 };
 
-const Invoice = ({match: {params: {id = ""} = {}} = {}, history}) => {
+const Invoice = ({ match: { params: { id = "" } = {} } = {}, history }) => {
     const [open, setOpen] = useState(false);
     const [pdf, setPdf] = useState(false);
     const invoices = useSelector((state) => state.load.invoices.data) || [],
@@ -295,7 +334,7 @@ const Invoice = ({match: {params: {id = ""} = {}} = {}, history}) => {
     };
 
     const addService = (service) => {
-        const {label, cost} = service;
+        const { label, cost } = service;
         let obj = {
             serviceName: label,
             description: '',
@@ -306,7 +345,7 @@ const Invoice = ({match: {params: {id = ""} = {}} = {}, history}) => {
         setServices([...services, obj])
     }
 
-    const onChangeService = (index, {name, value}) => {
+    const onChangeService = (index, { name, value }) => {
         const row = services[index];
         row[name] = value;
         const clone = [...services];

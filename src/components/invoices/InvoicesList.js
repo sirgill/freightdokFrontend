@@ -1,22 +1,22 @@
-import React, {useState, useEffect, Fragment} from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import Button from '@mui/material/Button';
 import TablePagination from '@material-ui/core/TablePagination';
-import {makeStyles} from '@material-ui/core/styles';
-import {resetLoadsSearch} from '../../actions/load.js';
-import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+import { resetLoadsSearch } from '../../actions/load.js';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Spinner from "../layout/Spinner";
 import Invoices from './Invoices.js';
-import {getInvoiceLoads} from "../../actions/load";
+import { getInvoiceLoads } from "../../actions/load";
 import EnhancedTable from "../Atoms/table/Table";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import InvoiceEditItem from "./InvoiceEditItem";
-import {errorIconColor, successIconColor} from "../layout/ui/Theme";
-import {Link, Route} from "react-router-dom";
+import { errorIconColor, successIconColor } from "../layout/ui/Theme";
+import { Link, Route } from "react-router-dom";
 import Invoice from "./NewInvoice";
-import {getCHLoads} from "../../actions/openBoard.action";
+import { getCHLoads } from "../../actions/openBoard.action";
 import moment from "moment";
-import {getParsedLoadEquipment} from "../../views/openBoard/constants";
+import { getParsedLoadEquipment } from "../../views/openBoard/constants";
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -28,25 +28,25 @@ const useStyles = makeStyles({
     },
 });
 
-export default function InvoicesList({setSelectedLoad, resetSearchField, listBarType, load_selected}) {
+export default function InvoicesList({ setSelectedLoad, resetSearchField, listBarType, load_selected }) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
-    const {page, limit, total} = useSelector(state => state.load.invoices);
+    const { page, limit, total } = useSelector(state => state.load.invoices);
     const invoices = useSelector(state => state.load.invoices.data);
     const [modalEdit, enableEdit] = useState(false);
-    const [open, setOpen] = useState({show: false, data: {}});
+    const [open, setOpen] = useState({ show: false, data: {} });
     const loads = useSelector(state => state.load.loads);
-    const {loads: chLoads = [], totalCount} = useSelector(state => state.openBoard.chRobinsonLoads, shallowEqual);
+    const { loads: chLoads = [], totalCount } = useSelector(state => state.openBoard.chRobinsonLoads, shallowEqual);
 
     useEffect(() => {
         setTimeout(() => {
             setLoading(false);
         }, 1000);
         resetSearchField();
-        // dispatch(resetLoadsSearch(listBarType));
-        // dispatch(getInvoiceLoads());
-        dispatch(getCHLoads(true));
+        dispatch(resetLoadsSearch(listBarType));
+        dispatch(getInvoiceLoads());
+        // dispatch(getCHLoads(true));
         return () => {
             resetSearchField();
             dispatch(resetLoadsSearch(listBarType));
@@ -67,9 +67,9 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
 
     const config = {
         rowCellPadding: "inherit",
-        headerCellSx:{pt:1, pb:1},
+        headerCellSx: { pt: 1, pb: 1 },
         emptyMessage: 'No Invoices found',
-        dataKey: 'loadDetail',
+        dataKey: '',
         page,
         count: totalCount,
         limit,
@@ -81,10 +81,10 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
             {
                 id: "country",
                 label: "Pickup City/State",
-                renderer: ({row}) => {
+                renderer: ({ row }) => {
                     return (
                         <Fragment>
-                            {row.origin.city}, {row.origin.stateCode}
+                            {row.pickup[0].pickupCity}, {row.pickup[0].pickupState}
                         </Fragment>
                     );
                 },
@@ -92,7 +92,7 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
             {
                 id: "pickupDate",
                 label: "Pickup Date",
-                renderer: ({row}) => {
+                renderer: ({ row }) => {
                     let date = "";
                     if (moment(row.pickUpByDate).isValid()) {
                         date = moment(row.pickUpByDate).format("M/DD/YYYY");
@@ -103,10 +103,10 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
             {
                 id: "deliveryCountry",
                 label: "Delivery City/State",
-                renderer: ({row}) => {
+                renderer: ({ row }) => {
                     return (
                         <Fragment>
-                            {row.destination.city}, {row.destination.stateCode}
+                            {row.drop[0].dropCity}, {row.drop[0].dropState}
                         </Fragment>
                     );
                 },
@@ -114,7 +114,7 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
             {
                 id: "deliveryDate",
                 label: "Delivery Date",
-                renderer: ({row}) => {
+                renderer: ({ row }) => {
                     let date = "";
                     if (moment(row.deliverBy).isValid()) {
                         date = moment(row.deliverBy).format("M/DD/YYYY");
@@ -125,8 +125,8 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
             {
                 id: "equipment",
                 label: "Equipment",
-                renderer: ({row}) => {
-                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row)
+                renderer: ({ row }) => {
+                    const { modesString = '', standard = '' } = getParsedLoadEquipment(row)
                     return (
                         <Fragment>
                             {modesString} {standard}
@@ -137,8 +137,8 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
             {
                 id: "weight",
                 label: "Weight",
-                renderer: ({row}) => {
-                    let {weight: {pounds = ""} = {}} = row || {};
+                renderer: ({ row }) => {
+                    let { weight: { pounds = "" } = {} } = row || {};
                     if (pounds) pounds = pounds + " lbs";
                     return <Fragment>{pounds}</Fragment>;
                 },
@@ -147,7 +147,7 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
                 id: "company",
                 label: "Company",
                 renderer: () => {
-                    return"C.H Robinson"
+                    return "C.H Robinson"
                 },
             },
             {
@@ -158,7 +158,7 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
             {
                 id: '',
                 label: 'Invoice',
-                renderer: ({row}) => {
+                renderer: ({ row }) => {
                     return <Button
                         component={Link}
                         to={'/dashboard/invoice/' + row._id}
@@ -176,7 +176,7 @@ export default function InvoicesList({setSelectedLoad, resetSearchField, listBar
         <div className={classes.table}>
             {/*{loading ? <Spinner/> : (*/}
             <Fragment>
-                <EnhancedTable config={config} data={chLoads} />
+                <EnhancedTable config={config} data={invoices} />
                 <Route path={'/dashboard/invoice/:id'} component={Invoice} />
                 {/*<TablePagination*/}
                 {/*    rowsPerPageOptions={[5, 10, 15]}*/}

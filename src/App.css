@@ -1,4 +1,4 @@
-:root{
+:root {
   --PRIMARY_BLUE: #4691FF;
 }
 
@@ -33,7 +33,8 @@ body {
 .accountDashboardLink {
   color: #000;
 }
-.accountDashboardLink:hover{
+
+.accountDashboardLink:hover {
   color: #000;
   text-decoration: none;
 }
@@ -101,7 +102,7 @@ body {
 }
 
 .dollarInput input {
-  text-align: center  ;
+  text-align: center;
 }
 
 .dollarSign {
@@ -113,18 +114,23 @@ body {
   padding: 0 8px;
 }
 
-@-webkit-keyframes rotating /* Safari and Chrome */ {
+@-webkit-keyframes rotating
+
+/* Safari and Chrome */
+  {
   from {
     -webkit-transform: rotate(0deg);
     -o-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   to {
     -webkit-transform: rotate(360deg);
     -o-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }
+
 @keyframes rotating {
   from {
     -moz-transform: rotate(360deg);
@@ -132,6 +138,7 @@ body {
     -o-transform: rotate(360deg);
     transform: rotate(360deg);
   }
+
   to {
     -moz-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
@@ -139,6 +146,7 @@ body {
     transform: rotate(0deg);
   }
 }
+
 .rotateIcon {
   -webkit-animation: rotating 2s linear infinite;
   -moz-animation: rotating 2s linear infinite;
@@ -146,12 +154,45 @@ body {
   animation: rotating 2s linear infinite;
 }
 
+.invoiceServiceWrapperGridToPrint {
+  display: none;
+}
+
 @media print {
-  .addServicesInvoice, .printInvoice {
+
+  .addServicesInvoice,
+  .printInvoice,
+  /* .invoiceServiceWrapperGrid, */
+  .stack_Uploaders {
     display: none !important;
+  }
+
+  .serviceInputField {
+    border: none;
+  }
+
+  .invoiceServiceWrapperGridToPrint {
+    display: inline !important;
   }
 }
 
+
 label {
   margin-bottom: 0 !important;
+}
+
+@page {
+  size: 21cm 29.7cm;
+  margin: 2cm
+}
+
+
+@media print {
+  .printThisFull {
+    width: 96%;
+    height: 96%;
+    object-fit: contain;
+    page-break-after: always;
+    page-break-before: always
+  }
 }
