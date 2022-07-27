@@ -16,10 +16,8 @@ const Typo = ({label = '', value = '', labelSx = {}}) => {
     </Stack>
 }
 
-const formatTimeZone = (timeDate) => {
-    const formattedTime = timeDate.substring(timeDate.lastIndexOf('-'), timeDate.length)
-    const [hours, minutes] = formattedTime.split(':');
-    return { hours, minutes }
+const formatTimeZone = (timeDate, tz = '-0500') => {
+    return moment(timeDate).utcOffset(tz).format('HH:mm:ss')
 }
 
 const BasicLoadDetails = ({loadNumber = '', trip, weight, equipment = ''}) => {
@@ -54,18 +52,19 @@ const LoadDetails = (props) => {
         } = data;
     const timeZonePickup = moment(calculatedPickUpByDateTime)._tzm
     const timeZoneDeliveryBy = moment(calculatedDeliverByDateTime)._tzm
+
     const originDetails = stops[0] || {},
         {calculatedArriveByEndDateTime, calculatedArriveByStartDateTime} = originDetails,
-        {hours, minutes} = formatTimeZone(calculatedArriveByStartDateTime),
-        originReadyByRange = `${moment(calculatedArriveByStartDateTime).subtract({hours, minutes}).format("HH:mm:ss")} - ${moment(calculatedArriveByEndDateTime).subtract({minutes, hours}).format("HH:mm:ss")}`;
-    console.log(hours, minutes,moment(calculatedArriveByStartDateTime).subtract({hours, minutes}))
+
+        originReadyByRange = `${formatTimeZone(calculatedArriveByStartDateTime, timeZonePickup)} - ${formatTimeZone(calculatedArriveByEndDateTime, timeZonePickup)}`;
+
     const destinationDetails = stops[1] || {},
         {calculatedArriveByEndDateTime: destEndDateTime, calculatedArriveByStartDateTime: destStartDateTime} = destinationDetails,
-        deliverByRange = `${moment(destStartDateTime).add({minutes: timeZoneDeliveryBy}).format("HH:mm:ss")} - ${moment(destEndDateTime).add({minutes: timeZoneDeliveryBy}).format("HH:mm:ss")}`;
+        deliverByRange = `${formatTimeZone(destStartDateTime, timeZoneDeliveryBy)} - ${formatTimeZone(destEndDateTime, timeZoneDeliveryBy)}`;
     const config = {
         title: "",
     };
-    console.log('stops', stops)
+    
     return (
         <Modal config={config}>
             <Grid container spacing={2} sx={{p: 2}}>
