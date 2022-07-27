@@ -251,7 +251,7 @@ const Dashboard = ({
                 )}
                 <ListItemHelper
                     component={Link}
-                    to={path + "/settings"}
+                    to={path + "/user/settings"}
                     icon={CarrierProfileIcon}
                     primary={"Settings"}
                     listBarType={listBarType}
@@ -341,6 +341,9 @@ const Dashboard = ({
             </nav>
 
             <Grid container className={classes.dashboardContainer}>
+                <Switch>
+                    <Route exact path={path + "/user/settings"} component={Settings}/>
+                </Switch>
                 <Grid item>
                     <Alert/>
                 </Grid>
@@ -453,9 +456,6 @@ const Dashboard = ({
                 {/*    )}*/}
                 {/*</Grid>*/}
             </Grid>
-            <Switch>
-                <Route path={path + "/settings"} component={Settings}/>
-            </Switch>
         </div>
     );
 };
