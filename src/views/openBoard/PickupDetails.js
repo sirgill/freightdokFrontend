@@ -12,7 +12,7 @@ const Details = ({title = '', location = '', name, type = '', date, appointment=
         </Stack>}
         {loadBy && <Stack direction={'row'} justifyContent={'center'}>
             <Typography sx={{fontSize: 24, mr: 1}}>{loadByType}: </Typography>
-            <Typography sx={{fontSize: 24}}>{new Date(loadBy).toISOString().slice(11,19)}</Typography>
+            <Typography sx={{fontSize: 24}}>{loadBy}</Typography>
         </Stack>}
         {appointment && <Stack direction={'row'} justifyContent={'center'}>
             <Typography sx={{fontSize: 24, mr: 1}}>Appointment: </Typography>

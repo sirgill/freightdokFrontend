@@ -16,6 +16,12 @@ const Typo = ({label = '', value = '', labelSx = {}}) => {
     </Stack>
 }
 
+const formatTimeZone = (timeDate) => {
+    const formattedTime = timeDate.substring(timeDate.lastIndexOf('-'), timeDate.length)
+    const [hours, minutes] = formattedTime.split(':');
+    return { hours, minutes }
+}
+
 const BasicLoadDetails = ({loadNumber = '', trip, weight, equipment = ''}) => {
     return (
         <Box display={'flex'} justifyContent={'center'}>
@@ -35,7 +41,7 @@ const LoadDetails = (props) => {
         equipment = modesString + ' ' + standard,
         {
             loadNumber = '', distance: {miles = ''} = {}, weight: {pounds = ''} = {},
-            origin: {name = '', stateCode, postalCode = '', city = '', pickupScheduleRequest } = {},
+            origin: {name = '', stateCode, postalCode = '', city = '', pickupScheduleRequest} = {},
             destination: {
                 name: destinationName = '', stateCode: destinationStateCode, postalCode: destinationPostal = '',
                 city: destinationCity = '', scheduleRequest: dropScheduleRequest = ''
@@ -44,11 +50,22 @@ const LoadDetails = (props) => {
             deliverBy = '',
             calculatedPickUpByDateTime = '',
             calculatedDeliverByDateTime = '',
+            stops = []
         } = data;
+    const timeZonePickup = moment(calculatedPickUpByDateTime)._tzm
+    const timeZoneDeliveryBy = moment(calculatedDeliverByDateTime)._tzm
+    const originDetails = stops[0] || {},
+        {calculatedArriveByEndDateTime, calculatedArriveByStartDateTime} = originDetails,
+        {hours, minutes} = formatTimeZone(calculatedArriveByStartDateTime),
+        originReadyByRange = `${moment(calculatedArriveByStartDateTime).subtract({hours, minutes}).format("HH:mm:ss")} - ${moment(calculatedArriveByEndDateTime).subtract({minutes, hours}).format("HH:mm:ss")}`;
+    console.log(hours, minutes,moment(calculatedArriveByStartDateTime).subtract({hours, minutes}))
+    const destinationDetails = stops[1] || {},
+        {calculatedArriveByEndDateTime: destEndDateTime, calculatedArriveByStartDateTime: destStartDateTime} = destinationDetails,
+        deliverByRange = `${moment(destStartDateTime).add({minutes: timeZoneDeliveryBy}).format("HH:mm:ss")} - ${moment(destEndDateTime).add({minutes: timeZoneDeliveryBy}).format("HH:mm:ss")}`;
     const config = {
         title: "",
     };
-
+    console.log('stops', stops)
     return (
         <Modal config={config}>
             <Grid container spacing={2} sx={{p: 2}}>
@@ -69,7 +86,7 @@ const LoadDetails = (props) => {
                                 date={moment(pickUpByDate).format('MM/DD/yyyy')}
                                 appointment={pickupScheduleRequest === 'A' ? 'Yes' : 'No'}
                                 avgLoadTime={'--'}
-                                loadBy={new Date(calculatedPickUpByDateTime).getTime()}
+                                loadBy={originReadyByRange}
                                 loadByType='Ready By'
                             />
                         </Grid>
@@ -85,7 +102,7 @@ const LoadDetails = (props) => {
                                 date={moment(deliverBy).format('MM/DD/yyyy')}
                                 appointment={dropScheduleRequest === 'A' ? 'Yes' : 'No'}
                                 avgLoadTime={'--'}
-                                loadBy={new Date(calculatedDeliverByDateTime).getTime()}
+                                loadBy={deliverByRange}
                                 loadByType='Deliver By'
                             />
                         </Grid>
