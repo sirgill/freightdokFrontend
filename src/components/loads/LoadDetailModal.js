@@ -165,7 +165,7 @@ const LoadDetailModal = ({
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (form.status !== "Delivered") {
+    if (form.status !== "Empty") {
       form.invoice_created = false;
     }
     dispatch(updateLoad({ ...form, _id }, listBarType, bktFiles));

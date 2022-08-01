@@ -122,7 +122,7 @@ export default function LoadsStatus({resetSearchField, listBarType}) {
                 id: "equipment",
                 label: "Equipment",
                 renderer: ({row}) => {
-                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row) || {}
+                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row)
                     return (
                         <Fragment>
                             {modesString} {standard}
@@ -135,7 +135,7 @@ export default function LoadsStatus({resetSearchField, listBarType}) {
                 id: "company",
                 label: "Company",
                 renderer: () => {
-                    return"C.H Robinson"
+                    return"C.H Robinso"
                 },
             },
             {

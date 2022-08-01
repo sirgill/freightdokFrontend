@@ -188,11 +188,25 @@ label {
 
 
 @media print {
+
+  .printArea h1 {
+    page-break-after: always;
+    page-break-before: always;
+  }
+
+  .bucketImageContainer {
+    float: none!important;
+  }
+
+  .bucketImageContainer > div {
+    display: block;
+    page-break-after: always!important;
+    page-break-before: always!important;
+  }
+
   .printThisFull {
     width: 96%;
     height: 96%;
     object-fit: contain;
-    page-break-after: always;
-    page-break-before: always
   }
 }
