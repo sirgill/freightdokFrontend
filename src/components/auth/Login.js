@@ -10,7 +10,7 @@ import EmailIcon from '@material-ui/icons/Email';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@mui/material/Button';
-import { Divider, Typography } from '@mui/material';
+import { Divider, Typography, Link } from '@mui/material';
 import { Form, FormGroup, Input, InputGroup, InputGroupText, InputGroupAddon } from 'reactstrap';
 
   const useStyles = makeStyles((theme) => ({
@@ -132,9 +132,9 @@ const Login = (props) => {
                 <Button variant='contained' type="submit">
                   Sign in
                 </Button>
-                <p className="forgot-password text-right"> Forgot <a href="#">password?</a></p>
-
               </Form>
+              <br/>
+                <Link href="/entity" className="text-center" underline="none">Register</Link>
             </Grid>
           </Grid>
         </div>

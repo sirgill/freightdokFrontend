@@ -7,6 +7,9 @@ import Landing from "./components/layout/Landing";
 import Footer from "./components/layout/Footer";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
+import EntityType from "./components/auth/EntityType";
+import OwnerOp from "./components/auth/OwnerOpRegister";
+import Fleet from "./components/auth/FleetRegister";
 import Dashboard from "./components/dashboard/Dashboard";
 import Alert from "./components/layout/Alert";
 import {ThemeProvider as MUI4ThemeProvider} from "@material-ui/core/styles";
@@ -49,6 +52,9 @@ const App = () => {
                 <Route exact path="/" component={Footer}/>
                 <Route exact path={'/home'} component={LandingPage} />
                 <Switch>
+                    <Route path="/entity" component={EntityType} />
+                    <Route path="/owneroperatorregister" component={OwnerOp} />
+                    <Route path="/fleetregister" component={Fleet} />
                     <Route path="/register" component={Register}/>
                     <Route path="/login" component={Login}/>
                     <PrivateRoute path="/profile" component={Profile}/>

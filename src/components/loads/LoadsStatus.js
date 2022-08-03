@@ -135,7 +135,7 @@ export default function LoadsStatus({resetSearchField, listBarType}) {
                 id: "company",
                 label: "Company",
                 renderer: () => {
-                    return"C.H Robinso"
+                    return"C.H Robinson"
                 },
             },
             {

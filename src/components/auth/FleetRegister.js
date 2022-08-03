@@ -7,7 +7,7 @@ import { register } from "../../actions/auth";
 import PropTypes from "prop-types";
 import { RegisterInput } from "../HelperCells";
 
-const Register = ({ setAlert, register, isAuthenticated }) => {
+const Fleet = ({ setAlert, register, isAuthenticated }) => {
   const [formData, setFormData] = useState({
     name: "",
     companyname: "",
@@ -45,7 +45,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
     <section className="login">
       <div className="auth-wrapper" style={verticalAlignStyle}>
         <form className="auth-inner" onSubmit={(e) => onSubmit(e)}>
-          <h3>Sign Up</h3>
+          <h3>Fleet Operator Registration</h3>
 
           <RegisterInput
             label="Name"
@@ -54,7 +54,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             onChange={(e) => onChange(e)}
           />
           <RegisterInput
-            label="Company"
+            label="DOT#"
             name="companyname"
             value={companyname}
             onChange={(e) => onChange(e)}
@@ -67,25 +67,17 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             onChange={(e) => onChange(e)}
           />
           <RegisterInput
-            type="password"
-            label="Password"
-            name="password"
-            value={password}
-            onChange={(e) => onChange(e)}
-          />
-          <RegisterInput
-            type="password"
-            label="Password"
-            name="password2"
-            value={password2}
-            onChange={(e) => onChange(e)}
+            label="Phone Number"
+            name="phone"
+            value="Phone number"
+
           />
 
           <button type="submit" className="btn btn-primary btn-block">
             Sign Up
           </button>
-          <p className="forgot-password text-right">
-            Already registered <a href="#">sign in?</a>
+          <p className="forgot-password text-center">
+            Already registered <a href="/login">sign in?</a>
           </p>
         </form>
       </div>
@@ -93,7 +85,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
   );
 };
 
-Register.propTypes = {
+Fleet.propTypes = {
   setAlert: PropTypes.func.isRequired,
   register: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
@@ -103,4 +95,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps, { setAlert, register })(Register);
+export default connect(mapStateToProps, { setAlert, register })(Fleet);
