@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import {Link, Redirect, useHistory} from 'react-router-dom';
 import {connect, useDispatch} from 'react-redux';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/auth';
@@ -10,7 +10,7 @@ import EmailIcon from '@material-ui/icons/Email';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@mui/material/Button';
-import { Divider, Typography, Link } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import { Form, FormGroup, Input, InputGroup, InputGroupText, InputGroupAddon } from 'reactstrap';
 
   const useStyles = makeStyles((theme) => ({
@@ -134,7 +134,7 @@ const Login = (props) => {
                 </Button>
               </Form>
               <br/>
-                <Link href="/entity" className="text-center" underline="none">Register</Link>
+                <Link to="/entity" className="text-center" underline="none">Register</Link>
             </Grid>
           </Grid>
         </div>

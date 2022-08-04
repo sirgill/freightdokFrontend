@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import "./authcss/LoginRegister.css";
 import { setAlert } from "../../actions/alert";
 import { register } from "../../actions/auth";
@@ -77,7 +77,7 @@ const Fleet = ({ setAlert, register, isAuthenticated }) => {
             Sign Up
           </button>
           <p className="forgot-password text-center">
-            Already registered <a href="/login">sign in?</a>
+            Already registered <Link to="/login">sign in?</Link>
           </p>
         </form>
       </div>
