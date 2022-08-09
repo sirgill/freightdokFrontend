@@ -3,7 +3,7 @@ import _ from 'lodash';
 import {FormGroup, Input} from "reactstrap";
 
 const InputPure = (props) => {
-    const {label = '', type = 'text', options = [], labelKey = 'label', valueKey = 'id', onChangeSelect, showFirstBlank = false} = props;
+    const {label = '', type = 'text', options = [], labelKey = 'label', valueKey = 'id', onChangeSelect, showFirstBlank = false, onBlur} = props;
     props = _.cloneDeep(props);
     delete props.showFirstBlank;
 
@@ -30,7 +30,7 @@ const InputPure = (props) => {
     />
 }
 const InputField = (props = {}) => {
-    const {label = '', type = 'text', multiple = false, onChange, labelStyle = {}, direction = 'column', formGrpStyle={}, errorText = ''} = props;
+    const {label = '', type = 'text', multiple = false, onChange, labelStyle = {}, direction = 'column', formGrpStyle={}, errorText = '', onBlur} = props;
 
     const onChangeSelect = (e) => {
         if (type.toLowerCase() === 'select' && multiple) {

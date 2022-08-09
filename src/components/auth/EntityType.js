@@ -83,7 +83,7 @@ const EntityType = (props) => {
                                         <Box style={{display: "flex", gap: "1rem"}}>
                                             <Button variant="contained" type="submit" sx={{
                                                 width: 300, height: 100, "&.MuiButton-contained:hover": {color: '#fff'}
-                                            }} component={Link} to="/owneroperatorregister">
+                                            }} component={Link} to="/ownerOperatorRegister">
                                                 Owner Operator
                                             </Button>
 
@@ -98,7 +98,7 @@ const EntityType = (props) => {
                                                     "&.MuiButton-contained:hover": {color: '#fff'}
                                                 }}
                                                 component={Link}
-                                                to="/fleetregister"
+                                                to="/fleetRegister"
                                             >
                                                 Fleet Owner
                                             </Button>

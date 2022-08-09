@@ -14,9 +14,10 @@ const Fleet = ({ setAlert, register, isAuthenticated }) => {
     email: "",
     password: "",
     password2: "",
+    phone: ''
   });
 
-  const { name, companyname, email, password, password2 } = formData;
+  const { name, companyname, email, password, password2, phone } = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,7 +45,7 @@ const Fleet = ({ setAlert, register, isAuthenticated }) => {
   return (
     <section className="login">
       <div className="auth-wrapper" style={verticalAlignStyle}>
-        <form className="auth-inner" onSubmit={(e) => onSubmit(e)}>
+        <form className="auth-inner" onSubmit={onSubmit}>
           <h3>Fleet Operator Registration</h3>
 
           <RegisterInput
@@ -69,8 +70,8 @@ const Fleet = ({ setAlert, register, isAuthenticated }) => {
           <RegisterInput
             label="Phone Number"
             name="phone"
-            value="Phone number"
-
+            value={phone}
+            onChange={onChange}
           />
 
           <button type="submit" className="btn btn-primary btn-block">

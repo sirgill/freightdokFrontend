@@ -32,6 +32,7 @@ import {createTheme, ThemeProvider} from "@mui/material/styles";
 import "./App.css";
 import {getBaseUrl} from "./config";
 import LandingPage from "./views/landingPage/LandingPage";
+import RegisterEmail from "./components/auth/RegisterEmail";
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -53,8 +54,8 @@ const App = () => {
                 <Route exact path={'/home'} component={LandingPage} />
                 <Switch>
                     <Route path="/entity" component={EntityType} />
-                    <Route path="/owneroperatorregister" component={OwnerOp} />
-                    <Route path="/fleetregister" component={Fleet} />
+                    <Route path="/ownerOperatorRegister" component={OwnerOp} />
+                    <Route path="/fleetRegister" component={Fleet} />
                     <Route path="/register" component={Register}/>
                     <Route path="/login" component={Login}/>
                     <PrivateRoute path="/profile" component={Profile}/>

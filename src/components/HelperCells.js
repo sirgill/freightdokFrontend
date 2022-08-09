@@ -6,10 +6,11 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { StyleSheet } from "@react-pdf/renderer";
 import { KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
+import {Box} from "@mui/material";
 
-export const RegisterInput = ({ label, name, value, onChange, type }) => {
+export const RegisterInput = ({ label, name, value, onChange, type, placeholder, formGroupSx={}, onBlur }) => {
   return (
-    <div className="form-group">
+    <Box sx={{...formGroupSx}} className="form-group">
       <label>{label}</label>
       <input
         type={type ? type : "text"}
@@ -17,9 +18,10 @@ export const RegisterInput = ({ label, name, value, onChange, type }) => {
         name={name}
         value={value}
         onChange={onChange}
-        placeholder={label}
+        placeholder={placeholder}
+        onBlur={onBlur}
       />
-    </div>
+    </Box>
   );
 };
 
