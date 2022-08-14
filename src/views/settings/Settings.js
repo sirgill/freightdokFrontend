@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogContent, DialogTitle, Grid } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import { createProfile } from '../../actions/profile';
 import InputField from '../../components/Atoms/form/InputField';
@@ -17,7 +17,7 @@ const Settings = ({ history = {} }) => {
             'objectFit': 'cover',
             'borderRadius': '100%'
     }
-    const { company = '', title = '', name = '', image, imageUrl='' } = formData || '';
+    const {title = '', name = '', imageUrl='' } = formData || '';
 
 
     const onChange = e => {
@@ -48,7 +48,7 @@ const Settings = ({ history = {} }) => {
 
                     <div className="form-field">
                         <label htmlFor={'upload'} className="form-profile-image" style={{ 'textAlign': 'center', 'marginBottom': '20px' }}>
-                            {imageURL ? <img src={imageURL} style={imgStyle} /> : <img src={imageUrl || DummyUser} alt="main-logo" style={imgStyle}/>}
+                            {imageURL ? <img src={imageURL} style={imgStyle}  alt={title}/> : <img src={imageUrl || DummyUser} alt="main-logo" style={imgStyle}/>}
                             <InputField type='file' accept="image/*" name='image' style={{display: 'none'}} id={'upload'} onChange={onChange} />
                         </label>
                     </div>

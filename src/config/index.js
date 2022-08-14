@@ -8,15 +8,22 @@ const production = {
 const development = {
   mailServerUrl: "http://localhost:9999/sendMail",
   goLangServerUrl: "http://localhost:8080",
-  nodeServerUrl: "http://localhost:5000",
+  nodeServerUrl: "http://localhost:9999",
   goLangMail: "http://localhost:8080/bookload"
 };
+
+export const getMainNodeServerUrl = () => {
+  if (process.env.NODE_ENV === "production") {
+    return production.nodeServerUrl;
+  }
+  return "http://localhost:5000";
+}
 
 const getBaseUrl = () => {
   if (process.env.NODE_ENV === "production") {
     return production.nodeServerUrl;
   }
-  return development.nodeServerUrl;
+  return "http://localhost:5000";
 };
 
 const getGoUrl = () => {

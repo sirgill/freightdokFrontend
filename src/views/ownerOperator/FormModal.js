@@ -2,10 +2,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import _ from 'lodash';
 import {blue} from "../../components/layout/ui/Theme";
 import DialogContent from "@mui/material/DialogContent";
-import Typography from "@mui/material/Typography";
 import InputField from "../../components/Atoms/form/InputField";
 import Grid from "@mui/material/Grid";
-import SubmitButton from "../../components/Atoms/form/SubmitButton";
 import Dialog from "@mui/material/Dialog";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
@@ -13,8 +11,6 @@ import {getBaseUrl} from "../../config";
 import {notification} from "../../actions/alert";
 import {checkObjProperties, triggerCustomEvent} from "../../utils/utils";
 import {Button} from "@mui/material";
-import {useDispatch, useSelector} from "react-redux";
-import {getDrivers} from "../../actions/driver";
 
 const validateForm = ({firstName, lastName, phoneNumber}) => {
     let errors = {}
@@ -39,14 +35,14 @@ const formTemplate = {
 
 const FormModal = (props) => {
     const {history, match: {params: {id = ''} = {}} = {}} = props;
+    const [users, setUsers] = useState([])
     const [form, setForm] = React.useState(formTemplate);
     const [errors, setErrors] = useState(formTemplate);
-    const dispatch = useDispatch();
     const updateForm = (e) => {
         const {target: {name, value} = {}} = e
         setForm({...form, [name]: value});
     }
-    const allDrivers = useSelector(state => state.driver.all_drivers)
+    const ownerops = (users || []).filter(user => user.role.toLowerCase() === 'owneroperator')
 
     useEffect(() => {
         if (id) {
@@ -61,8 +57,15 @@ const FormModal = (props) => {
                     notification(err.message)
                 })
         }
-        if(_.isEmpty(allDrivers) && !allDrivers.length){
-            dispatch(getDrivers());
+        if(_.isEmpty(ownerops)){
+            axios.get(`/api/users?page=${0}&limit=${0}`)
+                .then(r => {
+                    setUsers(r.data.users)
+                })
+                .catch(e => {
+                    console.log(e.message);
+                    notification(e.message, 'error')
+                })
         }
     }, [])
 
@@ -153,10 +156,10 @@ const FormModal = (props) => {
                                 value={form.user}
                                 name="user"
                                 onChange={updateForm}
-                                label='Select Driver'
+                                label='Select Onwer Operator'
                                 type={'select'}
                                 showFirstBlank={true}
-                                options={allDrivers.map(driver => ({id: driver._id, label: driver.email}))}
+                                options={ownerops.map(driver => ({id: driver._id, label: driver.email}))}
                             />}
                         </div>
 

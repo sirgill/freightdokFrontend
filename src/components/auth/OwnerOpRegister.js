@@ -11,6 +11,7 @@ import {isEmailValid} from "../../utils/utils";
 import {Typography, Stack, Button} from "@mui/material";
 import {requestPost} from "../../utils/request";
 import axios from "axios";
+import {development, getMainNodeServerUrl} from "../../config";
 
 const defaults = {
     name: "",
@@ -21,7 +22,7 @@ const defaults = {
 
 const OwnerOp = ({setAlert, register, isAuthenticated}) => {
     const [formData, setFormData] = useState(defaults);
-    const [error, setError] = useState('')
+    const [error, setError] = useState('');
 
     const {name, companyname, email, phone} = formData;
 
@@ -39,12 +40,25 @@ const OwnerOp = ({setAlert, register, isAuthenticated}) => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        let {data, status} = await axios.get(`https://mobile.fmcsa.dot.gov/qc/services/carriers/${companyname}?webKey=e1b9823bbb9dd36dc33b53bc0e8ed0710f1bedca`);
-        console.log(status, data)
+        let {data = {}, status} = await axios.get(`https://mobile.fmcsa.dot.gov/qc/services/carriers/${companyname}?webKey=e1b9823bbb9dd36dc33b53bc0e8ed0710f1bedca`, {
+            headers : {
+                'content-type': "application/json"
+            }
+        });
+
         if(status === 200 && data.content) {
-            requestPost({uri: '/api/register/ownerOperator', body: { ...formData, ...data }})
-                .then(r => console.log(r))
-                .catch(e => notification(e.message, "error"))
+            fetch(development.nodeServerUrl + "/fleetOwnerOperatorMail", {
+                method: 'post',
+                body: JSON.stringify({ ...formData, type: 'ownerOperator', ...data }),
+                headers: {
+                    'content-type': "application/json"
+                }
+            })
+                .then(res => res.json())
+                .then(({message, success} = {}) => {
+                    notification(message, success ? 'success': 'error');
+                })
+                .catch(e => notification(e.message, "error"));
         }
         else if(!data.content) {
             notification('Cannot verify DOT#. Please check.', 'error')

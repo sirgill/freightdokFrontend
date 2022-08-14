@@ -11,17 +11,16 @@ const InputPure = (props) => {
         if (!Array.isArray(options) || !options.length) {
             console.error('Options are mandatory in array format');
         }
+        const opts = options.map((opt, i) => {
+            return <option value={opt[valueKey]}>{opt[labelKey]}</option>
+        })
+        if(showFirstBlank) opts.unshift(<option value=''>{'Select an option'}</option>)
         return <Input
             {...props}
             onChange={onChangeSelect}
             id={label}
             type={type}
-        >{options.map((opt, i) => {
-            if (i === 0 && showFirstBlank) {
-                return <option value=''>{'Select an option'}</option>
-            }
-            return <option value={opt[valueKey]}>{opt[labelKey]}</option>
-        })}</Input>
+        >{opts}</Input>
     }
     return <Input
         id={label}

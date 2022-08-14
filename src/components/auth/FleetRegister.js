@@ -2,32 +2,50 @@ import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import "./authcss/LoginRegister.css";
-import { setAlert } from "../../actions/alert";
+import {notification, setAlert} from "../../actions/alert";
 import { register } from "../../actions/auth";
 import PropTypes from "prop-types";
 import { RegisterInput } from "../HelperCells";
+import axios from "axios";
+import {development} from "../../config";
 
 const Fleet = ({ setAlert, register, isAuthenticated }) => {
   const [formData, setFormData] = useState({
     name: "",
     companyname: "",
     email: "",
-    password: "",
-    password2: "",
     phone: ''
   });
 
-  const { name, companyname, email, password, password2, phone } = formData;
+  const { name, companyname, email, phone } = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  console.log("formData", formData);
+
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (password !== password2) {
-      setAlert("Password do not match", "danger");
-    } else {
-      register({ name, companyname, email, password });
+    let {data = {}, status} = await axios.get(`https://mobile.fmcsa.dot.gov/qc/services/carriers/${companyname}?webKey=e1b9823bbb9dd36dc33b53bc0e8ed0710f1bedca`, {
+      headers : {
+        'content-type': "application/json"
+      }
+    });
+
+    if(status === 200 && data.content) {
+      fetch(development.nodeServerUrl + "/fleetOwnerOperatorMail", {
+        method: 'post',
+        body: JSON.stringify({ ...formData, type: 'fleetOwner', ...data }),
+        headers: {
+          'content-type': "application/json"
+        }
+      })
+          .then(res => res.json())
+          .then(({message, success} = {}) => {
+            notification(message, success ? 'success': 'error');
+          })
+          .catch(e => notification(e.message, "error"));
+    }
+    else if(!data.content) {
+      notification('Cannot verify DOT#. Please check.', 'error')
     }
   };
 

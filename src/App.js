@@ -1,7 +1,6 @@
-import React, {Fragment, useEffect, useState} from "react";
+import React, {Fragment, useEffect} from "react";
 import axios from "axios";
 import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
-import {Provider} from "react-redux";
 import Navbar from "./components/layout/Navbar";
 import Landing from "./components/layout/Landing";
 import Footer from "./components/layout/Footer";
@@ -11,9 +10,6 @@ import EntityType from "./components/auth/EntityType";
 import OwnerOp from "./components/auth/OwnerOpRegister";
 import Fleet from "./components/auth/FleetRegister";
 import Dashboard from "./components/dashboard/Dashboard";
-import Alert from "./components/layout/Alert";
-import {ThemeProvider as MUI4ThemeProvider} from "@material-ui/core/styles";
-import {themeNew} from "./components/layout/ui/Theme";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import ProfileForm from "./components/profile-forms/CreateProfile";
 import EditProfile from "./components/profile-forms/EditProfile";
@@ -24,15 +20,13 @@ import store from "./store";
 import {loadUser} from "./actions/auth";
 import setAuthToken from "./utils/setAuthToken";
 import Profile from "./components/users/Profile";
-import {SERVER_ADDRESS} from "./actions/load";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Notification from "./components/layout/Notification";
-import {createTheme, ThemeProvider} from "@mui/material/styles";
 
 import "./App.css";
 import {getBaseUrl} from "./config";
 import LandingPage from "./views/landingPage/LandingPage";
-import RegisterEmail from "./components/auth/RegisterEmail";
+import SetPassword from "./components/auth/SetPassword";
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -56,6 +50,7 @@ const App = () => {
                     <Route path="/entity" component={EntityType} />
                     <Route path="/ownerOperatorRegister" component={OwnerOp} />
                     <Route path="/fleetRegister" component={Fleet} />
+                    <Route path='/setPassword' component={SetPassword} />
                     <Route path="/register" component={Register}/>
                     <Route path="/login" component={Login}/>
                     <PrivateRoute path="/profile" component={Profile}/>
