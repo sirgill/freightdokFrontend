@@ -61,7 +61,6 @@ const OwnerOperator = () => {
         id: "role",
         label: "Role",
         renderer: ({ row }) => {
-          const date = new Date(row.deliverBy).toDateString();
           return <Fragment>Owner Operator</Fragment>;
         },
       },

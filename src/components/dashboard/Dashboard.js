@@ -48,6 +48,7 @@ import DriverIcon from '../../assets/icons/icons8-driver-24.png'
 import UsersIcon from '../../assets/icons/icons8-user-account-24.png'
 import CarrierProfileIcon from '../../assets/icons/settings-18-1-1-1-1-1.svg'
 import LogoutIcon from '../../assets/icons/icons8-logout-24.png'
+import CarrierProfile from "../../views/carrierProfile/CarrierProfile";
 
 const Dashboard = ({
                        auth: {isAuthenticated, user = {}},
@@ -266,6 +267,15 @@ const Dashboard = ({
                     listBarType={listBarType}
                 />
                 <ListItemHelper
+                    onClick={() => {
+                        setListBarType("carrierProfile");
+                    }}
+                    icon={CarrierProfileIcon}
+                    primary={"Carrier Profile"}
+                    listBarType={listBarType}
+                    title='Carrier Profile'
+                />
+                <ListItemHelper
                     icon={LogoutIcon}
                     onClick={logout}
                     primary={"Logout"}
@@ -440,6 +450,15 @@ const Dashboard = ({
                         <main className={classes.contentLoadList}>
                             <div className={classes.toolbar}/>
                             <LoadsStatus
+                                resetSearchField={resetSearchField}
+                                listBarType={listBarType}
+                            />
+                        </main>
+                    )}
+                    {listBarType === "carrierProfile" && (
+                        <main className={classes.contentLoadList}>
+                            <div className={classes.toolbar}/>
+                            <CarrierProfile
                                 resetSearchField={resetSearchField}
                                 listBarType={listBarType}
                             />

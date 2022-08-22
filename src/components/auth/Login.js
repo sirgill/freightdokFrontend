@@ -1,11 +1,10 @@
 import React, { Fragment, useState } from 'react';
-import {Link, Redirect, useHistory} from 'react-router-dom';
-import {connect, useDispatch} from 'react-redux';
+import {Link, useHistory} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/auth';
 import './authcss/LoginRegister.css';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 import EmailIcon from '@material-ui/icons/Email';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import { makeStyles } from '@material-ui/core/styles';

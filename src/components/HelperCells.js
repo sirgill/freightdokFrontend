@@ -373,13 +373,13 @@ export const TextFieldHelper = ({
   );
 };
 
-export const ListItemHelper = ({ onClick, icon, primary, to, component, listBarType='', customStyles={}, className }) => {
+export const ListItemHelper = ({ onClick, icon, primary, to, component, title, listBarType='', customStyles={}, className }) => {
   const selectStyle = listBarType.replace(/\s/g, "").toLowerCase() === primary.replace(/\s/g, "").toLowerCase() ? {background: 'rgba(218, 218, 218, 0.33)'}: {},
       commonStyles = {borderRadius: '8px', cursor: 'pointer', background: '#fff', transition: 'all 0.3s ease', gap: '10px'}
   return (
     <ListItem onClick={onClick} to={to} component={component} className={className} sx={{ ...commonStyles, ...selectStyle, ...customStyles }}>
       {icon && <img src={icon} alt={primary}/>}
-      <ListItemText primary={primary} className='listItemTextMenu' />
+      <ListItemText primary={title || primary} className='listItemTextMenu' />
     </ListItem>
   );
 };
