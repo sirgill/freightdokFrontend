@@ -104,6 +104,19 @@ const Loadlistbar = ({
           return moment(dropDate).format('MM/DD')
         }
       },
+    
+      {
+        id: 'brokerage',
+        label: 'Customer',
+        renderer: ({row: {brokerage = ''} = {}}) => {
+          return brokerage;
+        }
+      },
+      {
+          id: 'rate',
+          label: 'Rate',
+          emptyState: '--'
+      },
       {
         id: 'assignedTo',
         label: 'Assigned To',
@@ -111,13 +124,6 @@ const Loadlistbar = ({
           const {user} = row || {},
               {user: {name = ''} = {}} = drivers.find(driver => driver.user && driver.user._id === user) || {};
           return name;
-        }
-      },
-      {
-        id: 'brokerage',
-        label: 'Customer',
-        renderer: ({row: {brokerage = ''} = {}}) => {
-          return brokerage;
         }
       },
     ]
