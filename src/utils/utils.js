@@ -1,3 +1,8 @@
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import {errorIconColor, successIconColor} from "../components/layout/ui/Theme";
+import {Cancel as CancelIcon} from "@mui/icons-material";
+import React from "react";
+
 const addEvent = (elem, type, eventHandle) => {
     if (elem == null || typeof elem === 'undefined') {
         return;
@@ -64,6 +69,21 @@ const isEmailValid = (email) => {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
+
+export const getCheckStatusIcon = (comparator = false) => {
+    let success = false
+    if(typeof comparator === 'function'){
+        success = comparator();
+    } else {
+        success = comparator
+    }
+    return success ? (
+        <CheckCircleIcon style={{color: successIconColor}}/>
+    ) : (
+        <CancelIcon style={{color: errorIconColor}}/>
+    )
+}
+
 export {
     addEvent,
     removeEvent,

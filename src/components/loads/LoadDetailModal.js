@@ -39,6 +39,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TimePicker from '@mui/lab/TimePicker';
 import DatePicker from '@mui/lab/DatePicker';
 import {blue, errorIconColor, successIconColor} from "../layout/ui/Theme";
+import {getCheckStatusIcon} from "../../utils/utils";
 
 const verticalAlignStyle = {
   position: "absolute",
@@ -860,11 +861,7 @@ const LoadDetailModal = ({
                               </Button>
                             </label>
                           </Fragment>
-                      :  rateConfirmation ? (
-                          <CheckCircleIcon style={{color: successIconColor}}/>
-                      ) : (
-                          <CancelIcon style={{color: errorIconColor}}/>
-                      )}
+                      :  getCheckStatusIcon(!!rateConfirmation)}
                     </span>
                   </Stack>
                   <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
