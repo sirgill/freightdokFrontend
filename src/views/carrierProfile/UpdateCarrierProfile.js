@@ -6,6 +6,8 @@ import {useHistory} from 'react-router-dom';
 import {requestGet, requestPost} from "../../utils/request";
 import {notification} from "../../actions/alert";
 import {getUserDetail} from "../../utils/utils";
+import {getCarrierProfile} from "../../actions/carrierProfile.action";
+import {useDispatch} from "react-redux";
 
 
 const Form = ({onCloseUrl}) => {
@@ -13,6 +15,7 @@ const Form = ({onCloseUrl}) => {
     const history = useHistory();
     const [processing, setProcessing] = useState(false)
     const {id} = getUserDetail().user || {}
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const getCarrierProfile = async () => {
@@ -59,6 +62,7 @@ const Form = ({onCloseUrl}) => {
         requestPost({uri: '/api/fmcsa', body: form })
             .then(res => {
                 notification(res.data.message)
+                dispatch(getCarrierProfile());
                 history.push(onCloseUrl)
             })
             .catch(err => {
@@ -92,6 +96,7 @@ const Form = ({onCloseUrl}) => {
                     <input
                         style={{display: 'none'}}
                         type="file"
+                        accept="application/pdf,application/msword,application/vnd.ms-excel"
                         name="generalLiabilityInsurance"
                         onChange={handleFileChange}
                         id="contained-button-file1"
@@ -107,6 +112,7 @@ const Form = ({onCloseUrl}) => {
                     <input
                         style={{display: 'none'}}
                         type="file"
+                        accept="application/pdf,application/msword,application/vnd.ms-excel"
                         name="autoLiabilityInsurance"
                         onChange={handleFileChange}
                         id="contained-button-file2"
@@ -122,6 +128,7 @@ const Form = ({onCloseUrl}) => {
                     <input
                         style={{display: 'none'}}
                         type="file"
+                        accept="application/pdf,application/msword,application/vnd.ms-excel"
                         name="cargoLiabilityInsurance"
                         onChange={handleFileChange}
                         id="contained-button-file3"
