@@ -1,0 +1,31 @@
+{
+  "files": {
+    "main.css": "/static/css/main.7590c795.chunk.css",
+    "main.js": "/static/js/main.f185a257.chunk.js",
+    "main.js.map": "/static/js/main.f185a257.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.776c1e0d.js",
+    "runtime-main.js.map": "/static/js/runtime-main.776c1e0d.js.map",
+    "static/css/2.92d798a7.chunk.css": "/static/css/2.92d798a7.chunk.css",
+    "static/js/2.d302721c.chunk.js": "/static/js/2.d302721c.chunk.js",
+    "static/js/2.d302721c.chunk.js.map": "/static/js/2.d302721c.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/2.92d798a7.chunk.css.map": "/static/css/2.92d798a7.chunk.css.map",
+    "static/css/main.7590c795.chunk.css.map": "/static/css/main.7590c795.chunk.css.map",
+    "static/js/2.d302721c.chunk.js.LICENSE.txt": "/static/js/2.d302721c.chunk.js.LICENSE.txt",
+    "static/media/App.css": "/static/media/MyriadPro-Light.1d169f60.otf",
+    "static/media/style.css": "/static/media/Oval.52a9d9c9.png",
+    "static/media/dummy-user.75a04487.png": "/static/media/dummy-user.75a04487.png",
+    "static/media/nucleo.css": "/static/media/nucleo-icons.d6a66724.ttf",
+    "static/media/openBoard.18d46e10.svg": "/static/media/openBoard.18d46e10.svg",
+    "static/media/index.css": "/static/media/roboto-latin-900italic.cb5ad999.woff2",
+    "static/media/components.module.css": "/static/media/search-8-1-1-1-1-1-1-1-1-1-1.02feb62b.svg",
+    "static/media/settings-18-1-1-1-1-1.71cfb6c4.svg": "/static/media/settings-18-1-1-1-1-1.71cfb6c4.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.776c1e0d.js",
+    "static/css/2.92d798a7.chunk.css",
+    "static/js/2.d302721c.chunk.js",
+    "static/css/main.7590c795.chunk.css",
+    "static/js/main.f185a257.chunk.js"
+  ]
+}
