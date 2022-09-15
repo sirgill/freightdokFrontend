@@ -251,14 +251,6 @@ const Dashboard = ({
                     />
                 )}
                 <ListItemHelper
-                    component={Link}
-                    to={path + "/user/settings"}
-                    icon={CarrierProfileIcon}
-                    primary={"Settings"}
-                    listBarType={listBarType}
-                    className="accountDashboardLink"
-                />
-                <ListItemHelper
                     onClick={() => {
                         setListBarType("facilities");
                     }}
