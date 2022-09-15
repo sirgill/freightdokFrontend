@@ -30,7 +30,7 @@ const getGoUrl = () => {
   if (process.env.NODE_ENV === "production") {
     return production.goLangServerUrl;
   }
-  return development.golangServerUrl;
+  return development.goLangServerUrl;
 };
 
 export { getBaseUrl, getGoUrl, development, production };

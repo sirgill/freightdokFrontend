@@ -1,8 +1,8 @@
 import axios from "axios";
 import {notification} from "./alert";
 import {GET_CHROBINSON_LOADS, GET_SHIPMENTS} from "./types";
-import {getBaseUrl, production} from "../config";
-import {requestGet} from "../utils/request";
+import {getBaseUrl, getGoUrl, production} from "../config";
+import {requestGet, requestPost} from "../utils/request";
 
 export const bookNow = async (body, callback) => {
     try {
@@ -108,15 +108,55 @@ export const saveCHLoadToDb = async (row = {}, isBooked = false) => {
 export const getCHLoads = (onlyDelivered = false) => async (dispatch) => {
     try {
         let {success, data} = await requestGet({uri: '/api/chRobinson'})
-        if(success) {
-            if(onlyDelivered) {
+        if (success) {
+            if (onlyDelivered) {
                 const {loads} = data;
                 data.loads = loads.filter(load => load.isDelivered)
             }
             dispatch({type: GET_CHROBINSON_LOADS, payload: data});
         }
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e.message)
     }
+}
+
+export const getNewTrulLoads = (pageSize, pageIndex) => async dispatch => {
+    dispatch({
+        type: GET_SHIPMENTS,
+        payload: {
+            newTrulLoads: {data: [], totalResults: 0 },
+            loading: true,
+        },
+    });
+    const {success, data = {}} = await requestPost({
+            uri: '/newTrulGetAllLoads', baseUrl: getGoUrl(),
+            body: {
+                "page": pageIndex + 1,
+                "pagesize": pageSize
+            }
+        }
+    )
+
+    if(success) {
+        const {pagination : {total_items} = {}} = data
+        console.log('total_items',total_items, data)
+        dispatch({
+            type: GET_SHIPMENTS,
+            payload: {
+                data: {results: data.data, totalResults: total_items},
+                loading: false,
+            },
+        });
+    }
+
+    if(!success) {
+        dispatch({
+            type: GET_SHIPMENTS,
+            payload: {
+                data: {results: [], totalResults: 0 },
+                loading: false,
+            },
+        });
+    }
+
 }

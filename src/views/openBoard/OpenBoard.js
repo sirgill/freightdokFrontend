@@ -1,10 +1,10 @@
 import React, {Fragment, useEffect, useState} from "react";
 import moment from "moment";
-import {Button, Stack } from "@mui/material";
+import {Button, Stack} from "@mui/material";
 import {Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import LoadDetails from "./LoadDetails";
-import {bookNow, getBiddings} from "../../actions/openBoard.action";
+import {bookNow, getBiddings, getNewTrulLoads} from "../../actions/openBoard.action";
 import Form from "./Form";
 import {withRouter} from "react-router-dom/cjs/react-router-dom.min";
 import {useDispatch, useSelector} from "react-redux";
@@ -48,19 +48,33 @@ if (process.env.NODE_ENV === "production") {
 * */
 
 const CARRIER_CODE = "T2244688";
+const NEWTRUL = 'newTrul'
+const CHROBINSON = 'chRobinson'
 
 const OpenBoard = () => {
     const {path} = useRouteMatch(),
         [filters, setFilters] = useState(payload),
+        [vendor, setVendor] = useState(CHROBINSON),
         dispatch = useDispatch(),
         {data: {results, totalResults} = {}, loading = false} = useSelector((state) => state.openBoard),
         history = useHistory();
+    console.log(totalResults)
 
     const getBiddingList = () => {
-        dispatch(getBiddings(filters));
+        if(vendor === NEWTRUL) {
+            getNewTrulList(filters.pageSize, filters.pageIndex)
+        }
+        else dispatch(getBiddings(filters));
     }
 
-    const onFilterChange = (fromDate, toDate) => {
+    const getNewTrulList = (pageSize, pageIndex) => {
+        dispatch(getNewTrulLoads(pageSize, pageIndex))
+    }
+
+    const onFilterChange = (fromDate, toDate, type) => {
+        if (fromDate === 'select') {
+            return setVendor(toDate.target.value)
+        }
         const min = moment(fromDate).format('YYYY-MM-DD')
         const max = moment(toDate).format('YYYY-MM-DD')
         const availableForPickUpByDateRange = {
@@ -77,6 +91,12 @@ const OpenBoard = () => {
         return () => removeEvent(window, 'getBiddings', getBiddingList);
     }, [dispatch, filters]);
 
+    useEffect(() => {
+        if (vendor === 'newTrul') {
+            const {pageSize, pageIndex} = filters;
+            getNewTrulList(pageSize, pageIndex)
+        } else getBiddingList()
+    }, [vendor])
 
     const onPageChange = (e, pgNum) => {
         setFilters({...filters, pageIndex: pgNum - 1});
@@ -95,6 +115,9 @@ const OpenBoard = () => {
                 id: "loadNumber",
                 label: "Load Number",
                 renderer: ({row}) => {
+                    if (vendor === NEWTRUL) {
+                        return <Fragment>{row.id}</Fragment>
+                    }
                     return <Fragment>{row.loadNumber}</Fragment>;
                 },
             },
@@ -102,9 +125,16 @@ const OpenBoard = () => {
                 id: "country",
                 label: "Pickup City/State",
                 renderer: ({row}) => {
-                    return (
+                    if (vendor === NEWTRUL) {
+                        const [pickup] = row.stops || [],
+                            {geo} = pickup || {},
+                            {city = '', state = ''} = geo || {};
+                        return <Fragment>
+                            {city}, {state}
+                        </Fragment>
+                    } else return (
                         <Fragment>
-                            {row.origin.city}, {row.origin.stateCode}
+                            {row?.origin?.city}, {row?.origin?.stateCode}
                         </Fragment>
                     );
                 },
@@ -114,7 +144,11 @@ const OpenBoard = () => {
                 label: "Pickup Date",
                 renderer: ({row}) => {
                     let date = "";
-                    if (moment(row.pickUpByDate).isValid()) {
+                    if (vendor === NEWTRUL) {
+                        const [pickup] = row.stops || [{}];
+                        const {early_datetime = ''} = pickup || {}
+                        date = early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
+                    } else if (moment(row?.pickUpByDate).isValid()) {
                         date = moment(row.pickUpByDate).format("M/DD/YYYY");
                     }
                     return <Fragment>{date}</Fragment>;
@@ -123,10 +157,17 @@ const OpenBoard = () => {
             {
                 id: "deliveryCountry",
                 label: "Delivery City/State",
-                renderer: ({row}) => {
-                    return (
+                renderer: ({row = {}}) => {
+                    if (vendor === NEWTRUL) {
+                        const [_, drop] = row.stops || [],
+                            {geo} = drop || {},
+                            {city = '', state = ''} = geo || {};
+                        return <Fragment>
+                            {city}, {state}
+                        </Fragment>
+                    } else return (
                         <Fragment>
-                            {row.destination.city}, {row.destination.stateCode}
+                            {row?.destination?.city}, {row?.destination?.stateCode}
                         </Fragment>
                     );
                 },
@@ -136,8 +177,13 @@ const OpenBoard = () => {
                 label: "Delivery Date",
                 renderer: ({row}) => {
                     let date = "";
+                    if (vendor === NEWTRUL) {
+                        const [_, drop] = row.stops || [],
+                            {early_datetime} = drop || {};
+                        return early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
+                    }
                     if (moment(row.deliverBy).isValid()) {
-                        date = moment(row.deliverBy).format("M/DD/YYYY");
+                        date = moment(row?.deliverBy).format("M/DD/YYYY");
                     }
                     return <Fragment>{date}</Fragment>;
                 },
@@ -146,7 +192,15 @@ const OpenBoard = () => {
                 id: "equipment",
                 label: "Equipment",
                 renderer: ({row}) => {
-                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row)
+                    if (vendor === NEWTRUL) {
+                        const {equipment} = row
+                        if (typeof equipment === 'string')
+                            return <Fragment>
+                                {equipment}
+                            </Fragment>;
+                        else return null;
+                    }
+                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row || {})
                     return (
                         <Fragment>
                             {modesString} {standard}
@@ -158,15 +212,27 @@ const OpenBoard = () => {
                 id: "weight",
                 label: "Weight",
                 renderer: ({row}) => {
-                    let {weight: {pounds = ""} = {}} = row || {};
-                    if (pounds) pounds = pounds + " lbs";
-                    return <Fragment>{pounds}</Fragment>;
+                    if (vendor === NEWTRUL) {
+                        const {weight} = row || {};
+                        if (typeof weight === "number")
+                            return <Fragment>
+                                {weight} lbs
+                            </Fragment>
+                        else return null;
+                    } else {
+                        let {weight: {pounds = ""} = {}} = row || {};
+                        if (pounds) pounds = pounds + " lbs";
+                        return <Fragment>{pounds}</Fragment>;
+                    }
                 },
             },
             {
                 id: "company",
                 label: "Company",
                 renderer: ({row}) => {
+                    if (vendor === NEWTRUL) {
+                        return 'New Trul'
+                    }
                     return <Fragment>{"C.H Robinson"}</Fragment>;
                 },
             },
@@ -174,6 +240,24 @@ const OpenBoard = () => {
                 id: "bookNow",
                 label: "Book Now",
                 renderer: ({row = {}}) => {
+                    if(vendor === NEWTRUL) {
+                        const {book_now_price} = row;
+                        if (book_now_price) {
+                            return (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        history.push(path + `/${row.id}/bookNow`, row)
+                                    }}
+                                >
+                                    $ {book_now_price}
+                                </Button>
+                            );
+                        }
+                        else return null;
+                    }
                     if (row.hasOwnProperty("availableLoadCosts")) {
                         const {availableLoadCosts = []} = row || {};
                         const [item] = availableLoadCosts || [];
@@ -187,7 +271,7 @@ const OpenBoard = () => {
                                         history.push(path + `/${row.loadNumber}/bookNow`, row)
                                     }}
                                 >
-                                    $ {item.sourceCostPerUnit}
+                                    $ {item?.sourceCostPerUnit}
                                 </Button>
                             );
                         }
@@ -227,6 +311,7 @@ const OpenBoard = () => {
                 onRefresh={getBiddingList}
                 dateLabel={'Filter by '}
                 loading={loading}
+                vendor={vendor}
             />
             <EnhancedTable
                 config={tableConfig}
