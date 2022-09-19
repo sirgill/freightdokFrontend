@@ -77,10 +77,17 @@ export const MC_NUMBER = '7865422'
 
 export const bookNewTrulLoad = async (body, row) => {
   requestPost({uri: '/newTrulBookLoad', baseUrl: getGoUrl(), body})
-      .then(res => {
-          const { success } = res || {};
-          if(success) {
-            notification('Load ' + body.loadId + ' Booked successfully.')
+      .then(async res => {
+          const { data } = res || {};
+          if(data.status === 'success') {
+            //update loads table
+            const {data, success} = await requestPost({uri: '/api/newtrulLoad', body: {...body, ...row, isBooked: true}})
+            if(success) {
+              notification(data.message);
+            }
+          }
+          else {
+            notification(data.message, data.status)
           }
       })
 }

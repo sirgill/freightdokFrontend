@@ -28,34 +28,6 @@ if (process.env.NODE_ENV === "production") {
     payload = productionPayload;
 }
 
-/*
-* {
-  "loadNumber": 397704004,
-  "carrierCode": "T2244688",
-  "emptyDateTime": "2022-05-24T16:43:18.574Z",
-  "emptyLocation": {
-    "city": "Indianapolis",
-    "state": "IN",
-    "country": "US",
-    "zip": "46143"
-  },
-  "availableLoadCosts": [
-    {
-                    "type": "Flat",
-                    "code": "400",
-                    "description": "Line Haul",
-                    "sourceCostPerUnit": 960,
-                    "units": 1,
-                    "currencyCode": "USD"
-    }
-  ],
-  "rateConfirmation":{
-    "email": "Joshua.Hull@chrobinson.com",
-    "name": "Joshua Hull"
-  }
-}
-* */
-
 const CARRIER_CODE = "T2244688";
 
 const OpenBoard = () => {
