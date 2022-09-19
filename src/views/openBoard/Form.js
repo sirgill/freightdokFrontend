@@ -4,13 +4,28 @@ import InputField from "../../components/Atoms/form/InputField";
 import React, {useState} from "react";
 import {Button, Grid, Typography, Stack, IconButton} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
+import {v4 as uuidv4} from 'uuid';
 import RemoveIcon from '@mui/icons-material/Remove';
-import {bookNow} from "../../actions/openBoard.action";
+import {bookNewBidNewTrul, bookNow} from "../../actions/openBoard.action";
+import {NEWTRUL} from "./constants";
 
+/*
+* {
+	"external_id": "90ca7829-caf7-4f5f-9230-cddc13d7d965167640",
+	"offer_amount": 1000,
+	"expired_at": "2022-02-10T21:01:01+00:00",
+	"terms_condition": true,
+	"driver_name": "Driver Name",
+	"driver_phone_number": "(123) 456-6789",
+	"truck_number": "FVS200937",
+	"trailer_number": "EA5318",
+	"tracking_url": "https://www.google.com/"
+}
+* */
 const Form = (props) => {
     const {location: {state: row = {}} = {}} = props,
         history = useHistory(),
-        {loadNumber = ''} = row;
+        {loadNumber = '', company, vendor} = row;
     let defaultCost = 0;
     const config = {
         showClose: true
@@ -28,19 +43,35 @@ const Form = (props) => {
         setAmount(text);
     };
 
+    const afterSubmit = (success, data) => {
+        if (data?.success || data.status === 'success') {
+            history.goBack();
+        }
+    }
+
     const onSubmit = (e) => {
         //submit bidding
         e.preventDefault();
+        if (vendor === NEWTRUL) {
+            const payload = {
+                "external_id": uuidv4,
+                "offer_amount": amount,
+                "expired_at": "2022-02-10T21:01:01+00:00",
+                "terms_condition": true,
+                "driver_name": "Driver Name",
+                "driver_phone_number": "(123) 456-6789",
+                "truck_number": "FVS200937",
+                "trailer_number": "EA5318",
+                "tracking_url": "https://www.google.com/"
+            }
+            bookNewBidNewTrul(payload, afterSubmit)
+            return;
+        }
         Object.assign(row, {
             defaultEmail: "vy4693@gmail.com",
             env: "dev",
             bidAmount: amount,
         });
-        const afterSubmit = (data) => {
-            if (data?.success) {
-                history.goBack();
-            }
-        }
         bookNow(row, afterSubmit);
     };
 
@@ -58,7 +89,7 @@ const Form = (props) => {
             <Grid sx={{px: 3}} justifyContent="center" display="flex">
                 <form onSubmit={onSubmit} style={{textAlign: 'center'}} className={'form_bidding'}>
                     <Typography sx={{fontSize: 32}}>
-                        C.H Robinson
+                        {company}
                     </Typography>
                     <Typography sx={{fontSize: 32}}>
                         Load Number: {loadNumber}

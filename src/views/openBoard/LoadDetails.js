@@ -112,4 +112,9 @@ const LoadDetails = (props) => {
     );
 };
 
-export default LoadDetails;
+export {
+    LoadDetails,
+    Typo,
+    formatTimeZone,
+    BasicLoadDetails
+};

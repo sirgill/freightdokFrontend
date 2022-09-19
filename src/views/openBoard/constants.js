@@ -1,4 +1,7 @@
 import moment from "moment";
+import {requestPost} from "../../utils/request";
+import {getGoUrl} from "../../config";
+import {notification} from "../../actions/alert";
 
 export const productionPayload = {
   pageIndex: 0,
@@ -69,3 +72,18 @@ export const getParsedLoadEquipment = (row = {}) => {
     modesString, standard
   }
 }
+
+export const MC_NUMBER = '7865422'
+
+export const bookNewTrulLoad = async (body, row) => {
+  requestPost({uri: '/newTrulBookLoad', baseUrl: getGoUrl(), body})
+      .then(res => {
+          const { success } = res || {};
+          if(success) {
+            notification('Load ' + body.loadId + ' Booked successfully.')
+          }
+      })
+}
+
+export const NEWTRUL = 'newTrul'
+export const CHROBINSON = 'chRobinson'

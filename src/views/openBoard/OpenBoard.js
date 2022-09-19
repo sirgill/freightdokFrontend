@@ -3,15 +3,24 @@ import moment from "moment";
 import {Button, Stack} from "@mui/material";
 import {Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
-import LoadDetails from "./LoadDetails";
+import {LoadDetails} from "./LoadDetails";
+import {v4 as uuidv4} from 'uuid';
 import {bookNow, getBiddings, getNewTrulLoads} from "../../actions/openBoard.action";
 import Form from "./Form";
 import {withRouter} from "react-router-dom/cjs/react-router-dom.min";
 import {useDispatch, useSelector} from "react-redux";
-import {developmentPayload, getParsedLoadEquipment, productionPayload} from "./constants";
+import {
+    bookNewTrulLoad,
+    CHROBINSON,
+    developmentPayload,
+    getParsedLoadEquipment,
+    NEWTRUL,
+    productionPayload
+} from "./constants";
 import BookNowForm from "./BookNowForm";
 import {addEvent, removeEvent} from "../../utils/utils";
 import Filters from "./Filters";
+import NewTrulLoadDetails from "./NewTrulLoadDetails";
 
 let payload = developmentPayload;
 
@@ -48,8 +57,6 @@ if (process.env.NODE_ENV === "production") {
 * */
 
 const CARRIER_CODE = "T2244688";
-const NEWTRUL = 'newTrul'
-const CHROBINSON = 'chRobinson'
 
 const OpenBoard = () => {
     const {path} = useRouteMatch(),
@@ -58,7 +65,7 @@ const OpenBoard = () => {
         dispatch = useDispatch(),
         {data: {results, totalResults} = {}, loading = false} = useSelector((state) => state.openBoard),
         history = useHistory();
-    console.log(totalResults)
+    // console.log(totalResults)
 
     const getBiddingList = () => {
         if(vendor === NEWTRUL) {
@@ -105,7 +112,7 @@ const OpenBoard = () => {
     const tableConfig = {
         rowCellPadding: "inherit",
         emptyMessage: "No Shipments Found",
-        onRowClick: ({loadNumber}) => `${path}/${loadNumber}`,
+        onRowClick: ({loadNumber, id}) => vendor.toLowerCase()==='newtrul' ? `${path}/newtrul/${id}` : `${path}/${loadNumber}`,
         count: totalResults,
         limit: filters.pageSize,
         page: filters.pageIndex,
@@ -178,6 +185,7 @@ const OpenBoard = () => {
                 renderer: ({row}) => {
                     let date = "";
                     if (vendor === NEWTRUL) {
+                        // eslint-disable-next-line no-unused-vars
                         const [_, drop] = row.stops || [],
                             {early_datetime} = drop || {};
                         return early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
@@ -249,7 +257,17 @@ const OpenBoard = () => {
                                     color="primary"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        history.push(path + `/${row.id}/bookNow`, row)
+                                        const payload = {
+                                            "external_id": uuidv4(),
+                                            "terms_condition": true,
+                                            "driver_name": "Driver Namme",
+                                            "driver_phone_number": "(123) 456-6789",
+                                            "truck_number": "FVS200937",
+                                            "trailer_number": "EA5318",
+                                            "tracking_url": "https://www.google.com/",
+                                            "loadId": row.id
+                                        }
+                                        bookNewTrulLoad(payload, row)
                                     }}
                                 >
                                     $ {book_now_price}
@@ -290,7 +308,7 @@ const OpenBoard = () => {
                                 color="success"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    history.push(path + `/${row.loadNumber}/bid`, row);
+                                    history.push(path + `/${row.loadNumber}/bid`, {...row, vendor, company: vendor===NEWTRUL ? 'New Trul' : 'C.H Robinson'});
                                 }}
                             >
                                 Bid +
@@ -318,6 +336,7 @@ const OpenBoard = () => {
                 data={results || []}
                 loading={loading}
             />
+            <Route path={path + "/newtrul/:loadId"} component={NewTrulLoadDetails} />
             <Route path={path + "/:loadNumber"} exact component={LoadDetails}/>
             <Route path={path + "/:loadNumber/bid"} component={Form}/>
             <Route path={path + "/:loadNumber/bookNow"} component={BookNowForm}/>

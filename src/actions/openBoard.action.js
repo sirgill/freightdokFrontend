@@ -7,13 +7,29 @@ import {requestGet, requestPost} from "../utils/request";
 export const bookNow = async (body, callback) => {
     try {
         const response = await axios.post(production.goLangBookNow, body);
-        const {data} = response;
-        if (callback) callback(data);
+        const {data, success} = response;
+        if (callback) callback(success, data);
         return response;
     } catch (error) {
         console.log(error);
     }
 };
+
+export const bookNewBidNewTrul = async (body, callback) => {
+    try {
+        const {success, data} = await requestPost({baseUrl: getGoUrl(), uri: '/newTrulBidLoad', body})
+        if(success) {
+            notification('Bid submitted successfully');
+        }
+        if (callback) callback(success, data);
+        if(data.status === 'error') {
+            notification(data.message, 'error')
+        }
+    }
+    catch (e) {
+        console.log(e.message)
+    }
+}
 
 export const getShipments = (payload) => {
     const config = {
@@ -139,7 +155,6 @@ export const getNewTrulLoads = (pageSize, pageIndex) => async dispatch => {
 
     if(success) {
         const {pagination : {total_items} = {}} = data
-        console.log('total_items',total_items, data)
         dispatch({
             type: GET_SHIPMENTS,
             payload: {
