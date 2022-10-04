@@ -15,18 +15,23 @@ export const bookNow = async (body, callback) => {
     }
 };
 
-export const bookNewBidNewTrul = async (body, callback) => {
+export const bookNewBidNewTrul = async (body, loadNumber, callback) => {
     try {
-        const {success, data} = await requestPost({baseUrl: getGoUrl(), uri: '/newTrulBidLoad', body})
-        if(success) {
-            notification('Bid submitted successfully');
+        const {success, data} = await requestPost({uri: "/api/bid/newTrulBidding/" + loadNumber, body});
+        if (success) {
+            const {success, data} = await requestPost({baseUrl: getGoUrl(), uri: '/newTrulBidLoad', body})
+            if (success) {
+                notification('Bid submitted successfully');
+            }
+            if (callback) callback(success, data);
+            if (data.status === 'error') {
+                notification(data.message, 'error')
+            }
         }
-        if (callback) callback(success, data);
-        if(data.status === 'error') {
+        else {
             notification(data.message, 'error')
         }
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e.message)
     }
 }
@@ -140,7 +145,7 @@ export const getNewTrulLoads = (pageSize, pageIndex) => async dispatch => {
     dispatch({
         type: GET_SHIPMENTS,
         payload: {
-            newTrulLoads: {data: [], totalResults: 0 },
+            newTrulLoads: {data: [], totalResults: 0},
             loading: true,
         },
     });
@@ -153,8 +158,8 @@ export const getNewTrulLoads = (pageSize, pageIndex) => async dispatch => {
         }
     )
 
-    if(success) {
-        const {pagination : {total_items} = {}} = data
+    if (success) {
+        const {pagination: {total_items} = {}} = data
         dispatch({
             type: GET_SHIPMENTS,
             payload: {
@@ -164,11 +169,11 @@ export const getNewTrulLoads = (pageSize, pageIndex) => async dispatch => {
         });
     }
 
-    if(!success) {
+    if (!success) {
         dispatch({
             type: GET_SHIPMENTS,
             payload: {
-                data: {results: [], totalResults: 0 },
+                data: {results: [], totalResults: 0},
                 loading: false,
             },
         });

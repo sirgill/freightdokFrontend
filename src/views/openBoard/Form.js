@@ -8,6 +8,7 @@ import {v4 as uuidv4} from 'uuid';
 import RemoveIcon from '@mui/icons-material/Remove';
 import {bookNewBidNewTrul, bookNow} from "../../actions/openBoard.action";
 import {NEWTRUL} from "./constants";
+import load from "../../reducers/load";
 
 /*
 * {
@@ -23,9 +24,9 @@ import {NEWTRUL} from "./constants";
 }
 * */
 const Form = (props) => {
-    const {location: {state: row = {}} = {}} = props,
+    const {location: {state: row = {}} = {}, match: {params: {loadNumber: loadNum}} = {}} = props,
         history = useHistory(),
-        {loadNumber = '', company, vendor} = row;
+        {loadNumber = '', company, vendor, price} = row;
     let defaultCost = 0;
     const config = {
         showClose: true
@@ -37,7 +38,7 @@ const Form = (props) => {
             defaultCost = item.sourceCostPerUnit || 0
         }
     }
-    const [amount, setAmount] = useState(defaultCost);
+    const [amount, setAmount] = useState(price || defaultCost);
     const onChange = (e) => {
         const text = e.target.value;
         setAmount(text);
@@ -54,7 +55,7 @@ const Form = (props) => {
         e.preventDefault();
         if (vendor === NEWTRUL) {
             const payload = {
-                "external_id": uuidv4,
+                "external_id": uuidv4(),
                 "offer_amount": amount,
                 "expired_at": "2022-02-10T21:01:01+00:00",
                 "terms_condition": true,
@@ -62,9 +63,10 @@ const Form = (props) => {
                 "driver_phone_number": "(123) 456-6789",
                 "truck_number": "FVS200937",
                 "trailer_number": "EA5318",
-                "tracking_url": "https://www.google.com/"
+                "tracking_url": "https://www.google.com/",
+                vendorName: 'New Trul'
             }
-            bookNewBidNewTrul(payload, afterSubmit)
+            bookNewBidNewTrul(payload, loadNum, afterSubmit)
             return;
         }
         Object.assign(row, {

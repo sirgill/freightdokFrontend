@@ -40,10 +40,9 @@ const OpenBoard = () => {
     // console.log(totalResults)
 
     const getBiddingList = () => {
-        if(vendor === NEWTRUL) {
+        if (vendor === NEWTRUL) {
             getNewTrulList(filters.pageSize, filters.pageIndex)
-        }
-        else dispatch(getBiddings(filters));
+        } else dispatch(getBiddings(filters));
     }
 
     const getNewTrulList = (pageSize, pageIndex) => {
@@ -84,7 +83,7 @@ const OpenBoard = () => {
     const tableConfig = {
         rowCellPadding: "inherit",
         emptyMessage: "No Shipments Found",
-        onRowClick: ({loadNumber, id}) => vendor.toLowerCase()==='newtrul' ? `${path}/newtrul/${id}` : `${path}/${loadNumber}`,
+        onRowClick: ({loadNumber, id}) => vendor.toLowerCase() === 'newtrul' ? `${path}/newtrul/${id}` : `${path}/${loadNumber}`,
         count: totalResults,
         limit: filters.pageSize,
         page: filters.pageIndex,
@@ -220,7 +219,7 @@ const OpenBoard = () => {
                 id: "bookNow",
                 label: "Book Now",
                 renderer: ({row = {}}) => {
-                    if(vendor === NEWTRUL) {
+                    if (vendor === NEWTRUL) {
                         const {book_now_price} = row;
                         if (book_now_price) {
                             return (
@@ -245,8 +244,7 @@ const OpenBoard = () => {
                                     $ {book_now_price}
                                 </Button>
                             );
-                        }
-                        else return null;
+                        } else return null;
                     }
                     if (row.hasOwnProperty("availableLoadCosts")) {
                         const {availableLoadCosts = []} = row || {};
@@ -280,7 +278,19 @@ const OpenBoard = () => {
                                 color="success"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    history.push(path + `/${row.loadNumber}/bid`, {...row, vendor, company: vendor===NEWTRUL ? 'New Trul' : 'C.H Robinson'});
+                                    if (vendor === NEWTRUL) {
+                                        return history.push(path + `/${row.id}/bid`, {
+                                            ...row,
+                                            vendor,
+                                            company: 'New Trul',
+                                            price: row.book_now_price
+                                        });
+                                    }
+                                    history.push(path + `/${row.loadNumber}/bid`, {
+                                        ...row,
+                                        vendor,
+                                        company: vendor === NEWTRUL ? 'New Trul' : 'C.H Robinson'
+                                    });
                                 }}
                             >
                                 Bid +
@@ -308,7 +318,7 @@ const OpenBoard = () => {
                 data={results || []}
                 loading={loading}
             />
-            <Route path={path + "/newtrul/:loadId"} component={NewTrulLoadDetails} />
+            <Route path={path + "/newtrul/:loadId"} component={NewTrulLoadDetails}/>
             <Route path={path + "/:loadNumber"} exact component={LoadDetails}/>
             <Route path={path + "/:loadNumber/bid"} component={Form}/>
             <Route path={path + "/:loadNumber/bookNow"} component={BookNowForm}/>
