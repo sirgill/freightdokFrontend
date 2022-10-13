@@ -34,7 +34,11 @@ function Headers({columns = [], config = {}}) {
 }
 
 const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowIndex}) => {
-    const {hasDelete = false, onDelete, hover = false, rowCellPadding = 'none', onRowClick = undefined} = config;
+    const {hasDelete = false, onDelete, hover = false, rowCellPadding = 'none', onRowClick = undefined, rowStyleCb} = config;
+    let rowStyle = {}
+    if(rowStyleCb) {
+        rowStyle = rowStyleCb({row}) || {};
+    }
     const handleDelete = (id, e) => {
             e.stopPropagation();
             return onDelete(id, row);
@@ -62,7 +66,7 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowI
         </TableCell>
     });
 
-    return <TableRow key={rowIndex} hover={!!onRowClick} onClick={rowClickHandler} sx={!!onRowClick ? {cursor: 'pointer'} : {}}>
+    return <TableRow key={rowIndex} hover={!!onRowClick} onClick={rowClickHandler} sx={!!onRowClick ? {cursor: 'pointer', ...rowStyle} : {}}>
         {cell}
         {hasDelete && deleteCell}
     </TableRow>;

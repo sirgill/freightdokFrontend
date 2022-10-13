@@ -88,6 +88,20 @@ const OpenBoard = () => {
         limit: filters.pageSize,
         page: filters.pageIndex,
         onPageChange,
+        rowStyleCb: ({row}) => {
+            const { bidLevel, status } = row;
+            //to show rejected, bidlevel:1 and status false
+            //to show counter offer bid level: 2, status: false
+            if(bidLevel === 2) {
+                return {
+                    borderLeft: '5px solid #ffeaa7'
+                }
+            } else if (bidLevel === 1){
+                return {
+                    borderLeft: !status ? `5px solid #e74c3c` : '5px solid #00b894'
+                }
+            }
+        },
         columns: [
             {
                 id: "loadNumber",
@@ -228,6 +242,9 @@ const OpenBoard = () => {
                                     color="primary"
                                     onClick={(e) => {
                                         e.stopPropagation();
+                                        /*
+                                        * {TODO} - payload needs to be adjusted
+                                        * */
                                         const payload = {
                                             "external_id": uuidv4(),
                                             "terms_condition": true,

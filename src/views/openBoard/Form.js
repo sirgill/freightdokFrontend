@@ -6,7 +6,7 @@ import {Button, Grid, Typography, Stack, IconButton} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import {v4 as uuidv4} from 'uuid';
 import RemoveIcon from '@mui/icons-material/Remove';
-import {bookNewBidNewTrul, bookNow} from "../../actions/openBoard.action";
+import {bookNewBidNewTrul, bookNow, newTrulFinalOffer, placeNewTrulCounterOffer} from "../../actions/openBoard.action";
 import {NEWTRUL} from "./constants";
 import load from "../../reducers/load";
 
@@ -24,7 +24,8 @@ import load from "../../reducers/load";
 }
 * */
 const Form = (props) => {
-    const {location: {state: row = {}} = {}, match: {params: {loadNumber: loadNum}} = {}} = props,
+    const {location: {state: row = {}} = {},
+            match: {params: {loadNumber: loadNum, counterOffer = false, finalOffer = false}} = {}} = props,
         history = useHistory(),
         {loadNumber = '', company, vendor, price} = row;
     let defaultCost = 0;
@@ -54,7 +55,7 @@ const Form = (props) => {
         //submit bidding
         e.preventDefault();
         if (vendor === NEWTRUL) {
-            const payload = {
+            let payload = {
                 "external_id": uuidv4(),
                 "offer_amount": amount,
                 "expired_at": "2022-02-10T21:01:01+00:00",
@@ -65,6 +66,21 @@ const Form = (props) => {
                 "trailer_number": "EA5318",
                 "tracking_url": "https://www.google.com/",
                 vendorName: 'New Trul'
+            }
+            if(counterOffer) {
+                payload = {
+                    external_id: row.external_id,
+                    offer_amount: row.bidAmount,
+                    expired_at: "2022-02-10T21:01:01+00:00"
+                }
+                return placeNewTrulCounterOffer(payload, afterSubmit);
+            }
+            if(finalOffer) {
+                payload = {
+                    loadId: loadNum,
+                    offerStatus: 'accept'
+                }
+                return newTrulFinalOffer(payload, afterSubmit)
             }
             bookNewBidNewTrul(payload, loadNum, afterSubmit)
             return;
