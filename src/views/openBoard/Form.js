@@ -1,39 +1,40 @@
 import Modal from "../ownerOperator/Modal";
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import InputField from "../../components/Atoms/form/InputField";
-import React, {useState} from "react";
-import {Button, Grid, Typography, Stack, IconButton} from "@mui/material";
+import React, { useState } from "react";
+import { Button, Grid, Typography, Stack, IconButton } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import RemoveIcon from '@mui/icons-material/Remove';
-import {bookNewBidNewTrul, bookNow, newTrulFinalOffer, placeNewTrulCounterOffer} from "../../actions/openBoard.action";
-import {NEWTRUL} from "./constants";
+import { placeNewTrulBid, bookNow, newTrulFinalOffer, placeNewTrulCounterOffer } from "../../actions/openBoard.action";
+import { NEWTRUL } from "./constants";
 import load from "../../reducers/load";
 
 /*
 * {
-	"external_id": "90ca7829-caf7-4f5f-9230-cddc13d7d965167640",
-	"offer_amount": 1000,
-	"expired_at": "2022-02-10T21:01:01+00:00",
-	"terms_condition": true,
-	"driver_name": "Driver Name",
-	"driver_phone_number": "(123) 456-6789",
-	"truck_number": "FVS200937",
-	"trailer_number": "EA5318",
-	"tracking_url": "https://www.google.com/"
+    "external_id": "90ca7829-caf7-4f5f-9230-cddc13d7d965167640",
+    "offer_amount": 1000,
+    "expired_at": "2022-02-10T21:01:01+00:00",
+    "terms_condition": true,
+    "driver_name": "Driver Name",
+    "driver_phone_number": "(123) 456-6789",
+    "truck_number": "FVS200937",
+    "trailer_number": "EA5318",
+    "tracking_url": "https://www.google.com/"
 }
 * */
 const Form = (props) => {
-    const {location: {state: row = {}} = {},
-            match: {params: {loadNumber: loadNum, counterOffer = false, finalOffer = false}} = {}} = props,
+
+    const { location: { state: row = {} } = {},
+        match: { params: { loadNumber: loadNum, counterOffer = false, finalOffer = false } } = {} } = props,
         history = useHistory(),
-        {loadNumber = '', company, vendor, price} = row;
+        { loadNumber = '', company, vendor, price } = row;
     let defaultCost = 0;
     const config = {
         showClose: true
     };
     if (row.hasOwnProperty("availableLoadCosts")) {
-        const {availableLoadCosts = []} = row || {};
+        const { availableLoadCosts = [] } = row || {};
         const [item] = availableLoadCosts || [];
         if (item) {
             defaultCost = item.sourceCostPerUnit || 0
@@ -65,9 +66,10 @@ const Form = (props) => {
                 "truck_number": "FVS200937",
                 "trailer_number": "EA5318",
                 "tracking_url": "https://www.google.com/",
-                vendorName: 'New Trul'
+                vendorName: 'New Trul',
+                loadDetail: row
             }
-            if(counterOffer) {
+            if (counterOffer) {
                 payload = {
                     external_id: row.external_id,
                     offer_amount: row.bidAmount,
@@ -75,14 +77,14 @@ const Form = (props) => {
                 }
                 return placeNewTrulCounterOffer(payload, afterSubmit);
             }
-            if(finalOffer) {
+            if (finalOffer) {
                 payload = {
                     loadId: loadNum,
                     offerStatus: 'accept'
                 }
                 return newTrulFinalOffer(payload, afterSubmit)
             }
-            bookNewBidNewTrul(payload, loadNum, afterSubmit)
+            placeNewTrulBid(payload, loadNum, afterSubmit)
             return;
         }
         Object.assign(row, {
@@ -104,17 +106,17 @@ const Form = (props) => {
 
     return (
         <Modal config={config}>
-            <Grid sx={{px: 3}} justifyContent="center" display="flex">
-                <form onSubmit={onSubmit} style={{textAlign: 'center'}} className={'form_bidding'}>
-                    <Typography sx={{fontSize: 32}}>
+            <Grid sx={{ px: 3 }} justifyContent="center" display="flex">
+                <form onSubmit={onSubmit} style={{ textAlign: 'center' }} className={'form_bidding'}>
+                    <Typography sx={{ fontSize: 32 }}>
                         {company}
                     </Typography>
-                    <Typography sx={{fontSize: 32}}>
+                    <Typography sx={{ fontSize: 32 }}>
                         Load Number: {loadNumber}
                     </Typography>
-                    <Stack direction={'row'} sx={{py: 5}} alignItems={'end'} gap={'10px'} justifyContent={'center'}>
+                    <Stack direction={'row'} sx={{ py: 5 }} alignItems={'end'} gap={'10px'} justifyContent={'center'}>
                         <IconButton onClick={onSubtract} disabled={amount <= 0}>
-                            <RemoveIcon/>
+                            <RemoveIcon />
                         </IconButton>
                         <div className='dollarInput'>
                             <InputField
@@ -127,10 +129,10 @@ const Form = (props) => {
                             />
                         </div>
                         <IconButton onClick={onAdd}>
-                            <AddIcon/>
+                            <AddIcon />
                         </IconButton>
                     </Stack>
-                    <Button variant="contained" color="success" onClick={onSubmit} sx={{px: 3, py: 1, fontSize: 16}}>
+                    <Button variant="contained" color="success" onClick={onSubmit} sx={{ px: 3, py: 1, fontSize: 16 }}>
                         Submit Bid
                     </Button>
                 </form>

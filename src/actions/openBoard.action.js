@@ -15,10 +15,11 @@ export const bookNow = async (body, callback) => {
     }
 };
 
-export const bookNewBidNewTrul = async (body, loadNumber, callback) => {
+export const placeNewTrulBid = async (body, loadNumber, callback) => {
     try {
         const { success, data } = await requestPost({ uri: "/api/bid/newTrulBidding/" + loadNumber, body });
         if (success) {
+            delete body.loadDetail;
             const { success, data } = await requestPost({ baseUrl: getGoUrl(), uri: '/newTrulBidLoad', body })
             if (success) {
                 notification('Bid submitted successfully');

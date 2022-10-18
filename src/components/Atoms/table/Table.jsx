@@ -86,7 +86,9 @@ const TableData = ({columns, data = [], config = {}, handleRowClick}) => {
 }
 
 
-const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
+const EnhancedTable = ({ config = {}, data = [], history, loading = false }) => {
+
+
     const [tableState, setTableState] = useState({}),
         {columns = [], onRowClick, hasOnClickUrl = true, onPageChange, page, count, limit, emptyMessage = ''} = config,
         ref = React.useRef([]);
