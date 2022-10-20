@@ -327,7 +327,6 @@ const OpenBoard = () => {
                 label2={'Maximum pickup Date'}
                 onRefresh={getBiddingList}
                 dateLabel={'Filter by '}
-                loading={loading}
                 vendor={vendor}
             />
             <EnhancedTable
