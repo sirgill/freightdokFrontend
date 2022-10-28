@@ -47,7 +47,7 @@ const RightDetails = ({state}) => {
 const NewTrulLoadDetails = (props) => {
     const {location: {state = {}} = {}} = props;
     const {id: loadNumber, loaded_miles, weight, equipment, client: {compliance_link = '', client_name} = {}} = state
-    console.log(state)
+    // console.log(state)
     const config = {
         title: "",
     };
