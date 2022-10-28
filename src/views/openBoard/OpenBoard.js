@@ -224,7 +224,7 @@ const OpenBoard = () => {
                 label: "Company",
                 renderer: ({row}) => {
                     if (vendor === NEWTRUL) {
-                        const {client: {client_name}} = row || {}
+                        const {client: {client_name} = {}} = row || {}
                         return client_name || '--'
                     }
                     return <Fragment>{"C.H Robinson"}</Fragment>;
