@@ -10,18 +10,18 @@ import {getGoUrl} from "../../config";
 import {MC_NUMBER} from "./constants";
 
 const LeftDetails = ({state}) => {
-    const {stops = []} = state;
-    const [{geo = {}, zipcode = '', early_datetime}] = stops;
+    const {stops = []} = state || {};
+    const [{geo = {}, early_datetime, late_datetime, appointment_required}] = stops;
     const {city, state: stateCode} = geo || {};
     return <Details
         title={'Pickup'}
         // name={name}
-        location={`${city}${stateCode ? ", " + stateCode : ''} ${zipcode ? zipcode : '--'}`}
+        location={`${city}${stateCode ? ", " + stateCode : ''}`}
         type={'Pickup Date'}
         date={moment(early_datetime).format('MM/DD/yyyy')}
-        appointment={'--'}
+        appointment={appointment_required ? 'Yes' : 'No'}
         avgLoadTime={'--'}
-        loadBy={'--'}
+        loadBy={`${moment(early_datetime).format('HH:mm:ss')} ${late_datetime ? "- " + moment(late_datetime).format('HH:mm:ss') : ''}`}
         loadByType='Ready By'
     />
 }
@@ -29,24 +29,24 @@ const LeftDetails = ({state}) => {
 const RightDetails = ({state}) => {
     const {stops = []} = state;
     // eslint-disable-next-line no-unused-vars
-    const [_, {geo = {}, zipcode = '', early_datetime}] = stops;
+    const [_, {geo = {}, early_datetime, late_datetime, appointment_required}] = stops;
     const {city, state: stateCode} = geo || {};
     return <Details
         title={'Delivery'}
         // name={destinationName}
-        location={`${city}${stateCode ? ", " + stateCode : ''} ${zipcode ? zipcode : '--'}`}
+        location={`${city}${stateCode ? ", " + stateCode : ''}`}
         type={'Delivery Date'}
         date={moment(early_datetime).format('MM/DD/yyyy')}
-        appointment={'--'}
+        appointment={appointment_required ? 'Yes' : 'No'}
         avgLoadTime={'--'}
-        loadBy={'--'}
+        loadBy={`${moment(early_datetime).format('HH:mm:ss')} ${late_datetime ? "- " + moment(late_datetime).format('HH:mm:ss') : ''}`}
         loadByType='Deliver By'
     />
 }
 
 const NewTrulLoadDetails = (props) => {
     const {location: {state = {}} = {}} = props;
-    const {id: loadNumber, loaded_miles, weight, equipment} = state
+    const {id: loadNumber, loaded_miles, weight, equipment, client: {compliance_link = '', client_name} = {}} = state
     console.log(state)
     const config = {
         title: "",
@@ -78,20 +78,27 @@ const NewTrulLoadDetails = (props) => {
                     <Typography align='center' variant='h4'>New Trul</Typography>
                 </Grid>
                 <Grid item xs={12} textAlign={'center'}>
-                    <BasicLoadDetails loadNumber={loadNumber} trip={loaded_miles} weight={weight} equipment={equipment}/>
+                    <BasicLoadDetails loadNumber={loadNumber} trip={loaded_miles} weight={weight}
+                                      equipment={equipment}/>
+                    {client_name && <Typography fontSize={24}>Company: {client_name}</Typography>}
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container justifyContent={'center'}>
-                        <Grid xs={4} textAlign={'center'} className={'openBoardPickupDetails'}>
+                        <Grid xs={5} textAlign={'center'} className={'openBoardPickupDetails'}>
                             <LeftDetails state={state}/>
                         </Grid>
-                        <Grid xs={4} textAlign={'center'}>
+                        <Grid xs={2} textAlign={'center'}>
                             <ArrowForwardIcon sx={{fontSize: '8rem'}}/>
                         </Grid>
-                        <Grid xs={4} textAlign={'center'}>
+                        <Grid xs={5} textAlign={'center'}>
                             <RightDetails state={state}/>
                         </Grid>
                     </Grid>
+                </Grid>
+                <Grid item xs={12} textAlign={'center'}>
+                    {compliance_link &&
+                    <Typography sx={{textDecoration: 'underline'}} component='a' href={'http://' + compliance_link}
+                                target='_blank'>{compliance_link}</Typography>}
                 </Grid>
             </Grid>
         </Modal>
