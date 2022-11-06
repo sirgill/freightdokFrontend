@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect, useState} from "react";
 import moment from "moment";
-import {Button, Stack} from "@mui/material";
+import {Button, IconButton, Stack} from "@mui/material";
 import {Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import {LoadDetails} from "./LoadDetails";
@@ -11,7 +11,6 @@ import {withRouter} from "react-router-dom/cjs/react-router-dom.min";
 import {useDispatch, useSelector} from "react-redux";
 import {
     bookNewTrulLoad,
-    CHROBINSON,
     developmentPayload,
     getParsedLoadEquipment,
     NEWTRUL,
@@ -21,6 +20,10 @@ import BookNowForm from "./BookNowForm";
 import {addEvent, removeEvent} from "../../utils/utils";
 import Filters from "./Filters";
 import NewTrulLoadDetails from "./NewTrulLoadDetails";
+import NewTrulFilters from "./NewtrulFIlters";
+import InputField from "../../components/Atoms/form/InputField";
+import {UserSettings} from "../../components/Atoms/client";
+import {Refresh} from "@mui/icons-material";
 
 let payload = developmentPayload;
 
@@ -33,7 +36,7 @@ const CARRIER_CODE = "T2244688";
 const OpenBoard = () => {
     const {path} = useRouteMatch(),
         [filters, setFilters] = useState(payload),
-        [vendor, setVendor] = useState(CHROBINSON),
+        [vendor, setVendor] = useState(UserSettings.getActiveOpenBoard()),
         dispatch = useDispatch(),
         {data: {results, totalResults} = {}, loading = false} = useSelector((state) => state.openBoard),
         history = useHistory();
@@ -51,6 +54,7 @@ const OpenBoard = () => {
 
     const onFilterChange = (fromDate, toDate, type) => {
         if (fromDate === 'select') {
+            UserSettings.setActiveOpenBoard('activeBoard', toDate.target.value)
             return setVendor(toDate.target.value)
         }
         const min = moment(fromDate).format('YYYY-MM-DD')
@@ -81,22 +85,25 @@ const OpenBoard = () => {
     };
 
     const tableConfig = {
-        rowCellPadding: "inherit",
+        rowCellPadding: "normal",
         emptyMessage: "No Shipments Found",
-        onRowClick: ({loadNumber, id}) => vendor.toLowerCase() === 'newtrul' ? `${path}/newtrul/${id}` : `${path}/${loadNumber}`,
+        onRowClick: ({
+                         loadNumber,
+                         id
+                     }) => vendor.toLowerCase() === 'newtrul' ? `${path}/newtrul/${id}` : `${path}/${loadNumber}`,
         count: totalResults,
         limit: filters.pageSize,
         page: filters.pageIndex,
         onPageChange,
         rowStyleCb: ({row}) => {
-            const { bidLevel, status } = row;
+            const {bidLevel, status} = row;
             //to show rejected, bidlevel:1 and status false
             //to show counter offer bid level: 2, status: false
-            if(bidLevel === 2) {
+            if (bidLevel === 2) {
                 return {
                     borderLeft: '5px solid #ffeaa7'
                 }
-            } else if (bidLevel === 1){
+            } else if (bidLevel === 1) {
                 return {
                     borderLeft: !status ? `5px solid #e74c3c` : '5px solid #00b894'
                 }
@@ -322,14 +329,32 @@ const OpenBoard = () => {
 
     return (
         <Stack style={{gap: '10px'}}>
-            <Filters
+            <Stack direction={'row'} justifyContent='end'>
+                <Stack>
+                    <InputField
+                        // label={'Select Vendor'}
+                        type={'select'}
+                        options={[{id: 'chrobinson', label: 'CH Robinson'},
+                            {id: 'newTrul', label: 'New Trul'}
+                        ]}
+                        value={vendor}
+                        onChange={onFilterChange.bind(this, 'select')}
+                    />
+                </Stack>
+                <Stack>
+                    <IconButton title='Refresh' onClick={getBiddingList}>
+                        <Refresh className={loading ? 'rotateIcon' : undefined}/>
+                    </IconButton>
+                </Stack>
+            </Stack>
+            {vendor === NEWTRUL ? <NewTrulFilters/> : <Filters
                 onChange={onFilterChange}
                 label1={'Minimum pickup Date'}
                 label2={'Maximum pickup Date'}
                 onRefresh={getBiddingList}
                 dateLabel={'Filter by '}
                 vendor={vendor}
-            />
+            />}
             <EnhancedTable
                 config={tableConfig}
                 data={results || []}

@@ -42,6 +42,21 @@ const triggerCustomEvent = (eventName, eventDetail = {}) => {
     triggerCustomEventOnElement(window, eventName, eventDetail);
 };
 
+String.prototype.equalsIgnoreCase = function (str) {
+    return str!==null && typeof str === 'string' && this.toUpperCase() === str.toUpperCase()
+}
+
+String.prototype.removeWhiteSpaces = function (replaceBy){
+    return this && this.replace(/\s/g, replaceBy || '')
+}
+
+Object.defineProperty(String.prototype, 'capitalize', {
+    value: function (){
+        return this.charAt(0).toUpperCase() + this.splice(1)
+    },
+    enumerable: false
+})
+
 function parseToken (token = '') {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');

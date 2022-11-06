@@ -4,11 +4,9 @@ import Stack from '@mui/material/Stack';
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DatePicker from '@mui/lab/DatePicker';
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import ReplayIcon from '@mui/icons-material/Replay';
-import {IconButton, Typography} from "@mui/material";
-import InputField from "../../components/Atoms/form/InputField";
+import {Typography} from "@mui/material";
 
-function Filters({ onChange, name1, name2, label1 = '', label2 = '', onRefresh, dateLabel = '', loading=false, vendor }) {
+function Filters({ onChange, name1, name2, label1 = '', label2 = '',  dateLabel = '', }) {
     const [value, setValue] = React.useState(null);
     const [value2, setValue2] = React.useState(null);
     const [error, setErrors] = useState('');
@@ -22,7 +20,7 @@ function Filters({ onChange, name1, name2, label1 = '', label2 = '', onRefresh, 
             onChange(value, value2)
         }
         setErrors('')
-    }, [value, value2])
+    }, [value, value2, label1, label2])
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -51,24 +49,6 @@ function Filters({ onChange, name1, name2, label1 = '', label2 = '', onRefresh, 
                         />
                     </Stack>
                     {error && <Typography sx={{fontSize: 12, color: 'red'}}>{error}</Typography>}
-                </Stack>
-                <Stack direction={'row'}>
-                    <Stack>
-                        <InputField
-                            // label={'Select Vendor'}
-                            type={'select'}
-                            options={[{id: 'chrobinson', label : 'CH Robinson'},
-                                {id: 'newTrul', label: 'New Trul'}
-                            ]}
-                            value={vendor}
-                            onChange={onChange.bind(this, 'select')}
-                        />
-                    </Stack>
-                    <Stack>
-                        <IconButton title='Refresh' onClick={onRefresh}>
-                            <ReplayIcon className={loading ? 'rotateIcon': ''} />
-                        </IconButton>
-                    </Stack>
                 </Stack>
             </Stack>
         </LocalizationProvider>

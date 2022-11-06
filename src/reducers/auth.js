@@ -10,6 +10,7 @@ import {
   USER_UPDATED,
   AUTH_UPDATE_FAIL
 } from '../actions/types';
+import {clearUserSettings} from "../components/Atoms/client";
 
 const initialState = {
   token: localStorage.getItem('token'),
@@ -67,6 +68,7 @@ export default function(state = initialState, action) {
     case LOGIN_FAIL:
     case LOGOUT:
       localStorage.removeItem('token');
+      clearUserSettings();
       return {
         ...state,
         token: null,
