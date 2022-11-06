@@ -176,7 +176,7 @@ export const getCHLoads = (onlyDelivered = false) => async (dispatch) => {
     }
 }
 
-export const getNewTrulLoads = (pageSize, pageIndex) => async dispatch => {
+export const getNewTrulLoads = (pageSize, pageIndex, params) => async dispatch => {
     dispatch({
         type: GET_SHIPMENTS,
         payload: {
@@ -189,7 +189,8 @@ export const getNewTrulLoads = (pageSize, pageIndex) => async dispatch => {
         uri: '/newTrulGetAllLoads', baseUrl: getGoUrl(),
         body: {
             "page": pageIndex + 1,
-            "pagesize": pageSize
+            "pagesize": pageSize,
+            "params": params ? params : ''
         }
     }
     )
@@ -217,6 +218,7 @@ export const getNewTrulLoads = (pageSize, pageIndex) => async dispatch => {
     }
 
     if (!success) {
+        notification(data.message, 'error')
         dispatch({
             type: GET_SHIPMENTS,
             payload: {

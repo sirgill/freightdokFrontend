@@ -11,7 +11,7 @@ import {MC_NUMBER} from "./constants";
 
 const LeftDetails = ({state}) => {
     const {stops = []} = state || {};
-    const [{geo = {}, early_datetime, late_datetime, appointment_required}] = stops;
+    const [_, {geo = {}, early_datetime, late_datetime, appointment_required}] = stops;
     const {city, state: stateCode} = geo || {};
     return <Details
         title={'Pickup'}
@@ -29,7 +29,7 @@ const LeftDetails = ({state}) => {
 const RightDetails = ({state}) => {
     const {stops = []} = state;
     // eslint-disable-next-line no-unused-vars
-    const [_, {geo = {}, early_datetime, late_datetime, appointment_required}] = stops;
+    const [{geo = {}, early_datetime, late_datetime, appointment_required}] = stops;
     const {city, state: stateCode} = geo || {};
     return <Details
         title={'Delivery'}
