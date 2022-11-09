@@ -90,7 +90,9 @@ const NewtrulFilters = ({ getNewTrulList, pageSize, pageIndex, setParams }) => {
         }
 
         dates.forEach(dt => {
-            obj[dt] = moment(form[dt]).format('YYYY-MM-DD')
+            if (form[dt]) {
+                obj[dt] = moment(form[dt]).format('YYYY-MM-DD')
+            }
         })
         let params = getQueryString(obj);
         setParams(params);

@@ -1,9 +1,9 @@
-import {DateRangePicker as Picker} from "react-date-range";
+import { DateRangePicker as Picker } from "react-date-range";
 import moment from "moment";
-import {endOfDay, startOfDay, startOfWeek, startOfMonth, startOfQuarter, startOfYear} from 'date-fns'
+import { endOfDay, startOfDay, startOfWeek, startOfMonth, startOfQuarter, startOfYear } from 'date-fns'
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import 'react-date-range/dist/styles.css'; // main style file
-import React, {Fragment, useEffect, useState} from "react";
+import React, { Fragment, useState } from "react";
 import {
     Box,
     InputAdornment,
@@ -11,7 +11,7 @@ import {
     Popover,
     TextField
 } from "@mui/material";
-import {DateRange} from "@material-ui/icons";
+import { DateRange } from "@material-ui/icons";
 import './dateRangePicker.css'
 
 const staticRanges = [
@@ -61,7 +61,7 @@ const getDateString = (s, e) => {
     return moment(s).format('MM/DD/YYYY') + ' - ' + moment(e).format('MM/DD/YYYY')
 }
 
-const DateRangePicker = ({value, onChange, label, name}) => {
+const DateRangePicker = ({ value, onChange, label, name }) => {
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const id = open && Boolean(anchorEl) ? 'transition-popper' : undefined;
@@ -75,16 +75,14 @@ const DateRangePicker = ({value, onChange, label, name}) => {
     const [textField, setTextField] = useState(getDateString())
 
     function handleSelect(ranges) {
-        const {selection: {startDate, endDate} = {}} = ranges;
+        const { selection: { startDate, endDate } = {} } = ranges;
         setStartDate(() => startDate)
         setEndDate(() => endDate)
         setTextField(getDateString(startDate, endDate))
-        setSelectionRange({startDate, endDate, key: 'selection'})
+        setSelectionRange({ startDate, endDate, key: 'selection' })
+        if (onChange) onChange({ name, value: { startDate, endDate } })
     }
 
-    useEffect(() => {
-        if (onChange) onChange({name, value: {startDate, endDate}})
-    }, [startDate, endDate, name])
 
     const togglePicker = (event) => {
         setAnchorEl(event.currentTarget);
@@ -106,7 +104,7 @@ const DateRangePicker = ({value, onChange, label, name}) => {
                             edge="end"
                             aria-describedby={id}
                         >
-                            <DateRange/>
+                            <DateRange />
                         </IconButton>
                     </InputAdornment>
                 }}
@@ -119,7 +117,7 @@ const DateRangePicker = ({value, onChange, label, name}) => {
                 <Box sx={{
                     p: 1,
                     bgcolor: 'background.paper',
-                    '&.rdrStaticRangeLabel': {fontSize: "14px!important"}
+                    '&.rdrStaticRangeLabel': { fontSize: "14px!important" }
                 }}
                 >
                     <Picker
