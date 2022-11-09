@@ -20,7 +20,7 @@ import BookNowForm from "./BookNowForm";
 import { addEvent, removeEvent } from "../../utils/utils";
 import Filters from "./Filters";
 import NewTrulLoadDetails from "./NewTrulLoadDetails";
-import NewTrulFilters from "./NewtrulFilters";
+import NewtrulFilters from "./NewtrulFilters";
 import InputField from "../../components/Atoms/form/InputField";
 import { UserSettings } from "../../components/Atoms/client";
 import { Refresh } from "@mui/icons-material";
@@ -349,7 +349,7 @@ const OpenBoard = () => {
                 </Stack>
             </Stack>
             {vendor === NEWTRUL ?
-                <NewTrulFilters
+                <NewtrulFilters
                     setParams={setParams}
                     pageSize={filters.pageSize} pageIndex={filters.pageIndex} getNewTrulList={getNewTrulList} /> : <Filters
                     onChange={onFilterChange}
