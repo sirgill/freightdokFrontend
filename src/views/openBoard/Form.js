@@ -53,7 +53,6 @@ const Form = (props) => {
             history.goBack();
         }
     }
-    console.log(row)
 
     const onSubmit = (e) => {
         //submit bidding
