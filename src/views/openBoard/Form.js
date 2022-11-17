@@ -53,6 +53,7 @@ const Form = (props) => {
             history.goBack();
         }
     }
+    console.log(row)
 
     const onSubmit = (e) => {
         //submit bidding
@@ -68,6 +69,7 @@ const Form = (props) => {
                 "truck_number": "FVS200937",
                 "trailer_number": "EA5318",
                 "tracking_url": "https://www.google.com/",
+                loadId: row.id,
                 vendorName: 'New Trul',
                 loadDetail: row
             }
