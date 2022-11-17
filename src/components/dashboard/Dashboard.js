@@ -47,6 +47,7 @@ import OwnerOperatorIcon from '../../assets/icons/icons8-engineer-24.png'
 import DriverIcon from '../../assets/icons/icons8-driver-24.png'
 import UsersIcon from '../../assets/icons/icons8-user-account-24.png'
 import CarrierProfileIcon from '../../assets/icons/settings-18-1-1-1-1-1.svg'
+import Mybids from '../../assets/icons/icons8-bid-24.png'
 import LogoutIcon from '../../assets/icons/icons8-logout-24.png'
 import CarrierProfile from "../../views/carrierProfile/CarrierProfile";
 import MyBids from "../../views/mybids/Mybids.js";
@@ -172,7 +173,7 @@ const Dashboard = ({
                     onClick={() => {
                         setListBarType("My Bids");
                     }}
-                    icon={MyLoads}
+                    icon={Mybids}
                     primary={"My Bids"}
                     listBarType={listBarType}
                 />
