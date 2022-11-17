@@ -1,14 +1,14 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, {Fragment, useCallback, useEffect, useState} from "react";
 import moment from "moment";
-import { Button, IconButton, Stack } from "@mui/material";
-import { Route, useHistory, useRouteMatch } from "react-router-dom";
+import {Button, IconButton, Stack} from "@mui/material";
+import {Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
-import { LoadDetails } from "./LoadDetails";
-import { v4 as uuidv4 } from 'uuid';
-import { bookNow, getBiddings, getNewTrulLoads } from "../../actions/openBoard.action";
+import {LoadDetails} from "./LoadDetails";
+import {v4 as uuidv4} from 'uuid';
+import {bookNow, getBiddings, getNewTrulLoads} from "../../actions/openBoard.action";
 import Form from "./Form";
-import { withRouter } from "react-router-dom/cjs/react-router-dom.min";
-import { useDispatch, useSelector } from "react-redux";
+import {withRouter} from "react-router-dom/cjs/react-router-dom.min";
+import {useDispatch, useSelector} from "react-redux";
 import {
     bookNewTrulLoad,
     developmentPayload,
@@ -17,13 +17,13 @@ import {
     productionPayload
 } from "./constants";
 import BookNowForm from "./BookNowForm";
-import { addEvent, removeEvent } from "../../utils/utils";
+import {addEvent, removeEvent} from "../../utils/utils";
 import Filters from "./Filters";
 import NewTrulLoadDetails from "./NewTrulLoadDetails";
 import NewtrulFilters from "./NewtrulFilters";
 import InputField from "../../components/Atoms/form/InputField";
-import { UserSettings } from "../../components/Atoms/client";
-import { Refresh } from "@mui/icons-material";
+import {UserSettings} from "../../components/Atoms/client";
+import {Refresh} from "@mui/icons-material";
 
 let payload = developmentPayload;
 
@@ -34,20 +34,20 @@ if (process.env.NODE_ENV === "production") {
 const CARRIER_CODE = "T2244688";
 
 const OpenBoard = () => {
-    const { path } = useRouteMatch(),
+    const {path} = useRouteMatch(),
         [filters, setFilters] = useState(payload),
         [vendor, setVendor] = useState(UserSettings.getActiveOpenBoard()),
         [params, setParams] = useState(''),
         dispatch = useDispatch(),
-        { data: { results, totalResults } = {}, loading = false } = useSelector((state) => state.openBoard),
+        {data: {results, totalResults} = {}, loading = false} = useSelector((state) => state.openBoard),
         history = useHistory();
     // console.log(totalResults)
 
-    const getBiddingList = () => {
+    const getBiddingList = useCallback(() => {
         if (vendor === NEWTRUL) {
             getNewTrulList(filters.pageSize, filters.pageIndex, params)
         } else dispatch(getBiddings(filters));
-    }
+    }, [filters, getBiddings])
 
     const getNewTrulList = (pageSize, pageIndex, params) => {
         dispatch(getNewTrulLoads(pageSize, pageIndex, params))
@@ -64,40 +64,45 @@ const OpenBoard = () => {
             min,
             max
         }
-        setFilters({ ...filters, availableForPickUpByDateRange })
+        setFilters({...filters, availableForPickUpByDateRange})
     }
+
+    const submitFilters = useCallback((e) => {
+        e.preventDefault()
+        getBiddingList();
+    }, [filters])
 
     useEffect(() => {
         getBiddingList();
         addEvent(window, 'getBiddings', getBiddingList);
 
         return () => removeEvent(window, 'getBiddings', getBiddingList);
-    }, [dispatch, filters]);
+    }, [dispatch]);
 
     useEffect(() => {
         if (vendor === 'newTrul') {
-            const { pageSize, pageIndex } = filters;
+            const {pageSize, pageIndex} = filters;
             getNewTrulList(pageSize, pageIndex)
         } else getBiddingList()
     }, [vendor])
 
     const onPageChange = (e, pgNum) => {
-        setFilters({ ...filters, pageIndex: pgNum - 1 });
+        setFilters({...filters, pageIndex: pgNum - 1});
     };
 
     const tableConfig = {
         rowCellPadding: "normal",
         emptyMessage: "No Shipments Found",
         onRowClick: ({
-            loadNumber,
-            id
-        }) => vendor.toLowerCase() === 'newtrul' ? `${path}/newtrul/${id}` : `${path}/${loadNumber}`,
+                         loadNumber,
+                         id
+                     }) => vendor.toLowerCase() === 'newtrul' ? `${path}/newtrul/${id}` : `${path}/${loadNumber}`,
         count: totalResults,
         limit: filters.pageSize,
         page: filters.pageIndex,
         onPageChange,
-        rowStyleCb: ({ row }) => {
-            const { bidLevel, status } = row;
+        rowStyleCb: ({row}) => {
+            const {bidLevel, status} = row;
             //to show rejected, bidlevel:1 and status false
             //to show counter offer bid level: 2, status: false
             if (bidLevel === 2) {
@@ -114,7 +119,7 @@ const OpenBoard = () => {
             {
                 id: "loadNumber",
                 label: "Load Number",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     if (vendor === NEWTRUL) {
                         return <Fragment>{row.id}</Fragment>
                     }
@@ -124,11 +129,11 @@ const OpenBoard = () => {
             {
                 id: "country",
                 label: "Pickup City/State",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     if (vendor === NEWTRUL) {
                         const [_, pickup] = row.stops || [],
-                            { geo } = pickup || {},
-                            { city = '', state = '' } = geo || {};
+                            {geo} = pickup || {},
+                            {city = '', state = ''} = geo || {};
                         return <Fragment>
                             {city}, {state}
                         </Fragment>
@@ -142,11 +147,11 @@ const OpenBoard = () => {
             {
                 id: "pickupDate",
                 label: "Pickup Date",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     let date = "";
                     if (vendor === NEWTRUL) {
                         const [_, pickup] = row.stops || [{}];
-                        const { early_datetime = '' } = pickup || {}
+                        const {early_datetime = ''} = pickup || {}
                         date = early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
                     } else if (moment(row?.pickUpByDate).isValid()) {
                         date = moment(row.pickUpByDate).format("M/DD/YYYY");
@@ -157,11 +162,11 @@ const OpenBoard = () => {
             {
                 id: "deliveryCountry",
                 label: "Delivery City/State",
-                renderer: ({ row = {} }) => {
+                renderer: ({row = {}}) => {
                     if (vendor === NEWTRUL) {
                         const [drop, _] = row.stops || [],
-                            { geo } = drop || {},
-                            { city = '', state = '' } = geo || {};
+                            {geo} = drop || {},
+                            {city = '', state = ''} = geo || {};
                         return <Fragment>
                             {city}, {state}
                         </Fragment>
@@ -175,12 +180,12 @@ const OpenBoard = () => {
             {
                 id: "deliveryDate",
                 label: "Delivery Date",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     let date = "";
                     if (vendor === NEWTRUL) {
                         // eslint-disable-next-line no-unused-vars
                         const [drop, _] = row.stops || [],
-                            { early_datetime } = drop || {};
+                            {early_datetime} = drop || {};
                         return early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
                     }
                     if (moment(row.deliverBy).isValid()) {
@@ -192,16 +197,16 @@ const OpenBoard = () => {
             {
                 id: "equipment",
                 label: "Equipment",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     if (vendor === NEWTRUL) {
-                        const { equipment } = row
+                        const {equipment} = row
                         if (typeof equipment === 'string')
                             return <Fragment>
                                 {equipment}
                             </Fragment>;
                         else return null;
                     }
-                    const { modesString = '', standard = '' } = getParsedLoadEquipment(row || {})
+                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row || {})
                     return (
                         <Fragment>
                             {modesString} {standard}
@@ -212,16 +217,16 @@ const OpenBoard = () => {
             {
                 id: "weight",
                 label: "Weight",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     if (vendor === NEWTRUL) {
-                        const { weight } = row || {};
+                        const {weight} = row || {};
                         if (typeof weight === "number")
                             return <Fragment>
                                 {weight} lbs
                             </Fragment>
                         else return null;
                     } else {
-                        let { weight: { pounds = "" } = {} } = row || {};
+                        let {weight: {pounds = ""} = {}} = row || {};
                         if (pounds) pounds = pounds + " lbs";
                         return <Fragment>{pounds}</Fragment>;
                     }
@@ -230,9 +235,9 @@ const OpenBoard = () => {
             {
                 id: "company",
                 label: "Company",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     if (vendor === NEWTRUL) {
-                        const { client: { client_name } = {} } = row || {}
+                        const {client: {client_name} = {}} = row || {}
                         return client_name || '--'
                     }
                     return <Fragment>{"C.H Robinson"}</Fragment>;
@@ -241,9 +246,9 @@ const OpenBoard = () => {
             {
                 id: "bookNow",
                 label: "Book Now",
-                renderer: ({ row = {} }) => {
+                renderer: ({row = {}}) => {
                     if (vendor === NEWTRUL) {
-                        const { book_now_price } = row;
+                        const {book_now_price} = row;
                         if (book_now_price) {
                             return (
                                 <Button
@@ -273,7 +278,7 @@ const OpenBoard = () => {
                         } else return null;
                     }
                     if (row.hasOwnProperty("availableLoadCosts")) {
-                        const { availableLoadCosts = [] } = row || {};
+                        const {availableLoadCosts = []} = row || {};
                         const [item] = availableLoadCosts || [];
                         if (item) {
                             return (
@@ -296,7 +301,7 @@ const OpenBoard = () => {
             {
                 id: "Bidding",
                 label: "Bid",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     return (
                         <Fragment>
                             <Button
@@ -329,14 +334,14 @@ const OpenBoard = () => {
     };
 
     return (
-        <Stack style={{ gap: '10px' }}>
+        <Stack style={{gap: '10px'}}>
             <Stack direction={'row'} justifyContent='end'>
                 <Stack>
                     <InputField
                         // label={'Select Vendor'}
                         type={'select'}
-                        options={[{ id: 'chrobinson', label: 'CH Robinson' },
-                        { id: 'newTrul', label: 'New Trul' }
+                        options={[{id: 'chrobinson', label: 'CH Robinson'},
+                            {id: 'newTrul', label: 'New Trul'}
                         ]}
                         value={vendor}
                         onChange={onFilterChange.bind(this, 'select')}
@@ -344,30 +349,32 @@ const OpenBoard = () => {
                 </Stack>
                 <Stack>
                     <IconButton title='Refresh' onClick={getBiddingList}>
-                        <Refresh className={loading ? 'rotateIcon' : undefined} />
+                        <Refresh className={loading ? 'rotateIcon' : undefined}/>
                     </IconButton>
                 </Stack>
             </Stack>
             {vendor === NEWTRUL ?
                 <NewtrulFilters
                     setParams={setParams}
-                    pageSize={filters.pageSize} pageIndex={filters.pageIndex} getNewTrulList={getNewTrulList} /> : <Filters
+                    pageSize={filters.pageSize} pageIndex={filters.pageIndex} getNewTrulList={getNewTrulList}/>
+                : <Filters
                     onChange={onFilterChange}
                     label1={'Minimum pickup Date'}
                     label2={'Maximum pickup Date'}
                     onRefresh={getBiddingList}
                     dateLabel={'Filter by '}
                     vendor={vendor}
+                    onSubmit={submitFilters}
                 />}
             <EnhancedTable
                 config={tableConfig}
                 data={results || []}
                 loading={loading}
             />
-            <Route path={path + "/newtrul/:loadId"} component={NewTrulLoadDetails} />
-            <Route path={path + "/:loadNumber"} exact component={LoadDetails} />
-            <Route path={path + "/:loadNumber/bid"} component={Form} />
-            <Route path={path + "/:loadNumber/bookNow"} component={BookNowForm} />
+            <Route path={path + "/newtrul/:loadId"} component={NewTrulLoadDetails}/>
+            <Route path={path + "/:loadNumber"} exact component={LoadDetails}/>
+            <Route path={path + "/:loadNumber/bid"} component={Form}/>
+            <Route path={path + "/:loadNumber/bookNow"} component={BookNowForm}/>
         </Stack>
     );
 };

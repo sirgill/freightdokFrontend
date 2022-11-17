@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import { login } from '../../actions/auth';
 import './authcss/LoginRegister.css';
 import Grid from '@material-ui/core/Grid';
-import EmailIcon from '@material-ui/icons/Email';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
+import EmailIcon from '@mui/icons-material/Email';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@mui/material/Button';
 import { Divider, Typography } from '@mui/material';
@@ -49,6 +49,7 @@ const Login = (props) => {
     email: '',
     password: ''
   });
+  const [processingAsync, setProcessingAsync] = useState(false);
 
   const { email, password } = formData;
 
@@ -57,7 +58,7 @@ const Login = (props) => {
 
   const onSubmit = async e => {
     e.preventDefault();
-    dispatch(login({ email, password }, history));
+    dispatch(login({ email, password }, history, setProcessingAsync));
   };
 
   //Redirect if logged in
@@ -128,8 +129,8 @@ const Login = (props) => {
                 </FormGroup>
 
                 {/* <Button type="submit" variant="contained" color="primary" style={{ marginTop: '5%' }} >Sign in</Button> */}
-                <Button variant='contained' type="submit">
-                  Sign in
+                <Button variant='contained' type="submit" disabled={processingAsync}>
+                  {processingAsync ? 'Signing In...' : 'Sign in' }
                 </Button>
               </Form>
               <br/>

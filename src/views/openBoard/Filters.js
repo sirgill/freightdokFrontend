@@ -4,19 +4,20 @@ import Stack from '@mui/material/Stack';
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DatePicker from '@mui/lab/DatePicker';
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import {Typography} from "@mui/material";
+import {Button, Typography} from "@mui/material";
+import Input from "../../components/Atoms/form/Input";
 
-function Filters({ onChange, name1, name2, label1 = '', label2 = '',  dateLabel = '', }) {
+function Filters({onChange, name1, name2, label1 = '', label2 = '', dateLabel = '',onSubmit}) {
     const [value, setValue] = React.useState(null);
     const [value2, setValue2] = React.useState(null);
     const [error, setErrors] = useState('');
 
     useEffect(() => {
-        if(!value || !value2) return
-        if(new Date(value2) < new Date(value)){
+        if (!value || !value2) return
+        if (new Date(value2) < new Date(value)) {
             return setErrors(label2 + ' cannot be less than ' + label1)
         }
-        if(onChange) {
+        if (onChange) {
             onChange(value, value2)
         }
         setErrors('')
@@ -24,32 +25,36 @@ function Filters({ onChange, name1, name2, label1 = '', label2 = '',  dateLabel 
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Stack direction={'row'} alignItems={'baseline'} gap={'30px'} justifyContent={'space-between'}>
-                <Stack>
-                    <Stack direction={'row'} alignItems={'baseline'} gap={'30px'}>
-                        {dateLabel && <Typography sx={{fontSize: 14}}>{dateLabel}:</Typography>}
-                        <DatePicker
-                            label={label1}
-                            value={value}
-                            name={name1}
-                            onChange={(newValue) => {
-                                setValue(newValue);
-                            }}
-                            renderInput={(params) => <TextField {...params} variant='standard' />}
-                        />
-                        <Typography>To</Typography>
-                        <DatePicker
-                            label={label2}
-                            value={value2}
-                            name={name2}
-                            onChange={(newValue) => {
-                                setValue2(newValue);
-                            }}
-                            renderInput={(params) => <TextField {...params} variant='standard' />}
-                        />
+            <Stack direction={'row'} spacing={2} alignItems={'baseline'} component='form' onSubmit={onSubmit} noValidate>
+                <Stack direction='row' spacing={2}>
+                    <Input name='origin' label='Origin' onChange={onChange}/>
+                    <Input name='destination' label='Destination' onChange={onChange}/>
+                    <Stack>
+                        <Stack direction={'row'} alignItems={'baseline'} gap={'30px'}>
+                            <DatePicker
+                                label={label1}
+                                value={value}
+                                name={name1}
+                                onChange={(newValue) => {
+                                    setValue(newValue);
+                                }}
+                                renderInput={(params) => <TextField {...params} variant='outlined' size={'small'}/>}
+                            />
+                            <Typography>To</Typography>
+                            <DatePicker
+                                label={label2}
+                                value={value2}
+                                name={name2}
+                                onChange={(newValue) => {
+                                    setValue2(newValue);
+                                }}
+                                renderInput={(params) => <TextField {...params} variant='outlined' size={'small'}/>}
+                            />
+                        </Stack>
+                        {error && <Typography sx={{fontSize: 12, color: 'red'}}>{error}</Typography>}
                     </Stack>
-                    {error && <Typography sx={{fontSize: 12, color: 'red'}}>{error}</Typography>}
                 </Stack>
+                <Button type='submit' variant='contained'>Search</Button>
             </Stack>
         </LocalizationProvider>
     );

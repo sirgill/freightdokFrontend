@@ -71,7 +71,7 @@ export const register = ({ name, email, password }) => async dispatch => {
 };
 
 // Login user
-export const login = ({ email, password }, history) => async dispatch => {
+export const login = ({ email, password }, history, processing) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -81,6 +81,7 @@ export const login = ({ email, password }, history) => async dispatch => {
     const body = JSON.stringify({ email, password });
 
     try {
+        processing && processing(true)
         const { success, data } = await requestPost({ uri: '/api/auth', body, showTriggers: false });
         if (success) {
             setAuthToken(data.token)
@@ -112,6 +113,8 @@ export const login = ({ email, password }, history) => async dispatch => {
         dispatch({
             type: LOGIN_FAIL
         });
+    } finally {
+        processing && processing(false)
     }
 
 };
