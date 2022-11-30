@@ -19,7 +19,7 @@ const CarrierProfile = ({ match = {}}) => {
 
     useEffect(() => {
         dispatch(getCarrierProfile());
-    }, [])
+    }, [dispatch])
 
     const Attachment = ({url}) => (<Stack direction='row' alignItems='center'>
         <CheckCircleIcon style={{color: successIconColor}}/>

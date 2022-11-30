@@ -42,14 +42,16 @@ const triggerCustomEvent = (eventName, eventDetail = {}) => {
     triggerCustomEventOnElement(window, eventName, eventDetail);
 };
 
+// eslint-disable-next-line no-extend-native
 String.prototype.equalsIgnoreCase = function (str) {
     return str!==null && typeof str === 'string' && this.toUpperCase() === str.toUpperCase()
 }
 
+// eslint-disable-next-line no-extend-native
 String.prototype.removeWhiteSpaces = function (replaceBy){
     return this && this.replace(/\s/g, replaceBy || '')
 }
-
+// eslint-disable-next-line no-extend-native
 Object.defineProperty(String.prototype, 'capitalize', {
     value: function (){
         return this.charAt(0).toUpperCase() + this.splice(1)
@@ -86,7 +88,7 @@ const isEmailValid = (email) => {
 }
 
 export const getCheckStatusIcon = (comparator = false) => {
-    let success = false
+    let success
     if(typeof comparator === 'function'){
         success = comparator();
     } else {

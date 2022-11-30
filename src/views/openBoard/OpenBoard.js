@@ -5,7 +5,7 @@ import {Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import {LoadDetails} from "./LoadDetails";
 import {v4 as uuidv4} from 'uuid';
-import {bookNow, getBiddings, getNewTrulLoads} from "../../actions/openBoard.action";
+import {getBiddings, getNewTrulLoads} from "../../actions/openBoard.action";
 import Form from "./Form";
 import {withRouter} from "react-router-dom/cjs/react-router-dom.min";
 import {useDispatch, useSelector} from "react-redux";
@@ -31,7 +31,7 @@ if (process.env.NODE_ENV === "production") {
     payload = productionPayload;
 }
 
-const CARRIER_CODE = "T2244688";
+// const CARRIER_CODE = "T2244688";
 
 const OpenBoard = () => {
     const {path} = useRouteMatch(),
@@ -43,19 +43,20 @@ const OpenBoard = () => {
         history = useHistory();
     // console.log(totalResults)
 
+    const getNewTrulList = useCallback((pageSize, pageIndex, params) => {
+        dispatch(getNewTrulLoads(pageSize, pageIndex, params))
+    }, [dispatch])
+
     const getBiddingList = useCallback(() => {
         if (vendor === NEWTRUL) {
             getNewTrulList(filters.pageSize, filters.pageIndex, params)
         } else dispatch(getBiddings(filters));
-    }, [filters, getBiddings])
-
-    const getNewTrulList = (pageSize, pageIndex, params) => {
-        dispatch(getNewTrulLoads(pageSize, pageIndex, params))
-    }
+    }, [dispatch, filters, getNewTrulList, params, vendor])
 
     const onFilterChange = (fromDate, toDate, type) => {
         if (fromDate === 'select') {
             UserSettings.setActiveOpenBoard('activeBoard', toDate.target.value)
+            setFilters(payload)
             return setVendor(toDate.target.value)
         }
         const min = moment(fromDate).format('YYYY-MM-DD')
@@ -70,24 +71,25 @@ const OpenBoard = () => {
     const submitFilters = useCallback((e) => {
         e.preventDefault()
         getBiddingList();
-    }, [filters])
+    }, [getBiddingList])
 
     useEffect(() => {
         getBiddingList();
         addEvent(window, 'getBiddings', getBiddingList);
 
         return () => removeEvent(window, 'getBiddings', getBiddingList);
-    }, [dispatch]);
+    }, [dispatch, filters, getBiddingList]);
 
     useEffect(() => {
         if (vendor === 'newTrul') {
             const {pageSize, pageIndex} = filters;
             getNewTrulList(pageSize, pageIndex)
         } else getBiddingList()
-    }, [vendor])
+        // eslint-disable-next-line no-extend-native
+    }, [vendor])// eslint-disable-next-line no-extend-native
 
     const onPageChange = (e, pgNum) => {
-        setFilters({...filters, pageIndex: pgNum - 1});
+        setFilters(() => ({...filters, pageIndex: pgNum - 1}));
     };
 
     const tableConfig = {
@@ -120,6 +122,7 @@ const OpenBoard = () => {
                 id: "loadNumber",
                 label: "Load Number",
                 renderer: ({row}) => {
+                    console.log(vendor, row)
                     if (vendor === NEWTRUL) {
                         return <Fragment>{row.id}</Fragment>
                     }
@@ -131,6 +134,7 @@ const OpenBoard = () => {
                 label: "Pickup City/State",
                 renderer: ({row}) => {
                     if (vendor === NEWTRUL) {
+                        // eslint-disable-next-line no-unused-vars
                         const [_, pickup] = row.stops || [],
                             {geo} = pickup || {},
                             {city = '', state = ''} = geo || {};
@@ -150,6 +154,7 @@ const OpenBoard = () => {
                 renderer: ({row}) => {
                     let date = "";
                     if (vendor === NEWTRUL) {
+                        // eslint-disable-next-line no-unused-vars
                         const [_, pickup] = row.stops || [{}];
                         const {early_datetime = ''} = pickup || {}
                         date = early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
@@ -164,6 +169,7 @@ const OpenBoard = () => {
                 label: "Delivery City/State",
                 renderer: ({row = {}}) => {
                     if (vendor === NEWTRUL) {
+                        // eslint-disable-next-line no-unused-vars
                         const [drop, _] = row.stops || [],
                             {geo} = drop || {},
                             {city = '', state = ''} = geo || {};

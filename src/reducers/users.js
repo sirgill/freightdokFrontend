@@ -16,7 +16,7 @@ import {
     OPEN_USER_MODAL,
     CLOSE_USER_MODAL
 } from '../actions/types';
-  
+
 const initialState = {
     loading: false,
     open: false,
@@ -28,8 +28,8 @@ const initialState = {
     totalPages: 0,
     limit: 5
 };
-  
-export default function(state = initialState, action) {
+
+export default function users(state = initialState, action) {
     const { type, payload } = action;
   
     switch(type) {
@@ -78,7 +78,7 @@ export default function(state = initialState, action) {
                 limit:  payload.limit,
                 pages: payload.totalPages,
                 total: payload.total
-            }; 
+            };
         case ADMIN_REG_USER_SUCCEED:
             return {
                 ...state,
@@ -86,7 +86,7 @@ export default function(state = initialState, action) {
                 open: false,
                 page: 0,
                 error: ''
-            }; 
+            };
         case ADMIN_UPDATE_USER_SUCCEED:
             return {
                 ...state,
@@ -111,13 +111,13 @@ export default function(state = initialState, action) {
                 ...state,
                 loading: false,
                 error: payload
-            }; 
+            };
         case ADMIN_REG_USER_FAILED:
             return {
                 ...state,
                 loading: false,
                 error: payload
-            }; 
+            };
         case ADMIN_UPDATE_USER_FAILED:
             return {
                 ...state,

@@ -57,7 +57,7 @@ const FormModal = (props) => {
                     notification(err.message)
                 })
         }
-        if(_.isEmpty(ownerops)){
+        if (_.isEmpty(ownerops)) {
             axios.get(`/api/users?page=${0}&limit=${0}`)
                 .then(r => {
                     setUsers(r.data.users)
@@ -67,7 +67,7 @@ const FormModal = (props) => {
                     notification(e.message, 'error')
                 })
         }
-    }, [])
+    }, [id, ownerops])
 
     const onBlur = (e) => {
         const {target: {name, value}} = e;
@@ -83,7 +83,7 @@ const FormModal = (props) => {
         if (_.isEmpty(errors)) {
             axios.post(getBaseUrl() + "/api/ownerOperator", data)
                 .then(res => {
-                    const {data: {success, message} = {} = {}} = res || {};
+                    const {data: {success, message} = {}} = res || {};
                     if (success) {
                         notification(message);
                         handleClose();
@@ -93,8 +93,7 @@ const FormModal = (props) => {
                     }
                 })
                 .catch(err => err.message)
-        }
-        else {
+        } else {
             setErrors({...errors})
         }
     };
