@@ -107,13 +107,13 @@ export default function Modal(props) {
         TransitionComponent={Transition}
         PaperProps={paperProps}
       >
-        <BootstrapDialogTitle
+        {title && <BootstrapDialogTitle
             id="customized-dialog-title"
             onClose={handleClose}
             showClose={showClose}
         >
           {title}
-        </BootstrapDialogTitle>
+        </BootstrapDialogTitle>}
         <DialogContent dividers sx={{borderTop: 'none'}}>{children}</DialogContent>
         {/* <DialogActions>
           <Button autoFocus onClick={onOkHandler}>

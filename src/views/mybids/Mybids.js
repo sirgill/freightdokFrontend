@@ -4,6 +4,8 @@ import {getAllBiddings} from "../../actions/openBoard.action";
 import {Button} from "@mui/material";
 import {useRouteMatch, useHistory} from "react-router"
 import moment from "moment";
+import {Route, Switch} from "react-router-dom";
+import CHRobinsonBid from "./bids/CHRobinsonBid";
 
 
 const getBidStatus = (bidLevel) => {
@@ -74,7 +76,7 @@ const MyBids = ({}) => {
                 id: "loadNumber",
                 label: "PickUp Date",
                 renderer: ({row}) => {
-                    let date = "";
+                    let date;
                     const [pickup] = row?.loadDetail?.stops || [{}];
                     const {early_datetime = ''} = pickup || {}
                     date = early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
@@ -149,6 +151,11 @@ const MyBids = ({}) => {
                 id: "Bidding",
                 label: "Bid",
                 renderer: ({row}) => {
+                    const {vendorName = ''} = row || {}
+                    let route = path + `/bid/${row.loadNumber}`;
+                    if(vendorName.toLowerCase() === 'ch robinson'){
+                        // route = path + `/chrobinson/bid/${row.loadNumber}`;
+                    }
                     return (
                         <Fragment>
                             <Button
@@ -157,7 +164,7 @@ const MyBids = ({}) => {
                                 onClick={(e) => {
                                     e.stopPropagation();
 
-                                    history.push(path + `/${row.loadNumber}/bid`, {
+                                    history.push(route, {
                                         ...row,
                                     });
                                 }}
@@ -174,7 +181,9 @@ const MyBids = ({}) => {
     return (
         <div>
             <EnhancedTable config={tableConfig} data={myBids} loading={loading}/>
-
+            <Switch>
+                <Route path={path+'/bid/:loadNumber'} component={CHRobinsonBid} />
+            </Switch>
         </div>
     );
 };
