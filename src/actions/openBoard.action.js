@@ -1,12 +1,12 @@
 import axios from "axios";
-import { notification } from "./alert";
-import { GET_CHROBINSON_LOADS, GET_SHIPMENTS } from "./types";
-import { getBaseUrl, getGoUrl, production } from "../config";
-import { requestGet, requestPost } from "../utils/request";
+import {notification} from "./alert";
+import {GET_CHROBINSON_LOADS, GET_SHIPMENTS} from "./types";
+import {getBaseUrl, getGoUrl, production} from "../config";
+import {requestGet, requestPost} from "../utils/request";
 
-export const bookNow = async (body, callback) => {
+export const bookNow = async (loadNumber, body, callback) => {
     try {
-        const response = await axios.post(production.goLangBookNow, body);
+        const response = await axios.post(production.chBidding + `loadNumber=${loadNumber}`, body);
         const { data, success } = response;
         if (callback) callback(success, data);
         return response;
@@ -36,7 +36,7 @@ export const placeNewTrulBid = async (body, loadNumber, callback) => {
     }
 }
 
-export const placeNewTrulCounterOffer = (body, callback) => async (dispatch) => {
+export const placeNewTrulCounterOffer = (body, callback) => async () => {
     try {
         const { success, data } = await requestPost({ baseUrl: getGoUrl(), uri: '/newTrulCounterOffer', body });
         if (callback) callback(success, data);
@@ -46,7 +46,7 @@ export const placeNewTrulCounterOffer = (body, callback) => async (dispatch) => 
     }
 }
 
-export const newTrulFinalOffer = (body, callback) => async (dispatch) => {
+export const newTrulFinalOffer = (body, callback) => async () => {
     try {
         const { success, data } = await requestPost({ baseUrl: getGoUrl(), uri: '/newTrulFinalOffer', body });
         if (callback) callback(success, data);
@@ -154,8 +154,7 @@ export const getBiddings = (payload) => (dispatch) => {
 export const saveCHLoadToDb = async (row = {}, isBooked = false) => {
     try {
         let payload = { isBooked, loadNumber: row.loadNumber, loadDetail: row };
-        const response = await axios.post(getBaseUrl() + '/api/chRobinson', payload);
-        return response;
+        return await axios.post(getBaseUrl() + '/api/chRobinson', payload);
     } catch (e) {
         console.log('response', e.response)
     }

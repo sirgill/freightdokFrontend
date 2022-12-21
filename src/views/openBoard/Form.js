@@ -8,7 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 import {v4 as uuidv4} from 'uuid';
 import RemoveIcon from '@mui/icons-material/Remove';
 import {placeNewTrulBid, bookNow, newTrulFinalOffer, placeNewTrulCounterOffer} from "../../actions/openBoard.action";
-import {NEWTRUL} from "./constants";
+import {NEWTRUL, productionPayload} from "./constants";
 
 /*
 * {
@@ -95,7 +95,13 @@ const Form = (props) => {
             env: "dev",
             bidAmount: amount,
         });
-        bookNow(row, afterSubmit);
+        const body = {
+            "carrierCode": productionPayload.carrierCode,
+            "offerPrice": amount,
+            "offerNote": '',
+            "currencyCode": "USD",
+        }
+        bookNow(loadNumber, body, afterSubmit);
     };
 
     const onSubtract = () => {
