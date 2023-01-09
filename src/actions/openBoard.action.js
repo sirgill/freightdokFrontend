@@ -6,7 +6,7 @@ import {requestGet, requestPost} from "../utils/request";
 
 export const bookNow = async (loadNumber, body, callback) => {
     try {
-        const response = await axios.post(production.chBidding + `loadNumber=${loadNumber}`, body);
+        const response = await axios.post(getGoUrl() + '/CHBidding' + `?loadNumber=${loadNumber}`, body);
         const { data, success } = response;
         if (callback) callback(success, data);
         return response;
@@ -59,7 +59,7 @@ export const newTrulFinalOffer = (body, callback) => async () => {
 export const getShipments = (payload) => {
     const config = {
         method: "post",
-        url: production.goLangServerUrl + "/shipments",
+        url: getGoUrl() + "/shipments",
         data: payload,
         headers: {
             "Content-Type": "application/json",

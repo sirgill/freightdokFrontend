@@ -5,19 +5,18 @@ const development = {
   goLangMail: "http://localhost:8080/bookload"
 };
 
-const getGoUrl = () => {
-  if (process.env.NODE_ENV === "production") {
-    return production.goLangServerUrl;
-  }
-  return development.goLangServerUrl;
-};
-
 const production = {
   mailServerUrl: "https://mail.freightdok.io/sendMail",
   goLangServerUrl: "https://go.freightdok.io",
   nodeServerUrl: "https://api.freightdok.io",
   goLangBookNow: "https://go.freightdok.io/bookload",
-  chBidding: getGoUrl() + '/CHBidding'
+};
+
+const getGoUrl = () => {
+  if (process.env.NODE_ENV === "production") {
+    return production.goLangServerUrl;
+  }
+  return development.goLangServerUrl;
 };
 
 
