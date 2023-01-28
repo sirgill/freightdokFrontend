@@ -8,7 +8,7 @@ const RadioButtonsGroupControlled = (props) => {
     } = props;
 
     let radios = []
-    options.forEach((option) => {
+    options.forEach((option, i) => {
         const {
             label = '',
             value,
@@ -24,7 +24,7 @@ const RadioButtonsGroupControlled = (props) => {
             if (!show) return;
         }
         radios.push(
-            <Fragment>
+            <Fragment key={i}>
                 <Tooltip title={tooltipText} arrow>
                     <FormControlLabel
                         control={<Radio/>}

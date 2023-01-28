@@ -1,20 +1,10 @@
-import {Delete} from '@material-ui/icons';
-import {
-    Grid,
-    IconButton,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow
-} from '@mui/material';
+import {Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import _ from 'lodash';
 import React, {Fragment, memo, useEffect, useMemo, useState} from 'react';
 import {withRouter} from 'react-router-dom';
 import TablePagination from './Pagination';
 import Spinner from "../../layout/Spinner";
+import {Delete} from "@mui/icons-material";
 
 function Headers({columns = [], config = {}}) {
     const {headerCellSx = {}, hasDelete} = config;
@@ -23,7 +13,8 @@ function Headers({columns = [], config = {}}) {
             const {label = '', id = '', visible = true} = column || {};
             if (!visible) return;
             return (
-                <TableCell padding={'normal'} sx={{color: '#000', fontWeight: 800, ...headerCellSx}} key={id}>{label}</TableCell>
+                <TableCell padding={'normal'} sx={{color: '#000', fontWeight: 800, ...headerCellSx}}
+                           key={id}>{label}</TableCell>
             )
         })
     }, [columns])
@@ -36,7 +27,7 @@ function Headers({columns = [], config = {}}) {
 const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowIndex}) => {
     const {hasDelete = false, onDelete, hover = false, rowCellPadding = 'none', onRowClick = undefined, rowStyleCb} = config;
     let rowStyle = {}
-    if(rowStyleCb) {
+    if (rowStyleCb) {
         rowStyle = rowStyleCb({row}) || {};
     }
     const handleDelete = (id, e) => {
@@ -66,7 +57,8 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowI
         </TableCell>
     });
 
-    return <TableRow key={rowIndex} hover={!!onRowClick} onClick={rowClickHandler} sx={!!onRowClick ? {cursor: 'pointer', ...rowStyle} : {}}>
+    return <TableRow key={rowIndex} hover={!!onRowClick} onClick={rowClickHandler}
+                     sx={!!onRowClick ? {cursor: 'pointer', ...rowStyle} : {}}>
         {cell}
         {hasDelete && deleteCell}
     </TableRow>;
@@ -74,19 +66,17 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowI
 
 const TableData = ({columns, data = [], config = {}, handleRowClick}) => {
 
-    const rows = data.map((row, index) => {
+    return (data || []).map((row, index) => {
         const {dataKey = ''} = config;
-        if(dataKey) {
+        if (dataKey) {
             row = row[dataKey];
         }
         return getTableCell({row, columns, config, handleRowClick, rowIndex: index})
-    });
-
-    return rows
+    })
 }
 
 
-const EnhancedTable = ({ config = {}, data = [], history, loading = false }) => {
+const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
 
 
     const [tableState, setTableState] = useState({}),
@@ -104,8 +94,8 @@ const EnhancedTable = ({ config = {}, data = [], history, loading = false }) => 
 
     const getLoader = () => {
         const innerHeight = window.innerHeight - 180,
-            height = (tableState.height ? tableState.height > innerHeight ? innerHeight : tableState.height : innerHeight ) || innerHeight;
-        return <Grid container alignItem={'center'} justifyContent='center' sx={{height}}>
+            height = (tableState.height ? tableState.height > innerHeight ? innerHeight : tableState.height : innerHeight) || innerHeight;
+        return <Grid container alignItems={'center'} justifyContent='center' sx={{height}}>
             <Grid item alignItems='center' sx={{position: 'relative'}}>
                 <Spinner/>
             </Grid>
@@ -151,7 +141,7 @@ const EnhancedTable = ({ config = {}, data = [], history, loading = false }) => 
         >
             {loading
                 ? getLoader()
-                : <Table ref={el => ref.current['table'] = el} borderBottom="none" aria-label="caption table">
+                : <Table ref={el => ref.current['table'] = el} aria-label="caption table">
                     {getTableContent}
                 </Table>}
             {!loading && data.length > 0 &&

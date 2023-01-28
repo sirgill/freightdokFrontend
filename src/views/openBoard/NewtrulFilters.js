@@ -5,6 +5,7 @@ import AutoComplete from "../../components/Atoms/form/AutoComplete";
 import Input from "../../components/Atoms/form/Input";
 import RadioButtonsGroup from "../../components/Atoms/form/RadioButtons";
 import DateRangePicker from "../../components/Atoms/form/DateRangePicker";
+import SearchAutoComplete from "../../components/Atoms/SearchAutoComplete";
 
 const radioConfig = {
     title: '',
@@ -103,7 +104,7 @@ const NewtrulFilters = ({ getNewTrulList, pageSize, pageIndex, setParams }) => {
     return (
         <Grid container gap={1} component={'form'} noValidate onSubmit={onSubmit} flexWrap={'wrap'}>
             <Stack>
-                <Input name='origin' label='Origin' onChange={onChange} />
+                <SearchAutoComplete label='Origin' onSelect={onChange} name='origin'/>
                 <FormControl sx={{ m: 0.5 }} variant="standard">
                     <RadioButtonsGroup
                         config={radioConfig}
@@ -112,7 +113,7 @@ const NewtrulFilters = ({ getNewTrulList, pageSize, pageIndex, setParams }) => {
                 </FormControl>
             </Stack>
             <Stack>
-                <Input name='destination' label='Destination' onChange={onChange} />
+                <SearchAutoComplete name='destination' label='Destination' onSelect={onChange} />
                 <FormControl sx={{ m: 0.5 }} variant="standard">
                     <RadioButtonsGroup
                         config={radioConfig2}

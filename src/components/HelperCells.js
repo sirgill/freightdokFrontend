@@ -1,8 +1,7 @@
-import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import TextField from "@mui/material/TextField";
 import Background from "./dashboard/ProfileBackground.png";
 import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { StyleSheet } from "@react-pdf/renderer";
 import { KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
