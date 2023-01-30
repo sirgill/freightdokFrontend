@@ -19,7 +19,6 @@ const SearchAutoComplete = ({label='', name, onSelect}) => {
     const fetch = React.useMemo(
         () =>
             _.debounce((request, callback) => {
-                autocompleteService.current.getPlacePredictions(request, callback);
                 requestGet({uri: '/api/searchLocationAutocomplete?search=' + request.input})
                     .then(r => callback(r.data));
             }, 500),
@@ -28,14 +27,6 @@ const SearchAutoComplete = ({label='', name, onSelect}) => {
 
     React.useEffect(() => {
         let active = true;
-
-        if (!autocompleteService.current && window.google) {
-            autocompleteService.current =
-                new window.google.maps.places.AutocompleteService();
-        }
-        if (!autocompleteService.current) {
-            return undefined;
-        }
 
         if (inputValue === '') {
             setOptions(value ? [value] : []);
@@ -70,7 +61,7 @@ const SearchAutoComplete = ({label='', name, onSelect}) => {
 
     return (
         <Autocomplete
-            id="google-map-demo"
+            id="searchAutocomplete"
             sx={{ width: 300 }}
             getOptionLabel={(option) =>
                 typeof option === 'string' ? option : option.description
