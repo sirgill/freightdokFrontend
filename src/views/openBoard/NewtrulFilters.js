@@ -49,7 +49,7 @@ const getQueryString = (form) => {
 }
 
 const NewtrulFilters = ({ getNewTrulList, pageSize, pageIndex, setParams }) => {
-    const [form, setForm] = useState({});
+    const [form, setForm] = useState({originRadio: 'origin_city', destinationRadio: 'destination_city'});
 
     const onChange = ({ name, value }) => {
         if (name === 'pickup') {
@@ -107,6 +107,7 @@ const NewtrulFilters = ({ getNewTrulList, pageSize, pageIndex, setParams }) => {
                 <SearchAutoComplete label='Origin' onSelect={onChange} name='origin'/>
                 <FormControl sx={{ m: 0.5 }} variant="standard">
                     <RadioButtonsGroup
+                        parentValue={form['originRadio']}
                         config={radioConfig}
                         onChange={handleRadioChange}
                     />
@@ -118,6 +119,7 @@ const NewtrulFilters = ({ getNewTrulList, pageSize, pageIndex, setParams }) => {
                     <RadioButtonsGroup
                         config={radioConfig2}
                         onChange={handleRadioChange}
+                        parentValue={form['destinationRadio']}
                     />
                 </FormControl>
             </Stack>
