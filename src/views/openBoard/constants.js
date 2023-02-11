@@ -92,5 +92,5 @@ export const bookNewTrulLoad = async (body, row) => {
       })
 }
 
-export const NEWTRUL = 'newTrul'
-export const CHROBINSON = 'chRobinson'
+export const NEWTRUL = 'newtrul'
+export const CHROBINSON = 'chrobinson'

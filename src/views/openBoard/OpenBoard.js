@@ -4,17 +4,15 @@ import {IconButton, Stack} from "@mui/material";
 import {Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import {LoadDetails} from "./LoadDetails";
-import {getBiddings, getNewTrulLoads} from "../../actions/openBoard.action";
+import {getBiddings, getNewLoads} from "../../actions/openBoard.action";
 import Form from "./Form";
 import {withRouter} from "react-router-dom/cjs/react-router-dom.min";
 import {useDispatch, useSelector} from "react-redux";
-import {developmentPayload, NEWTRUL, productionPayload} from "./constants";
+import {developmentPayload, productionPayload} from "./constants";
 import BookNowForm from "./BookNowForm";
 import {addEvent, removeEvent} from "../../utils/utils";
-import Filters from "./Filters";
 import NewTrulLoadDetails from "./NewTrulLoadDetails";
 import NewtrulFilters from "./NewtrulFilters";
-import InputField from "../../components/Atoms/form/InputField";
 import {UserSettings} from "../../components/Atoms/client";
 import {Refresh} from "@mui/icons-material";
 import {tableConfig} from "./config";
@@ -38,16 +36,12 @@ const OpenBoard = () => {
     // console.log(totalResults)
 
     const getNewTrulList = useCallback((pageSize, pageIndex, params) => {
-        dispatch(getNewTrulLoads(pageSize, pageIndex, params))
+        // dispatch(getNewTrulLoads(pageSize, pageIndex, params))
     }, [dispatch])
 
     const getBiddingList = useCallback(() => {
-        if (vendor === NEWTRUL) {
-            getNewTrulList(filters.pageSize, filters.pageIndex, params)
-        }
-        else
-            dispatch(getBiddings(modifyChRobinsonFilters(filters)));
-    }, [dispatch, filters, getNewTrulList, params, vendor])
+        dispatch(getNewLoads(filters))
+    }, [dispatch, filters])
 
 
     const modifyChRobinsonFilters = (filters) => {
@@ -105,13 +99,13 @@ const OpenBoard = () => {
         return () => removeEvent(window, 'getBiddings', getBiddingList);
     }, [dispatch, filters, getBiddingList]);
 
-    useEffect(() => {
-        if (vendor === 'newTrul') {
-            const { pageSize, pageIndex } = filters;
-            getNewTrulList(pageSize, pageIndex)
-        } else getBiddingList()
-        // eslint-disable-next-line no-extend-native
-    }, [vendor])// eslint-disable-next-line no-extend-native
+    // useEffect(() => {
+    //     if (vendor === 'newTrul') {
+    //         const { pageSize, pageIndex } = filters;
+    //         getNewTrulList(pageSize, pageIndex)
+    //     } else getBiddingList()
+    //     // eslint-disable-next-line no-extend-native
+    // }, [vendor])// eslint-disable-next-line no-extend-native
 
     const onPageChange = (e, pgNum) => {
         setFilters(() => ({ ...filters, pageIndex: pgNum - 1 }));
@@ -121,35 +115,18 @@ const OpenBoard = () => {
         <Stack style={{ gap: '10px' }}>
             <Stack direction={'row'} justifyContent='end'>
                 <Stack>
-                    <InputField
-                        // label={'Select Vendor'}
-                        type={'select'}
-                        options={[{ id: 'chrobinson', label: 'CH Robinson' },
-                        { id: 'newTrul', label: 'New Trul' }
-                        ]}
-                        value={vendor}
-                        onChange={onFilterChange.bind(this, 'select')}
-                    />
-                </Stack>
-                <Stack>
                     <IconButton title='Refresh' onClick={getBiddingList}>
                         <Refresh className={loading ? 'rotateIcon' : undefined} />
                     </IconButton>
                 </Stack>
             </Stack>
-            {vendor === NEWTRUL ?
-                <NewtrulFilters
-                    setParams={setParams}
-                    pageSize={filters.pageSize} pageIndex={filters.pageIndex} getNewTrulList={getNewTrulList} />
-                : <Filters
-                    onChange={onFilterChange}
-                    label1={'Minimum pickup Date'}
-                    label2={'Maximum pickup Date'}
-                    onRefresh={getBiddingList}
-                    dateLabel={'Filter by '}
-                    vendor={vendor}
-                    onSubmit={submitFilters}
-                />}
+            <NewtrulFilters
+                setParams={setParams}
+                setFilters={setFilters}
+                pageSize={filters.pageSize}
+                pageIndex={filters.pageIndex}
+                getNewTrulList={getNewTrulList}
+            />
             <EnhancedTable
                 config={tableConfig({history, path, totalResults, onPageChange, vendor, pageSize: filters.pageSize, pageIndex: filters.pageIndex})}
                 data={results || []}

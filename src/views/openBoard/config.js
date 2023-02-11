@@ -2,22 +2,23 @@ import {bookNewTrulLoad, getParsedLoadEquipment, NEWTRUL} from "./constants";
 import React, {Fragment} from "react";
 import moment from "moment";
 import {Button} from "@mui/material";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
-const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageIndex, pageSize}) => {
+const tableConfig = ({history, path, totalResults, onPageChange, pageIndex, pageSize}) => {
     return {
         rowCellPadding: "normal",
         emptyMessage: "No Shipments Found",
         onRowClick: ({
                          loadNumber,
-                         id
-                     }) => vendor.toLowerCase() === 'newtrul' ? `${path}/newtrul/${id}` : `${path}/${loadNumber}`,
+                         id,
+                         vendorName
+                     }) => vendorName.toLowerCase() === 'newtrul' ? `${path}/newtrul/${id}` : `${path}/${loadNumber}`,
         count: totalResults,
         limit: pageSize,
         page: pageIndex,
         onPageChange,
-        rowStyleCb: ({ row }) => {
-            const { bidLevel, status } = row;
+        rowStyleCb: ({row}) => {
+            const {bidLevel, status} = row;
             //to show rejected, bidlevel:1 and status false
             //to show counter offer bid level: 2, status: false
             if (bidLevel === 2) {
@@ -34,8 +35,8 @@ const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageInd
             {
                 id: "loadNumber",
                 label: "Load Number",
-                renderer: ({ row }) => {
-                    if (vendor === NEWTRUL) {
+                renderer: ({row}) => {
+                    if (row.vendorName === NEWTRUL) {
                         return <Fragment>{row.id}</Fragment>
                     }
                     return <Fragment>{row.loadNumber}</Fragment>;
@@ -44,12 +45,12 @@ const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageInd
             {
                 id: "country",
                 label: "Pickup City/State",
-                renderer: ({ row }) => {
-                    if (vendor === NEWTRUL) {
+                renderer: ({row}) => {
+                    if (row.vendorName === NEWTRUL) {
                         // eslint-disable-next-line no-unused-vars
                         const [_, pickup] = row.stops || [],
-                            { geo } = pickup || {},
-                            { city = '', state = '' } = geo || {};
+                            {geo} = pickup || {},
+                            {city = '', state = ''} = geo || {};
                         return <Fragment>
                             {city}, {state}
                         </Fragment>
@@ -63,12 +64,12 @@ const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageInd
             {
                 id: "pickupDate",
                 label: "Pickup Date",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     let date = "";
-                    if (vendor === NEWTRUL) {
+                    if (row.vendorName === NEWTRUL) {
                         // eslint-disable-next-line no-unused-vars
                         const [_, pickup] = row.stops || [{}];
-                        const { early_datetime = '' } = pickup || {}
+                        const {early_datetime = ''} = pickup || {}
                         date = early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
                     } else if (moment(row?.pickUpByDate).isValid()) {
                         date = moment(row.pickUpByDate).format("M/DD/YYYY");
@@ -79,12 +80,12 @@ const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageInd
             {
                 id: "deliveryCountry",
                 label: "Delivery City/State",
-                renderer: ({ row = {} }) => {
-                    if (vendor === NEWTRUL) {
+                renderer: ({row = {}}) => {
+                    if (row.vendorName === NEWTRUL) {
                         // eslint-disable-next-line no-unused-vars
                         const [drop, _] = row.stops || [],
-                            { geo } = drop || {},
-                            { city = '', state = '' } = geo || {};
+                            {geo} = drop || {},
+                            {city = '', state = ''} = geo || {};
                         return <Fragment>
                             {city}, {state}
                         </Fragment>
@@ -98,12 +99,12 @@ const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageInd
             {
                 id: "deliveryDate",
                 label: "Delivery Date",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     let date = "";
-                    if (vendor === NEWTRUL) {
+                    if (row.vendorName === NEWTRUL) {
                         // eslint-disable-next-line no-unused-vars
                         const [drop, _] = row.stops || [],
-                            { early_datetime } = drop || {};
+                            {early_datetime} = drop || {};
                         return early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
                     }
                     if (moment(row.deliverBy).isValid()) {
@@ -115,16 +116,16 @@ const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageInd
             {
                 id: "equipment",
                 label: "Equipment",
-                renderer: ({ row }) => {
-                    if (vendor === NEWTRUL) {
-                        const { equipment } = row
+                renderer: ({row}) => {
+                    if (row.vendorName === NEWTRUL) {
+                        const {equipment} = row
                         if (typeof equipment === 'string')
                             return <Fragment>
                                 {equipment}
                             </Fragment>;
                         else return null;
                     }
-                    const { modesString = '', standard = '' } = getParsedLoadEquipment(row || {})
+                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row || {})
                     return (
                         <Fragment>
                             {modesString} {standard}
@@ -135,16 +136,16 @@ const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageInd
             {
                 id: "weight",
                 label: "Weight",
-                renderer: ({ row }) => {
-                    if (vendor === NEWTRUL) {
-                        const { weight } = row || {};
+                renderer: ({row}) => {
+                    if (row.vendorName === NEWTRUL) {
+                        const {weight} = row || {};
                         if (typeof weight === "number")
                             return <Fragment>
                                 {weight} lbs
                             </Fragment>
                         else return null;
                     } else {
-                        let { weight: { pounds = "" } = {} } = row || {};
+                        let {weight: {pounds = ""} = {}} = row || {};
                         if (pounds) pounds = pounds + " lbs";
                         return <Fragment>{pounds}</Fragment>;
                     }
@@ -153,9 +154,9 @@ const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageInd
             {
                 id: "company",
                 label: "Company",
-                renderer: ({ row }) => {
-                    if (vendor === NEWTRUL) {
-                        const { client: { client_name } = {} } = row || {}
+                renderer: ({row}) => {
+                    if (row.vendorName === NEWTRUL) {
+                        const {client: {client_name} = {}} = row || {}
                         return client_name || '--'
                     }
                     return <Fragment>{"C.H Robinson"}</Fragment>;
@@ -164,9 +165,9 @@ const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageInd
             {
                 id: "bookNow",
                 label: "Book Now",
-                renderer: ({ row = {} }) => {
-                    if (vendor === NEWTRUL) {
-                        const { book_now_price } = row;
+                renderer: ({row = {}}) => {
+                    if (row.vendorName === NEWTRUL) {
+                        const {book_now_price} = row;
                         if (book_now_price) {
                             return (
                                 <Button
@@ -196,7 +197,7 @@ const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageInd
                         } else return null;
                     }
                     if (row.hasOwnProperty("availableLoadCosts")) {
-                        const { availableLoadCosts = [] } = row || {};
+                        const {availableLoadCosts = []} = row || {};
                         const [item] = availableLoadCosts || [];
                         if (item) {
                             return (
@@ -219,7 +220,7 @@ const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageInd
             {
                 id: "Bidding",
                 label: "Bid",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     return (
                         <Fragment>
                             <Button
@@ -227,18 +228,18 @@ const tableConfig = ({history, path, totalResults, onPageChange, vendor, pageInd
                                 color="success"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    if (vendor === NEWTRUL) {
+                                    if (row.vendorName === NEWTRUL) {
                                         return history.push(path + `/${row.id}/bid`, {
                                             ...row,
-                                            vendor,
+                                            vendor: row.vendorName,
                                             company: 'New Trul',
                                             price: row.book_now_price
                                         });
                                     }
                                     history.push(path + `/${row.loadNumber}/bid`, {
                                         ...row,
-                                        vendor,
-                                        company: vendor === NEWTRUL ? 'New Trul' : 'C.H Robinson'
+                                        vendor: row.vendorName,
+                                        company: row.vendorName === NEWTRUL ? 'New Trul' : 'C.H Robinson'
                                     });
                                 }}
                             >

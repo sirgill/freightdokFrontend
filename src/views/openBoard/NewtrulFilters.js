@@ -1,8 +1,7 @@
-import { Grid, Stack, FormControl, Button } from "@mui/material";
-import React, { useCallback, useState } from "react";
+import {Button, FormControl, Grid, Stack} from "@mui/material";
+import React, {useCallback, useState} from "react";
 import moment from "moment";
 import AutoComplete from "../../components/Atoms/form/AutoComplete";
-import Input from "../../components/Atoms/form/Input";
 import RadioButtonsGroup from "../../components/Atoms/form/RadioButtons";
 import DateRangePicker from "../../components/Atoms/form/DateRangePicker";
 import SearchAutoComplete from "../../components/Atoms/SearchAutoComplete";
@@ -43,12 +42,11 @@ const serialize = (obj = {}) => {
 }
 
 const getQueryString = (form) => {
-    const str = serialize(form);
     // console.log(str);
-    return str
+    return serialize(form)
 }
 
-const NewtrulFilters = ({ getNewTrulList, pageSize, pageIndex, setParams }) => {
+const NewtrulFilters = ({ getNewTrulList, setFilters, pageSize, pageIndex, setParams }) => {
     const [form, setForm] = useState({originRadio: 'origin_city', destinationRadio: 'destination_city'});
 
     const onChange = ({ name, value }) => {
@@ -95,6 +93,7 @@ const NewtrulFilters = ({ getNewTrulList, pageSize, pageIndex, setParams }) => {
                 obj[dt] = moment(form[dt]).format('YYYY-MM-DD')
             }
         })
+        setFilters(obj)
         let params = getQueryString(obj);
         setParams(params);
         getNewTrulList(pageSize, pageIndex, params)
