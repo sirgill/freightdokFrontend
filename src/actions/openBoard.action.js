@@ -1,7 +1,7 @@
 import axios from "axios";
 import {notification} from "./alert";
 import {GET_CHROBINSON_LOADS, GET_SHIPMENTS} from "./types";
-import {getBaseUrl, getGoUrl, production} from "../config";
+import {getBabylonianServerUrl, getBaseUrl, getGoUrl} from "../config";
 import {requestGet, requestPost} from "../utils/request";
 
 export const bookNow = async (loadNumber, body, callback) => {
@@ -248,7 +248,7 @@ export const getNewLoads = (filters) => async (dispatch) => {
         }
     });
     try {
-        const {success, data = []} = await requestPost({baseUrl: 'http://localhost:5800', uri: '/fetchOpenBoardLoads', body: filters})
+        const {success, data = []} = await requestPost({baseUrl: getBabylonianServerUrl(), uri: '/fetchOpenBoardLoads', body: filters})
         if (success) {
             dispatch({
                 type: GET_SHIPMENTS,

@@ -5,6 +5,8 @@ const development = {
   goLangMail: "http://localhost:8080/bookload"
 };
 
+const isProduction = () => process.env.NODE_ENV === "production"
+
 const production = {
   mailServerUrl: "https://mail.freightdok.io/sendMail",
   goLangServerUrl: "https://go.freightdok.io",
@@ -13,7 +15,7 @@ const production = {
 };
 
 const getGoUrl = () => {
-  if (process.env.NODE_ENV === "production") {
+  if (isProduction()) {
     return production.goLangServerUrl;
   }
   return development.goLangServerUrl;
@@ -21,17 +23,24 @@ const getGoUrl = () => {
 
 
 export const getMainNodeServerUrl = () => {
-  if (process.env.NODE_ENV === "production") {
+  if (isProduction()) {
     return production.nodeServerUrl;
   }
   return "http://localhost:5000";
 }
 
 const getBaseUrl = () => {
-  if (process.env.NODE_ENV === "production") {
+  if (isProduction()) {
     return production.nodeServerUrl;
   }
   return "http://localhost:5000";
 };
 
-export { getBaseUrl, getGoUrl, development, production };
+const getBabylonianServerUrl = () => {
+  if(isProduction()){
+    return 'https://babylonian-gate.freightdok.io/'
+  }
+  return 'http://localhost:5800'
+}
+
+export { getBaseUrl, getGoUrl, development, production, getBabylonianServerUrl };
