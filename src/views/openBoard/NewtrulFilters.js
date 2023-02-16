@@ -36,7 +36,8 @@ const serialize = (obj = {}) => {
     const str = [];
     for (let p in obj)
         if (obj.hasOwnProperty(p)) {
-            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            const q = encodeURIComponent(p) + "=" + encodeURIComponent(obj[p])
+            str.push(q.replaceAll('%20', '+'));
         }
     return str.join("&");
 }
