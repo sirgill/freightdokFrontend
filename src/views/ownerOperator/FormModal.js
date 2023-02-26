@@ -11,6 +11,7 @@ import {getBaseUrl} from "../../config";
 import {notification} from "../../actions/alert";
 import {checkObjProperties, triggerCustomEvent} from "../../utils/utils";
 import {Button} from "@mui/material";
+import {requestPost} from "../../utils/request";
 
 const validateForm = ({firstName, lastName, phoneNumber}) => {
     let errors = {}
@@ -30,6 +31,7 @@ const formTemplate = {
     firstName: "",
     lastName: "",
     phoneNumber: "",
+    email: ''
 }
 
 
@@ -76,23 +78,23 @@ const FormModal = (props) => {
         }
     }
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
-        const data = {...form};
-        const errors = validateForm(data);
+        const body = {...form};
+        const errors = validateForm(body);
         if (_.isEmpty(errors)) {
-            axios.post(getBaseUrl() + "/api/ownerOperator", data)
-                .then(res => {
-                    const {data: {success, message} = {}} = res || {};
-                    if (success) {
-                        notification(message);
-                        handleClose();
-                        setTimeout(() => {
-                            triggerCustomEvent('refreshOwnerOp')
-                        }, 500)
-                    }
-                })
-                .catch(err => err.message)
+            const {success, data} = await requestPost({uri:"/api/ownerOperator", body  })
+            debugger
+            const {message} = data || {};
+            if (success) {
+                notification(message);
+                handleClose();
+                setTimeout(() => {
+                    triggerCustomEvent('refreshOwnerOp');
+                }, 500)
+            } else {
+                notification(message, 'error');
+            }
         } else {
             setErrors({...errors})
         }
@@ -150,6 +152,15 @@ const FormModal = (props) => {
                                 value={form.phoneNumber || ''}
                                 onBlur={onBlur}
                                 errorText={errors['phoneNumber']}
+                            />
+                            <InputField
+                                name={"email"}
+                                label={"Email"}
+                                onChange={updateForm}
+                                value={form.email || ''}
+                                onBlur={onBlur}
+                                errorText={errors['email']}
+                                type={'email'}
                             />
                             {!id && <InputField
                                 value={form.user}
