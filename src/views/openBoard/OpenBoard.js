@@ -1,21 +1,21 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import moment from "moment";
-import {IconButton, Stack} from "@mui/material";
-import {Route, useHistory, useRouteMatch} from "react-router-dom";
+import { IconButton, Stack } from "@mui/material";
+import { Route, useHistory, useRouteMatch } from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
-import {LoadDetails} from "./LoadDetails";
-import {getBiddings, getNewLoads} from "../../actions/openBoard.action";
+import { LoadDetails } from "./LoadDetails";
+import { getBiddings, getNewLoads } from "../../actions/openBoard.action";
 import Form from "./Form";
-import {withRouter} from "react-router-dom/cjs/react-router-dom.min";
-import {useDispatch, useSelector} from "react-redux";
-import {developmentPayload, productionPayload} from "./constants";
+import { withRouter } from "react-router-dom/cjs/react-router-dom.min";
+import { useDispatch, useSelector } from "react-redux";
+import { developmentPayload, productionPayload } from "./constants";
 import BookNowForm from "./BookNowForm";
-import {addEvent, removeEvent} from "../../utils/utils";
+import { addEvent, removeEvent } from "../../utils/utils";
 import NewTrulLoadDetails from "./NewTrulLoadDetails";
 import NewtrulFilters from "./NewtrulFilters";
-import {UserSettings} from "../../components/Atoms/client";
-import {Refresh} from "@mui/icons-material";
-import {tableConfig} from "./config";
+import { UserSettings } from "../../components/Atoms/client";
+import { Refresh } from "@mui/icons-material";
+import { tableConfig } from "./config";
 
 let payload = developmentPayload;
 
@@ -40,7 +40,7 @@ const OpenBoard = () => {
     }, [dispatch])
 
     const getBiddingList = useCallback(() => {
-        dispatch(getNewLoads({...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageIndex: 0, pageSize: 100}))
+        dispatch(getNewLoads({ ...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageSize: 100 }))
     }, [dispatch, filters])
 
 
@@ -128,7 +128,7 @@ const OpenBoard = () => {
                 getNewTrulList={getNewTrulList}
             />
             <EnhancedTable
-                config={tableConfig({history, path, totalResults, onPageChange, vendor, pageSize: filters.pageSize, pageIndex: filters.pageIndex})}
+                config={tableConfig({ history, path, totalResults, onPageChange, vendor, pageSize: filters.pageSize, pageIndex: filters.pageIndex })}
                 data={results || []}
                 loading={loading}
             />
