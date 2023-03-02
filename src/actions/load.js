@@ -111,9 +111,7 @@ export const generateInvoice = (load_id, data) => async (dispatch) => {
   }
 };
 
-export const searchLoads =
-  (page = 0, limit = 15, search = "", module = "") =>
-  async (dispatch) => {
+export const searchLoads = (page = 0, limit = 15, search = "", module = "") => async (dispatch) => {
     try {
       const url = `/api/load/me?page=${
         page + 1

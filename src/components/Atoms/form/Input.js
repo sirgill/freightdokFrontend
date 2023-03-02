@@ -77,6 +77,7 @@ const Input = (props) => {
             InputProps={InputProps}
             inputProps={inputProps}
             readOnly={readOnly}
+            type={type}
             {...rest}
         />
     )

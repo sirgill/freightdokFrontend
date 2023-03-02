@@ -28,6 +28,7 @@ const Loadlistbar = ({
       setLoading(false);
     }, 1000);
     resetSearchField();
+    searchLoads(+page, +limit, search, 'loads');
     return () => {
       resetSearchField();
     };
