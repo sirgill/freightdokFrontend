@@ -75,10 +75,10 @@ export const getParsedLoadEquipment = (row = {}) => {
 
 export const MC_NUMBER = '7865422'
 
-export const bookNewTrulLoad = async (body, row) => {
+export const bookNewTrulLoad = async (body, row, callback) => {
   requestPost({uri: '/newTrulBookLoad', baseUrl: getGoUrl(), body})
       .then(async res => {
-          const { data } = res || {};
+          const { data , success} = res || {};
           if(data.status === 'success') {
             //update loads table
             const {data, success} = await requestPost({uri: '/api/newtrulLoad', body: {...body, ...row, isBooked: true}})
@@ -89,6 +89,7 @@ export const bookNewTrulLoad = async (body, row) => {
           else {
             notification(data.message, data.status)
           }
+          if(callback) callback({data, success})
       })
 }
 

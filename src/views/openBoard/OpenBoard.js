@@ -16,6 +16,7 @@ import NewtrulFilters from "./NewtrulFilters";
 import { UserSettings } from "../../components/Atoms/client";
 import { Refresh } from "@mui/icons-material";
 import { tableConfig } from "./config";
+import Dialog from "../../components/Atoms/Dialog";
 
 let payload = developmentPayload;
 
@@ -30,10 +31,10 @@ const OpenBoard = () => {
         [filters, setFilters] = useState(payload),
         [vendor, setVendor] = useState(UserSettings.getActiveOpenBoard()),
         [params, setParams] = useState(''),
+        [dialog, setDialog] = useState({ open: false, content: null }),
         dispatch = useDispatch(),
         { data: { results, totalResults } = {}, loading = false } = useSelector((state) => state.openBoard),
         history = useHistory();
-    // console.log(totalResults)
 
     const getNewTrulList = useCallback((pageSize, pageIndex, params) => {
         // dispatch(getNewTrulLoads(pageSize, pageIndex, params))
@@ -43,6 +44,13 @@ const OpenBoard = () => {
         dispatch(getNewLoads({ ...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageSize: 100 }))
     }, [dispatch, filters])
 
+    const onCloseDialog = useCallback(() => {
+        setDialog((prev) => ({ ...prev, open: false }))
+    }, [])
+
+    const showDialog = (dialogProps) => {
+        setDialog((prev) => ({ ...dialogProps, open: true }));
+    }
 
     const modifyChRobinsonFilters = (filters) => {
         const { destination, origin } = filters;
@@ -128,7 +136,7 @@ const OpenBoard = () => {
                 getNewTrulList={getNewTrulList}
             />
             <EnhancedTable
-                config={tableConfig({ history, path, totalResults, onPageChange, vendor, pageSize: filters.pageSize, pageIndex: filters.pageIndex })}
+                config={tableConfig({ showDialog, history, path, totalResults, onPageChange, vendor, pageSize: filters.pageSize, pageIndex: filters.pageIndex })}
                 data={results || []}
                 loading={loading}
             />
@@ -136,6 +144,7 @@ const OpenBoard = () => {
             <Route path={path + "/:loadNumber"} exact component={LoadDetails} />
             <Route path={path + "/:loadNumber/bid"} component={Form} />
             <Route path={path + "/:loadNumber/bookNow"} component={BookNowForm} />
+            <Dialog onClose={onCloseDialog} config={dialog} />
         </Stack>
     );
 };

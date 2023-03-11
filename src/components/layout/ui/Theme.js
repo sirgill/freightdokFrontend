@@ -63,6 +63,13 @@ export const themeNew = createTheme({
     }
   },
   components: {
+    MuiDialogContent: {
+      styleOverrides: {
+        root: {
+          borderTop: 'none'
+        }
+      }
+    },
     MuiButton: {
       styleOverrides: {
         root: {
