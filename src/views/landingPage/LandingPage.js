@@ -1,6 +1,5 @@
 import {Box, Button, Stack, Typography} from "@mui/material";
 import {PRIMARY_BLUE} from "../../components/layout/ui/Theme";
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import './style.css'
 

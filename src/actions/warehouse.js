@@ -59,8 +59,12 @@ const deleteWarehouse = (id) => async (dispatch) => {
     }
 }
 
+export const geoLocationService = async (obj) =>  {
+    return await axios.post('/api/warehouse/getLocation', obj)
+}
+
 export const getGeoLocation = (obj) => async (dispatch) => {
-    const { status, data } = await axios.post('/api/warehouse/getLocation', obj);
+    const { status, data } = await geoLocationService(obj);
     dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: true } })
     try {
         if (status === 200 && data.success) {

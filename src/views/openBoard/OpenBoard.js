@@ -42,7 +42,7 @@ const OpenBoard = () => {
 
     const getBiddingList = useCallback(() => {
         dispatch(getNewLoads({ ...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageSize: 100 }))
-    }, [dispatch, filters])
+    }, [dispatch, filters, params])
 
     const onCloseDialog = useCallback(() => {
         setDialog((prev) => ({ ...prev, open: false }))

@@ -6,6 +6,7 @@ import RadioButtonsGroup from "../../components/Atoms/form/RadioButtons";
 import DateRangePicker from "../../components/Atoms/form/DateRangePicker";
 import SearchAutoComplete from "../../components/Atoms/SearchAutoComplete";
 import Input from "../../components/Atoms/form/Input";
+import {geoLocationService} from "../../actions/warehouse";
 
 const radioConfig = {
     title: '',
@@ -76,7 +77,7 @@ const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setPar
     }, [form])
 
     // console.log(form)
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
         const dates = ["pick_up_start_date", "pick_up_end_date", "drop_off_start_date", "drop_off_end_date"]
         let obj = {...form}
@@ -97,7 +98,19 @@ const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setPar
         })
         delete obj.originRadio
         delete obj.destinationRadio
-        setFilters(obj)
+        if(obj.destination_radius){
+            const {data: {data, success} = {}} = await geoLocationService({address: obj.destination});
+            if(success){
+                obj['destinationGeoLocation'] = data;
+            }
+        }
+        if(obj.origin_radius){
+            const {data: {data, success} = {}} = await geoLocationService({address: obj.origin});
+            if(success){
+                obj['originGeoLocation'] = data;
+            }
+        }
+        setFilters({...obj, pageSize, pageIndex})
         let params = getQueryString(obj);
         setParams(params);
         getNewTrulList(pageSize, pageIndex, params)

@@ -73,11 +73,15 @@ const MyBids = ({}) => {
                 },
             },
             {
-                id: "loadNumber",
+                id: "",
                 label: "PickUp Date",
                 renderer: ({row}) => {
                     let date;
-                    const [pickup] = row?.loadDetail?.stops || [{}];
+                    const [_, pickup] = row?.loadDetail?.stops || [{}];
+                    if(pickup){
+                        const { early_datetime = '' } = pickup || {}
+                        return early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
+                    }
                     const {early_datetime = ''} = pickup || {}
                     date = early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
 
@@ -85,7 +89,7 @@ const MyBids = ({}) => {
                 },
             },
             {
-                id: "loadNumber",
+                id: "",
                 label: "Delivery City / State",
                 renderer: ({row: {rowDetail = {}} = {}}) => {
                     const [_, drop] = rowDetail.stops || [],
@@ -101,7 +105,7 @@ const MyBids = ({}) => {
                 id: "loadNumber",
                 label: "Delivery Date",
                 renderer: ({row}) => {
-                    const [_, drop] = row?.loadDetail?.stops || [],
+                    const [drop, _] = row?.loadDetail?.stops || [],
                         {early_datetime} = drop || {};
                     return early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
 
@@ -120,7 +124,7 @@ const MyBids = ({}) => {
                 }
             },
             {
-                id: "loadNumber",
+                id: "",
                 label: "Weight",
                 renderer: ({row}) => {
                     const {weight} = row.loadDetail || {};
@@ -135,6 +139,13 @@ const MyBids = ({}) => {
             {
                 id: "vendorName",
                 label: "Company",
+                renderer: ({row}) => {
+                    const {loadDetail: {client = {}} = {}} = row;
+                    if(client.client_name) {
+                        return client.client_name
+                    }
+                    return row['vendorName'];
+                }
             },
             {
                 id: "status",
