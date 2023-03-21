@@ -1,7 +1,7 @@
 import moment from "moment";
-import {requestPost} from "../../utils/request";
-import {getGoUrl} from "../../config";
-import {notification} from "../../actions/alert";
+import { requestPost } from "../../utils/request";
+import { getGoUrl } from "../../config";
+import { notification } from "../../actions/alert";
 
 export const productionPayload = {
   pageIndex: 0,
@@ -57,10 +57,10 @@ export const developmentPayload = {
 
 export const getParsedLoadEquipment = (row = {}) => {
   let {
-        equipment: {length: {standard = ""} = {}} = {},
-        modes = [],
-      } = row || {},
-      modesString = modes.join(", ");
+    equipment: { length: { standard = "" } = {} } = {},
+    modes = [],
+  } = row || {},
+    modesString = modes.join(", ");
   if (standard) {
     standard = standard + "ft";
   }
@@ -73,24 +73,25 @@ export const getParsedLoadEquipment = (row = {}) => {
   }
 }
 
-export const MC_NUMBER = '7865422'
+export const MC_NUMBER = '476757'
+export const CARRIER_EMAIL = 'accounting@sunnyfreight.co'
 
 export const bookNewTrulLoad = async (body, row, callback) => {
-  requestPost({uri: '/newTrulBookLoad', baseUrl: getGoUrl(), body})
-      .then(async res => {
-          const { data , success} = res || {};
-          if(data.status === 'success') {
-            //update loads table
-            const {data, success} = await requestPost({uri: '/api/newtrulLoad', body: {...body, ...row, isBooked: true}})
-            if(success) {
-              notification(data.message);
-            }
-          }
-          else {
-            notification(data.message, data.status)
-          }
-          if(callback) callback({data, success})
-      })
+  requestPost({ uri: '/newTrulBookLoad', baseUrl: getGoUrl(), body })
+    .then(async res => {
+      const { data, success } = res || {};
+      if (data.status === 'success') {
+        //update loads table
+        const { data, success } = await requestPost({ uri: '/api/newtrulLoad', body: { ...body, ...row, isBooked: true } })
+        if (success) {
+          notification(data.message);
+        }
+      }
+      else {
+        notification(data.message, data.status)
+      }
+      if (callback) callback({ data, success })
+    })
 }
 
 export const NEWTRUL = 'newtrul'

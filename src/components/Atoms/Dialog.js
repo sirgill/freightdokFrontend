@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
-import {Dialog as MUIDialog} from '@mui/material';
+import { Dialog as MUIDialog } from '@mui/material';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
@@ -51,11 +51,11 @@ BootstrapDialogTitle.propTypes = {
     onClose: PropTypes.func.isRequired,
 };
 
-export default function Dialog({children, config, onClose}) {
-    const {open, content, okButtonText, onOk, title, maxWidth='xs'} = config;
+export default function Dialog({ children, config, onClose }) {
+    const { open, content, okButtonText, onOk, title, maxWidth = 'xs' } = config;
 
     const onConfirm = (e) => {
-        if(onOk){
+        if (onOk) {
             onOk(onClose, e)
         } else {
             onClose()

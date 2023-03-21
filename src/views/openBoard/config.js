@@ -1,7 +1,7 @@
 import { bookNewTrulLoad, getParsedLoadEquipment, NEWTRUL } from "./constants";
 import React, { Fragment } from "react";
 import moment from "moment";
-import {Button, Typography} from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { v4 as uuidv4 } from 'uuid';
 
 const tableConfig = ({ history, path, totalResults, onPageChange, pageIndex, pageSize, showDialog }) => {

@@ -31,7 +31,7 @@ const OpenBoard = () => {
         [filters, setFilters] = useState(payload),
         [vendor, setVendor] = useState(UserSettings.getActiveOpenBoard()),
         [params, setParams] = useState(''),
-        [dialog, setDialog] = useState({ open: false, content: null }),
+        [dialog, setDialog] = useState({open: false, content: null}),
         dispatch = useDispatch(),
         { data: { results, totalResults } = {}, loading = false } = useSelector((state) => state.openBoard),
         history = useHistory();
@@ -45,11 +45,11 @@ const OpenBoard = () => {
     }, [dispatch, filters, params])
 
     const onCloseDialog = useCallback(() => {
-        setDialog((prev) => ({ ...prev, open: false }))
+        setDialog((prev) => ({...prev, open: false}))
     }, [])
 
-    const showDialog = (dialogProps) => {
-        setDialog((prev) => ({ ...dialogProps, open: true }));
+    const showDialog = ({content}) => {
+        setDialog((prev) => ({...prev, open: true, content}));
     }
 
     const modifyChRobinsonFilters = (filters) => {
@@ -136,7 +136,7 @@ const OpenBoard = () => {
                 getNewTrulList={getNewTrulList}
             />
             <EnhancedTable
-                config={tableConfig({ showDialog, history, path, totalResults, onPageChange, vendor, pageSize: filters.pageSize, pageIndex: filters.pageIndex })}
+                config={tableConfig({showDialog, history, path, totalResults, onPageChange, vendor, pageSize: filters.pageSize, pageIndex: filters.pageIndex })}
                 data={results || []}
                 loading={loading}
             />
