@@ -6,6 +6,7 @@ import {useRouteMatch, useHistory} from "react-router"
 import moment from "moment";
 import {Route, Switch} from "react-router-dom";
 import CHRobinsonBid from "./bids/CHRobinsonBid";
+import NewTrulLoadDetails from "../openBoard/NewTrulLoadDetails";
 
 
 const getBidStatus = (bidLevel) => {
@@ -19,7 +20,7 @@ const getBidStatus = (bidLevel) => {
 }
 
 
-const MyBids = ({}) => {
+const MyBids = () => {
     const {path} = useRouteMatch()
     const history = useHistory()
     const [myBids, setMyBids] = React.useState([]);
@@ -38,7 +39,8 @@ const MyBids = ({}) => {
     const tableConfig = {
         rowCellPadding: "inherit",
         emptyMessage: "No Bids Found",
-        // onRowClick: ({ loadNumber, id }) => vendor.toLowerCase() === 'newtrul' ? `${path}/newtrul/${id}` : `${path}/${loadNumber}`,
+        onRowClick: ({ loadNumber, id, vendorName = '' }) => vendorName.toLowerCase() === 'new trul' ? `${path}/newtrul/${loadNumber}` : `${path}/${loadNumber}`,
+        onRowClickDataCallback: (row) => row.loadDetail || {},
         count: myBids.length,
         rowStyleCb: ({row}) => {
             const {bidLevel, status} = row;
@@ -174,7 +176,6 @@ const MyBids = ({}) => {
                                 color="success"
                                 onClick={(e) => {
                                     e.stopPropagation();
-
                                     history.push(route, {
                                         ...row,
                                     });
@@ -194,6 +195,7 @@ const MyBids = ({}) => {
             <EnhancedTable config={tableConfig} data={myBids} loading={loading}/>
             <Switch>
                 <Route path={path+'/bid/:loadNumber'} component={CHRobinsonBid} />
+                <Route path={path + "/newtrul/:loadId"} render={(props) => <NewTrulLoadDetails {...props} callDetail={false} />} />
             </Switch>
         </div>
     );

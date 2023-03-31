@@ -80,12 +80,15 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
 
 
     const [tableState, setTableState] = useState({}),
-        {columns = [], onRowClick, hasOnClickUrl = true, onPageChange, page, count, limit, emptyMessage = ''} = config,
+        {columns = [], onRowClick, hasOnClickUrl = true, onPageChange, page, count, limit, emptyMessage = '', onRowClickDataCallback} = config,
         ref = React.useRef([]);
 
     const handleRowClick = (row) => {
         if (hasOnClickUrl && onRowClick) {
             const url = onRowClick(row);
+            if(onRowClickDataCallback) {
+                row = onRowClickDataCallback(row)
+            }
             history.push(url, row);
         } else if (onRowClick) {
             onRowClick(row)

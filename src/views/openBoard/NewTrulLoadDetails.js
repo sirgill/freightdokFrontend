@@ -30,7 +30,7 @@ const LeftDetails = ({ state }) => {
 const RightDetails = ({ state }) => {
     const { stops = [] } = state;
     // eslint-disable-next-line no-unused-vars
-    const [{ geo = {}, early_datetime, late_datetime, appointment_required }] = stops;
+    const [{ geo = {}, early_datetime, late_datetime, appointment_required }] = stops || [{}];
     const { city, state: stateCode } = geo || {};
     return <Details
         title={'Delivery'}
@@ -46,7 +46,7 @@ const RightDetails = ({ state }) => {
 }
 
 const NewTrulLoadDetails = (props) => {
-    const { location: { state = {} } = {} } = props;
+    const { location: { state = {} } = {}, callDetail = true } = props;
     const { id: loadNumber, loaded_miles, weight, equipment, client: { compliance_link = '', client_name } = {} } = state
     // console.log(state)
     const config = {
@@ -69,7 +69,7 @@ const NewTrulLoadDetails = (props) => {
     }, [loadNumber])
 
     useEffect(() => {
-        postDetailToNewTrul();
+        callDetail && postDetailToNewTrul();
     }, [postDetailToNewTrul])
 
     return (
