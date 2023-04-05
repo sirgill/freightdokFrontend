@@ -100,7 +100,7 @@ const CHRobinsonBid = (props) => {
 
     const bidAction = (action) => {
         const payload = {
-            lid: loadNumber,
+            loadId: loadNumber,
             mcNumber: MC_NUMBER,
             carrierMail: CARRIER_EMAIL,
             status: action,
