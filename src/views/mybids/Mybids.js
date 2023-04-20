@@ -8,6 +8,7 @@ import {Route, Switch} from "react-router-dom";
 import CHRobinsonBid from "./bids/CHRobinsonBid";
 import NewTrulLoadDetails from "../openBoard/NewTrulLoadDetails";
 import prepareBidDataForNewTrul from "./bids/constant";
+import {CHROBINSON} from "../openBoard/constants";
 
 
 const getBidStatus = (bidLevel) => {
@@ -150,7 +151,8 @@ const MyBids = () => {
                     if (client.client_name) {
                         return client.client_name
                     }
-                    return row['vendorName'];
+                    const vname = row['vendorName']||''
+                    return vname==='C.H. Robinson' ? '' : vname;
                 }
             },
             {
