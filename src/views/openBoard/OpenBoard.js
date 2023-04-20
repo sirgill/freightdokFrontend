@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import moment from "moment";
 import { IconButton, Stack } from "@mui/material";
 import { Route, useHistory, useRouteMatch } from "react-router-dom";
@@ -48,9 +48,9 @@ const OpenBoard = () => {
         setDialog((prev) => ({...prev, open: false}))
     }, [])
 
-    const showDialog = ({content}) => {
+    const showDialog = useCallback(({content}) => {
         setDialog((prev) => ({...prev, open: true, content}));
-    }
+    }, [])
 
     const modifyChRobinsonFilters = (filters) => {
         const { destination, origin } = filters;
@@ -119,6 +119,12 @@ const OpenBoard = () => {
         setFilters(() => ({ ...filters, pageIndex: pgNum - 1 }));
     };
 
+    const table = useMemo(() => <EnhancedTable
+        config={tableConfig({showDialog, history, path, totalResults, onPageChange, vendor, pageSize: filters.pageSize, pageIndex: filters.pageIndex })}
+        data={results || []}
+        loading={loading}
+    />, [results])
+
     return (
         <Stack style={{ gap: '10px' }}>
             <Stack direction={'row'} justifyContent='end'>
@@ -135,11 +141,7 @@ const OpenBoard = () => {
                 pageIndex={filters.pageIndex}
                 getNewTrulList={getNewTrulList}
             />
-            <EnhancedTable
-                config={tableConfig({showDialog, history, path, totalResults, onPageChange, vendor, pageSize: filters.pageSize, pageIndex: filters.pageIndex })}
-                data={results || []}
-                loading={loading}
-            />
+            {table}
             <Route path={path + "/newtrul/:loadId"} component={NewTrulLoadDetails} />
             <Route path={path + "/:loadNumber"} exact component={LoadDetails} />
             <Route path={path + "/:loadNumber/bid"} component={Form} />

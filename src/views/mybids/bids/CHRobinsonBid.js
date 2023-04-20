@@ -1,5 +1,6 @@
 import Modal from "../../ownerOperator/Modal";
 import {Button, Grid, IconButton, Stack, Typography} from "@mui/material";
+import {v4 as uuidv4} from 'uuid';
 import InputField from "../../../components/Atoms/form/InputField";
 import AddIcon from "@mui/icons-material/Add";
 import React, {Fragment, memo, useEffect, useState} from "react";
@@ -53,10 +54,12 @@ const AmountComponent = ({value, name, handleChange}) => {
 
 const CHRobinsonBid = (props) => {
     const {location: {state = {}} = {}, history} = props,
-        {loadNumber = '', bidAmount = '', vendorName=''} = state;
-    const [bidInput, setBidInput] = useState(bidAmount);
+        {loadNumber = '', vendorName=''} = state;
+    const [bidInput, setBidInput] = useState('0.00');
     const [data, setData] = useState({amount: 0}),
-        isFinalOffer = state?.offerStatus.equalsIgnoreCase('final_offer_created') || false;
+        offerStatus = state?.offerStatus || '',
+        isFinalOffer = offerStatus.equalsIgnoreCase('final_offer_created') || false,
+    isCounterOffer = offerStatus.equalsIgnoreCase("COUNTER_OFFER_CREATED");
 
     useEffect(() => {
         if(vendorName.equalsIgnoreCase('new trul')){
@@ -84,7 +87,7 @@ const CHRobinsonBid = (props) => {
         if(vendorName.equalsIgnoreCase('new trul')){
             const obj = {
                 loadId: loadNumber,
-                external_id: data.external_id,
+                external_id: uuidv4(),//data.external_id,
                 offer_amount: bidInput,
                 expired_at: data.expired_at
             }
@@ -132,23 +135,24 @@ const CHRobinsonBid = (props) => {
                 <Typography sx={{fontSize: 32}}>
                     Load Number: {loadNumber}
                 </Typography>
-                {isFinalOffer && <Typography fontSize={18}>{`Final Offer: $${data.amount}`}</Typography>}
+                {isFinalOffer && <Typography fontSize={18} sx={{my: 3}}>{`Final Offer: $${data.amount}`}</Typography>}
+                {isCounterOffer && <Typography fontSize={18}>{`Offer: $${data.amount}`}</Typography>}
                 {
                     /*
                     * {TODO} - Integrate accept reject api go lang
                     * */
                 }
                 <Stack gap={2} direction={'row'} justifyContent='center' my={2}>
-                    <Button variant='contained' color="error" sx={{px: 5}} onClick={bidAction.bind(this, 'reject')}>Reject</Button>
                     <Button variant='contained' color="success" sx={{px: 5}} onClick={bidAction.bind(this, 'accept')}>Accept</Button>
+                    <Button variant='contained' color="error" sx={{px: 5}} onClick={bidAction.bind(this, 'reject')}>Reject</Button>
                 </Stack>
                 {!isFinalOffer && <>
                     <Typography>OR</Typography>
                     <Stack direction={'row'} sx={{py: 2}} alignItems={'end'} gap={'10px'} justifyContent={'center'}>
-                        <AmountComponent value={data.amount || bidAmount} handleChange={onChange}/>
+                        <AmountComponent value={bidInput} handleChange={onChange}/>
                     </Stack>
-                    <Button variant="contained" color="success" sx={{px: 3, py: 1, fontSize: 16}} onClick={placeNewBid}>
-                        Submit Bid
+                    <Button variant="contained" color="primary" sx={{px: 2, py: .5, fontSize: 14}} onClick={placeNewBid}>
+                        {isCounterOffer ? "Submit Counter" : 'Submit Bid'}
                     </Button>
                 </>}
             </form>

@@ -7,6 +7,7 @@ import moment from "moment";
 import {Route, Switch} from "react-router-dom";
 import CHRobinsonBid from "./bids/CHRobinsonBid";
 import NewTrulLoadDetails from "../openBoard/NewTrulLoadDetails";
+import prepareBidDataForNewTrul from "./bids/constant";
 
 
 const getBidStatus = (bidLevel) => {
@@ -35,11 +36,14 @@ const MyBids = () => {
     }, [])
 
 
-
     const tableConfig = {
         rowCellPadding: "inherit",
         emptyMessage: "No Bids Found",
-        onRowClick: ({ loadNumber, id, vendorName = '' }) => vendorName.toLowerCase() === 'new trul' ? `${path}/newtrul/${loadNumber}` : `${path}/${loadNumber}`,
+        onRowClick: ({
+                         loadNumber,
+                         id,
+                         vendorName = ''
+                     }) => vendorName.toLowerCase() === 'new trul' ? `${path}/newtrul/${loadNumber}` : `${path}/${loadNumber}`,
         onRowClickDataCallback: (row) => row.loadDetail || {},
         count: myBids.length,
         rowStyleCb: ({row}) => {
@@ -65,7 +69,7 @@ const MyBids = () => {
                 id: "pickup",
                 label: "Pickup City/State",
                 renderer: ({row}) => {
-                    const [pickup] = row?.loadDetail?.stops || [],
+                    const [_, pickup] = row?.loadDetail?.stops || [],
                         {geo} = pickup || {},
                         {city = '', state = ''} = geo || {};
                     if (!city && !state) return '--'
@@ -80,8 +84,8 @@ const MyBids = () => {
                 renderer: ({row}) => {
                     let date;
                     const [_, pickup] = row?.loadDetail?.stops || [{}];
-                    if(pickup){
-                        const { early_datetime = '' } = pickup || {}
+                    if (pickup) {
+                        const {early_datetime = ''} = pickup || {}
                         return early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
                     }
                     const {early_datetime = ''} = pickup || {}
@@ -93,8 +97,8 @@ const MyBids = () => {
             {
                 id: "",
                 label: "Delivery City / State",
-                renderer: ({row: {rowDetail = {}} = {}}) => {
-                    const [_, drop] = rowDetail.stops || [],
+                renderer: ({row: {loadDetail = {}} = {}}) => {
+                    const [drop] = loadDetail.stops || [],
                         {geo} = drop || {},
                         {city = '', state = ''} = geo || {};
                     if (!city && !state) return '--'
@@ -143,7 +147,7 @@ const MyBids = () => {
                 label: "Company",
                 renderer: ({row}) => {
                     const {loadDetail: {client = {}} = {}} = row;
-                    if(client.client_name) {
+                    if (client.client_name) {
                         return client.client_name
                     }
                     return row['vendorName'];
@@ -153,9 +157,11 @@ const MyBids = () => {
                 id: "status",
                 label: "Bid Status",
                 renderer: ({row}) => {
+                    const {offerStatus = ''} = prepareBidDataForNewTrul(row) || {},
+                        isRejected = offerStatus.toLowerCase().includes('rejected');
                     return (
                         <Fragment>
-                            {row.status ? "Accepted" : getBidStatus(row.bidLevel)}
+                            {row.status ? "Accepted" : isRejected ? 'Rejected' : getBidStatus(row.bidLevel)}
                         </Fragment>
                     );
                 },
@@ -166,14 +172,18 @@ const MyBids = () => {
                 renderer: ({row}) => {
                     const {vendorName = ''} = row || {}
                     let route = path + `/bid/${row.loadNumber}`;
-                    if(vendorName.toLowerCase() === 'ch robinson'){
+                    const {offerStatus = ''} = prepareBidDataForNewTrul(row) || {},
+                        isCounterOffer = offerStatus.equalsIgnoreCase("COUNTER_OFFER_CREATED"),
+                        isFinalOffer = offerStatus.equalsIgnoreCase('final_offer_created'),
+                        isRejected = offerStatus.toLowerCase().includes('rejected');
+                    if (vendorName.toLowerCase() === 'ch robinson') {
                         // route = path + `/chrobinson/bid/${row.loadNumber}`;
                     }
                     return (
                         <Fragment>
-                            <Button
+                            {!isRejected && <Button
                                 variant="contained"
-                                color="success"
+                                color="primary"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     history.push(route, {
@@ -181,8 +191,8 @@ const MyBids = () => {
                                     });
                                 }}
                             >
-                                Bid +
-                            </Button>
+                                {(isCounterOffer || isFinalOffer) ? 'View' : 'Bid +'}
+                            </Button>}
                         </Fragment>
                     );
                 },
@@ -194,8 +204,9 @@ const MyBids = () => {
         <div>
             <EnhancedTable config={tableConfig} data={myBids} loading={loading}/>
             <Switch>
-                <Route path={path+'/bid/:loadNumber'} component={CHRobinsonBid} />
-                <Route path={path + "/newtrul/:loadId"} render={(props) => <NewTrulLoadDetails {...props} callDetail={false} />} />
+                <Route path={path + '/bid/:loadNumber'} component={CHRobinsonBid}/>
+                <Route path={path + "/newtrul/:loadId"}
+                       render={(props) => <NewTrulLoadDetails {...props} callDetail={false}/>}/>
             </Switch>
         </div>
     );
