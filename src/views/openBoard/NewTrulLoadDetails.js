@@ -98,7 +98,7 @@ const NewTrulLoadDetails = (props) => {
                 </Grid>
                 <Grid item xs={12} textAlign={'center'}>
                     {compliance_link &&
-                        <Typography sx={{ textDecoration: 'underline' }} component='a' href={'http://' + compliance_link}
+                        <Typography sx={{ textDecoration: 'underline' }} component='a' href={compliance_link}
                             target='_blank'>{compliance_link}</Typography>}
                 </Grid>
             </Grid>
