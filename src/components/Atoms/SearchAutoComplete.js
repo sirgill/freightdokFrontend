@@ -7,9 +7,9 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import _ from 'lodash'
 import {requestGet} from "../../utils/request";
+import {notification} from "../../actions/alert";
 
 
-const autocompleteService = { current: null };
 
 const SearchAutoComplete = ({label='', name, onSelect}) => {
     const [value, setValue] = React.useState(null);
@@ -20,7 +20,7 @@ const SearchAutoComplete = ({label='', name, onSelect}) => {
         () =>
             _.debounce((request, callback) => {
                 requestGet({uri: '/api/searchLocationAutocomplete?search=' + request.input})
-                    .then(r => callback(r.data));
+                    .then(r => callback(r.data, r.success));
             }, 500),
         [],
     );
@@ -33,9 +33,13 @@ const SearchAutoComplete = ({label='', name, onSelect}) => {
             return undefined;
         }
 
-        fetch({ input: inputValue }, (results = {}) => {
+        fetch({ input: inputValue }, (results = {}, success) => {
             if (active) {
                 let newOptions = [];
+
+                if(!success){
+                    notification(results.error_message, 'error');
+                }
 
                 if (value) {
                     newOptions = [value];
