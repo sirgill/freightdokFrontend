@@ -9,15 +9,15 @@ import {Delete} from "@mui/icons-material";
 function Headers({columns = [], config = {}}) {
     const {headerCellSx = {}, hasDelete} = config;
     const headers = useMemo(() => {
-        return columns.map(column => {
+        return columns.map((column, index) => {
             const {label = '', id = '', visible = true} = column || {};
             if (!visible) return;
             return (
                 <TableCell padding={'normal'} sx={{color: '#000', fontWeight: 800, ...headerCellSx}}
-                           key={id}>{label}</TableCell>
+                           key={id || index}>{label}</TableCell>
             )
         })
-    }, [columns])
+    }, [columns, headerCellSx])
     return <TableRow>
         {headers}
         {hasDelete && <TableCell padding={'none'} sx={{headerCellSx}}/>}
@@ -25,7 +25,14 @@ function Headers({columns = [], config = {}}) {
 }
 
 const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowIndex}) => {
-    const {hasDelete = false, onDelete, hover = false, rowCellPadding = 'none', onRowClick = undefined, rowStyleCb} = config;
+    const {
+        hasDelete = false,
+        onDelete,
+        hover = false,
+        rowCellPadding = 'none',
+        onRowClick = undefined,
+        rowStyleCb
+    } = config;
     let rowStyle = {}
     if (rowStyleCb) {
         rowStyle = rowStyleCb({row}) || {};
@@ -80,13 +87,23 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
 
 
     const [tableState, setTableState] = useState({}),
-        {columns = [], onRowClick, hasOnClickUrl = true, onPageChange, page, count, limit, emptyMessage = '', onRowClickDataCallback} = config,
+        {
+            columns = [],
+            onRowClick,
+            hasOnClickUrl = true,
+            onPageChange,
+            page,
+            count,
+            limit,
+            emptyMessage = '',
+            onRowClickDataCallback
+        } = config,
         ref = React.useRef([]);
 
     const handleRowClick = (row) => {
         if (hasOnClickUrl && onRowClick) {
             const url = onRowClick(row);
-            if(onRowClickDataCallback) {
+            if (onRowClickDataCallback) {
                 row = onRowClickDataCallback(row)
             }
             history.push(url, row);
@@ -148,7 +165,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
                     {getTableContent}
                 </Table>}
             {!loading && data.length > 0 &&
-            <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit}/>}
+                <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit}/>}
         </TableContainer>
     </div>;
 };

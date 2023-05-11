@@ -38,7 +38,7 @@ const MyBids = () => {
 
 
     const tableConfig = {
-        rowCellPadding: "inherit",
+        rowCellPadding: "normal",
         emptyMessage: "No Bids Found",
         onRowClick: ({
                          loadNumber,
@@ -109,7 +109,7 @@ const MyBids = () => {
                 }
             },
             {
-                id: "loadNumber",
+                id: "deliveryDate",
                 label: "Delivery Date",
                 renderer: ({row}) => {
                     const [drop, _] = row?.loadDetail?.stops || [],
@@ -119,7 +119,7 @@ const MyBids = () => {
                 },
             },
             {
-                id: "loadNumber",
+                id: "equipment",
                 label: "Equipment",
                 renderer: ({row}) => {
                     const {equipment} = row.loadDetail || {}
