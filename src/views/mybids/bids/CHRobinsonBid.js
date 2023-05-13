@@ -63,7 +63,9 @@ const CHRobinsonBid = (props) => {
 
     useEffect(() => {
         if(vendorName.equalsIgnoreCase('new trul')){
-            setData(prepareBidDataForNewTrul(state))
+            const newTrulState = prepareBidDataForNewTrul(state)
+            setBidInput(newTrulState.amount);
+            setData(newTrulState);
         }
     }, [state, vendorName])
 
@@ -85,8 +87,9 @@ const CHRobinsonBid = (props) => {
 
     const placeNewBid = () => {
         if(vendorName.equalsIgnoreCase('new trul')){
+            const {counterOfferId} = data;
             const obj = {
-                loadId: loadNumber,
+                loadId: counterOfferId,
                 external_id: uuidv4(),//data.external_id,
                 offer_amount: bidInput,
                 expired_at: data.expired_at
@@ -137,11 +140,6 @@ const CHRobinsonBid = (props) => {
                 </Typography>
                 {isFinalOffer && <Typography fontSize={18} sx={{my: 3}}>{`Final Offer: $${data.amount}`}</Typography>}
                 {isCounterOffer && <Typography fontSize={18}>{`Offer: $${data.amount}`}</Typography>}
-                {
-                    /*
-                    * {TODO} - Integrate accept reject api go lang
-                    * */
-                }
                 <Stack gap={2} direction={'row'} justifyContent='center' my={2}>
                     <Button variant='contained' color="success" sx={{px: 5}} onClick={bidAction.bind(this, 'accept')}>Accept</Button>
                     <Button variant='contained' color="error" sx={{px: 5}} onClick={bidAction.bind(this, 'reject')}>Reject</Button>

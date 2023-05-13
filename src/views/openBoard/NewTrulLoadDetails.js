@@ -1,8 +1,9 @@
 import Modal from "../ownerOperator/Modal";
-import { Grid, Typography } from "@mui/material";
+import {Grid, Typography, useMediaQuery} from "@mui/material";
 import Details from "./PickupDetails";
 import moment from "moment";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import React, { useCallback, useEffect } from "react";
 import { BasicLoadDetails } from "./LoadDetails";
 import { requestPost } from "../../utils/request";
@@ -47,10 +48,12 @@ const RightDetails = ({ state }) => {
 
 const NewTrulLoadDetails = (props) => {
     const { location: { state = {} } = {}, callDetail = true } = props;
+    const isSizeSm = useMediaQuery('(max-width:600px)');
     const { id: loadNumber, loaded_miles, weight, equipment, client: { compliance_link = '', client_name } = {} } = state
     // console.log(state)
     const config = {
         title: "",
+        maxWidth: 'xs'
     };
 
     const postDetailToNewTrul = useCallback(async () => {
@@ -74,7 +77,7 @@ const NewTrulLoadDetails = (props) => {
 
     return (
         <Modal config={config}>
-            <Grid container spacing={2} sx={{ p: 2 }}>
+            <Grid container gap={3} sx={{ p: 0 }}>
                 <Grid item xs={12}>
                     <Typography align='center' variant='h4'>New Trul</Typography>
                 </Grid>
@@ -85,13 +88,13 @@ const NewTrulLoadDetails = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container justifyContent={'center'}>
-                        <Grid xs={5} textAlign={'center'} className={'openBoardPickupDetails'}>
+                        <Grid item sm={5} xs={12} textAlign={'center'} className={'openBoardPickupDetails'}>
                             <LeftDetails state={state} />
                         </Grid>
-                        <Grid xs={2} textAlign={'center'}>
-                            <ArrowForwardIcon sx={{ fontSize: '8rem' }} />
+                        <Grid item sm={2} xs={12} textAlign={'center'}>
+                            {isSizeSm ? <ArrowDownwardIcon sx={{fontSize: '8rem'}}/> : <ArrowForwardIcon sx={{fontSize: '8rem'}}/>}
                         </Grid>
-                        <Grid xs={5} textAlign={'center'}>
+                        <Grid item sm={5} xs={12} textAlign={'center'}>
                             <RightDetails state={state} />
                         </Grid>
                     </Grid>

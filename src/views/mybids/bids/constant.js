@@ -1,6 +1,6 @@
 const prepareBidDataForNewTrul = (row) => {
     const {bidAmount = '', offerStatus, vendorName, event_data = {}} = row || {};
-    const {counter_offer: {expired_at = ''} = {}, offer: {external_id} = {}} = event_data;
+    const {counter_offer: {expired_at = '', id: counterOfferId} = {}, offer: {external_id} = {}} = event_data;
     const amount = bidAmount.includes(',') ? bidAmount.split(',') : bidAmount
 
     return {
@@ -8,7 +8,8 @@ const prepareBidDataForNewTrul = (row) => {
         offerStatus,
         vendorName,
         external_id,
-        expired_at
+        expired_at,
+        counterOfferId
     }
 }
 
