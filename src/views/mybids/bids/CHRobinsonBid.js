@@ -89,7 +89,7 @@ const CHRobinsonBid = (props) => {
         if(vendorName.equalsIgnoreCase('new trul')){
             const {counterOfferId} = data;
             const obj = {
-                loadId: counterOfferId,
+                offerId: counterOfferId,
                 external_id: uuidv4(),//data.external_id,
                 offer_amount: bidInput,
                 expired_at: data.expired_at
@@ -105,8 +105,9 @@ const CHRobinsonBid = (props) => {
     }
 
     const bidAction = (action) => {
+        const {counterOfferId} = data;
         const payload = {
-            loadId: loadNumber,
+            offerId: counterOfferId,
             mcNumber: MC_NUMBER,
             carrierMail: CARRIER_EMAIL,
             status: action,
