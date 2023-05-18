@@ -92,7 +92,9 @@ const CHRobinsonBid = (props) => {
                 offerId: counterOfferId,
                 external_id: uuidv4(),//data.external_id,
                 offer_amount: bidInput,
-                expired_at: data.expired_at
+                expired_at: data.expired_at,
+                mcNumber: MC_NUMBER,
+                carrierMail: CARRIER_EMAIL,
             }
             if(data.offerStatus.equalsIgnoreCase("COUNTER_OFFER_CREATED")){
                 placeNewCounterOffer(obj, afterUpdate);
