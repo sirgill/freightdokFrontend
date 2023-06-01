@@ -4,6 +4,7 @@ import {Box, Button, Grid, TextField} from "@mui/material";
 import CompanyText from "../../Atoms/CompanyText";
 import axios from "axios";
 import {FMCSA_VERIFICATION_LINK, LOGIN_LINK} from "../../constants";
+import {notification} from "../../../actions/alert";
 
 const verticalAlignStyle = {
     position: "absolute",
@@ -17,13 +18,20 @@ const SignUp = (props) => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        let {data = {}, status} = await axios.get(`https://mobile.fmcsa.dot.gov/qc/services/carriers/${text}?webKey=e1b9823bbb9dd36dc33b53bc0e8ed0710f1bedca`, {
-            headers : {
-                'content-type': "application/json"
+        try {
+            let {data = {}, status} = await axios.get(`https://mobile.fmcsa.dot.gov/qc/services/carriers/${text}?webKey=e1b9823bbb9dd36dc33b53bc0e8ed0710f1bedca`, {
+                headers : {
+                    'content-type': "application/json"
+                }
+            });
+            if(status){
+                props.history.push(FMCSA_VERIFICATION_LINK, data)
+            } else {
+                notification('Unable to verify, Please try later.', 'error')
             }
-        });
-        if(status){
-            props.history.push(FMCSA_VERIFICATION_LINK, data)
+        } catch (e) {
+            console.log(e.message)
+            notification(e.message, 'error')
         }
     };
 
