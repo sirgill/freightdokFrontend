@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import {useHistory} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import {useDispatch} from 'react-redux';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/auth';
@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@mui/material/Button';
 import { Divider, Typography } from '@mui/material';
 import { Form, FormGroup, Input, InputGroup, InputGroupText, InputGroupAddon } from 'reactstrap';
+import {FEDERAL_SIGNUP_LINK} from "../constants";
 
   const useStyles = makeStyles(() => ({
     root: {
@@ -134,7 +135,7 @@ const Login = () => {
                 </Button>
               </Form>
               <br/>
-                {/*<Link to="/entity" className="text-center" underline="none">Register</Link>*/}
+                <Link to={FEDERAL_SIGNUP_LINK} className="text-center" underline="none">Register</Link>
             </Grid>
           </Grid>
         </div>

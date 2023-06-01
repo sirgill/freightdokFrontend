@@ -27,6 +27,9 @@ import "./App.css";
 import {getBaseUrl} from "./config";
 import LandingPage from "./views/landingPage/LandingPage";
 import SetPassword from "./components/auth/SetPassword";
+import SignUp from "./components/auth/signUpWithFMCSA/SignUp";
+import FMCSAVerification from "./components/auth/signUpWithFMCSA/FMCSAVerification";
+import {FEDERAL_SIGNUP_LINK, FMCSA_VERIFICATION_LINK} from "./components/constants";
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -52,6 +55,8 @@ const App = () => {
                     <Route path="/fleetRegister" component={Fleet} />
                     <Route path='/setPassword' component={SetPassword} />
                     <Route path="/register" component={Register}/>
+                    <Route path={FEDERAL_SIGNUP_LINK} component={SignUp}/>
+                    <Route path={FMCSA_VERIFICATION_LINK} component={FMCSAVerification}/>
                     <Route path="/login" component={Login}/>
                     <PrivateRoute path="/profile" component={Profile}/>
                     <PrivateRoute path="/dashboard" component={Dashboard}/>
