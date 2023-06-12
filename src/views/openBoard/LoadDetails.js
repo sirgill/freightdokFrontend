@@ -27,7 +27,7 @@ const BasicLoadDetails = ({loadNumber = '', trip, weight, equipment = ''}) => {
                 <Typo value={loadNumber} label={'Load Number'} labelSx={{fontSize: 32}}/>
                 <Typo value={equipment} label={'Equipment'} labelSx={{fontSize: 24}}/>
                 <Typo value={weight + ' lbs'} label={'Weight'} labelSx={{fontSize: 24}}/>
-                <Typo value={trip + ' miles'} label={'Trip'} labelSx={{fontSize: 24}}/>
+                <Typo value={(trip ?? 0) + ' miles'} label={'Trip'} labelSx={{fontSize: 24}}/>
             </Stack>
         </Box>
     )

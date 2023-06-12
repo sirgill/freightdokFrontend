@@ -15,7 +15,7 @@ const InputFieldPure = ({
                             inputProps,
                             ...rest
                         }) => {
-    return <FormControl component='fieldset'>
+    return <FormControl component=''>
         <TextField
             name={name}
             error={hasError}

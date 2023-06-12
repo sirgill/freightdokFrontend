@@ -101,6 +101,10 @@ export const getCheckStatusIcon = (comparator = false) => {
     )
 }
 
+export const textFormatter = (str) => {
+    return str || '--'
+}
+
 export {
     addEvent,
     removeEvent,
