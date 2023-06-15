@@ -49,7 +49,6 @@ const SignUp = (props) => {
                             type={'number'}
                             label='Please enter DOT#'
                             sx={{width: '100%'}}
-                            placeholder='Miles'
                             inputProps={{min: 1}}
                             value={text}
                             onChange={onChange}

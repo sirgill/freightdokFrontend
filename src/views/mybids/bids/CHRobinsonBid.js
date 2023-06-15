@@ -53,7 +53,7 @@ const AmountComponent = ({value, name, handleChange}) => {
 }
 
 const CHRobinsonBid = (props) => {
-    const {location: {state = {}} = {}, history} = props,
+    const {location: {state = {}} = {}, history, onCloseUrl, onRefresh} = props,
         {loadNumber = '', vendorName=''} = state;
     const [bidInput, setBidInput] = useState('0.00');
     const [data, setData] = useState({amount: 0}),
@@ -127,6 +127,9 @@ const CHRobinsonBid = (props) => {
             .then(res => {
                 if(res.data.status === 'error'){
                     notification(res.data.message, 'error')
+                } else if(res.data.status.equalsIgnoreCase('success')){
+                    if(onRefresh) onRefresh();
+                    history.push(onCloseUrl);
                 }
             })
             .catch(err => console.log(err));

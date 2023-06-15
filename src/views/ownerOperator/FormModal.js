@@ -84,7 +84,6 @@ const FormModal = (props) => {
         const errors = validateForm(body);
         if (_.isEmpty(errors)) {
             const {success, data} = await requestPost({uri:"/api/ownerOperator", body  })
-            debugger
             const {message} = data || {};
             if (success) {
                 notification(message);

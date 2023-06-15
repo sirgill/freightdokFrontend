@@ -8,7 +8,6 @@ import {Route, Switch} from "react-router-dom";
 import CHRobinsonBid from "./bids/CHRobinsonBid";
 import NewTrulLoadDetails from "../openBoard/NewTrulLoadDetails";
 import prepareBidDataForNewTrul from "./bids/constant";
-import {CHROBINSON} from "../openBoard/constants";
 
 
 const getBidStatus = (bidLevel) => {
@@ -28,12 +27,16 @@ const MyBids = () => {
     const [myBids, setMyBids] = React.useState([]);
     const [loading, setloading] = useState(false)
 
-    useEffect(() => {
+    const getMybids = () => {
         setloading(true)
         getAllBiddings().then(res => {
             setMyBids(res.data)
         })
             .finally(() => setloading(false))
+    }
+
+    useEffect(() => {
+        getMybids();
     }, [])
 
 
@@ -206,7 +209,7 @@ const MyBids = () => {
         <div>
             <EnhancedTable config={tableConfig} data={myBids} loading={loading}/>
             <Switch>
-                <Route path={path + '/bid/:loadNumber'} component={CHRobinsonBid}/>
+                <Route path={path + '/bid/:loadNumber'} render={(props) => <CHRobinsonBid {...props} onCloseUrl={path} onRefresh={getMybids} />}/>
                 <Route path={path + "/newtrul/:loadId"}
                        render={(props) => <NewTrulLoadDetails {...props} callDetail={false}/>}/>
             </Switch>
