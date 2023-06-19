@@ -2,11 +2,13 @@ import CompanyText from "../../Atoms/CompanyText";
 import {Link, Redirect} from "react-router-dom";
 import {FEDERAL_SIGNUP_LINK, LOGIN_LINK} from "../../constants";
 import {Box, Button, Grid, Stack, Typography} from "@mui/material";
-import InputField from "../../Atoms/form/InputField";
 import React, {useState} from "react";
-import {getCheckStatusIcon, textFormatter, verticalAlignStyle} from "../../../utils/utils";
+import Input from "../../Atoms/form/Input";
+import {getCheckStatusIcon, isEmailValid, isPhoneValid, textFormatter, verticalAlignStyle} from "../../../utils/utils";
+import {requestPost} from "../../../utils/request";
+import {notification} from "../../../actions/alert";
 
-const SuccessComponent = () => {
+export const SuccessComponent = () => {
     const icon = getCheckStatusIcon(true);
     return <Stack justifyContent='center' gap={1} flex={1}>
         <Typography align='center'>{icon}</Typography>
@@ -16,7 +18,7 @@ const SuccessComponent = () => {
 }
 
 const FMCSASignup = (props) => {
-    const [number, setNumber] = useState();
+    const [form, setForm] = useState({})
     const [error, setError] = useState();
     const [isSuccess, setIsSuccess] = useState(false);
     const {location: {state = {}} = {}} = props,
@@ -27,26 +29,33 @@ const FMCSASignup = (props) => {
         return <Redirect to={FEDERAL_SIGNUP_LINK}/>
     }
 
-
-    function onSubmit(e) {
+    async function onSubmit(e) {
         e.preventDefault();
-        if (isNaN(number)) {
-            return setError('Number is not valid. Please enter the correct number')
+        const {email, phoneNumber} = form;
+        if (!isPhoneValid(phoneNumber)) {
+            setError(error => ({...error, phoneNumber: 'Invalid Phone Number'}))
         }
-        setIsSuccess(true);
+        if (!isEmailValid(email)) {
+            setError(error => ({...error, email: "Invalid Email"}));
+        } else {
+            const {success, data} = await requestPost({uri: '/api/onBoarding', body: {email, phoneNumber, dot: dotNumber}})
+            if (success) {
+                setIsSuccess(true);
+            } else {
+                notification(data.message || 'Network Error', 'error')
+            }
+        }
     }
 
-    function onChange(e) {
-        setNumber(e.target.value)
-        if (error) {
-            setError('')
-        }
+    function onChange({name, value}) {
+        setForm({...form, [name]: value});
+        setError((error) => ({...error, [name]: ''}))
     }
 
     return (
         <div className={'auth-wrapper auth-inner'} style={verticalAlignStyle}>
             <CompanyText style={{mb: 3, cursor: 'default'}}/>
-            {isSuccess ? <SuccessComponent /> : <Grid container spacing={2} sx={{
+            {isSuccess ? <SuccessComponent/> : <Grid container spacing={2} sx={{
                 flex: 1,
                 '& p': {
                     color: '#868686',
@@ -64,11 +73,11 @@ const FMCSASignup = (props) => {
                     <Typography>Telephone: {textFormatter(telephone)}</Typography>
                 </Grid>
                 <Grid item xs={12}>
-                    {/*<Typography align='center'>Enter the code we sent you</Typography>*/}
-                    <Typography align='center'>Please enter the Phone number</Typography>
-                    {/*<Typography align='center'>Your phone ({telephone}) will be used to protect your account</Typography>*/}
-                    <Stack component='form' justifyContent='center' onSubmit={onSubmit}>
-                        <InputField value={number} onChange={onChange} errorText={error}/>
+                    <Stack component='form' justifyContent='center' onSubmit={onSubmit} gap={2}>
+                        <Input label='Phone Number' value={form['phoneNumber']} name='phoneNumber' onChange={onChange}
+                               errors={error} placeholder='Please enter the Phone number'/>
+                        <Input label='Email' value={form['email']} name='email' errors={error} onChange={onChange}
+                               placeholder='Please enter the Email'/>
                         <Box textAlign='center'>
                             <Button type='submit' variant='contained'>Submit</Button>
                         </Box>

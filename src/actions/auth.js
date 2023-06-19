@@ -148,3 +148,12 @@ export const logout = () => dispatch => {
     dispatch({ type: CLEAR_PROFILE });
     dispatch({ type: LOGOUT });
 };
+
+export const signupSupport = async (body) => {
+    try{
+        const {success, data} = await requestPost({uri: '/api/onBoarding', body});
+        return {data, success};
+    } catch (e) {
+        console.log(e.message);
+    }
+}
