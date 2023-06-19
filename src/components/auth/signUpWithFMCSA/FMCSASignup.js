@@ -4,14 +4,7 @@ import {FEDERAL_SIGNUP_LINK, LOGIN_LINK} from "../../constants";
 import {Box, Button, Grid, Stack, Typography} from "@mui/material";
 import InputField from "../../Atoms/form/InputField";
 import React, {useState} from "react";
-import {getCheckStatusIcon, textFormatter} from "../../../utils/utils";
-
-const verticalAlignStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-};
+import {getCheckStatusIcon, textFormatter, verticalAlignStyle} from "../../../utils/utils";
 
 const SuccessComponent = () => {
     const icon = getCheckStatusIcon(true);
@@ -22,7 +15,7 @@ const SuccessComponent = () => {
     </Stack>
 }
 
-const FMCSAVerification = (props) => {
+const FMCSASignup = (props) => {
     const [number, setNumber] = useState();
     const [error, setError] = useState();
     const [isSuccess, setIsSuccess] = useState(false);
@@ -96,4 +89,4 @@ const FMCSAVerification = (props) => {
     )
 }
 
-export default FMCSAVerification
+export default FMCSASignup

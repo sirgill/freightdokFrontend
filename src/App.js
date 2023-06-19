@@ -28,14 +28,25 @@ import {getBaseUrl} from "./config";
 import LandingPage from "./views/landingPage/LandingPage";
 import SetPassword from "./components/auth/SetPassword";
 import SignUp from "./components/auth/signUpWithFMCSA/SignUp";
-import FMCSAVerification from "./components/auth/signUpWithFMCSA/FMCSAVerification";
-import {FEDERAL_SIGNUP_LINK, FMCSA_VERIFICATION_LINK} from "./components/constants";
+import FMCSASignup from "./components/auth/signUpWithFMCSA/FMCSASignup";
+import {FEDERAL_SIGNUP_LINK, FMCSA_VERIFICATION_LINK, SIGNUP_SUPPORT} from "./components/constants";
+import Support from "./components/auth/signUpWithFMCSA/Support";
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
 }
 
 axios.defaults.baseURL = getBaseUrl();
+
+const PreAuthRoutes = () => {
+    return <>
+        <Route path="/register" component={Register}/>
+        <Route path="/login" component={Login}/>
+        <Route path={FEDERAL_SIGNUP_LINK} component={SignUp}/>
+        <Route path={FMCSA_VERIFICATION_LINK} component={FMCSASignup}/>
+        <Route path={SIGNUP_SUPPORT} component={Support} />
+    </>
+}
 
 const App = () => {
     useEffect(() => {
@@ -54,15 +65,12 @@ const App = () => {
                     <Route path="/ownerOperatorRegister" component={OwnerOp} />
                     <Route path="/fleetRegister" component={Fleet} />
                     <Route path='/setPassword' component={SetPassword} />
-                    <Route path="/register" component={Register}/>
-                    <Route path={FEDERAL_SIGNUP_LINK} component={SignUp}/>
-                    <Route path={FMCSA_VERIFICATION_LINK} component={FMCSAVerification}/>
-                    <Route path="/login" component={Login}/>
                     <PrivateRoute path="/profile" component={Profile}/>
                     <PrivateRoute path="/dashboard" component={Dashboard}/>
                     <PrivateRoute path="/create-profile" component={ProfileForm}/>
                     <PrivateRoute path="/edit-profile" component={EditProfile}/>
                     <PrivateRoute path="/loads" component={Loads}/>
+                    <PreAuthRoutes />
                     <Route exact path={'/'}><Redirect to='/dashboard'/></Route>
                 </Switch>
             </BrowserRouter>

@@ -1,20 +1,25 @@
 import React, {useState} from "react";
 import {Link} from "react-router-dom";
-import {Box, Button, Grid, TextField} from "@mui/material";
+import {Box, Button, Grid, Stack, TextField, Typography} from "@mui/material";
 import CompanyText from "../../Atoms/CompanyText";
 import axios from "axios";
 import {FMCSA_VERIFICATION_LINK, LOGIN_LINK} from "../../constants";
 import {notification} from "../../../actions/alert";
+import {getCheckStatusIcon, verticalAlignStyle} from "../../../utils/utils";
 
-const verticalAlignStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-};
+
+function ErrorComponent () {
+    const icon = getCheckStatusIcon(false);
+    return <Stack justifyContent='center' gap={1} flex={1}>
+        <Typography align='center'>{icon}</Typography>
+        <Typography align={'center'} sx={{fontWeight: 550}}>Sorry!</Typography>
+        <Typography align={'center'} variant='subtitle2'>Your Authority is not active</Typography>
+    </Stack>
+}
 
 const SignUp = (props) => {
     const [text, setText] = useState('');
+    const [isAllowedToOperate, setIsAllowedToOperate] = useState(true);
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -25,7 +30,13 @@ const SignUp = (props) => {
                 }
             });
             if(status){
-                props.history.push(FMCSA_VERIFICATION_LINK, data)
+                data.content.carrier.allowedToOperate = 'n'
+                const {content: { carrier:  {allowedToOperate = 'n'} = {}} = {}} = data || {};
+                if(allowedToOperate.equalsIgnoreCase('y')){
+                    props.history.push(FMCSA_VERIFICATION_LINK, data)
+                } else {
+                    setIsAllowedToOperate(false);
+                }
             } else {
                 notification('Unable to verify, Please try later.', 'error')
             }
@@ -43,7 +54,7 @@ const SignUp = (props) => {
         <div className="auth-wrapper auth-inner" style={verticalAlignStyle}>
             <CompanyText />
             <Box component='form' sx={{flex: 1, display: 'flex', alignItems: 'center'}} className="" onSubmit={onSubmit}>
-                <Grid container spacing={3}>
+                {isAllowedToOperate ? <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <TextField
                             type={'number'}
@@ -59,9 +70,12 @@ const SignUp = (props) => {
                     <Grid item textAlign='center' xs={12}>
                         <Button type='submit' variant='contained' disabled={!text}>Next</Button>
                     </Grid>
-                </Grid>
+                </Grid> : <ErrorComponent />}
 
             </Box>
+            {!isAllowedToOperate && <Typography className="forgot-password text-center">
+                <Link to={'/signup/support'}>Contact Support</Link>
+            </Typography>}
                 <p className="forgot-password text-center">
                    <Link to={LOGIN_LINK}>Sign In</Link>
                 </p>

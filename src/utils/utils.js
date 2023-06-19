@@ -87,6 +87,11 @@ const isEmailValid = (email) => {
     return re.test(String(email).toLowerCase());
 }
 
+const isPhoneValid = (num) => {
+    const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/
+    return re.test(String(num).toLowerCase());
+}
+
 export const getCheckStatusIcon = (comparator = false) => {
     let success
     if(typeof comparator === 'function'){
@@ -105,9 +110,17 @@ export const textFormatter = (str) => {
     return str || '--'
 }
 
+export const verticalAlignStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+}
+
 export {
     addEvent,
     removeEvent,
+    isPhoneValid,
     getUserDetail,
     isEmailValid,
     checkObjProperties,

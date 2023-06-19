@@ -13,6 +13,7 @@ const InputFieldPure = ({
                             InputProps,
                             readOnly,
                             inputProps,
+                            helperText,
                             ...rest
                         }) => {
     return <FormControl component=''>
@@ -26,6 +27,7 @@ const InputFieldPure = ({
                 className: '',
                 ...InputProps
             }}
+            helperText={hasError ? errorText : helperText}
             size='small'
             inputProps={{readOnly, ...inputProps}}
             {...rest}
@@ -38,7 +40,7 @@ const InputField = memo(InputFieldPure)
 const Input = (props) => {
     const {
         label, name, errors = {}, onChange, value, className, classNameRoot, isCapitalize = false, inputProps = {},
-        type = 'text', onBlur, InputProps, readOnly, ...rest
+        type = 'text', onBlur, InputProps, readOnly, helperText, ...rest
     } = props;
     const hasError = errors[name] || false,
         errorText = errors[name]
@@ -78,6 +80,7 @@ const Input = (props) => {
             inputProps={inputProps}
             readOnly={readOnly}
             type={type}
+            helperText={helperText}
             {...rest}
         />
     )
