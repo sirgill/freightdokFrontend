@@ -29,8 +29,9 @@ import LandingPage from "./views/landingPage/LandingPage";
 import SetPassword from "./components/auth/SetPassword";
 import SignUp from "./components/auth/signUpWithFMCSA/SignUp";
 import FMCSASignup from "./components/auth/signUpWithFMCSA/FMCSASignup";
-import {FEDERAL_SIGNUP_LINK, FMCSA_VERIFICATION_LINK, SIGNUP_SUPPORT} from "./components/constants";
+import {FEDERAL_SIGNUP_LINK, FMCSA_VERIFICATION_LINK, ONBOARDING_USER, SIGNUP_SUPPORT} from "./components/constants";
 import Support from "./components/auth/signUpWithFMCSA/Support";
+import UserOnboard from "./components/auth/signUpWithFMCSA/UserOnboard";
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -45,6 +46,7 @@ const PreAuthRoutes = () => {
         <Route path={FEDERAL_SIGNUP_LINK} component={SignUp}/>
         <Route path={FMCSA_VERIFICATION_LINK} component={FMCSASignup}/>
         <Route path={SIGNUP_SUPPORT} component={Support} />
+        <Route path={ONBOARDING_USER} component={UserOnboard} />
     </>
 }
 

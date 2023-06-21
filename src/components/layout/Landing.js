@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import theme from "./ui/Theme";
+import {Redirect} from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
@@ -27,6 +28,7 @@ const useStyles = makeStyles(theme => ({
 export default function Landing() {
   const classes = useStyles();
 
+  return <Redirect to='/dashboard'/>
   return (
     <Grid container direction="column" className={classes.mainContainer}>
       <Grid item>

@@ -16,13 +16,14 @@ const InputFieldPure = ({
                             helperText,
                             ...rest
                         }) => {
-    return <FormControl component=''>
+    return <FormControl component='' fullWidth>
         <TextField
             name={name}
             error={hasError}
             onChange={handleChange}
             onBlur={handleBlur}
             className={className}
+            value={value}
             InputProps={{
                 className: '',
                 ...InputProps
