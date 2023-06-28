@@ -14,9 +14,10 @@ const InputFieldPure = ({
                             readOnly,
                             inputProps,
                             helperText,
+                            fullWidth,
                             ...rest
                         }) => {
-    return <FormControl component='' fullWidth>
+    return <FormControl component='' fullWidth={fullWidth}>
         <TextField
             name={name}
             error={hasError}
@@ -41,7 +42,7 @@ const InputField = memo(InputFieldPure)
 const Input = (props) => {
     const {
         label, name, errors = {}, onChange, value, className, classNameRoot, isCapitalize = false, inputProps = {},
-        type = 'text', onBlur, InputProps, readOnly, helperText, ...rest
+        type = 'text', onBlur, InputProps, readOnly, helperText, fullWidth = false, ...rest
     } = props;
     const hasError = errors[name] || false,
         errorText = errors[name]
@@ -82,6 +83,7 @@ const Input = (props) => {
             readOnly={readOnly}
             type={type}
             helperText={helperText}
+            fullWidth={fullWidth}
             {...rest}
         />
     )
