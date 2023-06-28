@@ -261,14 +261,14 @@ const Dashboard = ({
                         className="accountDashboardLink"
                     />
                 )}
-                <ListItemHelper
-                    onClick={() => {
-                        setListBarType("facilities");
-                    }}
-                    icon={FacilitiesIcon}
-                    primary={"Facilities"}
-                    listBarType={listBarType}
-                />
+                {/*<ListItemHelper*/}
+                {/*    onClick={() => {*/}
+                {/*        setListBarType("facilities");*/}
+                {/*    }}*/}
+                {/*    icon={FacilitiesIcon}*/}
+                {/*    primary={"Facilities"}*/}
+                {/*    listBarType={listBarType}*/}
+                {/*/>*/}
                 <ListItemHelper
                     onClick={() => {
                         setListBarType("carrierProfile");
