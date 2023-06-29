@@ -30,7 +30,7 @@ const SignUp = (props) => {
                 }
             });
             if(status){
-                data.content.carrier.allowedToOperate = 'n'
+                // data.content.carrier.allowedToOperate = 'n'
                 const {content: { carrier:  {allowedToOperate = 'n'} = {}} = {}} = data || {};
                 if(allowedToOperate.equalsIgnoreCase('y')){
                     props.history.push(FMCSA_VERIFICATION_LINK, data)

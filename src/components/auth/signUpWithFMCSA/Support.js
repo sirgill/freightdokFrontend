@@ -1,13 +1,13 @@
 import CompanyText from "../../Atoms/CompanyText";
-import React, {useState} from "react";
-import {Box, Button, Grid} from "@mui/material";
+import React, { useState } from "react";
+import { Box, Button, Grid, InputAdornment } from "@mui/material";
 import Input from "../../Atoms/form/Input";
-import {isEmailValid, isPhoneValid, verticalAlignStyle} from "../../../utils/utils";
-import {Link} from "react-router-dom";
-import {LOGIN_LINK} from "../../constants";
-import {signupSupport} from "../../../actions/auth";
-import {notification} from "../../../actions/alert";
-import {SuccessComponent} from "./FMCSASignup";
+import { isEmailValid, isPhoneValid, verticalAlignStyle } from "../../../utils/utils";
+import { Link } from "react-router-dom";
+import { LOGIN_LINK } from "../../constants";
+import { signupSupport } from "../../../actions/auth";
+import { notification } from "../../../actions/alert";
+import { SuccessComponent } from "./FMCSASignup";
 
 const Support = () => {
     const [formData, setFormData] = useState({})
@@ -16,18 +16,18 @@ const Support = () => {
 
     function onSubmit(e) {
         e.preventDefault();
-        const {email, dot = '', phoneNumber = ''} = formData;
+        const { email, dot = '', phoneNumber = '' } = formData;
         if (!isEmailValid(email)) {
-            setErrors({...errors, email: 'Invalid Email'})
+            setErrors({ ...errors, email: 'Invalid Email' })
         }
         if (!isPhoneValid(phoneNumber)) {
-            setErrors({...errors, phoneNumber: 'Invalid Phone Number'})
+            setErrors({ ...errors, phoneNumber: 'Invalid Phone Number' })
         }
         if (!Number(dot)) {
-            setErrors({...errors, dot: 'Invalid DOT#'})
+            setErrors({ ...errors, dot: 'Invalid DOT#' })
         } else {
             signupSupport(formData)
-                .then(({success, data}) => {
+                .then(({ success, data }) => {
                     if (success) {
                         setIsSuccess(true);
                     } else {
@@ -37,17 +37,17 @@ const Support = () => {
         }
     }
 
-    function onChange({name, value}) {
-        setFormData({...formData, [name]: value});
-        setErrors({...errors, [name]: ''})
+    function onChange({ name, value }) {
+        setFormData({ ...formData, [name]: value });
+        setErrors({ ...errors, [name]: '' })
     }
 
     return <section className='login'>
         <Box className='auth-wrapper auth-inner' style={verticalAlignStyle}>
-            <CompanyText style={{mb: 3, cursor: 'default'}}/>
+            <CompanyText style={{ mb: 3, cursor: 'default' }} />
             <Grid container component='form' gap={2} onSubmit={onSubmit} sx={{
                 flex: 1,
-                '.MuiFormControl-root': {width: '100%'}
+                '.MuiFormControl-root': { width: '100%' }
             }}>
                 {isSuccess ? <SuccessComponent /> : <>
                     <Grid item xs={12}>
@@ -69,6 +69,9 @@ const Support = () => {
                             // type='number'
                             value={formData['phoneNumber']}
                             onChange={onChange}
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">+1</InputAdornment>
+                            }}
                         />
                     </Grid>
                     <Grid item xs={12}>
