@@ -1,18 +1,18 @@
 import CompanyText from "../../Atoms/CompanyText";
-import {Link, Redirect} from "react-router-dom";
-import {FEDERAL_SIGNUP_LINK, LOGIN_LINK} from "../../constants";
-import {Box, Button, Grid, Stack, Typography} from "@mui/material";
-import React, {useState} from "react";
+import { Link, Redirect } from "react-router-dom";
+import { FEDERAL_SIGNUP_LINK, LOGIN_LINK } from "../../constants";
+import { Box, Button, Grid, InputAdornment, Stack, Typography } from "@mui/material";
+import React, { useState } from "react";
 import Input from "../../Atoms/form/Input";
-import {getCheckStatusIcon, isEmailValid, isPhoneValid, textFormatter, verticalAlignStyle} from "../../../utils/utils";
-import {requestPost} from "../../../utils/request";
-import {notification} from "../../../actions/alert";
+import { getCheckStatusIcon, isEmailValid, isPhoneValid, textFormatter, verticalAlignStyle } from "../../../utils/utils";
+import { requestPost } from "../../../utils/request";
+import { notification } from "../../../actions/alert";
 
 export const SuccessComponent = () => {
     const icon = getCheckStatusIcon(true);
     return <Stack justifyContent='center' gap={1} flex={1}>
         <Typography align='center'>{icon}</Typography>
-        <Typography align={'center'} sx={{fontWeight: 550}}>Thanks for Signing up!</Typography>
+        <Typography align={'center'} sx={{ fontWeight: 550 }}>Thanks for Signing up!</Typography>
         <Typography align={'center'} variant='subtitle2'>Our team will review and contact you :)</Typography>
     </Stack>
 }
@@ -21,24 +21,24 @@ const FMCSASignup = (props) => {
     const [form, setForm] = useState({})
     const [error, setError] = useState();
     const [isSuccess, setIsSuccess] = useState(false);
-    const {location: {state = {}} = {}} = props,
-        {content: {carrier = {}} = {}} = state,
-        {legalName, allowedToOperate, dotNumber, phyCity, phyState, phyZipcode, phyCountry, telephone} = carrier || {};
+    const { location: { state = {} } = {} } = props,
+        { content: { carrier = {} } = {} } = state,
+        { legalName, allowedToOperate, dotNumber, phyCity, phyState, phyZipcode, phyCountry, telephone } = carrier || {};
 
     if (!state) {
-        return <Redirect to={FEDERAL_SIGNUP_LINK}/>
+        return <Redirect to={FEDERAL_SIGNUP_LINK} />
     }
 
     async function onSubmit(e) {
         e.preventDefault();
-        const {email, phoneNumber} = form;
+        const { email, phoneNumber } = form;
         if (!isPhoneValid(phoneNumber)) {
-            setError(error => ({...error, phoneNumber: 'Invalid Phone Number'}))
+            setError(error => ({ ...error, phoneNumber: 'Invalid Phone Number' }))
         }
         if (!isEmailValid(email)) {
-            setError(error => ({...error, email: "Invalid Email"}));
+            setError(error => ({ ...error, email: "Invalid Email" }));
         } else {
-            const {success, data} = await requestPost({uri: '/api/onBoarding', body: {email, phoneNumber, dot: dotNumber}})
+            const { success, data } = await requestPost({ uri: '/api/onBoarding', body: { email, phoneNumber: '+1' + phoneNumber, dot: dotNumber } })
             if (success) {
                 setIsSuccess(true);
             } else {
@@ -47,15 +47,15 @@ const FMCSASignup = (props) => {
         }
     }
 
-    function onChange({name, value}) {
-        setForm({...form, [name]: value});
-        setError((error) => ({...error, [name]: ''}))
+    function onChange({ name, value }) {
+        setForm({ ...form, [name]: value });
+        setError((error) => ({ ...error, [name]: '' }))
     }
 
     return (
         <div className={'auth-wrapper auth-inner'} style={verticalAlignStyle}>
-            <CompanyText style={{mb: 3, cursor: 'default'}}/>
-            {isSuccess ? <SuccessComponent/> : <Grid container spacing={2} sx={{
+            <CompanyText style={{ mb: 3, cursor: 'default' }} />
+            {isSuccess ? <SuccessComponent /> : <Grid container spacing={2} sx={{
                 flex: 1,
                 '& p': {
                     color: '#868686',
@@ -75,9 +75,13 @@ const FMCSASignup = (props) => {
                 <Grid item xs={12}>
                     <Stack component='form' justifyContent='center' onSubmit={onSubmit} gap={2}>
                         <Input label='Phone Number' value={form['phoneNumber']} name='phoneNumber' onChange={onChange}
-                               errors={error} placeholder='Please enter the Phone number'/>
+                            errors={error} placeholder='Please enter the Phone number'
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">+1</InputAdornment>
+                            }}
+                        />
                         <Input label='Email' value={form['email']} name='email' errors={error} onChange={onChange}
-                               placeholder='Please enter the Email'/>
+                            placeholder='Please enter the Email' />
                         <Box textAlign='center'>
                             <Button type='submit' variant='contained'>Submit</Button>
                         </Box>
