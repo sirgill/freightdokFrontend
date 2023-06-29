@@ -15,10 +15,11 @@ const UserOnboard = (props) => {
 
     useEffect(() => {
         requestPost({ uri: '/api/onBoarding/validateOtp', body: { email }, skipTriggers: false })
-            .then(res => {
-                if (!res.success) {
+            .then(({ success, data }) => {
+                if (!success) {
                     setFormData({ ...formData, disabled: true });
-                    notification(res.data.message, 'error')
+                    if (!data.success)
+                        notification(data.message, 'error')
                 }
             });
     }, []);
