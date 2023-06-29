@@ -150,9 +150,10 @@ export const logout = () => dispatch => {
 };
 
 export const signupSupport = async (body) => {
-    try{
-        const {success, data} = await requestPost({uri: '/api/onBoarding', body});
-        return {data, success};
+    try {
+        body.phoneNumber = '+1' + body.phoneNumber;
+        const { success, data } = await requestPost({ uri: '/api/onBoarding', body });
+        return { data, success };
     } catch (e) {
         console.log(e.message);
     }
