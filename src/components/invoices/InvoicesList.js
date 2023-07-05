@@ -1,20 +1,12 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import Button from '@mui/material/Button';
-import TablePagination from '@material-ui/core/TablePagination';
 import { makeStyles } from '@material-ui/core/styles';
 import { resetLoadsSearch } from '../../actions/load.js';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import Spinner from "../layout/Spinner";
-import Invoices from './Invoices.js';
 import { getInvoiceLoads } from "../../actions/load";
 import EnhancedTable from "../Atoms/table/Table";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import CancelIcon from "@material-ui/icons/Cancel";
-import InvoiceEditItem from "./InvoiceEditItem";
-import { errorIconColor, successIconColor } from "../layout/ui/Theme";
 import { Link, Route } from "react-router-dom";
 import Invoice from "./NewInvoice";
-import { getCHLoads } from "../../actions/openBoard.action";
 import moment from "moment";
 import { getParsedLoadEquipment } from "../../views/openBoard/constants";
 

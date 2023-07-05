@@ -15,22 +15,15 @@ import {
 } from "@mui/material";
 import { ArrowForwardIos as ArrowForwardIosIcon, Close as CloseIcon, Edit as EditIcon, Done as DoneIcon, Cancel as CancelIcon } from '@mui/icons-material'
 import FormControl from "@material-ui/core/FormControl";
-// import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import InputLabel from "@mui/material/InputLabel";
-// import EditIcon from "@material-ui/icons/Edit";
-// import DoneIcon from "@material-ui/icons/Done";
-// import CloseIcon from "@material-ui/icons/Close";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-// import CancelIcon from "@material-ui/icons/Cancel";
 import { useDispatch, useSelector } from "react-redux";
 import { addLoad, updateLoad } from "../../actions/load";
 import moment from "moment";
 import { getDrivers } from "../../actions/driver";
 import FilledInput from '@mui/material/FilledInput';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import DeleteIcon from "@material-ui/icons/Delete";
 import "./style.css";
-import { FileCopyOutlined } from "@material-ui/icons";
+import { FileCopyOutlined } from "@mui/icons-material";
 import { changeObjectKey } from "../../utils/helper";
 import { useStyles } from "./styles";
 import InputField from "../Atoms/form/InputField";
@@ -38,15 +31,9 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TimePicker from '@mui/lab/TimePicker';
 import DatePicker from '@mui/lab/DatePicker';
-import {blue, errorIconColor, successIconColor} from "../layout/ui/Theme";
-import {getCheckStatusIcon} from "../../utils/utils";
+import { blue } from "../layout/ui/Theme";
+import { getCheckStatusIcon } from "../../utils/utils";
 
-const verticalAlignStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-};
 
 const formInitialState = {
   status: "",
@@ -106,9 +93,9 @@ const LoadDetailModal = ({
   const rateConfirmationRef = useRef();
   const proofDeliveryRef = useRef(),
     SelectElement = edit ? OutlinedInput : FilledInput;
-  const assignedToOptions = state.driver.drivers.map(({user = {}}) => {
-    const {name = '', _id = ''} = user || '';
-    if(!_id) return {
+  const assignedToOptions = state.driver.drivers.map(({ user = {} }) => {
+    const { name = '', _id = '' } = user || '';
+    if (!_id) return {
       name: 'Invalid Driver', _id: ''
     };
     return {
@@ -240,9 +227,9 @@ const LoadDetailModal = ({
 
   const { rateConfirmation = "", proofDelivery = "" } = bucketFiles || {};
 
-  const StaticDataShow = ({heading, values=[], spacing=2, sxObject={}}) => {
-    return <Stack spacing={spacing} sx={{...sxObject}}>
-      <Stack><Typography sx={{fontWeight: 600, fontSize:18, textAlign: 'center'}}>{heading}</Typography></Stack>
+  const StaticDataShow = ({ heading, values = [], spacing = 2, sxObject = {} }) => {
+    return <Stack spacing={spacing} sx={{ ...sxObject }}>
+      <Stack><Typography sx={{ fontWeight: 600, fontSize: 18, textAlign: 'center' }}>{heading}</Typography></Stack>
       {values.map(value => <Stack>
         <TextPlaceHolder value={value} />
       </Stack>)}
@@ -256,15 +243,15 @@ const LoadDetailModal = ({
         aria-labelledby="server-modal-title"
       >
         <div className={classes.paper}>
-          <Stack direction={'row'} justifyContent={'space-between'} sx={{mb:2}}>
+          <Stack direction={'row'} justifyContent={'space-between'} sx={{ mb: 2 }}>
             {/*<DeleteIcon*/}
             {/*    onClick={(e) => deleteLoad(_id, e)}*/}
             {/*    style={{ color: "rgb(220, 0, 78)", cursor: "pointer" }}*/}
             {/*/>*/}
             <IconButton>
               <CloseIcon
-                  id="server-modal-title"
-                  onClick={handleClose}
+                id="server-modal-title"
+                onClick={handleClose}
               />
             </IconButton>
           </Stack>
@@ -272,106 +259,106 @@ const LoadDetailModal = ({
 
             <Grid container spacing={2} className={classes.rootLoadDetailModal}>
               <Grid item xs={12}>
-                <Grid container className={classes.rootLoadDetailModal} spacing={2} sx={{pl: 3, pr: 3}}>
+                <Grid container className={classes.rootLoadDetailModal} spacing={2} sx={{ pl: 3, pr: 3 }}>
                   <Grid item xs={4}>
                     <InputField
-                        value={form.status}
-                        name="status"
-                        disabled={!edit || state.auth.user.role === "driver"}
-                        onChange={handleOnChange}
-                        type={'select'}
-                        label={'Status'}
-                        options={[
-                            {id: 'loadCheckIn', label: 'Load Check-In'},
-                            {id: 'pickupCompete', label: 'Pickup Complete'},
-                            {id: 'arrivedAtDelivery', label: 'Arrived at Delivery'},
-                            {id: 'arrivedAtPickup', label: 'Arrived at Pickup'},
-                            {id: 'empty', label: 'Empty'},
-                            {id: 'unloadComplete', label: 'Unload Complete'},
-                            {id: 'enRoute', label: 'En Route to Delivery'},
-                        ]}
-                        labelKey='label'
-                        valueKey='id'
+                      value={form.status}
+                      name="status"
+                      disabled={!edit || state.auth.user.role === "driver"}
+                      onChange={handleOnChange}
+                      type={'select'}
+                      label={'Status'}
+                      options={[
+                        { id: 'loadCheckIn', label: 'Load Check-In' },
+                        { id: 'pickupCompete', label: 'Pickup Complete' },
+                        { id: 'arrivedAtDelivery', label: 'Arrived at Delivery' },
+                        { id: 'arrivedAtPickup', label: 'Arrived at Pickup' },
+                        { id: 'empty', label: 'Empty' },
+                        { id: 'unloadComplete', label: 'Unload Complete' },
+                        { id: 'enRoute', label: 'En Route to Delivery' },
+                      ]}
+                      labelKey='label'
+                      valueKey='id'
                     />
                   </Grid>
                   <Grid item xs={4}>
                     <InputField
-                        label='Assigned'
-                        id="assigned-select"
-                        name="assignedTo"
-                        disabled={!edit || state.auth.user.role === "driver"}
-                        value={form.assignedTo}
-                        onChange={handleOnChange}
-                        type={'select'}
-                        options={assignedToOptions}
-                        labelKey={'name'}
-                        valueKey={'_id'}
+                      label='Assigned'
+                      id="assigned-select"
+                      name="assignedTo"
+                      disabled={!edit || state.auth.user.role === "driver"}
+                      value={form.assignedTo}
+                      onChange={handleOnChange}
+                      type={'select'}
+                      options={assignedToOptions}
+                      labelKey={'name'}
+                      valueKey={'_id'}
                     />
                   </Grid>
                   <Grid item xs={4}>
                     <InputLabel id="demo-multiple-name-label">Name</InputLabel>
                     <FormControl sx={{ m: 0, width: 225 }}>
                       <Select
-                          labelId="demo-multiple-name-label"
-                          id="demo-multiple-name"
-                          multiple
-                          value={form.accessorials}
-                          onChange={({target: {value}}) => setForm({...form, accessorials: typeof value === 'string' ? value.split(',') : value,})}
-                          input={<SelectElement size='small' label="" notched={false} sx={{width: 225}} />}
-                          MenuProps={MenuProps}
-                          disabled={!edit}
+                        labelId="demo-multiple-name-label"
+                        id="demo-multiple-name"
+                        multiple
+                        value={form.accessorials}
+                        onChange={({ target: { value } }) => setForm({ ...form, accessorials: typeof value === 'string' ? value.split(',') : value, })}
+                        input={<SelectElement size='small' label="" notched={false} sx={{ width: 225 }} />}
+                        MenuProps={MenuProps}
+                        disabled={!edit}
                       >
                         {[
-                          {id: 'Tonu', label: 'Tonu'},
-                          {id: 'Detention', label: 'Detention'},
-                          {id: 'Lumper', label: 'Lumper'},
-                          {id: 'Lumper-by-Broker', label: 'Lumper by Broker'},
-                          {id: 'Lumper-by-Carrier', label: 'Lumper by Carrier'},
-                          {id: 'Layover', label: 'Layover'},
+                          { id: 'Tonu', label: 'Tonu' },
+                          { id: 'Detention', label: 'Detention' },
+                          { id: 'Lumper', label: 'Lumper' },
+                          { id: 'Lumper-by-Broker', label: 'Lumper by Broker' },
+                          { id: 'Lumper-by-Carrier', label: 'Lumper by Carrier' },
+                          { id: 'Layover', label: 'Layover' },
                         ].map((name) => (
-                            <MenuItem
-                                key={name.id}
-                                value={name.id}
-                                // style={getStyles(name, personName, theme)}
-                            >
-                              {name.label}
-                            </MenuItem>
+                          <MenuItem
+                            key={name.id}
+                            value={name.id}
+                          // style={getStyles(name, personName, theme)}
+                          >
+                            {name.label}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12} sx={{m: 2}}>
+              <Grid item xs={12} sx={{ m: 2 }}>
                 <Divider />
               </Grid>
             </Grid>
             {/********NEW Grid Start***************************************************/}
 
             <Grid container>
-              <Grid item xs={2}  sx={{display: 'flex'}}>
-                <Box sx={{alignItems: 'end', display: 'flex'}}>
+              <Grid item xs={2} sx={{ display: 'flex' }}>
+                <Box sx={{ alignItems: 'end', display: 'flex' }}>
                   {edit ? <IconButton onClick={handleSubmit}>
-                        <DoneIcon
-                            fontSize="large"
-                            color="primary"
-                        />
-                      </IconButton>
-                      : <IconButton onClick={() => setEdit(true)} title='Edit'>
-                        <EditIcon
-                            fontSize="large"
-                            color="primary"
-                        />
-                      </IconButton>}
-                  {edit ? <IconButton onClick={handleCancel}>
-                    <CloseIcon
+                    <DoneIcon
+                      fontSize="large"
+                      color="primary"
+                    />
+                  </IconButton>
+                    : <IconButton onClick={() => setEdit(true)} title='Edit'>
+                      <EditIcon
                         fontSize="large"
                         color="primary"
+                      />
+                    </IconButton>}
+                  {edit ? <IconButton onClick={handleCancel}>
+                    <CloseIcon
+                      fontSize="large"
+                      color="primary"
                     />
                   </IconButton> : <IconButton onClick={createCopy} title='Create Copy'>
                     <FileCopyOutlined
-                        fontSize="large"
-                        color="primary"
+                      fontSize="large"
+                      color="primary"
                     />
                   </IconButton>}
                 </Box>
@@ -382,36 +369,36 @@ const LoadDetailModal = ({
                     <Stack>
                       <Stack direction={'row'}>
                         {edit ? getRole() &&
-                            (getRole() === "admin" || getRole() === "dispatch") && (
-                                <InputField
-                                    labelStyle={{fontWeight: 800, fontSize: 18, color:'#03031A'}}
-                                    id="outlined-basic"
-                                    name="loadNumber"
-                                    value={form.loadNumber}
-                                    onChange={handleOnChange}
-                                    label={'Load'}
-                                    direction={'row'}
-                                />
-                            ) : <Fragment>
-                          <Typography sx={{mr:1, fontWeight: 600, fontSize:18}}>Load</Typography>
-                          <Typography item sx={{fontSize:18}}>{loadNumber || '--'}</Typography>
+                          (getRole() === "admin" || getRole() === "dispatch") && (
+                            <InputField
+                              labelStyle={{ fontWeight: 800, fontSize: 18, color: '#03031A' }}
+                              id="outlined-basic"
+                              name="loadNumber"
+                              value={form.loadNumber}
+                              onChange={handleOnChange}
+                              label={'Load'}
+                              direction={'row'}
+                            />
+                          ) : <Fragment>
+                          <Typography sx={{ mr: 1, fontWeight: 600, fontSize: 18 }}>Load</Typography>
+                          <Typography item sx={{ fontSize: 18 }}>{loadNumber || '--'}</Typography>
                         </Fragment>}
                       </Stack>
                       <Stack direction='row'>
                         {edit ? getRole() &&
-                            (getRole() === "admin" || getRole() === "dispatch") && (
-                                <InputField
-                                    id="outlined-basic"
-                                    label="Rate"
-                                    name="rate"
-                                    value={form.rate}
-                                    onChange={handleOnChange}
-                                    direction={'row'}
-                                    labelStyle={{fontWeight: 800, fontSize: 18, color:'#03031A'}}
-                                />
-                            ) : <Fragment>
-                          <Typography sx={{mr:1, fontWeight: 600, fontSize:18}}>Rate</Typography>
-                          <Typography item sx={{fontSize:18}}>{rate || '--'}</Typography>
+                          (getRole() === "admin" || getRole() === "dispatch") && (
+                            <InputField
+                              id="outlined-basic"
+                              label="Rate"
+                              name="rate"
+                              value={form.rate}
+                              onChange={handleOnChange}
+                              direction={'row'}
+                              labelStyle={{ fontWeight: 800, fontSize: 18, color: '#03031A' }}
+                            />
+                          ) : <Fragment>
+                          <Typography sx={{ mr: 1, fontWeight: 600, fontSize: 18 }}>Rate</Typography>
+                          <Typography item sx={{ fontSize: 18 }}>{rate || '--'}</Typography>
                         </Fragment>}
                       </Stack>
                     </Stack>
@@ -420,410 +407,410 @@ const LoadDetailModal = ({
                     <Grid container>
                       {/*CENTER PART*/}
                       <Grid item xs={5}>
-                        <Stack sx={{textAlign: 'center'}}>
+                        <Stack sx={{ textAlign: 'center' }}>
                           <Stack>
                             {edit && state.auth.user.role !== "driver" ? (
-                                <Stack>
+                              <Stack>
+                                <InputField
+                                  id="outlined-basic"
+                                  placeholder="Shipper Name"
+                                  value={form.pickup[0] ? form.pickup[0].shipperName : ""}
+                                  onChange={(event) =>
+                                    handlePickDropChange(event, "pickup", "shipperName")
+                                  }
+                                />
+                                <InputField
+                                  id="outlined-basic"
+                                  variant="outlined"
+                                  placeholder="Address"
+                                  value={form.pickup[0] ? form.pickup[0].pickupAddress : ""}
+                                  onChange={(event) =>
+                                    handlePickDropChange(event, "pickup", "pickupAddress")
+                                  }
+                                />
+                                {edit && state.auth.user.role !== "driver" && <Fragment>
                                   <InputField
-                                      id="outlined-basic"
-                                      placeholder="Shipper Name"
-                                      value={form.pickup[0] ? form.pickup[0].shipperName : ""}
-                                      onChange={(event) =>
-                                          handlePickDropChange(event, "pickup", "shipperName")
-                                      }
+                                    id="outlined-basic"
+                                    variant="outlined"
+                                    placeholder="City"
+                                    value={
+                                      form.pickup[0] ? form.pickup[0].pickupCity : ""
+                                    }
+                                    onChange={(event) =>
+                                      handlePickDropChange(event, "pickup", "pickupCity")
+                                    }
                                   />
                                   <InputField
-                                      id="outlined-basic"
-                                      variant="outlined"
-                                      placeholder="Address"
-                                      value={form.pickup[0] ? form.pickup[0].pickupAddress : ""}
-                                      onChange={(event) =>
-                                          handlePickDropChange(event, "pickup", "pickupAddress")
-                                      }
+                                    id="outlined-basic"
+                                    placeholder="State"
+                                    value={
+                                      form.pickup[0] ? form.pickup[0].pickupState : ""
+                                    }
+                                    onChange={(event) =>
+                                      handlePickDropChange(event, "pickup", "pickupState")
+                                    }
                                   />
-                                    {edit && state.auth.user.role !== "driver" && <Fragment>
-                                        <InputField
-                                            id="outlined-basic"
-                                            variant="outlined"
-                                            placeholder="City"
-                                            value={
-                                                form.pickup[0] ? form.pickup[0].pickupCity : ""
-                                            }
-                                            onChange={(event) =>
-                                                handlePickDropChange(event, "pickup", "pickupCity")
-                                            }
-                                        />
-                                        <InputField
-                                            id="outlined-basic"
-                                            placeholder="State"
-                                            value={
-                                                form.pickup[0] ? form.pickup[0].pickupState : ""
-                                            }
-                                            onChange={(event) =>
-                                                handlePickDropChange(event, "pickup", "pickupState")
-                                            }
-                                        />
-                                        <InputField
-                                            id="outlined-basic"
-                                            variant="outlined"
-                                            placeholder="Zip"
-                                            value={form.pickup[0] ? form.pickup[0].pickupZip : ""}
-                                            onChange={(event) =>
-                                                handlePickDropChange(event, "pickup", "pickupZip")
-                                            }
-                                        />
-                                    </Fragment>}
-                                </Stack>
+                                  <InputField
+                                    id="outlined-basic"
+                                    variant="outlined"
+                                    placeholder="Zip"
+                                    value={form.pickup[0] ? form.pickup[0].pickupZip : ""}
+                                    onChange={(event) =>
+                                      handlePickDropChange(event, "pickup", "pickupZip")
+                                    }
+                                  />
+                                </Fragment>}
+                              </Stack>
                             ) : <StaticDataShow
-                                heading={'Pickup'}
-                                values={[
-                                  form.pickup[0] ? form.pickup[0].pickupAddress : "",
-                                  pickup && pickup[0] ? pickup[0].shipperName : "",
-                                  `${pickup && pickup[0] ? pickup[0].pickupCity : ""}, ${pickup && pickup[0] ? pickup[0].pickupState : ""}, ${pickup && pickup[0] ? pickup[0].pickupZip : ""}`,
-                                ]}
+                              heading={'Pickup'}
+                              values={[
+                                form.pickup[0] ? form.pickup[0].pickupAddress : "",
+                                pickup && pickup[0] ? pickup[0].shipperName : "",
+                                `${pickup && pickup[0] ? pickup[0].pickupCity : ""}, ${pickup && pickup[0] ? pickup[0].pickupState : ""}, ${pickup && pickup[0] ? pickup[0].pickupZip : ""}`,
+                              ]}
                             />}
                           </Stack>
                           <Stack spacing={2}>
                             {edit ? <Grid container spacing={2}>
                               <Grid item xs={12}>
-                                <Typography sx={{fontWeight: 600, fontSize:18, textAlign: 'center'}}>Pickup Time</Typography>
+                                <Typography sx={{ fontWeight: 600, fontSize: 18, textAlign: 'center' }}>Pickup Time</Typography>
                               </Grid>
-                                <Grid item xs={6}>
-                                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DatePicker
-                                        value={
-                                          form.pickup[0] ? form.pickup[0].pickupDate : ""
-                                        }
-                                        onChange={(date) =>
-                                            handleDateChange(date, "pickup")
-                                        }
-                                        renderInput={(params) => <TextField {...params} variant='standard' />}
-                                    />
-                                  </LocalizationProvider>
-                                </Grid>
                               <Grid item xs={6}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <TimePicker
-                                        value={
-                                          form.pickup[0] ? form.pickup[0].pickupDate : ""
-                                        }
-                                        onChange={(date) =>
-                                            handleDateChange(date, "pickup")
-                                        }
-                                        renderInput={(params) => <TextField {...params} variant='standard' />}
-                                    />
+                                  <DatePicker
+                                    value={
+                                      form.pickup[0] ? form.pickup[0].pickupDate : ""
+                                    }
+                                    onChange={(date) =>
+                                      handleDateChange(date, "pickup")
+                                    }
+                                    renderInput={(params) => <TextField {...params} variant='standard' />}
+                                  />
                                 </LocalizationProvider>
                               </Grid>
                               <Grid item xs={6}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                   <TimePicker
-                                      label='In Time'
-                                      value={form.pickup[0] ? form.pickup[0].in_time : ""}
-                                      onChange={(date) =>
-                                          handleInOutTime(date, "pickup", "in_time")
-                                      }
-                                      renderInput={(params) => <TextField {...params} variant='standard' />}
+                                    value={
+                                      form.pickup[0] ? form.pickup[0].pickupDate : ""
+                                    }
+                                    onChange={(date) =>
+                                      handleDateChange(date, "pickup")
+                                    }
+                                    renderInput={(params) => <TextField {...params} variant='standard' />}
                                   />
                                 </LocalizationProvider>
                               </Grid>
-                                  <Grid item xs={6}>
+                              <Grid item xs={6}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                   <TimePicker
-                                      label='Out Time'
-                                      value={
-                                        form.pickup[0] ? form.pickup[0].out_time : ""
-                                      }
-                                      onChange={(date) =>
-                                          handleInOutTime(date, "pickup", "out_time")
-                                      }
-                                      renderInput={(params) => <TextField {...params} variant='standard' />}
+                                    label='In Time'
+                                    value={form.pickup[0] ? form.pickup[0].in_time : ""}
+                                    onChange={(date) =>
+                                      handleInOutTime(date, "pickup", "in_time")
+                                    }
+                                    renderInput={(params) => <TextField {...params} variant='standard' />}
                                   />
                                 </LocalizationProvider>
                               </Grid>
-                                </Grid>
-                            : <Fragment>
-                                  <StaticDataShow
-                                      spacing={2}
-                                      sxObject={{mt: 2}}
-                                      heading={'Pickup Time'}
-                                      values={[
-                                        pickup && pickup[0] ? (
-                                            moment(pickup[0].pickupDate).format("LLL")
-                                        ) : (
-                                            ""
-                                        )
-                                      ]}
+                              <Grid item xs={6}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                  <TimePicker
+                                    label='Out Time'
+                                    value={
+                                      form.pickup[0] ? form.pickup[0].out_time : ""
+                                    }
+                                    onChange={(date) =>
+                                      handleInOutTime(date, "pickup", "out_time")
+                                    }
+                                    renderInput={(params) => <TextField {...params} variant='standard' />}
                                   />
-                                  <Stack direction='row' justifyContent='space-evenly' spacing={2}>
-                                    <Stack>
-                                      {pickup && pickup[0] && pickup[0].in_time ? (
-                                          <Stack sx={{textAlign: 'left'}}>
-                                            <Typography variant='inherit' sx={{color: '#8898AA', fontSize: 10}}>In Time: </Typography>
-                                            <Box>{moment(pickup[0].in_time).format("h:mm A")}</Box>
-                                          </Stack>
-                                      ) : (
-                                          "--"
-                                      )}
-                                    </Stack>
-                                    <Stack>
-                                      {pickup && pickup[0] && pickup[0].out_time ? (
-                                          <Stack sx={{textAlign: 'left'}}>
-                                            <Typography variant='inherit' sx={{color: '#8898AA', fontSize: 10}}>Out Time:</Typography>
-                                            <Box>{moment(pickup[0].out_time).format("h:mm A")}</Box>
-                                          </Stack>
-                                      ) : (
-                                          "--"
-                                      )}
-                                    </Stack>
+                                </LocalizationProvider>
+                              </Grid>
+                            </Grid>
+                              : <Fragment>
+                                <StaticDataShow
+                                  spacing={2}
+                                  sxObject={{ mt: 2 }}
+                                  heading={'Pickup Time'}
+                                  values={[
+                                    pickup && pickup[0] ? (
+                                      moment(pickup[0].pickupDate).format("LLL")
+                                    ) : (
+                                      ""
+                                    )
+                                  ]}
+                                />
+                                <Stack direction='row' justifyContent='space-evenly' spacing={2}>
+                                  <Stack>
+                                    {pickup && pickup[0] && pickup[0].in_time ? (
+                                      <Stack sx={{ textAlign: 'left' }}>
+                                        <Typography variant='inherit' sx={{ color: '#8898AA', fontSize: 10 }}>In Time: </Typography>
+                                        <Box>{moment(pickup[0].in_time).format("h:mm A")}</Box>
+                                      </Stack>
+                                    ) : (
+                                      "--"
+                                    )}
                                   </Stack>
-                                </Fragment>}
+                                  <Stack>
+                                    {pickup && pickup[0] && pickup[0].out_time ? (
+                                      <Stack sx={{ textAlign: 'left' }}>
+                                        <Typography variant='inherit' sx={{ color: '#8898AA', fontSize: 10 }}>Out Time:</Typography>
+                                        <Box>{moment(pickup[0].out_time).format("h:mm A")}</Box>
+                                      </Stack>
+                                    ) : (
+                                      "--"
+                                    )}
+                                  </Stack>
+                                </Stack>
+                              </Fragment>}
                           </Stack>
                           <Stack spacing={2}>
-                            <Grid item xs={12} style={{ textAlign: "left", width:'100%' }}>
-                              <Stack spacing={2} sx={{mt: 2, mb: 2}}>
+                            <Grid item xs={12} style={{ textAlign: "left", width: '100%' }}>
+                              <Stack spacing={2} sx={{ mt: 2, mb: 2 }}>
                                 <Stack direction='row' alignItems='center' spacing={1}>
                                   <Typography fontWeight={700}>PO#</Typography>
                                   {edit ?
-                                        <InputField value={pickup && pickup[0] ? pickup[0].pickupPo : ""} />
-                                      : <Typography>{pickup && pickup[0] ? pickup[0].pickupPo : ""}</Typography>}
+                                    <InputField value={pickup && pickup[0] ? pickup[0].pickupPo : ""} />
+                                    : <Typography>{pickup && pickup[0] ? pickup[0].pickupPo : ""}</Typography>}
                                 </Stack>
                                 <Stack direction='row' alignItems={'center'} spacing={1}>
                                   <Typography fontWeight={700}>Reference#</Typography>
                                   {edit ?
-                                        <InputField value={pickup && pickup[0] ? pickup[0].pickupReference : ""} />
-                                      : <Typography>{pickup && pickup[0] ? pickup[0].pickupReference : ""}</Typography>}
+                                    <InputField value={pickup && pickup[0] ? pickup[0].pickupReference : ""} />
+                                    : <Typography>{pickup && pickup[0] ? pickup[0].pickupReference : ""}</Typography>}
                                 </Stack>
                                 <Stack direction='row' alignItems='center' spacing={1}>
                                   <Typography fontWeight={700}>Delivery#</Typography>
                                   {edit ?
-                                        <InputField value={pickup && pickup[0] ? pickup[0].pickupDeliverNumber : ""} />
-                                      : <Typography>{pickup && pickup[0] ? pickup[0].pickupDeliverNumber : ""}</Typography>}
+                                    <InputField value={pickup && pickup[0] ? pickup[0].pickupDeliverNumber : ""} />
+                                    : <Typography>{pickup && pickup[0] ? pickup[0].pickupDeliverNumber : ""}</Typography>}
                                 </Stack>
                               </Stack>
 
                               {/* <p>PO Ref# {pickup && pickup[0] ? pickup[0].pickupReference : ''}</p> */}
 
                               {state.auth.user.role !== "driver" &&
-                                  <InputField
-                                      id="outlined-multiline-static"
-                                      placeholder="Pickup Notes"
-                                      multiline
-                                      rows={2}
-                                      type='textarea'
-                                      value={form.pickup[0] ? form.pickup[0].notes : ""}
-                                      onChange={(event) =>
-                                          handlePickDropChange(event, "pickup", "notes")
-                                      }
-                                      variant="outlined"
-                                      readOnly={!edit}
-                                  />
+                                <InputField
+                                  id="outlined-multiline-static"
+                                  placeholder="Pickup Notes"
+                                  multiline
+                                  rows={2}
+                                  type='textarea'
+                                  value={form.pickup[0] ? form.pickup[0].notes : ""}
+                                  onChange={(event) =>
+                                    handlePickDropChange(event, "pickup", "notes")
+                                  }
+                                  variant="outlined"
+                                  readOnly={!edit}
+                                />
                               }
                             </Grid>
                           </Stack>
                         </Stack>
                       </Grid>
-                      <Grid item xs={2} sx={{display: 'flex', alignItem: 'center', mt: 5}}>
+                      <Grid item xs={2} sx={{ display: 'flex', alignItem: 'center', mt: 5 }}>
                         {/*Arrow*/}
                         <ArrowForwardIosIcon
-                            style={{
-                              color: blue,
-                              marginTop: "13%",
-                              margin: '0 auto',
-                              height: 40,
-                              width: 40,
-                            }}
+                          style={{
+                            color: blue,
+                            marginTop: "13%",
+                            margin: '0 auto',
+                            height: 40,
+                            width: 40,
+                          }}
                         />
                       </Grid>
                       <Grid item xs={5}>
                         {/*DROP*/}
-                        <Stack sx={{textAlign: 'center'}}>
+                        <Stack sx={{ textAlign: 'center' }}>
                           {edit ? state.auth.user.role !== "driver" && <Fragment>
                             <InputField
-                                id="outlined-basic"
-                                variant="outlined"
-                                placeholder="Receiver Name"
-                                value={form.drop[0] ? form.drop[0].receiverName : ""}
-                                onChange={(event) =>
-                                    handlePickDropChange(event, "drop", "receiverName")
-                                }
+                              id="outlined-basic"
+                              variant="outlined"
+                              placeholder="Receiver Name"
+                              value={form.drop[0] ? form.drop[0].receiverName : ""}
+                              onChange={(event) =>
+                                handlePickDropChange(event, "drop", "receiverName")
+                              }
                             />
                             <InputField
-                                id="outlined-basic"
-                                variant="outlined"
-                                placeholder="Address"
-                                value={form.drop[0] ? form.drop[0].dropAddress : ""}
-                                onChange={(event) =>
-                                    handlePickDropChange(event, "drop", "dropAddress")
-                                }
+                              id="outlined-basic"
+                              variant="outlined"
+                              placeholder="Address"
+                              value={form.drop[0] ? form.drop[0].dropAddress : ""}
+                              onChange={(event) =>
+                                handlePickDropChange(event, "drop", "dropAddress")
+                              }
                             />
                             <InputField
-                                id="outlined-basic"
-                                variant="outlined"
-                                placeholder="City"
-                                value={form.drop[0] ? form.drop[0].dropCity : ""}
-                                onChange={(event) =>
-                                    handlePickDropChange(event, "drop", "dropCity")
-                                }
+                              id="outlined-basic"
+                              variant="outlined"
+                              placeholder="City"
+                              value={form.drop[0] ? form.drop[0].dropCity : ""}
+                              onChange={(event) =>
+                                handlePickDropChange(event, "drop", "dropCity")
+                              }
                             />
                             <InputField
-                                id="outlined-basic"
-                                variant="outlined"
-                                placeholder="State"
-                                value={form.drop[0] ? form.drop[0].dropState : ""}
-                                onChange={(event) =>
-                                    handlePickDropChange(event, "drop", "dropState")
-                                }
+                              id="outlined-basic"
+                              variant="outlined"
+                              placeholder="State"
+                              value={form.drop[0] ? form.drop[0].dropState : ""}
+                              onChange={(event) =>
+                                handlePickDropChange(event, "drop", "dropState")
+                              }
                             />
                             <InputField
-                                id="outlined-basic"
-                                variant="outlined"
-                                placeholder="Zip"
-                                value={form.drop[0] ? form.drop[0].dropZip : ""}
-                                onChange={(event) =>
-                                    handlePickDropChange(event, "drop", "dropZip")
-                                }
+                              id="outlined-basic"
+                              variant="outlined"
+                              placeholder="Zip"
+                              value={form.drop[0] ? form.drop[0].dropZip : ""}
+                              onChange={(event) =>
+                                handlePickDropChange(event, "drop", "dropZip")
+                              }
                             />
                           </Fragment>
-                              : <StaticDataShow
-                                  heading={'Drop'}
-                                  values={[
-                                    drop && drop[0] ? drop[0].receiverName : "",
-                                    form.drop[0] ? form.drop[0].dropAddress : "",
-                                    `${drop && drop[0] ? drop[0].dropCity : ""},
+                            : <StaticDataShow
+                              heading={'Drop'}
+                              values={[
+                                drop && drop[0] ? drop[0].receiverName : "",
+                                form.drop[0] ? form.drop[0].dropAddress : "",
+                                `${drop && drop[0] ? drop[0].dropCity : ""},
                                     ${drop && drop[0] ? drop[0].dropState : ""},
                                     ${drop && drop[0] ? drop[0].dropZip : ""}`
-                                  ]}
-                              />}
+                              ]}
+                            />}
                         </Stack>
-                        <Stack spacing={2} sx={{textAlign: 'center'}}>
+                        <Stack spacing={2} sx={{ textAlign: 'center' }}>
                           {edit ? <Grid container spacing={2}>
                             <Grid item xs={12}>
-                              <Typography sx={{fontWeight: 600, fontSize:18, textAlign: 'center'}}>Drop Time</Typography>
+                              <Typography sx={{ fontWeight: 600, fontSize: 18, textAlign: 'center' }}>Drop Time</Typography>
                             </Grid>
                             <Grid item xs={6}>
                               <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
-                                    value={form.drop[0] ? form.drop[0].dropDate : ""}
-                                    onChange={(date) => handleDateChange(date, "drop")}
-                                    renderInput={(params) => <TextField {...params} variant='standard' />}
+                                  value={form.drop[0] ? form.drop[0].dropDate : ""}
+                                  onChange={(date) => handleDateChange(date, "drop")}
+                                  renderInput={(params) => <TextField {...params} variant='standard' />}
                                 />
                               </LocalizationProvider>
                             </Grid>
                             <Grid item xs={6}>
                               <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <TimePicker
-                                    value={form.drop[0] ? form.drop[0].dropDate : ""}
-                                    onChange={(date) => handleDateChange(date, "drop")}
-                                    renderInput={(params) => <TextField {...params} variant='standard' />}
+                                  value={form.drop[0] ? form.drop[0].dropDate : ""}
+                                  onChange={(date) => handleDateChange(date, "drop")}
+                                  renderInput={(params) => <TextField {...params} variant='standard' />}
                                 />
                               </LocalizationProvider>
                             </Grid>
                             <Grid item xs={6}>
                               <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <TimePicker
-                                    label='In Time'
-                                    value={form.drop[0] ? form.drop[0].in_time : ""}
-                                    onChange={(date) =>
-                                        handleInOutTime(date, "drop", "in_time")
-                                    }
-                                    renderInput={(params) => <TextField {...params} variant='standard' />}
+                                  label='In Time'
+                                  value={form.drop[0] ? form.drop[0].in_time : ""}
+                                  onChange={(date) =>
+                                    handleInOutTime(date, "drop", "in_time")
+                                  }
+                                  renderInput={(params) => <TextField {...params} variant='standard' />}
                                 />
                               </LocalizationProvider>
                             </Grid>
                             <Grid item xs={6}>
                               <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <TimePicker
-                                    label='Out Time'
-                                    value={form.drop[0] ? form.drop[0].out_time : ""}
-                                    onChange={(date) =>
-                                        handleInOutTime(date, "drop", "out_time")
-                                    }
-                                    renderInput={(params) => <TextField {...params} variant='standard' />}
+                                  label='Out Time'
+                                  value={form.drop[0] ? form.drop[0].out_time : ""}
+                                  onChange={(date) =>
+                                    handleInOutTime(date, "drop", "out_time")
+                                  }
+                                  renderInput={(params) => <TextField {...params} variant='standard' />}
                                 />
                               </LocalizationProvider>
                             </Grid>
                           </Grid> :
-                          <Fragment>
-                            <StaticDataShow
+                            <Fragment>
+                              <StaticDataShow
                                 spacing={2}
-                                sxObject={{mt: 2}}
+                                sxObject={{ mt: 2 }}
                                 heading={'Drop Time'}
                                 values={[
                                   drop && drop[0] ? (
-                                      moment(drop[0].dropDate).format("LLL")
+                                    moment(drop[0].dropDate).format("LLL")
                                   ) : (
-                                      ""
+                                    ""
                                   )
                                 ]}
-                            />
-                            <Stack direction='row' justifyContent='space-evenly' spacing={1}>
-                              <Stack>
-                                {drop && drop[0] && drop[0].in_time ? (
-                                    <Stack sx={{textAlign: 'left'}}>
-                                      <Typography variant='inherit' sx={{color: '#8898AA', fontSize: 10}}>In Time: </Typography>
+                              />
+                              <Stack direction='row' justifyContent='space-evenly' spacing={1}>
+                                <Stack>
+                                  {drop && drop[0] && drop[0].in_time ? (
+                                    <Stack sx={{ textAlign: 'left' }}>
+                                      <Typography variant='inherit' sx={{ color: '#8898AA', fontSize: 10 }}>In Time: </Typography>
                                       <Box>{moment(drop[0].in_time).format("h:mm A")}</Box>
                                     </Stack>
-                                ) : (
+                                  ) : (
                                     "--"
-                                )}
-                              </Stack>
-                              <Stack>
-                                {drop && drop[0] && drop[0].out_time ? (
-                                        <Stack sx={{textAlign: 'left'}}>
-                                          <Typography variant='inherit' sx={{color: '#8898AA', fontSize: 10}}>Out Time: </Typography>
-                                          <Box>{moment(drop[0].out_time).format("h:mm A")}</Box>
-                                        </Stack>
-                                ) : (
+                                  )}
+                                </Stack>
+                                <Stack>
+                                  {drop && drop[0] && drop[0].out_time ? (
+                                    <Stack sx={{ textAlign: 'left' }}>
+                                      <Typography variant='inherit' sx={{ color: '#8898AA', fontSize: 10 }}>Out Time: </Typography>
+                                      <Box>{moment(drop[0].out_time).format("h:mm A")}</Box>
+                                    </Stack>
+                                  ) : (
                                     "--"
-                                )}
+                                  )}
+                                </Stack>
                               </Stack>
-                            </Stack>
-                          </Fragment>}
+                            </Fragment>}
                         </Stack>
                         <Grid item xs={12} sx={{ textAlign: "left", mt: 1 }}>
-                          <Stack spacing={2} sx={{mt: 2, mb: 2}}>
+                          <Stack spacing={2} sx={{ mt: 2, mb: 2 }}>
                             <Stack direction='row' alignItems='center' spacing={1}>
                               <Typography fontWeight={700}>PO#</Typography>
                               {edit ?
-                                  <InputField
-                                    value={drop && drop[0] ? drop[0].dropPo : ""}
-                                  />
-                                  : <Typography>{drop && drop[0] ? drop[0].dropPo : ""}</Typography>}
+                                <InputField
+                                  value={drop && drop[0] ? drop[0].dropPo : ""}
+                                />
+                                : <Typography>{drop && drop[0] ? drop[0].dropPo : ""}</Typography>}
                             </Stack>
                             <Stack direction='row' alignItems='center' spacing={1}>
                               <Typography fontWeight={700}>Reference# </Typography>
                               {edit ?
-                                    <InputField
-                                      value={drop && drop[0] ? drop[0].dropReference : ""}
-                                    />
-                                  : <Typography>{drop && drop[0] ? drop[0].dropReference : ""}</Typography>}
+                                <InputField
+                                  value={drop && drop[0] ? drop[0].dropReference : ""}
+                                />
+                                : <Typography>{drop && drop[0] ? drop[0].dropReference : ""}</Typography>}
                             </Stack>
                             <Stack direction='row' alignItems='center' spacing={1}>
                               <Typography fontWeight={700}>Deliver# </Typography>
                               {edit ?
-                                    <InputField
-                                      value={drop && drop[0] ? drop[0].dropDeliverNumber : ""}
-                                    />
-                                  : <Typography>{drop && drop[0] ? drop[0].dropDeliverNumber : ""}</Typography>}
+                                <InputField
+                                  value={drop && drop[0] ? drop[0].dropDeliverNumber : ""}
+                                />
+                                : <Typography>{drop && drop[0] ? drop[0].dropDeliverNumber : ""}</Typography>}
                             </Stack>
                           </Stack>
 
                           {/* <p>Deliver Ref#  {drop && drop[0] ? drop[0].dropReference : ''}</p> */}
 
                           {state.auth.user.role !== "driver" && (
-                              <InputField
-                                  id="outlined-multiline-static"
-                                  placeholder="Drop Notes"
-                                  multiline
-                                  rows={2}
-                                  type="textarea"
-                                  value={form.drop[0] ? form.drop[0].notes : ""}
-                                  onChange={(event) =>
-                                      handlePickDropChange(event, "drop", "notes")
-                                  }
-                                  variant="outlined"
-                                  readOnly={!edit}
-                              />
+                            <InputField
+                              id="outlined-multiline-static"
+                              placeholder="Drop Notes"
+                              multiline
+                              rows={2}
+                              type="textarea"
+                              value={form.drop[0] ? form.drop[0].notes : ""}
+                              onChange={(event) =>
+                                handlePickDropChange(event, "drop", "notes")
+                              }
+                              variant="outlined"
+                              readOnly={!edit}
+                            />
                           )}
                         </Grid>
                       </Grid>
@@ -831,106 +818,98 @@ const LoadDetailModal = ({
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={2}  sx={{display: 'flex', alignItems: 'end', justifyContent: 'flex-end'}}>
-                <Stack spacing={2} sx={{alignItems: 'end'}}>
+              <Grid item xs={2} sx={{ display: 'flex', alignItems: 'end', justifyContent: 'flex-end' }}>
+                <Stack spacing={2} sx={{ alignItems: 'end' }}>
                   <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
                     {rateConfirmation ? (
-                        <span>
+                      <span>
                         <a href={rateConfirmation} target="_blank">
                           Rate Con
                         </a>
                       </span>
                     ) : (
-                        <span>Rate Con</span>
+                      <span>Rate Con</span>
                     )}
                     <span>
                       {edit ? <Fragment>
-                            <label htmlFor="contained-button-file1">
-                              <input
-                                  style={{display: 'none'}}
-                                  type="file"
-                                  multiple
-                                  name="rateConfirmation"
-                                  disabled={!edit || state.auth.user.role === "driver"}
-                                  onChange={handleFileChange}
-                                  ref={rateConfirmationRef}
-                                  id="contained-button-file1"
-                              />
-                              <Button variant="outlined" component="span" size='small'>
-                                Attach
-                              </Button>
-                            </label>
-                          </Fragment>
-                      :  getCheckStatusIcon(!!rateConfirmation)}
+                        <label htmlFor="contained-button-file1">
+                          <input
+                            style={{ display: 'none' }}
+                            type="file"
+                            multiple
+                            name="rateConfirmation"
+                            disabled={!edit || state.auth.user.role === "driver"}
+                            onChange={handleFileChange}
+                            ref={rateConfirmationRef}
+                            id="contained-button-file1"
+                          />
+                          <Button variant="outlined" component="span" size='small'>
+                            Attach
+                          </Button>
+                        </label>
+                      </Fragment>
+                        : getCheckStatusIcon(!!rateConfirmation)}
                     </span>
                   </Stack>
                   <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
                     {proofDelivery ? (
-                        <span>
+                      <span>
                         <a href={proofDelivery} target="_blank">
                           POD
                         </a>
                       </span>
                     ) : (
-                        <span>POD</span>
+                      <span>POD</span>
                     )}
                     <span>
                       {edit ?
-                          <label htmlFor="contained-button-file2">
-                            <input
-                                style={{display: 'none'}}
-                                type="file"
-                                multiple
-                                name="proofDelivery"
-                                disabled={!edit}
-                                onChange={handleFileChange}
-                                ref={proofDeliveryRef}
-                                id="contained-button-file2"
-                            />
-                            <Button variant="outlined" component="span" size='small'>
-                              Attach
-                            </Button>
-                          </label>
-                          : proofDelivery ? (
-                          <CheckCircleIcon style={{color: successIconColor}}/>
-                      ) : (
-                          <CancelIcon style={{color: errorIconColor}}/>
-                      )}
+                        <label htmlFor="contained-button-file2">
+                          <input
+                            style={{ display: 'none' }}
+                            type="file"
+                            multiple
+                            name="proofDelivery"
+                            disabled={!edit}
+                            onChange={handleFileChange}
+                            ref={proofDeliveryRef}
+                            id="contained-button-file2"
+                          />
+                          <Button variant="outlined" component="span" size='small'>
+                            Attach
+                          </Button>
+                        </label>
+                        : getCheckStatusIcon(!!proofDelivery)}
                     </span>
                   </Stack>
                   <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
                     {accessorials.length ? (
-                        <span>
+                      <span>
                         <a href={"#"} target="_blank">
                           Accessorials
                         </a>
                       </span>
                     ) : (
-                        <span>Accessorials</span>
+                      <span>Accessorials</span>
                     )}
                     <span>
                       {edit ? <Fragment>
-                            <label htmlFor="contained-button-file3">
-                              <input
-                                  style={{display: 'none'}}
-                                  type="file"
-                                  multiple
-                                  name="accessorials"
-                                  disabled={!edit || state.auth.user.role === "driver"}
-                                  onChange={handleFileChange}
-                                  ref={rateConfirmationRef}
-                                  id="contained-button-file3"
-                              />
-                              <Button variant="outlined" component="span" size='small'>
-                                Attach
-                              </Button>
-                            </label>
-                          </Fragment>
-                          :  accessorials.length ? (
-                              <CheckCircleIcon style={{color: successIconColor}}/>
-                          ) : (
-                              <CancelIcon style={{color: errorIconColor}}/>
-                          )}
+                        <label htmlFor="contained-button-file3">
+                          <input
+                            style={{ display: 'none' }}
+                            type="file"
+                            multiple
+                            name="accessorials"
+                            disabled={!edit || state.auth.user.role === "driver"}
+                            onChange={handleFileChange}
+                            ref={rateConfirmationRef}
+                            id="contained-button-file3"
+                          />
+                          <Button variant="outlined" component="span" size='small'>
+                            Attach
+                          </Button>
+                        </label>
+                      </Fragment>
+                        : getCheckStatusIcon(!!accessorials?.length)}
                     </span>
                   </Stack>
                 </Stack>
@@ -948,7 +927,7 @@ const LoadDetailModal = ({
               style={{ marginTop: 10 }}
             >
               <Grid item xs={1}></Grid>
-              <Grid item xs={4} justifyContent={'center'} sx={{textAlign: 'center'}}>
+              <Grid item xs={4} justifyContent={'center'} sx={{ textAlign: 'center' }}>
                 {/*<Typography item sx={{fontWeight: 600, fontSize:18, textAlign: 'center'}}>Pickup</Typography>*/}
                 {/*<p>*/}
                 {/*  {edit && state.auth.user.role !== "driver" ? (*/}

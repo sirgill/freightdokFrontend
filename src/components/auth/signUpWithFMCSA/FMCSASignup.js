@@ -1,6 +1,6 @@
 import CompanyText from "../../Atoms/CompanyText";
 import { Link, Redirect } from "react-router-dom";
-import { FEDERAL_SIGNUP_LINK, LOGIN_LINK } from "../../constants";
+import {FEDERAL_SIGNUP_LINK, LOGIN_LINK, SIGNUP_SUPPORT} from "../../constants";
 import { Box, Button, Grid, InputAdornment, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import Input from "../../Atoms/form/Input";
@@ -91,7 +91,7 @@ const FMCSASignup = (props) => {
             <Grid container>
                 <Grid item xs={12}>
                     <Typography className="forgot-password text-center">
-                        <Link to={'#'}>Contact Support</Link>
+                        <Link to={SIGNUP_SUPPORT}>Contact Support</Link>
                     </Typography>
                     <Typography className="forgot-password text-center">
                         <Link to={LOGIN_LINK}>Sign In</Link>

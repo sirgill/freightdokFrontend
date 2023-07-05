@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
 import Button from '@material-ui/core/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { getInvoiceLoads } from '../../actions/load';
 import InvocieEditItem from './InvoiceEditItem';
+import { getCheckStatusIcon } from '../../utils/utils';
 
 export default function Invoices({ showWizardFor }) {
     const dispatch = useDispatch();
@@ -25,10 +24,10 @@ export default function Invoices({ showWizardFor }) {
             const filteredInvoice = invoices.filter((item) => {
                 if (item._id === invoiceToShow._id) {
                     return item;
-                } 
+                }
             });
 
-            console.log('Filtered :',filteredInvoice )
+            console.log('Filtered :', filteredInvoice)
             showWizardFor(filteredInvoice[0])
         }
     }, [invoices]);
@@ -48,36 +47,36 @@ export default function Invoices({ showWizardFor }) {
 
     return (
         <TableBody>
-            { tempInvoices.map((invoice) => (<TableRow>
-                <TableCell align="center">{ invoice.loadNumber }</TableCell>
-                <TableCell align="center">{ invoice.brokerage ? invoice.brokerage : '--' }</TableCell>
-                <TableCell align="center">{ invoice.rate ? invoice.rate : '--' }</TableCell>
+            {tempInvoices.map((invoice) => (<TableRow>
+                <TableCell align="center">{invoice.loadNumber}</TableCell>
+                <TableCell align="center">{invoice.brokerage ? invoice.brokerage : '--'}</TableCell>
+                <TableCell align="center">{invoice.rate ? invoice.rate : '--'}</TableCell>
                 <TableCell align="center">
-                    { 
-                        Array.isArray(invoice.rateConfirmation) && invoice.rateConfirmation.length > 0 && typeof invoice.rateConfirmation[0] !== 'string'  ? 
-                        <CheckCircleIcon style={{color: 'green'}} />
-                        : <CancelIcon style={{color: 'red'}} /> 
+                    {
+                        Array.isArray(invoice.rateConfirmation) && invoice.rateConfirmation.length > 0 && typeof invoice.rateConfirmation[0] !== 'string' ?
+                            getCheckStatusIcon(true)
+                            : getCheckStatusIcon(false)
                     }
                 </TableCell>
                 <TableCell align="center">
-                    { 
-                        Array.isArray(invoice.proofDelivery) && invoice.proofDelivery.length > 0 && typeof invoice.proofDelivery[0] !== 'string' ? 
-                        <CheckCircleIcon style={{color: 'green'}} /> 
-                        : <CancelIcon style={{color: 'red'}} /> 
+                    {
+                        Array.isArray(invoice.proofDelivery) && invoice.proofDelivery.length > 0 && typeof invoice.proofDelivery[0] !== 'string' ?
+                            getCheckStatusIcon(true)
+                            : getCheckStatusIcon(false)
                     }
                 </TableCell>
                 <TableCell align="center">
                     <InvocieEditItem invoice={invoice} />
                 </TableCell>
                 <TableCell align="center">
-                    <Button 
-                    variant="contained" 
-                    color="primary"
-                    onClick={()=>handleShowInvoice(invoice)}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleShowInvoice(invoice)}>
                         Invoice
                     </Button>
                 </TableCell>
-            </TableRow>)) }
+            </TableRow>))}
         </TableBody>
     );
 }
