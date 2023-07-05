@@ -4,7 +4,6 @@ import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
 import Landing from "./components/layout/Landing";
 import Footer from "./components/layout/Footer";
-import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import EntityType from "./components/auth/EntityType";
 import OwnerOp from "./components/auth/OwnerOpRegister";
@@ -28,10 +27,13 @@ import {getBaseUrl} from "./config";
 import LandingPage from "./views/landingPage/LandingPage";
 import SetPassword from "./components/auth/SetPassword";
 import SignUp from "./components/auth/signUpWithFMCSA/SignUp";
-import FMCSASignup from "./components/auth/signUpWithFMCSA/FMCSASignup";
 import {FEDERAL_SIGNUP_LINK, FMCSA_VERIFICATION_LINK, ONBOARDING_USER, SIGNUP_SUPPORT} from "./components/constants";
 import Support from "./components/auth/signUpWithFMCSA/Support";
 import UserOnboard from "./components/auth/signUpWithFMCSA/UserOnboard";
+import LoadModuleAsync from "./components/Atoms/LoadModuleAsync";
+
+const Login = LoadModuleAsync(() => import('./components/auth/Login'));
+const FMCSASignup  = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/FMCSASignup"))
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
