@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import React, { Fragment, useEffect, useState } from "react";
 import _ from "lodash";
-import { ArrowBack, ArrowForward } from "@material-ui/icons";
+import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import {
   addWarehouse,
   getGeoLocation,
@@ -171,12 +171,12 @@ const PageTwoForm = ({ setData2, setPage, data, classes, getLocation }) => {
 const FormBody = ({ id = null }) => {
   const classes = useStyles();
   const [data, setData] = useState({
-      name: "",
-      address: "",
-      city: "",
-      state: "",
-      zip: "",
-    }),
+    name: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+  }),
     [data2, setData2] = useState({
       restroom: true,
       parking: false,

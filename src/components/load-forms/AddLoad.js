@@ -1,38 +1,30 @@
-import React, {Fragment, useState} from "react";
+import React, { Fragment, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import {Stack, Divider} from "@mui/material"
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
+import { Stack, Divider } from "@mui/material"
 import "date-fns";
-import DateFnsUtils from "@date-io/date-fns";
-import {KeyboardDatePicker, KeyboardTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import Grid from "@mui/material/Grid";
-import ArrowForward from "@material-ui/icons/ArrowForward";
-import ArrowBack from "@material-ui/icons/ArrowBack";
+import ArrowForward from "@mui/icons-material/ArrowForward";
+import ArrowBack from "@mui/icons-material/ArrowBack";
 import {
-    CssTextField,
-    TextFieldHelper,
-    CSSDatePicker,
-    CSSTimePicker,
     useStyles,
 } from "../HelperCells";
 import PropTypes from "prop-types";
-import {connect} from "react-redux";
-import {addLoad} from "../../actions/load";
+import { connect } from "react-redux";
+import { addLoad } from "../../actions/load";
 import AsyncAutoComplete from "../Atoms/AsyncAutoComplete";
 import _ from "lodash";
 import InputField from "../Atoms/form/InputField";
-import {blue} from "../layout/ui/Theme";
+import { blue } from "../layout/ui/Theme";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DatePicker from "@mui/lab/DatePicker";
 import TimePicker from "@mui/lab/TimePicker";
 import TextField from "@material-ui/core/TextField";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
-const AddLoadForm = ({addLoad, user}) => {
+const AddLoadForm = ({ addLoad, user }) => {
     const [open, setOpen] = React.useState(false);
 
     const classes = useStyles();
@@ -100,12 +92,12 @@ const AddLoadForm = ({addLoad, user}) => {
     const [dropOff, setDropOff] = useState(dropOffTemplate);
 
     const handleNewPickDrop = () => {
-        const tempForm = {...form};
+        const tempForm = { ...form };
 
-        tempForm.pickUp.push({...pickUp});
-        tempForm.dropOff.push({...dropOff});
+        tempForm.pickUp.push({ ...pickUp });
+        tempForm.dropOff.push({ ...dropOff });
 
-        setForm({...tempForm});
+        setForm({ ...tempForm });
 
         setPickup(pickUpTemplate);
         setDropOff(dropOffTemplate);
@@ -113,7 +105,7 @@ const AddLoadForm = ({addLoad, user}) => {
         setCount(2);
     };
 
-    const {brokerage, loadNumber, rate} = form;
+    const { brokerage, loadNumber, rate } = form;
 
     const updateForm = (e) => {
         setForm({
@@ -179,7 +171,7 @@ const AddLoadForm = ({addLoad, user}) => {
                     variant='contained'
                     color="primary"
                     onClick={handleClickOpen}
-                    style={{marginBottom: "20%"}}
+                    style={{ marginBottom: "20%" }}
                 >
                     Add Load
                 </Button>
@@ -201,15 +193,15 @@ const AddLoadForm = ({addLoad, user}) => {
                         <form>
                             {count === 1 ? (
                                 <Fragment>
-                                    <DialogTitle id="form-dialog-title" sx={{textAlign: 'center', color: '#32325D'}}>Add
+                                    <DialogTitle id="form-dialog-title" sx={{ textAlign: 'center', color: '#32325D' }}>Add
                                         Load</DialogTitle>
-                                    <Stack spacing={5} sx={{width: '100%'}}>
+                                    <Stack spacing={5} sx={{ width: '100%' }}>
                                         <InputField
                                             name={"brokerage"}
                                             placeholder={"Brokerage"}
                                             onChange={(e) => updateForm(e)}
                                             value={brokerage}
-                                            formGrpStyle={{marginBottom: 0}}
+                                            formGrpStyle={{ marginBottom: 0 }}
                                         />
                                         <InputField
                                             name={"loadNumber"}
@@ -229,7 +221,7 @@ const AddLoadForm = ({addLoad, user}) => {
 
                             {count === 2 ? (
                                 <div>
-                                    <DialogTitle id="form-dialog-title" sx={{textAlign: 'center'}}>Pickup</DialogTitle>
+                                    <DialogTitle id="form-dialog-title" sx={{ textAlign: 'center' }}>Pickup</DialogTitle>
                                     <Stack spacing={3}>
                                         <InputField
                                             name={"shipperName"}
@@ -243,7 +235,7 @@ const AddLoadForm = ({addLoad, user}) => {
                                                 label={"Address"}
                                                 value={pickUp.pickupAddress}
                                                 getOptionLabelKey="address"
-                                                handleChange={({name, value = {}}) => {
+                                                handleChange={({ name, value = {} }) => {
                                                     if (_.isObject(value)) {
                                                         const {
                                                             address = pickUp.pickupAddress,
@@ -261,7 +253,7 @@ const AddLoadForm = ({addLoad, user}) => {
                                                             pickupZip: zip,
                                                         });
                                                     } else {
-                                                        setPickup({...pickUp, [name]: value});
+                                                        setPickup({ ...pickUp, [name]: value });
                                                     }
                                                 }}
                                             />
@@ -290,22 +282,22 @@ const AddLoadForm = ({addLoad, user}) => {
 
                             {count === 3 ? (
                                 <div>
-                                    <DialogTitle id="form-dialog-title" sx={{textAlign: 'center'}}>Pickup</DialogTitle>
+                                    <DialogTitle id="form-dialog-title" sx={{ textAlign: 'center' }}>Pickup</DialogTitle>
                                     <Stack spacing={3}>
-                                        <div className="form-group" style={{width: '100%'}}>
+                                        <div className="form-group" style={{ width: '100%' }}>
                                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                                 <DatePicker
-                                                    style={{width: '100%'}}
+                                                    style={{ width: '100%' }}
                                                     label="Pickup Date"
                                                     format="MM/dd/yyyy"
                                                     value={pickUp.pickupDate}
                                                     onChange={(date) => updateDate(date, 0)}
-                                                    renderInput={(params) => <TextField {...params} fullWidth={true}/>}
+                                                    renderInput={(params) => <TextField {...params} fullWidth={true} />}
                                                 />
                                             </LocalizationProvider>
                                         </div>
 
-                                        <div className="form-group" style={{width: '100%'}}>
+                                        <div className="form-group" style={{ width: '100%' }}>
                                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                                 <TimePicker
                                                     label="Pickup Time"
@@ -313,7 +305,7 @@ const AddLoadForm = ({addLoad, user}) => {
                                                     id="time-picker"
                                                     value={pickUp.pickupDate}
                                                     onChange={(date) => updateDate(date, 0)}
-                                                    renderInput={(params) => <TextField {...params} fullWidth={true}/>}
+                                                    renderInput={(params) => <TextField {...params} fullWidth={true} />}
                                                 />
                                             </LocalizationProvider>
                                         </div>
@@ -341,7 +333,7 @@ const AddLoadForm = ({addLoad, user}) => {
 
                             {count === 4 ? (
                                 <div>
-                                    <DialogTitle id="form-dialog-title" sx={{textAlign: 'center'}}>Drop</DialogTitle>
+                                    <DialogTitle id="form-dialog-title" sx={{ textAlign: 'center' }}>Drop</DialogTitle>
 
                                     <Stack spacing={2}>
                                         <div className="form-group">
@@ -359,7 +351,7 @@ const AddLoadForm = ({addLoad, user}) => {
                                                 label={"Address"}
                                                 value={pickUp.dropAddress}
                                                 getOptionLabelKey="address"
-                                                handleChange={({name, value = {}}) => {
+                                                handleChange={({ name, value = {} }) => {
                                                     if (_.isObject(value)) {
                                                         const {
                                                             address = dropOff.dropAddress,
@@ -377,7 +369,7 @@ const AddLoadForm = ({addLoad, user}) => {
                                                             dropZip: zip,
                                                         });
                                                     } else {
-                                                        setDropOff({...dropOff, [name]: value});
+                                                        setDropOff({ ...dropOff, [name]: value });
                                                     }
                                                 }}
                                             />
@@ -406,7 +398,7 @@ const AddLoadForm = ({addLoad, user}) => {
 
                             {count === 5 ? (
                                 <div>
-                                    <DialogTitle id="form-dialog-title" sx={{textAlign: 'center'}}>Drop</DialogTitle>
+                                    <DialogTitle id="form-dialog-title" sx={{ textAlign: 'center' }}>Drop</DialogTitle>
                                     <Stack spacing={2}>
                                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                                             <DatePicker
@@ -416,7 +408,7 @@ const AddLoadForm = ({addLoad, user}) => {
                                                 format="MM/dd/yyyy"
                                                 value={dropOff.dropDate}
                                                 onChange={(date) => updateDate(date, 1)}
-                                                renderInput={(params) => <TextField {...params} fullWidth={true}/>}
+                                                renderInput={(params) => <TextField {...params} fullWidth={true} />}
                                             />
                                         </LocalizationProvider>
                                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -426,7 +418,7 @@ const AddLoadForm = ({addLoad, user}) => {
                                                 label="Time"
                                                 value={dropOff.dropDate}
                                                 onChange={(date) => updateDate(date, 1)}
-                                                renderInput={(params) => <TextField {...params} fullWidth={true}/>}
+                                                renderInput={(params) => <TextField {...params} fullWidth={true} />}
                                             />
                                         </LocalizationProvider>
                                         <InputField
@@ -455,7 +447,7 @@ const AddLoadForm = ({addLoad, user}) => {
                 </DialogContent>
 
                 <div>
-                    <Grid container sx={{p: 2, pl: 3, pr: 3, justifyContent: count === 1 ? 'right' : 'space-between'}}>
+                    <Grid container sx={{ p: 2, pl: 3, pr: 3, justifyContent: count === 1 ? 'right' : 'space-between' }}>
                         {count !== 1 && <Grid item>
                             <ArrowBack
                                 style={{
@@ -508,4 +500,4 @@ const mapStateToProps = (state) => ({
     user: state.auth.user,
 });
 
-export default connect(mapStateToProps, {addLoad})(AddLoadForm);
+export default connect(mapStateToProps, { addLoad })(AddLoadForm);

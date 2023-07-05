@@ -11,7 +11,7 @@ import {
     Popover,
     TextField
 } from "@mui/material";
-import { DateRange } from "@material-ui/icons";
+import { DateRange } from "@mui/icons-material";
 import './dateRangePicker.css'
 
 const staticRanges = [

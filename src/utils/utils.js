@@ -1,6 +1,6 @@
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import {errorIconColor, successIconColor} from "../components/layout/ui/Theme";
-import {Cancel as CancelIcon} from "@mui/icons-material";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { errorIconColor, successIconColor } from "../components/layout/ui/Theme";
+import { Cancel as CancelIcon } from "@mui/icons-material";
 import React from "react";
 
 const addEvent = (elem, type, eventHandle) => {
@@ -44,25 +44,25 @@ const triggerCustomEvent = (eventName, eventDetail = {}) => {
 
 // eslint-disable-next-line no-extend-native
 String.prototype.equalsIgnoreCase = function (str) {
-    return str!==null && typeof str === 'string' && this.toUpperCase() === str.toUpperCase()
+    return str !== null && typeof str === 'string' && this.toUpperCase() === str.toUpperCase()
 }
 
 // eslint-disable-next-line no-extend-native
-String.prototype.removeWhiteSpaces = function (replaceBy){
+String.prototype.removeWhiteSpaces = function (replaceBy) {
     return this && this.replace(/\s/g, replaceBy || '')
 }
 // eslint-disable-next-line no-extend-native
 Object.defineProperty(String.prototype, 'capitalize', {
-    value: function (){
+    value: function () {
         return this.charAt(0).toUpperCase() + this.splice(1)
     },
     enumerable: false
 })
 
-function parseToken (token = '') {
+function parseToken(token = '') {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
 
@@ -70,7 +70,7 @@ function parseToken (token = '') {
 }
 
 const getUserDetail = () => {
-    return {...parseToken(localStorage.getItem('token'))}
+    return { ...parseToken(localStorage.getItem('token')) }
 }
 
 const checkObjProperties = (obj) => {
@@ -94,15 +94,15 @@ const isPhoneValid = (num) => {
 
 export const getCheckStatusIcon = (comparator = false) => {
     let success
-    if(typeof comparator === 'function'){
+    if (typeof comparator === 'function') {
         success = comparator();
     } else {
         success = comparator
     }
     return success ? (
-        <CheckCircleIcon style={{color: successIconColor}}/>
+        <CheckCircleIcon style={{ color: successIconColor }} />
     ) : (
-        <CancelIcon style={{color: errorIconColor}}/>
+        <CancelIcon style={{ color: errorIconColor }} />
     )
 }
 

@@ -3,27 +3,11 @@ import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import { connect, useSelector } from 'react-redux';
 import { deleteLoad, getLoads, selectLoad, searchLoads } from "../../actions/load";
-// import LoadPickup from './LoadPickup';
-// import LoadDrop from './LoadDrop';
 import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-// import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-// import Paper from '@material-ui/core/Paper';
 import Badge from '@material-ui/core/Badge';
-import IconButton from '@material-ui/core/IconButton';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import Collapse from '@material-ui/core/Collapse';
-import Box from '@material-ui/core/Box';
-import { Typography } from '@material-ui/core';
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
 
 import LoadDetailModal from './LoadDetailModal';
 
@@ -37,7 +21,7 @@ const StyledBadge = withStyles((theme) => ({
 }))(Badge);
 
 const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads, loads, page, rowsPerPage, user }) => {
-  const {_id, brokerage, loadNumber, pickup, drop, status, proofDelivery, rateConfirmation, accessorials } = load;
+  const { _id, brokerage, loadNumber, pickup, drop, status, proofDelivery, rateConfirmation, accessorials } = load;
   const [modalEdit, enableEdit] = useState(false);
   const pickupState = pickup.map((pickup) => pickup.pickupState);
   const pickupCity = pickup.map((pickup) => pickup.pickupCity);
@@ -55,7 +39,7 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
   const dropCityFirst = dropCity[0];
   const dropDateFirst = dropDate[0];
 
-  const [open,setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [assignedToLocal, setAssignedTo] = useState(null);
 
   const state = useSelector(state => state);
@@ -76,18 +60,18 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
     const minutes = d.getMinutes();
     let time = '';
 
-    if(hours > 0 && hours <= 12){
+    if (hours > 0 && hours <= 12) {
       time = "" + hours;
-    }else if (hours > 12){
+    } else if (hours > 12) {
       time = "" + (hours - 12);
-    }else if (hours === 0){
+    } else if (hours === 0) {
       time = "12";
     }
 
-    time += (minutes < 10 ) ? ":0" + minutes : ":" + minutes;
+    time += (minutes < 10) ? ":0" + minutes : ":" + minutes;
     time += (hours >= 12) ? " P.M." : " A.M.";
 
-    return [d.getMonth()+1,d.getDate(),d.getFullYear()].join('/')+ ' ' + time;
+    return [d.getMonth() + 1, d.getDate(), d.getFullYear()].join('/') + ' ' + time;
   }
 
   const handleDeleteLoad = async (load_id, e) => {
@@ -112,13 +96,13 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
   return (
     <>
       <TableBody>
-        <TableRow 
-        hover={true} 
-        onClick={()=>{
-          setOpen(true);
-          selectLoad({});
-        }}>
-          
+        <TableRow
+          hover={true}
+          onClick={() => {
+            setOpen(true);
+            selectLoad({});
+          }}>
+
           <TableCell align="center">{loadNumber}</TableCell>
 
           {pickup.length <= 0 ? (
@@ -133,15 +117,15 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
               </StyledBadge> */}
             </TableCell>
           )}
-          
+
           <TableCell align="center">
             <Moment format='MM/DD'>{pickDateFirst}</Moment>
           </TableCell>
-          
+
           <TableCell>
             {dropCityFirst}, {dropStateFirst}
           </TableCell>
-          
+
           <TableCell align="center">
             <Moment format='MM/DD'>{dropDateFirst}</Moment>
           </TableCell>
@@ -161,13 +145,13 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
           </TableCell>
 
           {/* <TableCell></TableCell> */}
-        </TableRow>        
+        </TableRow>
       </TableBody>
-      <LoadDetailModal 
+      <LoadDetailModal
         modalEdit={modalEdit}
         open={open}
-        load={load} 
-        handleClose={()=>{
+        load={load}
+        handleClose={() => {
           setOpen(false);
           enableEdit(false);
           selectLoad();

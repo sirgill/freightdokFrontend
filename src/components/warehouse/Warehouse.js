@@ -8,7 +8,7 @@ import {Button, IconButton} from '@mui/material';
 import {useDispatch, useSelector} from 'react-redux';
 import Form from './Form';
 import Preview from './Preview';
-import {Delete} from '@material-ui/icons';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {Box} from '@mui/material';
 import EnhancedTable from "../../components/Atoms/table/Table"
 
@@ -55,7 +55,7 @@ const List = ({data = {}, history, path, dispatch}) => {
                 <TableCell sx={tableRowSx} padding={'none'}>{averageLoadTime}</TableCell>
                 <TableCell sx={tableRowSx} padding={'none'} component="th" scope="row">
                     <IconButton onClick={onDelete.bind(this, data._id)}>
-                        <Delete style={{color: "rgb(220, 0, 78)"}}/>
+                        <DeleteIcon style={{color: "rgb(220, 0, 78)"}}/>
                     </IconButton>
                 </TableCell>
             </TableRow>

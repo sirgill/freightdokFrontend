@@ -1,18 +1,17 @@
 import React from "react";
-import { Accordion,AccordionSummary,AccordionDetails, Grid , Typography} from "@mui/material";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Accordion, AccordionSummary, AccordionDetails, Grid, Typography } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Modal from "./Modal";
-import InputField from "../../components/Atoms/form/InputField";
 
 
 
 const OwnerOpDetails = (props) => {
-    const {location: {state: data = {}} = {}} = props;
+    const { location: { state: data = {} } = {} } = props;
     const config = {
         title: "Owner Op details"
     }
     console.log("data", data)
-    const renderAccordian =({parentKey, key, value}) => {
+    const renderAccordian = ({ parentKey, key, value }) => {
         return (
             <Accordion>
                 <AccordionSummary
@@ -33,7 +32,7 @@ const OwnerOpDetails = (props) => {
 
     const a = (data) => {
         let b = []
-        for(let key in data){
+        for (let key in data) {
 
             b.push(renderAccordian({ parentKey: key, value: data[key], key }));
         }

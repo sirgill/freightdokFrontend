@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Modal, Step } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Modal } from "@mui/material";
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
 import { Button } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
-import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useDispatch } from "react-redux";
 import {
   deleteLoadDocument,
@@ -19,8 +17,8 @@ import { Page, Text, View, Document, pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import { useStyles, styles } from "../HelperCells";
 import InputField from "../Atoms/form/InputField";
-import {Typography} from "@mui/material";
-import {blue} from "../layout/ui/Theme";
+import { Typography } from "@mui/material";
+import { blue } from "../layout/ui/Theme";
 
 const generatePDFDocument = async ({ from, to, load_number, broker, rate }) => {
   return new Promise(async (resolve) => {
@@ -226,7 +224,7 @@ export default function InvoiceWizard({
             <div className={classes.modalBody}>
               {step !== 3 ? (
                 <Grid item xs={12}>
-                  <Typography variant='h5' color={blue} sx={{mb:3}}>{step === 1 ? "From" : "To"}</Typography>
+                  <Typography variant='h5' color={blue} sx={{ mb: 3 }}>{step === 1 ? "From" : "To"}</Typography>
                 </Grid>
               ) : (
                 ""
@@ -336,8 +334,8 @@ export default function InvoiceWizard({
                       <p style={{ margin: 0 }}>
                         Rate Confirmation:
                         {Array.isArray(load_selected.rateConfirmation) &&
-                        load_selected.rateConfirmation.length > 0 &&
-                        typeof load_selected.rateConfirmation[0] !==
+                          load_selected.rateConfirmation.length > 0 &&
+                          typeof load_selected.rateConfirmation[0] !==
                           "string" ? (
                           <Button
                             onClick={() => deleteDocument("rateConfirmation")}
@@ -378,8 +376,8 @@ export default function InvoiceWizard({
                       <p style={{ margin: 0 }}>
                         Proof of Delivery:
                         {Array.isArray(load_selected.proofDelivery) &&
-                        load_selected.proofDelivery.length > 0 &&
-                        typeof load_selected.proofDelivery[0] !== "string" ? (
+                          load_selected.proofDelivery.length > 0 &&
+                          typeof load_selected.proofDelivery[0] !== "string" ? (
                           <Button
                             onClick={() => deleteDocument("proofDelivery")}
                             variant="contained"

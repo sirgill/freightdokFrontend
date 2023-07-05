@@ -1,18 +1,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
-  Paper,
-  withStyles,
   Grid,
   TextField,
   Button,
-  FormControlLabel,
-  Checkbox,
 } from "@material-ui/core";
-import { Face, Fingerprint } from "@material-ui/icons";
-import { Link, withRouter } from "react-router-dom";
+import { Face, Fingerprint } from "@mui/icons-material";
+import { withRouter } from "react-router-dom";
 import { addLoad } from "../../actions/load";
 
 const LoadForm = ({ addLoad }) => {

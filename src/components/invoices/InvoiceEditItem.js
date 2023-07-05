@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import EditIcon from "@material-ui/icons/Edit";
+import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import LoadDetailModal from '../loads/LoadDetailModal';
 
-export default function InvocieEditItem ({ invoice }) {
+export default function InvocieEditItem({ invoice }) {
 
     const [modalEdit, enableEdit] = useState(false);
     const [open, setOpen] = useState(false);
@@ -13,21 +13,21 @@ export default function InvocieEditItem ({ invoice }) {
         enableEdit(true);
     };
 
-    return(
+    return (
         <React.Fragment>
             <IconButton>
-                <EditIcon color="primary" onClick={() => handleEditLoad()}/>
+                <EditIcon color="primary" onClick={() => handleEditLoad()} />
             </IconButton>
-            <LoadDetailModal 
+            <LoadDetailModal
                 modalEdit={modalEdit}
                 open={open}
-                load={invoice} 
-                handleClose={()=>{
+                load={invoice}
+                handleClose={() => {
                     setOpen(false);
                     enableEdit(false);
                 }}
             />
         </React.Fragment>
-        
+
     )
 }

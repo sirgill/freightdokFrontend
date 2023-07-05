@@ -6,7 +6,7 @@ import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@mui/material/List";
-import MenuIcon from "@material-ui/icons/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@material-ui/core/styles";
@@ -261,14 +261,14 @@ const Dashboard = ({
                         className="accountDashboardLink"
                     />
                 )}
-                {/*<ListItemHelper*/}
-                {/*    onClick={() => {*/}
-                {/*        setListBarType("facilities");*/}
-                {/*    }}*/}
-                {/*    icon={FacilitiesIcon}*/}
-                {/*    primary={"Facilities"}*/}
-                {/*    listBarType={listBarType}*/}
-                {/*/>*/}
+                {/* <ListItemHelper
+                    onClick={() => {
+                        setListBarType("facilities");
+                    }}
+                    icon={FacilitiesIcon}
+                    primary={"Facilities"}
+                    listBarType={listBarType}
+                /> */}
                 <ListItemHelper
                     onClick={() => {
                         setListBarType("carrierProfile");

@@ -55,9 +55,10 @@ export default function Modal(props) {
       title = "",
       closeUrl = "",
       okButtonText = "Save",
-        showClose = true,
+      showClose = true,
       onOk = _.noop(),
-      paperProps = {}
+      paperProps = {},
+      maxWidth='xl'
     } = config;
   const [open, setOpen] = React.useState(false);
 
@@ -96,12 +97,11 @@ export default function Modal(props) {
   }, []);
 
   return (
-    <div>
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
-        maxWidth={"xl"}
+        maxWidth={maxWidth}
         TransitionComponent={Transition}
         PaperProps={paperProps}
       >
@@ -119,6 +119,5 @@ export default function Modal(props) {
           </Button>
         </DialogActions> */}
       </BootstrapDialog>
-    </div>
   );
 }

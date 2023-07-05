@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material'
-import { Edit } from '@material-ui/icons';
-import {makeStyles} from '@material-ui/core';
+import { Edit } from '@mui/icons-material';
+import { makeStyles } from '@material-ui/core';
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -98,7 +98,7 @@ function Preview(props) {
             <Dialog maxWidth='xl' onClose={closeModal} aria-labelledby="customized-dialog-title" open={true}>
                 <DialogContent dividers>
                     <DialogTitle className={classes.formTitle} id="customized-dialog-title" onClose={() => null}>
-                        <Typography sx={{fontWeight: 600}}>{data.name || 'Warehouse'}</Typography>
+                        <Typography sx={{ fontWeight: 600 }}>{data.name || 'Warehouse'}</Typography>
                     </DialogTitle>
                     <InfoComponent data={data} hasPermission={hasPermission} />
                 </DialogContent>
