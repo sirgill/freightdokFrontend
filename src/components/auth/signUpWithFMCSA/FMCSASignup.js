@@ -38,7 +38,8 @@ const FMCSASignup = (props) => {
         else if (!isEmailValid(email)) {
             setError(error => ({ ...error, email: "Invalid Email" }));
         } else {
-            const { success, data } = await requestPost({ uri: '/api/onBoarding', body: { email, phoneNumber: '+1' + phoneNumber, dot: dotNumber } })
+            const body = { email, phoneNumber: '+1' + phoneNumber, dot: dotNumber, fmcsaDetails: state.content }
+            const { success, data } = await requestPost({ uri: '/api/onBoarding', body })
             if (success) {
                 setIsSuccess(true);
             } else {
