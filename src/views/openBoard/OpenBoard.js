@@ -52,30 +52,6 @@ const OpenBoard = () => {
         setDialog((prev) => ({...prev, open: true, content}));
     }, [])
 
-    const modifyChRobinsonFilters = (filters) => {
-        const { destination, origin } = filters;
-        if (destination) {
-            filters.destinations = [
-                {
-                    countryCode: "US",
-                    stateCodes: destination.split(",")
-                },
-            ]
-        }
-        if (origin) {
-            filters.origins = [
-                {
-                    countryCode: "US",
-                    stateCodes: origin.split(","),
-                },
-            ];
-        }
-        delete filters.origin;
-        delete filters.destination;
-        return filters;
-
-    }
-
     const onFilterChange = (fromDate, toDate, type) => {
         if (fromDate.name === "origin" || fromDate.name === "destination") {
             const filtersAltered = { ...filters, [fromDate.name]: fromDate.value }
@@ -98,7 +74,7 @@ const OpenBoard = () => {
     const submitFilters = useCallback((e) => {
         e.preventDefault()
         getBiddingList();
-    }, [getBiddingList])
+    }, [getBiddingList]);
 
     useEffect(() => {
         getBiddingList();
@@ -135,6 +111,7 @@ const OpenBoard = () => {
                 </Stack>
             </Stack>
             <NewtrulFilters
+                defaultParams={payload}
                 setParams={setParams}
                 setFilters={setFilters}
                 pageSize={filters.pageSize}

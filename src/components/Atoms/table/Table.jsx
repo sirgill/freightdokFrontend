@@ -1,16 +1,28 @@
-import {Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
+import {
+    Grid,
+    IconButton,
+    Paper,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
+} from '@mui/material';
 import _ from 'lodash';
 import React, {Fragment, memo, useEffect, useMemo, useState} from 'react';
 import {withRouter} from 'react-router-dom';
 import TablePagination from './Pagination';
 import Spinner from "../../layout/Spinner";
-import {Delete} from "@mui/icons-material";
+import {Delete, Refresh} from "@mui/icons-material";
 
 function Headers({columns = [], config = {}}) {
     const {headerCellSx = {}, hasDelete} = config;
     const headers = useMemo(() => {
         return columns.map((column, index) => {
             const {label = '', id = '', visible = true} = column || {};
+            // eslint-disable-next-line array-callback-return
             if (!visible) return;
             return (
                 <TableCell padding={'normal'} sx={{color: '#000', fontWeight: 800, ...headerCellSx}}
@@ -83,8 +95,7 @@ const TableData = ({columns, data = [], config = {}, handleRowClick}) => {
 }
 
 
-const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
-
+const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch}) => {
 
     const [tableState, setTableState] = useState({}),
         {
@@ -96,7 +107,8 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
             count,
             limit,
             emptyMessage = '',
-            onRowClickDataCallback
+            onRowClickDataCallback,
+            showRefresh = false
         } = config,
         ref = React.useRef([]);
 
@@ -151,9 +163,14 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
             const calculatedHeight = ref.current.table.offsetHeight;
             setTableState({...tableState, height: calculatedHeight > 200 ? calculatedHeight : undefined})
         }
-    }, [])
+    }, [tableState])
 
     return <div>
+        {showRefresh && <Stack alignItems='flex-end'>
+            <IconButton title='Refresh' onClick={onRefetch}>
+                <Refresh className={loading ? 'rotateIcon' : undefined}/>
+            </IconButton>
+        </Stack>}
         <TableContainer
             component={Paper}
             className={''}

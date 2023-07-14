@@ -37,12 +37,21 @@ const MyBids = () => {
 
     useEffect(() => {
         getMybids();
+        //Poll mybids api
+        const bidIntervals = setInterval(() => {
+            getAllBiddings().then(res => {
+                setMyBids(res.data)
+            })
+        }, 3000)
+
+        return () => clearInterval(bidIntervals)
     }, [])
 
 
     const tableConfig = {
         rowCellPadding: "normal",
         emptyMessage: "No Bids Found",
+        showRefresh: true,
         onRowClick: ({
                          loadNumber,
                          id,
@@ -207,7 +216,7 @@ const MyBids = () => {
 
     return (
         <div>
-            <EnhancedTable config={tableConfig} data={myBids} loading={loading}/>
+            <EnhancedTable config={tableConfig} data={myBids} loading={loading} onRefetch={getMybids}/>
             <Switch>
                 <Route path={path + '/bid/:loadNumber'} render={(props) => <CHRobinsonBid {...props} onCloseUrl={path} onRefresh={getMybids} />}/>
                 <Route path={path + "/newtrul/:loadId"}

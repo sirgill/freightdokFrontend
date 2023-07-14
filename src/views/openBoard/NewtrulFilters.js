@@ -49,8 +49,10 @@ const getQueryString = (form) => {
     return serialize(form)
 }
 
-const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setParams}) => {
-    const [form, setForm] = useState({originRadio: 'origin_city', destinationRadio: 'destination_city'});
+const FORM_DEFAULT = {originRadio: 'origin_city', destinationRadio: 'destination_city', destination_radius: '', origin_radius: ''}
+const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setParams, defaultParams}) => {
+    const [form, setForm] = useState(FORM_DEFAULT);
+    const [parentOnClear, setParentOnClear] = useState(false)
 
     const onChange = ({name, value}) => {
         if (name === 'pickup') {
@@ -72,11 +74,9 @@ const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setPar
     }
 
     const handleRadioChange = useCallback(({name, value}) => {
-
         setForm({...form, [name + 'Radio']: value})
     }, [form])
 
-    // console.log(form)
     const onSubmit = async (e) => {
         e.preventDefault();
         const dates = ["pick_up_start_date", "pick_up_end_date", "drop_off_start_date", "drop_off_end_date"]
@@ -98,15 +98,15 @@ const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setPar
         })
         delete obj.originRadio
         delete obj.destinationRadio
-        if(obj.destination_radius){
+        if (obj.destination_radius) {
             const {data: {data, success} = {}} = await geoLocationService({address: obj.destination});
-            if(success){
+            if (success) {
                 obj['destinationGeoLocation'] = data;
             }
         }
-        if(obj.origin_radius){
+        if (obj.origin_radius) {
             const {data: {data, success} = {}} = await geoLocationService({address: obj.origin});
-            if(success){
+            if (success) {
                 obj['originGeoLocation'] = data;
             }
         }
@@ -116,11 +116,19 @@ const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setPar
         getNewTrulList(pageSize, pageIndex, params)
     }
 
+    const onClear = () => {
+        setForm(() => FORM_DEFAULT)
+        setParentOnClear(true);
+        setFilters(defaultParams);
+        setTimeout(() => {
+            setParentOnClear(false);
+        }, 200)
+    }
 
     return (
         <Grid container gap={1} component={'form'} noValidate onSubmit={onSubmit} flexWrap={'wrap'}>
             <Stack>
-                <SearchAutoComplete label='Origin' onSelect={onChange} name='origin'/>
+                <SearchAutoComplete label='Origin' onSelect={onChange} name='origin' parentOnClear={parentOnClear}/>
                 <FormControl sx={{m: 0.5}} variant="standard">
                     <RadioButtonsGroup
                         parentValue={form['originRadio']}
@@ -140,7 +148,8 @@ const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setPar
                 name='origin_radius'
             />
             <Stack>
-                <SearchAutoComplete name='destination' label='Destination' onSelect={onChange}/>
+                <SearchAutoComplete name='destination' label='Destination' onSelect={onChange}
+                                    parentOnClear={parentOnClear}/>
                 <FormControl sx={{m: 0.5}} variant="standard">
                     <RadioButtonsGroup
                         config={radioConfig2}
@@ -178,6 +187,9 @@ const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setPar
             </Stack>
             <Stack>
                 <Button type={'submit'} variant='contained'>Search</Button>
+            </Stack>
+            <Stack>
+                <Button onClick={onClear} variant='outlined'>Clear</Button>
             </Stack>
         </Grid>
     )

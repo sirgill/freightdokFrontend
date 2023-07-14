@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -6,12 +6,15 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import _ from 'lodash'
+import PropTypes from "prop-types";
 import {requestGet} from "../../utils/request";
 import {notification} from "../../actions/alert";
 
 
-
-const SearchAutoComplete = ({label='', name, onSelect}) => {
+/*
+* {parentOnClear} - Boolean: Use this flag in parent to reset the states
+* */
+const SearchAutoComplete = ({label='', name, onSelect, parentOnClear}) => {
     const [value, setValue] = React.useState(null);
     const [inputValue, setInputValue] = React.useState('');
     const [options, setOptions] = React.useState([]);
@@ -25,7 +28,7 @@ const SearchAutoComplete = ({label='', name, onSelect}) => {
         [],
     );
 
-    React.useEffect(() => {
+    useEffect(() => {
         let active = true;
 
         if (inputValue === '') {
@@ -62,6 +65,13 @@ const SearchAutoComplete = ({label='', name, onSelect}) => {
             active = false;
         };
     }, [value, inputValue, fetch]);
+
+    useEffect(() => {
+        if(parentOnClear){
+            setValue(null);
+            setInputValue('');
+        }
+    }, [parentOnClear])
 
     return (
         <Autocomplete
@@ -110,3 +120,10 @@ const SearchAutoComplete = ({label='', name, onSelect}) => {
 }
 
 export default SearchAutoComplete;
+
+SearchAutoComplete.prototype = {
+    label: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    onSelect: PropTypes.func,
+    parentOnClear: PropTypes.bool
+}
