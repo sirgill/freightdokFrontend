@@ -151,12 +151,17 @@ const LoadDetailModal = ({
   const setupDrivers = () => {
     dispatch(getDrivers());
   };
+
+  const afterSubmit = (isSuccess) => {
+    if(isSuccess) handleClose();
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if (form.status !== "Empty") {
       form.invoice_created = false;
     }
-    dispatch(updateLoad({ ...form, _id }, listBarType, bktFiles));
+    dispatch(updateLoad({ ...form, _id }, listBarType, bktFiles, afterSubmit));
     // resetFileInputs();
   };
   const handleOnChange = (event) => {
@@ -213,7 +218,7 @@ const LoadDetailModal = ({
     let body = { ...load };
     body = changeObjectKey(body, "pickup", "pickUp");
     body = changeObjectKey(body, "drop", "dropOff");
-    dispatch(addLoad(body));
+    dispatch(addLoad(body, afterSubmit));
   };
 
   if (bucketFiles.length) {

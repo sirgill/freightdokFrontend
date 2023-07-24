@@ -67,7 +67,6 @@ const Dashboard = ({
     const classes = useStyles();
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    const [anchorEl, setAnchorEl] = React.useState(null);
 
     const { page, limit } = useSelector((state) => state.load.search);
     const dispatch = useDispatch();
@@ -381,7 +380,7 @@ const Dashboard = ({
                     {listBarType === "My Loads" && (
                         <main className={classes.contentLoadList}>
                             <div className={classes.toolbar} />
-                            <Loadlistbar resetSearchField={resetSearchField} />
+                            <Loadlistbar resetSearchField={resetSearchField} searchText={search} />
                             <div className={classes.fab}>
                                 {(user && user.role === "driver") || <AddLoadForm />}
                             </div>

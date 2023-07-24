@@ -157,11 +157,16 @@ const AddLoadForm = ({ addLoad, user }) => {
         }
     };
 
+    const afterSubmit = (isSuccess) => {
+        if(isSuccess){
+            handleClose()
+        }
+    }
+
     const onSubmit = (e) => {
         e.preventDefault();
         handleNewPickDrop();
-        addLoad(form);
-        handleClose();
+        addLoad(form, afterSubmit);
     };
 
     return (

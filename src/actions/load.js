@@ -133,7 +133,7 @@ export const resetLoadsSearch =
     const {
       load: { page, rowsPerPage },
     } = getState();
-    dispatch(getLoads(+page, +rowsPerPage, listBarType));
+    // dispatch(getLoads(+page, +rowsPerPage, listBarType));
   };
 
 export const selectLoad = (input = null) => ({
@@ -156,14 +156,13 @@ export const getLoad = (id) => async (dispatch) => {
 };
 
 //add load
-export const addLoad = (formData) => async (dispatch) => {
+export const addLoad = (formData, callback) => async (dispatch) => {
   try {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-    console.log("=========================  LOADINF...............");
     const res = await axios.post("/api/load", formData, config);
 
     dispatch({
@@ -171,14 +170,16 @@ export const addLoad = (formData) => async (dispatch) => {
       payload: res.data,
     });
 
-    dispatch(setAlert("Load Created", "success"));
+    notification("Load Created")
+    if(callback){
+      callback(res.status === 200, res.data)
+    }
   } catch (err) {
     dispatch(setAlert(err.message, "error"));
   }
 };
 
-export const updateLoad = (formData, module = "", bucketFiles = {}) =>
-  async (dispatch, getState) => {
+export const updateLoad = (formData, module = "", bucketFiles = {}, callback) => async (dispatch, getState) => {
     try {
       const form = new FormData();
       for (let key of Object.keys(formData)) {
@@ -207,6 +208,7 @@ export const updateLoad = (formData, module = "", bucketFiles = {}) =>
       } = getState();
       if (!query) dispatch(getLoads(0, 5, module));
       else dispatch(searchLoads(page, limit, query));
+      callback(success, data)
     } catch (err) {
       notification(err.message, "error");
     }
