@@ -1,20 +1,20 @@
-import {Button, FormControl, Grid, Stack} from "@mui/material";
-import React, {useCallback, useState} from "react";
+import { Button, FormControl, Grid, Stack } from "@mui/material";
+import React, { useCallback, useState } from "react";
 import moment from "moment";
 import AutoComplete from "../../components/Atoms/form/AutoComplete";
 import RadioButtonsGroup from "../../components/Atoms/form/RadioButtons";
 import DateRangePicker from "../../components/Atoms/form/DateRangePicker";
 import SearchAutoComplete from "../../components/Atoms/SearchAutoComplete";
 import Input from "../../components/Atoms/form/Input";
-import {geoLocationService} from "../../actions/warehouse";
+import { geoLocationService } from "../../actions/warehouse";
 
 const radioConfig = {
     title: '',
     defaultValue: 'origin_states[]',
     name: 'origin',
     options: [
-        {label: 'City', value: 'origin_city'},
-        {label: 'State', value: 'origin_states[]'},
+        { label: 'City', value: 'origin_city' },
+        { label: 'State', value: 'origin_states[]' },
     ]
 }
 const radioConfig2 = {
@@ -22,15 +22,15 @@ const radioConfig2 = {
     defaultValue: 'destination_states[]',
     name: 'destination',
     options: [
-        {label: 'City', value: 'destination_city'},
-        {label: 'State', value: 'destination_states[]'},
+        { label: 'City', value: 'destination_city' },
+        { label: 'State', value: 'destination_states[]' },
     ]
 }
 
 const options = [
-    {label: 'Select', value: null},
-    {label: 'Reefer', value: 'Reefer'},
-    {label: 'Dry Van', value: 'Dry Van'},
+    { label: 'Select', value: null },
+    { label: 'Reefer', value: 'Reefer' },
+    { label: 'Dry Van', value: 'Dry Van' },
     // { label: 'Dry Van or Reefer', value: 'Dry Van & Reefer' },
 ]
 
@@ -45,42 +45,56 @@ const serialize = (obj = {}) => {
 }
 
 const getQueryString = (form) => {
-    // console.log(str);
-    return serialize(form)
+    let formCpy = { ...form };
+    if (formCpy['originGeoLocation']) {
+        delete formCpy.originGeoLocation
+    }
+    if (formCpy['destinationGeoLocation']) {
+        delete formCpy.destinationGeoLocation
+    }
+
+    if (!formCpy['originRadius']) {
+        delete formCpy.originRadius
+    }
+    if (!formCpy['destinationRadius']) {
+        delete formCpy.destinationRadius
+    }
+    console.log("formCpy", formCpy);
+    return serialize(formCpy)
 }
 
-const FORM_DEFAULT = {originRadio: 'origin_city', destinationRadio: 'destination_city', destination_radius: '', origin_radius: ''}
-const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setParams, defaultParams}) => {
+const FORM_DEFAULT = { originRadio: 'origin_city', destinationRadio: 'destination_city', destination_radius: '', origin_radius: '' }
+const NewtrulFilters = ({ getNewTrulList, setFilters, pageSize, pageIndex, setParams, defaultParams }) => {
     const [form, setForm] = useState(FORM_DEFAULT);
     const [parentOnClear, setParentOnClear] = useState(false)
 
-    const onChange = ({name, value}) => {
+    const onChange = ({ name, value }) => {
         if (name === 'pickup') {
-            const {startDate, endDate} = value;
+            const { startDate, endDate } = value;
             let obj = {
                 pick_up_start_date: startDate,
                 pick_up_end_date: endDate
             }
-            return setForm({...form, ...obj})
+            return setForm({ ...form, ...obj })
         } else if (name === 'dropOff') {
-            const {startDate, endDate} = value;
+            const { startDate, endDate } = value;
             let obj = {
                 drop_off_start_date: startDate,
                 drop_off_end_date: endDate
             }
-            return setForm({...form, ...obj})
+            return setForm({ ...form, ...obj })
         }
-        setForm({...form, [name]: value});
+        setForm({ ...form, [name]: value });
     }
 
-    const handleRadioChange = useCallback(({name, value}) => {
-        setForm({...form, [name + 'Radio']: value})
+    const handleRadioChange = useCallback(({ name, value }) => {
+        setForm({ ...form, [name + 'Radio']: value })
     }, [form])
 
     const onSubmit = async (e) => {
         e.preventDefault();
         const dates = ["pick_up_start_date", "pick_up_end_date", "drop_off_start_date", "drop_off_end_date"]
-        let obj = {...form}
+        let obj = { ...form }
         if (form['originRadio']) {
             obj[form['originRadio']] = form.origin || ''
         }
@@ -98,19 +112,19 @@ const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setPar
         })
         delete obj.originRadio
         delete obj.destinationRadio
-        if (obj.destination_radius) {
-            const {data: {data, success} = {}} = await geoLocationService({address: obj.destination});
+        if (obj.destination) {
+            const { data: { data, success } = {} } = await geoLocationService({ address: obj.destination });
             if (success) {
                 obj['destinationGeoLocation'] = data;
             }
         }
-        if (obj.origin_radius) {
-            const {data: {data, success} = {}} = await geoLocationService({address: obj.origin});
+        if (obj.origin) {
+            const { data: { data, success } = {} } = await geoLocationService({ address: obj.origin });
             if (success) {
                 obj['originGeoLocation'] = data;
             }
         }
-        setFilters({...obj, pageSize, pageIndex})
+        setFilters({ ...obj, pageSize, pageIndex })
         let params = getQueryString(obj);
         setParams(params);
         getNewTrulList(pageSize, pageIndex, params)
@@ -128,8 +142,8 @@ const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setPar
     return (
         <Grid container gap={1} component={'form'} noValidate onSubmit={onSubmit} flexWrap={'wrap'}>
             <Stack>
-                <SearchAutoComplete label='Origin' onSelect={onChange} name='origin' parentOnClear={parentOnClear}/>
-                <FormControl sx={{m: 0.5}} variant="standard">
+                <SearchAutoComplete label='Origin' onSelect={onChange} name='origin' parentOnClear={parentOnClear} />
+                <FormControl sx={{ m: 0.5 }} variant="standard">
                     <RadioButtonsGroup
                         parentValue={form['originRadio']}
                         config={radioConfig}
@@ -140,17 +154,17 @@ const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setPar
             <Input
                 type={'number'}
                 label='Radius'
-                sx={{width: 100}}
+                sx={{ width: 100 }}
                 placeholder='Miles'
-                inputProps={{min: 1}}
+                inputProps={{ min: 1 }}
                 value={form['origin_radius']}
                 onChange={onChange}
                 name='origin_radius'
             />
             <Stack>
                 <SearchAutoComplete name='destination' label='Destination' onSelect={onChange}
-                                    parentOnClear={parentOnClear}/>
-                <FormControl sx={{m: 0.5}} variant="standard">
+                    parentOnClear={parentOnClear} />
+                <FormControl sx={{ m: 0.5 }} variant="standard">
                     <RadioButtonsGroup
                         config={radioConfig2}
                         onChange={handleRadioChange}
@@ -161,9 +175,9 @@ const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setPar
             <Input
                 type={'number'}
                 label='Radius'
-                sx={{width: 100}}
+                sx={{ width: 100 }}
                 placeholder='Miles'
-                inputProps={{min: 1}}
+                inputProps={{ min: 1 }}
                 value={form['destination_radius']}
                 onChange={onChange}
                 name='destination_radius'
@@ -176,14 +190,14 @@ const NewtrulFilters = ({getNewTrulList, setFilters, pageSize, pageIndex, setPar
                     size={'small'}
                     onChange={onChange}
                     name='equipments[]'
-                    sx={{minWidth: 200, width: 'inherit'}}
+                    sx={{ minWidth: 200, width: 'inherit' }}
                 />
             </Stack>
             <Stack>
-                <DateRangePicker label={'Pick Up Date Range'} name='pickup' onChange={onChange}/>
+                <DateRangePicker label={'Pick Up Date Range'} name='pickup' onChange={onChange} />
             </Stack>
             <Stack>
-                <DateRangePicker name='dropOff' onChange={onChange} label='Drop Off Date Range'/>
+                <DateRangePicker name='dropOff' onChange={onChange} label='Drop Off Date Range' />
             </Stack>
             <Stack>
                 <Button type={'submit'} variant='contained'>Search</Button>

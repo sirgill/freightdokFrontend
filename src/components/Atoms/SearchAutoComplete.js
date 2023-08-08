@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -7,14 +7,14 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import _ from 'lodash'
 import PropTypes from "prop-types";
-import {requestGet} from "../../utils/request";
-import {notification} from "../../actions/alert";
+import { requestGet } from "../../utils/request";
+import { notification } from "../../actions/alert";
 
 
 /*
 * {parentOnClear} - Boolean: Use this flag in parent to reset the states
 * */
-const SearchAutoComplete = ({label='', name, onSelect, parentOnClear}) => {
+const SearchAutoComplete = ({ label = '', name, onSelect, parentOnClear }) => {
     const [value, setValue] = React.useState(null);
     const [inputValue, setInputValue] = React.useState('');
     const [options, setOptions] = React.useState([]);
@@ -22,7 +22,7 @@ const SearchAutoComplete = ({label='', name, onSelect, parentOnClear}) => {
     const fetch = React.useMemo(
         () =>
             _.debounce((request, callback) => {
-                requestGet({uri: '/api/searchLocationAutocomplete?search=' + request.input})
+                requestGet({ uri: '/api/searchLocationAutocomplete?search=' + request.input })
                     .then(r => callback(r.data, r.success));
             }, 500),
         [],
@@ -30,6 +30,9 @@ const SearchAutoComplete = ({label='', name, onSelect, parentOnClear}) => {
 
     useEffect(() => {
         let active = true;
+        if (onSelect) {
+            onSelect({ selectedObj: value, value: inputValue, name })
+        }
 
         if (inputValue === '') {
             setOptions(value ? [value] : []);
@@ -40,7 +43,7 @@ const SearchAutoComplete = ({label='', name, onSelect, parentOnClear}) => {
             if (active) {
                 let newOptions = [];
 
-                if(!success){
+                if (!success) {
                     notification(results.error_message, 'error');
                 }
 
@@ -49,7 +52,7 @@ const SearchAutoComplete = ({label='', name, onSelect, parentOnClear}) => {
                 }
 
                 if (results) {
-                    const {predictions = []} = results;
+                    const { predictions = [] } = results;
                     newOptions = [...newOptions, ...predictions];
                 }
 
@@ -57,17 +60,13 @@ const SearchAutoComplete = ({label='', name, onSelect, parentOnClear}) => {
             }
         });
 
-        if(onSelect) {
-            onSelect({selectedObj: value, value: inputValue, name})
-        }
-
         return () => {
             active = false;
         };
     }, [value, inputValue, fetch]);
 
     useEffect(() => {
-        if(parentOnClear){
+        if (parentOnClear) {
             setValue(null);
             setInputValue('');
         }
