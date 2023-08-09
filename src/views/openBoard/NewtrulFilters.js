@@ -45,22 +45,21 @@ const serialize = (obj = {}) => {
 }
 
 const getQueryString = (form) => {
-    let formCpy = { ...form };
-    if (formCpy['originGeoLocation']) {
-        delete formCpy.originGeoLocation
+    let _form = { ...form };
+    if (_form['originGeoLocation']) {
+        delete _form.originGeoLocation
     }
-    if (formCpy['destinationGeoLocation']) {
-        delete formCpy.destinationGeoLocation
+    if (_form['destinationGeoLocation']) {
+        delete _form.destinationGeoLocation
     }
 
-    if (!formCpy['originRadius']) {
-        delete formCpy.originRadius
+    if (!_form['originRadius']) {
+        delete _form.originRadius
     }
-    if (!formCpy['destinationRadius']) {
-        delete formCpy.destinationRadius
+    if (!_form['destinationRadius']) {
+        delete _form.destinationRadius
     }
-    console.log("formCpy", formCpy);
-    return serialize(formCpy)
+    return serialize(_form)
 }
 
 const FORM_DEFAULT = { originRadio: 'origin_city', destinationRadio: 'destination_city', destination_radius: '', origin_radius: '' }

@@ -73,6 +73,7 @@ const NewTrulLoadDetails = (props) => {
 
     useEffect(() => {
         callDetail && postDetailToNewTrul();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [postDetailToNewTrul])
 
     return (
