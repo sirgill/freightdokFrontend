@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/static/css/main.c0e456c6.chunk.css",
-    "main.js": "/static/js/main.837f630e.chunk.js",
-    "main.js.map": "/static/js/main.837f630e.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.e3d8aa58.js",
-    "runtime-main.js.map": "/static/js/runtime-main.e3d8aa58.js.map",
+    "main.css": "/static/css/main.cda06270.chunk.css",
+    "main.js": "/static/js/main.c28eaae6.chunk.js",
+    "main.js.map": "/static/js/main.c28eaae6.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.5f165568.js",
+    "runtime-main.js.map": "/static/js/runtime-main.5f165568.js.map",
     "static/css/2.51742932.chunk.css": "/static/css/2.51742932.chunk.css",
-    "static/js/2.f9d44943.chunk.js": "/static/js/2.f9d44943.chunk.js",
-    "static/js/2.f9d44943.chunk.js.map": "/static/js/2.f9d44943.chunk.js.map",
-    "static/js/3.2ef91ea1.chunk.js": "/static/js/3.2ef91ea1.chunk.js",
-    "static/js/3.2ef91ea1.chunk.js.map": "/static/js/3.2ef91ea1.chunk.js.map",
+    "static/js/2.a5729285.chunk.js": "/static/js/2.a5729285.chunk.js",
+    "static/js/2.a5729285.chunk.js.map": "/static/js/2.a5729285.chunk.js.map",
+    "static/js/3.b061e5e1.chunk.js": "/static/js/3.b061e5e1.chunk.js",
+    "static/js/3.b061e5e1.chunk.js.map": "/static/js/3.b061e5e1.chunk.js.map",
     "index.html": "/index.html",
     "static/css/2.51742932.chunk.css.map": "/static/css/2.51742932.chunk.css.map",
-    "static/css/main.c0e456c6.chunk.css.map": "/static/css/main.c0e456c6.chunk.css.map",
-    "static/js/2.f9d44943.chunk.js.LICENSE.txt": "/static/js/2.f9d44943.chunk.js.LICENSE.txt",
+    "static/css/main.cda06270.chunk.css.map": "/static/css/main.cda06270.chunk.css.map",
+    "static/js/2.a5729285.chunk.js.LICENSE.txt": "/static/js/2.a5729285.chunk.js.LICENSE.txt",
     "static/media/App.css": "/static/media/MyriadPro-Light.1d169f60.otf",
     "static/media/style.css": "/static/media/Oval.52a9d9c9.png",
     "static/media/dummy-user.75a04487.png": "/static/media/dummy-user.75a04487.png",
@@ -24,10 +24,10 @@
     "static/media/settings-18-1-1-1-1-1.71cfb6c4.svg": "/static/media/settings-18-1-1-1-1-1.71cfb6c4.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.e3d8aa58.js",
+    "static/js/runtime-main.5f165568.js",
     "static/css/2.51742932.chunk.css",
-    "static/js/2.f9d44943.chunk.js",
-    "static/css/main.c0e456c6.chunk.css",
-    "static/js/main.837f630e.chunk.js"
+    "static/js/2.a5729285.chunk.js",
+    "static/css/main.cda06270.chunk.css",
+    "static/js/main.c28eaae6.chunk.js"
   ]
 }
