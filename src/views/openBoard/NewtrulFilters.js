@@ -123,10 +123,11 @@ const NewtrulFilters = ({ getNewTrulList, setFilters, pageSize, pageIndex, setPa
                 obj['originGeoLocation'] = data;
             }
         }
-        setFilters({ ...obj, pageSize, pageIndex })
+        const filters = { ...obj, pageSize, pageIndex }
+        setFilters(filters)
         let params = getQueryString(obj);
         setParams(params);
-        getNewTrulList(pageSize, pageIndex, params)
+        getNewTrulList(filters, params);
     }
 
     const onClear = () => {
@@ -134,6 +135,7 @@ const NewtrulFilters = ({ getNewTrulList, setFilters, pageSize, pageIndex, setPa
         setParentOnClear(true);
         setFilters(defaultParams);
         setTimeout(() => {
+            getNewTrulList(defaultParams);
             setParentOnClear(false);
         }, 200)
     }

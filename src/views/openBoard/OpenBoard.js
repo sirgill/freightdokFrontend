@@ -35,8 +35,8 @@ const OpenBoard = () => {
         {data: {results, totalResults} = {}, loading = false} = useSelector((state) => state.openBoard),
         history = useHistory();
 
-    const getNewTrulList = useCallback(() => {
-        // dispatch(getNewTrulLoads(pageSize, pageIndex, params))
+    const getBidListWithFilter = useCallback((filters, params = '') => {
+        dispatch(getNewLoads({...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageSize: 100}))
     }, [])
 
     const getBiddingList = useCallback(() => {
@@ -58,11 +58,14 @@ const OpenBoard = () => {
 
         return () => removeEvent(window, 'getBiddings', getBiddingList);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filters]);
+    }, []);
 
 
     const onPageChange = (e, pgNum) => {
-        setFilters(() => ({...filters, pageIndex: pgNum - 1}));
+        setFilters((prev) => {
+            getBidListWithFilter({...prev, pageIndex: pgNum - 1}, params);
+            return {...prev, pageIndex: pgNum - 1}
+        });
     };
 
     const table = useMemo(() => <EnhancedTable
@@ -87,7 +90,8 @@ const OpenBoard = () => {
                 setFilters={setFilters}
                 pageSize={filters.pageSize}
                 pageIndex={filters.pageIndex}
-                getNewTrulList={getNewTrulList}
+                getNewTrulList={getBidListWithFilter}
+                onRefetch={getBiddingList}
             />
             {table}
             <Route path={path + "/newtrul/:loadId"} component={NewTrulLoadDetails}/>
