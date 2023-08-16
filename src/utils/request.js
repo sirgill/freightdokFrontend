@@ -36,7 +36,7 @@ const regulateService = (config, callback, showTriggers = true) => {
                 return {}
             }
             return {
-                success: false, data, status
+                success: false, data, status, message: err.message
             }
         })
 }

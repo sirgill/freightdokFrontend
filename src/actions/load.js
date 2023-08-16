@@ -23,7 +23,7 @@ import {
   MERGE_LOAD_DOCS,
   RESET_INVOICE_GENERATED,
 } from "./types";
-import {requestPatch} from "../utils/request";
+import {requestDelete, requestPatch} from "../utils/request";
 
 // import { proxy } from "../../package.json";
 
@@ -263,16 +263,19 @@ export const patchDrop = (load_id, drop) => async (dispatch) => {
 };
 
 // Delete a load
-export const deleteLoad = (load_id) => async (dispatch) => {
+export const deleteLoad = (load_id, callback) => async (dispatch) => {
   try {
-    const res = await axios.delete(`/api/load`, { data: { load_id: load_id } });
-    console.log("RES: ", res);
-    dispatch({
-      type: DELETE_LOAD,
-      payload: load_id,
-    });
+    const {success, data} = await requestDelete({uri: '/api/load', body: { data: { load_id: load_id } }})
+    notification(data.message, success ? 'success' : 'error');
+    if(success){
+      dispatch({
+        type: DELETE_LOAD,
+        payload: load_id,
+      });
+    }
+    callback && callback(success, data)
   } catch (err) {
-    dispatch(setAlert(err.message, "error"));
+    notification(err.message, 'error')
   }
 };
 

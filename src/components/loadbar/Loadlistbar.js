@@ -73,6 +73,14 @@ const Loadlistbar = ({
         else getLoads(0, limit);
     };
 
+    const onDelete = (id) => {
+        dispatch(deleteLoad(id, (success, data) => {
+            if(success){
+                getLoads(page);
+            }
+        }))
+    }
+
     const tableConfig = {
         onRowClick: (row) => setOpen({open: true, data: row}),
         rowCellPadding: 'inherit',
@@ -80,6 +88,8 @@ const Loadlistbar = ({
         page: page,
         limit: query ? sPage : rowsPerPage,
         onPageChange: handleChangePage,
+        hasDelete: true,
+        onDelete,
         columns: [
             {
                 id: 'loadNumber',

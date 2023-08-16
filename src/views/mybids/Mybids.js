@@ -1,6 +1,5 @@
-import React, {Fragment, useEffect, useState} from "react";
+import React, {Fragment, useEffect} from "react";
 import EnhancedTable from "../../components/Atoms/table/Table"
-import {getAllBiddings} from "../../actions/openBoard.action";
 import {Button} from "@mui/material";
 import {useRouteMatch, useHistory} from "react-router"
 import moment from "moment";
@@ -8,7 +7,7 @@ import {Route, Switch} from "react-router-dom";
 import CHRobinsonBid from "./bids/CHRobinsonBid";
 import NewTrulLoadDetails from "../openBoard/NewTrulLoadDetails";
 import prepareBidDataForNewTrul from "./bids/constant";
-
+import useFetch from "../../hooks/useFetch";
 
 const getBidStatus = (bidLevel) => {
     if (bidLevel === 2) {
@@ -24,27 +23,16 @@ const getBidStatus = (bidLevel) => {
 const MyBids = () => {
     const {path} = useRouteMatch()
     const history = useHistory()
-    const [myBids, setMyBids] = React.useState([]);
-    const [loading, setloading] = useState(false)
-
-    const getMybids = () => {
-        setloading(true)
-        getAllBiddings().then(res => {
-            setMyBids(res.data)
-        })
-            .finally(() => setloading(false))
-    }
+    const {data = {}, loading: dLoading, refetch} = useFetch('/api/bid/biddings'),
+        {data: bidsData = [], totalCount = 0} = data || {};
 
     useEffect(() => {
-        getMybids();
         //Poll mybids api
         const bidIntervals = setInterval(() => {
-            getAllBiddings().then(res => {
-                setMyBids(res.data)
-            })
-        }, 3000)
+            refetch();
+        }, 5000);
 
-        return () => clearInterval(bidIntervals)
+        return () => clearInterval(bidIntervals);
     }, [])
 
 
@@ -58,7 +46,7 @@ const MyBids = () => {
                          vendorName = ''
                      }) => vendorName.toLowerCase() === 'new trul' ? `${path}/newtrul/${loadNumber}` : `${path}/${loadNumber}`,
         onRowClickDataCallback: (row) => row.loadDetail || {},
-        count: myBids.length,
+        count: totalCount,
         rowStyleCb: ({row}) => {
             const {bidLevel, status} = row;
             //to show rejected, bidlevel:1 and status false
@@ -205,7 +193,7 @@ const MyBids = () => {
                                     });
                                 }}
                             >
-                                {(isCounterOffer || isFinalOffer) ? 'View' : 'Bid +'}
+                                View
                             </Button>}
                         </Fragment>
                     );
@@ -216,9 +204,9 @@ const MyBids = () => {
 
     return (
         <div>
-            <EnhancedTable config={tableConfig} data={myBids} loading={loading} onRefetch={getMybids}/>
+            <EnhancedTable config={tableConfig} data={bidsData} loading={dLoading} onRefetch={refetch}/>
             <Switch>
-                <Route path={path + '/bid/:loadNumber'} render={(props) => <CHRobinsonBid {...props} onCloseUrl={path} onRefresh={getMybids} />}/>
+                <Route path={path + '/bid/:loadNumber'} render={(props) => <CHRobinsonBid {...props} onCloseUrl={path} onRefresh={refetch} />}/>
                 <Route path={path + "/newtrul/:loadId"}
                        render={(props) => <NewTrulLoadDetails {...props} callDetail={false}/>}/>
             </Switch>

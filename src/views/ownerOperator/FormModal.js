@@ -5,13 +5,13 @@ import DialogContent from "@mui/material/DialogContent";
 import InputField from "../../components/Atoms/form/InputField";
 import Grid from "@mui/material/Grid";
 import Dialog from "@mui/material/Dialog";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import axios from "axios";
 import {getBaseUrl} from "../../config";
 import {notification} from "../../actions/alert";
 import {checkObjProperties, triggerCustomEvent} from "../../utils/utils";
 import {Button} from "@mui/material";
-import {requestPost} from "../../utils/request";
+import useMutation from "../../hooks/useMutation";
 
 const validateForm = ({firstName, lastName, phoneNumber}) => {
     let errors = {}
@@ -40,11 +40,14 @@ const FormModal = (props) => {
     const [users, setUsers] = useState([])
     const [form, setForm] = React.useState(formTemplate);
     const [errors, setErrors] = useState(formTemplate);
+    const {mutation, loading} = useMutation("/api/ownerOperator")
     const updateForm = (e) => {
         const {target: {name, value} = {}} = e
         setForm({...form, [name]: value});
     }
-    const ownerops = (users || []).filter(user => user.role.toLowerCase() === 'owneroperator')
+    const ownerops = useMemo(() => {
+        return (users || []).filter(user => user.role.toLowerCase() === 'owneroperator')
+    }, [users]);
 
     useEffect(() => {
         if (id) {
@@ -71,8 +74,7 @@ const FormModal = (props) => {
         }
     }, [id, ownerops])
 
-    const onBlur = (e) => {
-        const {target: {name, value}} = e;
+    const onBlur = (name, value) => {
         if (value) {
             setErrors({...errors, [name]: ''});
         }
@@ -83,7 +85,7 @@ const FormModal = (props) => {
         const body = {...form};
         const errors = validateForm(body);
         if (_.isEmpty(errors)) {
-            const {success, data} = await requestPost({uri:"/api/ownerOperator", body  })
+            const {success, data} = await mutation(body);
             const {message} = data || {};
             if (success) {
                 notification(message);
@@ -181,7 +183,7 @@ const FormModal = (props) => {
                                     variant={'contained'}
                                     onClick={onSubmit}
                                     style={{width: '100%'}}
-                                    disabled={!checkObjProperties(form)}
+                                    disabled={!checkObjProperties(form) || loading}
                                 >
                                     Save
                                 </Button>

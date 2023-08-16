@@ -62,7 +62,6 @@ const MenuProps = {
 const TextPlaceHolder = ({ value }) => (value ? value : "--");
 
 const LoadDetailModal = ({
-  deleteLoad,
   modalEdit,
   open,
   handleClose,
@@ -102,6 +101,7 @@ const LoadDetailModal = ({
       name, _id
     }
   })
+
   useEffect(() => {
     setupDrivers();
     setForm({
