@@ -101,8 +101,15 @@ const OwnerOperator = () => {
         data={row}
         loading={loading}
       />
-        <Button variant='contained' component={Link} to={path + '/ownerOp/add'} className={'addNewOwnerOp'}
-                sx={{position: 'absolute', right: 10, "& .addNewOwnerOp:hover": {color: 'none !important' }}}>Add Owner Operator</Button>
+        <Button
+            variant='contained'
+            component={Link}
+            to={path + '/ownerOp/add'}
+            className={'addNewOwnerOp'}
+            sx={{position: 'absolute', right: 10}}
+        >
+            Add Owner Operator
+        </Button>
       <Route path={path + "/ownerOp/add"} component={FormModal} />
       <Route path={path + "/ownerOp/edit/:id"} component={FormModal} />
     </div>

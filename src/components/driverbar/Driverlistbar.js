@@ -3,7 +3,6 @@ import {connect, shallowEqual, useDispatch, useSelector} from "react-redux";
 import {Button} from "@mui/material";
 import moment from "moment";
 
-import Drivers from "../drivers/Drivers.js";
 import {useStyles} from "../HelperCells.js";
 import EnhancedTable from "../Atoms/table/Table";
 import {getDrivers} from "../../actions/driver";
@@ -85,20 +84,6 @@ const Driverlistbar = (props = {}) => {
         <div className={classes.table}>
             <EnhancedTable config={tableConfig} data={drivers} loading={loading}/>
             {edit.open && <EditDriver closeEditForm={closeEditForm} data={edit.data} isEdit={true}/>}
-            {/*<TableContainer component={Paper} className={classes.TableContainer}>*/}
-            {/*  <Table borderBottom="none" aria-label="caption table">*/}
-            {/*    <TableHead className={classes.TableContainer}>*/}
-            {/*      <TableRow>*/}
-            {/*        <TableCell />*/}
-            {/*        <TableCell align="center">First Name</TableCell>*/}
-            {/*        <TableCell align="center">Last Name</TableCell>*/}
-            {/*        <TableCell align="center">Phone #</TableCell>*/}
-            {/*        <TableCell align="center" />*/}
-            {/*      </TableRow>*/}
-            {/*    </TableHead>*/}
-            {/*    <Drivers />*/}
-            {/*  </Table>*/}
-            {/*</TableContainer>*/}
         </div>
     );
 };

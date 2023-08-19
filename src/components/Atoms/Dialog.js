@@ -1,91 +1,51 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
-import { Dialog as MUIDialog } from '@mui/material';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
+import MuiDialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
-const BootstrapDialog = styled(MUIDialog)(({ theme }) => ({
-    '& .MuiDialogContent-root': {
-        padding: theme.spacing(2),
-    },
-    '& .MuiDialogActions-root': {
-        padding: theme.spacing(1),
-    },
-}));
 
-function BootstrapDialogTitle(props) {
-    const { children, onClose, ...other } = props;
+export default function Dialog(props) {
+    const {open, config, onClose, preventBackdropClose = false, className} = props,
+        {title, onOk, okText = 'Save', content} = config;
 
-    return (
-        <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-            {children}
-            {onClose ? (
-                <IconButton
-                    aria-label="close"
-                    onClick={onClose}
-                    sx={{
-                        position: 'absolute',
-                        right: 8,
-                        top: 8,
-                        color: (theme) => theme.palette.grey[500],
-                    }}
-                >
-                    <CloseIcon />
-                </IconButton>
-            ) : null}
-        </DialogTitle>
-    );
-}
-
-BootstrapDialogTitle.propTypes = {
-    children: PropTypes.node,
-    onClose: PropTypes.func.isRequired,
-};
-
-export default function Dialog({ children, config, onClose }) {
-    const { open, content, okButtonText, onOk, title, maxWidth = 'xs' } = config;
-
-    const onConfirm = (e) => {
-        if (onOk) {
-            onOk(onClose, e)
-        } else {
-            onClose()
+    const handleClose = (e, reason = '') => {
+        if (preventBackdropClose && reason.equalsIgnoreCase('backdropclick')) {
+            return
         }
+        onClose()
     }
 
     return (
         <div>
-            <BootstrapDialog
-                onClose={onClose}
-                aria-labelledby="customized-dialog-title"
+            <MuiDialog
+                className={className}
                 open={open}
-                maxWidth={maxWidth}
                 TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
             >
-                <BootstrapDialogTitle id="customized-dialog-title" onClose={onClose}>
-                    {title === 'function' ? title() : title}
-                </BootstrapDialogTitle>
-                <DialogContent dividers>
-                    {content}
+                {typeof title === 'function' ? title({...config}) :
+                    <DialogTitle sx={{fontWeight: 550}}>{title}</DialogTitle>}
+                <DialogContent>
+                    {typeof content === 'function' ? content({config}) : content}
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={onClose}>
-                        Cancel
-                    </Button>
-                    <Button autoFocus onClick={onConfirm} variant='contained'>
-                        {okButtonText || 'Save changes'}
-                    </Button>
+                    <Button variant='outlined' onClick={handleClose}>Cancel</Button>
+                    {typeof okText === 'function' ? okText({config, onOk}) : <Button variant='contained'
+                                                                                     color={okText.equalsIgnoreCase('delete') ? 'error' : 'primary'}
+                                                                                     onClick={onOk}
+                    >
+                        {okText}
+                    </Button>}
                 </DialogActions>
-            </BootstrapDialog>
+            </MuiDialog>
         </div>
     );
 }

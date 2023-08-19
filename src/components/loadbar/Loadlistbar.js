@@ -73,17 +73,18 @@ const Loadlistbar = ({
         else getLoads(0, limit);
     };
 
-    const onDelete = (id) => {
+    const onDelete = (id, onDialogClose) => {
         dispatch(deleteLoad(id, (success, data) => {
             if(success){
-                getLoads(page);
+                setTimeout(() => getLoads(page), 500)
+                onDialogClose();
             }
         }))
     }
 
     const tableConfig = {
         onRowClick: (row) => setOpen({open: true, data: row}),
-        rowCellPadding: 'inherit',
+        rowCellPadding: 'normal',
         count: query ? sTotal : total,
         page: page,
         limit: query ? sPage : rowsPerPage,

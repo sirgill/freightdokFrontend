@@ -238,7 +238,7 @@ const Dashboard = ({
                 {user && user.role === "admin" && (
                     <ListItemHelper
                         onClick={() => {
-                            setListBarType("history");
+                            setListBarType("Load History");
                         }}
                         icon={LoadHistoryIcon}
                         primary={"Load History"}
@@ -454,7 +454,7 @@ const Dashboard = ({
                             </div>
                         </main>
                     )}
-                    {listBarType === "history" && (
+                    {listBarType === "Load History" && (
                         <main className={classes.contentLoadList}>
                             <div className={classes.toolbar} />
                             <LoadsStatus

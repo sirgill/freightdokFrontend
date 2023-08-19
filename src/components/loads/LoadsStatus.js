@@ -1,15 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
-import Table from "@material-ui/core/Table";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import LoadsWithStatus from "./LoadsWithStatus.js";
 import { makeStyles } from "@material-ui/core/styles";
 import { resetLoadsSearch } from "../../actions/load.js";
 import { useDispatch, useSelector } from "react-redux";
-import Spinner from "../layout/Spinner";
 import { getLoads, searchLoads, selectLoad } from "../../actions/load";
 import EnhancedTable from "../Atoms/table/Table";
 import LoadDetailModal from "./LoadDetailModal";
@@ -79,7 +71,7 @@ export default function LoadsStatus({ resetSearchField, listBarType }) {
                 renderer: ({ row: { pickup = [] } = {} }) => {
                     const [pickupData = {}] = pickup,
                         { pickupCity = '' } = pickupData;
-                    return <span>{pickupCity}</span>
+                    return pickupCity;
                 }
             },
             {
@@ -100,7 +92,7 @@ export default function LoadsStatus({ resetSearchField, listBarType }) {
                     const [dropData = {}] = drop,
                         { dropCity = '' } = dropData;
                     // console.log('row for pickup city', row)
-                    return <span>{dropCity}</span>
+                    return dropCity
                 }
             },
 
@@ -144,10 +136,7 @@ export default function LoadsStatus({ resetSearchField, listBarType }) {
         ]
     }
     return (
-        <div className={classes.table}>
-            {/*{loading ? (*/}
-            {/*    <Spinner/>*/}
-            {/*) : (*/}
+        <div>
             <Fragment>
                 <EnhancedTable config={tableConfig} data={loads} loading={loading} />
                 {modal.open && <LoadDetailModal
@@ -161,24 +150,6 @@ export default function LoadsStatus({ resetSearchField, listBarType }) {
                         selectLoad();
                     }}
                 />}
-                {/*<TableContainer component={Paper} className={classes.TableContainer}>*/}
-                {/*    <Table borderBottom="none" aria-label="caption table">*/}
-                {/*        <TableHead className={classes.TableContainer}>*/}
-                {/*            <TableRow>*/}
-                {/*                /!* <TableCell align="center"></TableCell> *!/*/}
-                {/*                <TableCell align="center">Load #</TableCell>*/}
-                {/*                <TableCell align="center">Status</TableCell>*/}
-                {/*                <TableCell align="center">Pick</TableCell>*/}
-                {/*                <TableCell align="center">Drop</TableCell>*/}
-                {/*                <TableCell align="center">Rate Confirmation</TableCell>*/}
-                {/*                <TableCell align="center">Proof of delivery</TableCell>*/}
-                {/*                <TableCell align="center">Accessorials</TableCell>*/}
-                {/*                /!* <TableCell align="center" /> *!/*/}
-                {/*            </TableRow>*/}
-                {/*        </TableHead>*/}
-                {/*        <LoadsWithStatus listBarType={listBarType}/>*/}
-                {/*    </Table>*/}
-                {/*</TableContainer>*/}
             </Fragment>
             {/*)}*/}
         </div>
