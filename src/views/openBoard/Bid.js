@@ -24,14 +24,14 @@ import {requestPost} from "../../utils/request";
     "tracking_url": "https://www.google.com/"
 }
 * */
-const saveCHOfferRequestId = (payload = '', history) => {
-    const {success} = requestPost({uri: '/api/bid/saveChOfferRequestId', body: payload});
+const saveCHOfferRequestId = async (payload = '', history) => {
+    const {success} = await requestPost({uri: '/api/bid/saveChOfferRequestId', body: payload});
     if(success){
         history.goBack();
     }
 }
 
-const Form = (props) => {
+const Bid = (props) => {
 
     const {
             location: {state: row = {}} = {},
@@ -56,7 +56,7 @@ const Form = (props) => {
         setAmount(text);
     };
 
-    const afterSubmit = (success, data) => {
+    const afterSubmit = ({success, data}) => {
         if (data?.success || data.status === 'success') {
             if(data.offerRequestId) {
                 const payload = {
@@ -73,7 +73,7 @@ const Form = (props) => {
         }
     }
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         //submit bidding
         e.preventDefault();
         if (vendor === NEWTRUL) {
@@ -121,7 +121,7 @@ const Form = (props) => {
             "currencyCode": "USD",
             availableLoadCost: defaultCost
         }
-        bookNow(loadNumber, body, afterSubmit);
+        await bookNow(loadNumber, body, afterSubmit);
     };
 
     const onSubtract = () => {
@@ -170,4 +170,4 @@ const Form = (props) => {
     );
 };
 
-export default Form;
+export default Bid;

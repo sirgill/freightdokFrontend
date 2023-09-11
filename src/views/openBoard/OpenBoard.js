@@ -4,7 +4,7 @@ import {Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import {LoadDetails} from "./LoadDetails";
 import {getNewLoads} from "../../actions/openBoard.action";
-import Form from "./Form";
+import Bid from "./Bid";
 import {withRouter} from "react-router-dom/cjs/react-router-dom.min";
 import {useDispatch, useSelector} from "react-redux";
 import {developmentPayload, productionPayload} from "./constants";
@@ -96,7 +96,7 @@ const OpenBoard = () => {
             {table}
             <Route path={path + "/newtrul/:loadId"} component={NewTrulLoadDetails}/>
             <Route path={path + "/:loadNumber"} exact component={LoadDetails}/>
-            <Route path={path + "/:loadNumber/bid"} component={Form}/>
+            <Route path={path + "/:loadNumber/bid"} component={Bid}/>
             <Route path={path + "/:loadNumber/bookNow"} component={BookNowForm}/>
             <Dialog onClose={onCloseDialog} config={dialog}/>
         </Stack>

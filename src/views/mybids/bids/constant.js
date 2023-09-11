@@ -13,4 +13,15 @@ const prepareBidDataForNewTrul = (row) => {
     }
 }
 
+export const prepareBidDataForChRobinson = (row) => {
+    const {bidAmount = '', offerStatus, vendorName, event_data = {}} = row || {};
+
+    return {
+        amount: bidAmount,
+        offerStatus,
+        vendorName,
+        event_data
+    }
+}
+
 export default prepareBidDataForNewTrul;

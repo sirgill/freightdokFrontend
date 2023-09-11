@@ -5,10 +5,14 @@ import InputField from "../../../components/Atoms/form/InputField";
 import AddIcon from "@mui/icons-material/Add";
 import React, {Fragment, memo, useEffect, useState} from "react";
 import RemoveIcon from "@mui/icons-material/Remove";
-import prepareBidDataForNewTrul from "./constant";
+import prepareBidDataForNewTrul, {prepareBidDataForChRobinson} from "./constant";
 import {newCounterOfferAction, newTrulFinalOfferAction, placeNewCounterOffer} from "../../../actions/bid.action";
-import {CARRIER_EMAIL, MC_NUMBER} from "../../openBoard/constants";
+import {CARRIER_EMAIL, MC_NUMBER, productionPayload} from "../../openBoard/constants";
 import {notification} from "../../../actions/alert";
+import {bookNow} from "../../../actions/openBoard.action";
+import useMutation from "../../../hooks/useMutation";
+
+const CH_ROBINSON = 'c.h. robinson';
 
 const AmountComponent = ({value, name, handleChange}) => {
     const [amount, setAmount] = useState(value)
@@ -52,20 +56,27 @@ const AmountComponent = ({value, name, handleChange}) => {
     </Fragment>
 }
 
+const OFFER_STATUS_FINAL = ['final_offer_created', 'accepted']
+
 const CHRobinsonBid = (props) => {
     const {location: {state = {}} = {}, history, onCloseUrl, onRefresh} = props,
         {loadNumber = '', vendorName=''} = state;
     const [bidInput, setBidInput] = useState('0.00');
+    const {mutation} = useMutation('/api/bid/deleteBidByLoadNumber/'+loadNumber, afterSubmit)
     const [data, setData] = useState({amount: 0}),
         offerStatus = state?.offerStatus || '',
-        isFinalOffer = offerStatus.equalsIgnoreCase('final_offer_created') || false,
+        isFinalOffer = OFFER_STATUS_FINAL.some(a => a.equalsIgnoreCase(offerStatus)) || false,
     isCounterOffer = offerStatus.equalsIgnoreCase("COUNTER_OFFER_CREATED");
 
     useEffect(() => {
         if(vendorName.equalsIgnoreCase('new trul')){
-            const newTrulState = prepareBidDataForNewTrul(state)
+            const newTrulState = prepareBidDataForNewTrul(state);
             setBidInput(newTrulState.amount);
             setData(newTrulState);
+        } else if(vendorName.equalsIgnoreCase('c.h. robinson')){
+            const chRobinsonState = prepareBidDataForChRobinson(state);
+            setData(chRobinsonState);
+            setBidInput(chRobinsonState.amount)
         }
     }, [state, vendorName])
 
@@ -106,7 +117,16 @@ const CHRobinsonBid = (props) => {
          */
     }
 
-    const bidAction = (action) => {
+    function afterSubmit({success, data}) {
+        if(success){
+            afterUpdate({});
+            notification('Bid success for Load number', loadNumber);
+        } else {
+            notification(data.message, 'error')
+        }
+    }
+
+    const bidAction = (action = '') => {
         const {counterOfferId} = data;
         const payload = {
             offerId: counterOfferId,
@@ -115,7 +135,20 @@ const CHRobinsonBid = (props) => {
             status: action,
         }
         if(isFinalOffer){
-            newTrulFinalOfferAction(payload)
+            if(vendorName.equalsIgnoreCase(CH_ROBINSON)){
+                if(action === 'reject'){
+                    return mutation({}, 'delete');
+                }
+                const body = {
+                    carrierCode: productionPayload.carrierCode,
+                    offerPrice: bidInput,
+                    offerNote: '',
+                    currencyCode: "USD",
+                    availableLoadCost: bidInput
+                }
+                return bookNow(loadNumber, body, afterSubmit);
+            }
+            else newTrulFinalOfferAction(payload)
                 .then(res => {
                     if(res.data.status === 'error'){
                         notification(res.data.message, 'error')

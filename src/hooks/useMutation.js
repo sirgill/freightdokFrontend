@@ -32,9 +32,12 @@ const useMutation = (url, callback = null) => {
         const asyncApiCall = getRequestCb(type.toLowerCase());
         if(asyncApiCall) {
             return asyncApiCall({uri: url, callback, body})
-                .then(res => res)
+                .then(res => res.data)
                 .catch(err => {
                     return err;
+                })
+                .finally(() => {
+                    setLoading(false);
                 });
         }
     }

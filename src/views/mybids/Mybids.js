@@ -1,13 +1,14 @@
 import React, {Fragment, useEffect} from "react";
 import EnhancedTable from "../../components/Atoms/table/Table"
 import {Button} from "@mui/material";
-import {useRouteMatch, useHistory} from "react-router"
+import {useHistory, useRouteMatch} from "react-router"
 import moment from "moment";
 import {Route, Switch} from "react-router-dom";
 import CHRobinsonBid from "./bids/CHRobinsonBid";
 import NewTrulLoadDetails from "../openBoard/NewTrulLoadDetails";
 import prepareBidDataForNewTrul from "./bids/constant";
 import useFetch from "../../hooks/useFetch";
+import {getParsedLoadEquipment} from "../openBoard/constants";
 
 const getBidStatus = (bidLevel) => {
     if (bidLevel === 2) {
@@ -70,6 +71,10 @@ const MyBids = () => {
                 id: "pickup",
                 label: "Pickup City/State",
                 renderer: ({row}) => {
+                    const {loadDetail = {}} = row;
+                    if(row.vendorName?.toLowerCase() === 'c.h. robinson'){
+                        return `${loadDetail?.origin?.city}, ${loadDetail?.origin?.stateCode}`
+                    }
                     const [_, pickup] = row?.loadDetail?.stops || [],
                         {geo} = pickup || {},
                         {city = '', state = ''} = geo || {};
@@ -91,6 +96,10 @@ const MyBids = () => {
                     }
                     const {early_datetime = ''} = pickup || {}
                     date = early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
+                    if(row.vendorName === 'C.H. Robinson'){
+                        console.log(row.vendorName)
+                        date = moment(row.loadDetail.pickUpByDate).format("M/DD/YYYY")
+                    }
 
                     return <Fragment>{date}</Fragment>;
                 },
@@ -98,7 +107,11 @@ const MyBids = () => {
             {
                 id: "",
                 label: "Delivery City / State",
-                renderer: ({row: {loadDetail = {}} = {}}) => {
+                renderer: ({row = {}}) => {
+                    const {loadDetail = {}} = row;
+                    if(row.vendorName?.toLowerCase() === 'c.h. robinson'){
+                        return `${loadDetail?.destination?.city}, ${loadDetail?.destination?.stateCode}`
+                    }
                     const [drop] = loadDetail.stops || [],
                         {geo} = drop || {},
                         {city = '', state = ''} = geo || {};
@@ -112,6 +125,9 @@ const MyBids = () => {
                 id: "deliveryDate",
                 label: "Delivery Date",
                 renderer: ({row}) => {
+                    if(row.loadDetail?.deliverBy){
+                        return moment(row.loadDetail?.deliverBy).format("M/DD/YYYY")
+                    }
                     const [drop, _] = row?.loadDetail?.stops || [],
                         {early_datetime} = drop || {};
                     return early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
@@ -122,7 +138,15 @@ const MyBids = () => {
                 id: "equipment",
                 label: "Equipment",
                 renderer: ({row}) => {
-                    const {equipment} = row.loadDetail || {}
+                    const {equipment, vendorName = ''} = row.loadDetail || {}
+                    if(vendorName.toLowerCase()==='chrobinson'){
+                        const {modesString = '', standard = ''} = getParsedLoadEquipment(row.loadDetail || {})
+                        return (
+                            <Fragment>
+                                {modesString} {standard}
+                            </Fragment>
+                        );
+                    }
                     if (typeof equipment === 'string')
                         return <Fragment>
                             {equipment}
@@ -139,6 +163,11 @@ const MyBids = () => {
                         return <Fragment>
                             {weight} lbs
                         </Fragment>
+                        else if(weight?.pounds){
+                        let {weight: {pounds = ""} = {}} = row.loadDetail || {};
+                        if (pounds) pounds = pounds + " lbs";
+                        return pounds
+                    }
                     else return '--';
 
                 },
@@ -151,8 +180,7 @@ const MyBids = () => {
                     if (client.client_name) {
                         return client.client_name
                     }
-                    const vname = row['vendorName']||''
-                    return vname==='C.H. Robinson' ? '' : vname;
+                    return row['vendorName'] || '';
                 }
             },
             {
@@ -161,6 +189,10 @@ const MyBids = () => {
                 renderer: ({row}) => {
                     const {offerStatus = ''} = prepareBidDataForNewTrul(row) || {},
                         isRejected = offerStatus.toLowerCase().includes('rejected');
+
+                    if(row.vendorName === "C.H. Robinson" && row.offerStatus){
+                        return row.offerStatus;
+                    }
                     return (
                         <Fragment>
                             {row.status ? "Accepted" : isRejected ? 'Rejected' : getBidStatus(row.bidLevel)}
