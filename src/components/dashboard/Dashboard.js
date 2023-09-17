@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from "react";
+import React, {Fragment, useCallback, useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -9,35 +9,27 @@ import List from "@mui/material/List";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@mui/material/Typography";
-import { useTheme } from "@material-ui/core/styles";
+import {useTheme} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import { Loadcard } from "../loadcard/Loadcard.js";
+import {Loadcard} from "../loadcard/Loadcard.js";
 import AddLoadForm from "../load-forms/AddLoad.js";
-import Loadlistbar from "../loadbar/Loadlistbar.js";
-import Driverlistbar from "../driverbar/Driverlistbar.js";
 import AddDriverForm from "../driver-forms/AddDriver.js";
-import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
-import { connect } from "react-redux";
-import { logout } from "../../actions/auth";
-import { getCurrentProfile } from "../../actions/profile";
-import UsersList from "../users/UsersList";
+import {Link, Route, Switch, useRouteMatch} from "react-router-dom";
+import {connect} from "react-redux";
+import {logout} from "../../actions/auth";
+import {getCurrentProfile} from "../../actions/profile";
 import UserForm from "../users/UserForm";
 import Alert from "../layout/Alert";
-import LoadsStatus from "../loads/LoadsStatus";
-import { Warehouse } from "../warehouse/Warehouse";
-import { getLoads } from "../../actions/load";
-import { useDispatch, useSelector } from "react-redux";
-import { searchLoads, resetLoadsSearch } from "../../actions/load.js";
-import InvoicesList from "../invoices/InvoicesList";
-import InvoicesWizard from "../invoices/InvoicesWizard";
-import { useStyles, ListItemHelper } from "../HelperCells";
-import { capitalizeFirstLetter } from "../../utils/helper";
+import {Warehouse} from "../warehouse/Warehouse";
+import {getLoads} from "../../actions/load";
+import {useDispatch, useSelector} from "react-redux";
+import {searchLoads, resetLoadsSearch} from "../../actions/load.js";
+import {useStyles, ListItemHelper} from "../HelperCells";
+import {capitalizeFirstLetter} from "../../utils/helper";
 import CustomTextField from "../Atoms/CustomTextField";
-import { blue } from "../layout/ui/Theme";
+import {blue} from "../layout/ui/Theme";
 import "../../assets/vendor/nucleo/css/nucleo.css";
 import Settings from "../../views/settings/Settings.js";
-import OwnerOperator from "../../views/ownerOperator/OwnerOperator";
-import OpenBoard from "../../views/openBoard/OpenBoard.js";
 import OpenBoardIcon from '../../assets/icons/openBoard.svg'
 import InvoiceIcon from '../../assets/icons/icons8-invoices-24.png'
 import FacilitiesIcon from '../../assets/icons/icons8-warehouse-24.png'
@@ -49,31 +41,41 @@ import UsersIcon from '../../assets/icons/icons8-user-account-24.png'
 import CarrierProfileIcon from '../../assets/icons/settings-18-1-1-1-1-1.svg'
 import Mybids from '../../assets/icons/icons8-bid-24.png'
 import LogoutIcon from '../../assets/icons/icons8-logout-24.png'
-import CarrierProfile from "../../views/carrierProfile/CarrierProfile";
-import MyBids from "../../views/mybids/Mybids.js";
+import LoadModuleAsync from "../Atoms/LoadModuleAsync";
+
+const MyBids = LoadModuleAsync(() => import("../../views/mybids/Mybids.js"));
+const CarrierProfile = LoadModuleAsync(() => import("../../views/carrierProfile/CarrierProfile"));
+const OwnerOperator = LoadModuleAsync(() => import("../../views/ownerOperator/OwnerOperator"));
+const UsersList = LoadModuleAsync(() => import("../users/UsersList"));
+const OpenBoard = LoadModuleAsync(() => import("../../views/openBoard/OpenBoard.js"));
+const InvoicesList = LoadModuleAsync(() => import("../invoices/InvoicesList"));
+const Driverlistbar = LoadModuleAsync(() => import("../driverbar/Driverlistbar.js"));
+const InvoicesWizard = LoadModuleAsync(() => import("../invoices/InvoicesWizard"));
+const Loadlistbar = LoadModuleAsync(() => import("../loadbar/Loadlistbar.js"));
+const LoadsStatus = LoadModuleAsync(() => import("../loads/LoadsStatus"));
 
 const Dashboard = ({
-    auth: { isAuthenticated, user = {} },
-    logout,
-    container,
-    getLoads,
-    getCurrentProfile,
-    profile: { profile, loading },
-    invoiceGenerated,
-    history,
-}) => {
+                       auth: {isAuthenticated, user = {}},
+                       logout,
+                       container,
+                       getLoads,
+                       getCurrentProfile,
+                       profile: {profile, loading},
+                       invoiceGenerated,
+                       history,
+                   }) => {
     const [listBarType, setListBarType] = React.useState("Open Load Board");
 
     const classes = useStyles();
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
-    const { page, limit } = useSelector((state) => state.load.search);
+    const {page, limit} = useSelector((state) => state.load.search);
     const dispatch = useDispatch();
     const [search, setSearch] = useState("");
     const [in_progress, setInProgress] = useState(false);
     const [load_selected, setSelectedLoad] = useState(null),
-        { path } = useRouteMatch();
+        {path} = useRouteMatch();
 
     useEffect(() => {
         getCurrentProfile();
@@ -116,7 +118,7 @@ const Dashboard = ({
                     container
                     spacing={24}
                     justify="center"
-                    style={{ minHeight: "100vh", maxWidth: "100%" }}
+                    style={{minHeight: "100vh", maxWidth: "100%"}}
                 >
                     <Typography onClick={goToHome} sx={{
                         color: '#fff',
@@ -159,7 +161,7 @@ const Dashboard = ({
                 </Grid>
             </div>
             {/* Setting the Left Sidebar */}
-            <List sx={{ px: 3, height: 'calc(100% - 277px)', overflow: 'auto', mt: 2 }}>
+            <List sx={{px: 3, height: 'calc(100% - 277px)', overflow: 'auto', mt: 2}}>
                 <ListItemHelper
                     onClick={() => {
                         setListBarType("Open Load Board");
@@ -252,7 +254,7 @@ const Dashboard = ({
                         icon={
                             <i
                                 className="ni ni-settings-gear-65 font-25"
-                                style={{ color: "#172B4D" }}
+                                style={{color: "#172B4D"}}
                             />
                         }
                         primary={"Account"}
@@ -288,7 +290,7 @@ const Dashboard = ({
 
     return (
         <div className={classes.root}>
-            <CssBaseline />
+            <CssBaseline/>
             <AppBar
                 position="fixed"
                 elevation={0}
@@ -302,9 +304,9 @@ const Dashboard = ({
                         onClick={handleDrawerToggle}
                         className={classes.menuButton}
                     >
-                        <MenuIcon />
+                        <MenuIcon/>
                     </IconButton>
-                    <Typography className={classes.tab} sx={{ fontWeight: 700, fontSize: 20 }}>
+                    <Typography className={classes.tab} sx={{fontWeight: 700, fontSize: 20}}>
                         {capitalizeFirstLetter(listBarType || "")}
                     </Typography>
                     {listBarType === "invoices" || listBarType === "Open Load Board" || (
@@ -313,9 +315,9 @@ const Dashboard = ({
                                 <CustomTextField
                                     label="Search"
                                     value={search}
-                                    onChange={({ target: { value } }) => setSearch(value)}
+                                    onChange={({target: {value}}) => setSearch(value)}
                                     placeholder={"Search"}
-                                    style={{ width: 250 }}
+                                    style={{width: 250}}
                                     className='searchDashboard'
                                 />
                             </form>
@@ -333,7 +335,7 @@ const Dashboard = ({
                         anchor={theme.direction === "rtl" ? "right" : "left"}
                         open={mobileOpen}
                         onClose={handleDrawerToggle}
-                        classes={{ paper: classes.drawerPaper }}
+                        classes={{paper: classes.drawerPaper}}
                         ModalProps={{
                             keepMounted: true, // Better open performance on mobile.
                         }}
@@ -343,7 +345,7 @@ const Dashboard = ({
                 </Hidden>
                 <Hidden xsDown implementation="css">
                     <Drawer
-                        classes={{ paper: classes.drawerPaper }}
+                        classes={{paper: classes.drawerPaper}}
                         variant="permanent"
                         open
                     >
@@ -354,16 +356,16 @@ const Dashboard = ({
 
             <Grid container className={classes.dashboardContainer}>
                 <Switch>
-                    <Route exact path={path + "/user/settings"} component={Settings} />
+                    <Route exact path={path + "/user/settings"} component={Settings}/>
                 </Switch>
                 <Grid item>
-                    <Alert />
+                    <Alert/>
                 </Grid>
                 <Grid item xs={12}>
                     {listBarType === "Open Load Board" && (
                         <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar} />
-                            <OpenBoard resetSearchField={resetSearchField} />
+                            <div className={classes.toolbar}/>
+                            <OpenBoard resetSearchField={resetSearchField}/>
                             {/* <div className={classes.fab}>
                                 {(user && user.role === "driver") || (
                                     <AddLoadForm/>
@@ -373,22 +375,22 @@ const Dashboard = ({
                     )}
                     {listBarType === "My Bids" && (
                         <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar} />
-                            <MyBids resetSearchField={resetSearchField} />
+                            <div className={classes.toolbar}/>
+                            <MyBids resetSearchField={resetSearchField}/>
                         </main>
                     )}
                     {listBarType === "My Loads" && (
                         <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar} />
-                            <Loadlistbar resetSearchField={resetSearchField} searchText={search} />
+                            <div className={classes.toolbar}/>
+                            <Loadlistbar resetSearchField={resetSearchField} searchText={search}/>
                             <div className={classes.fab}>
-                                {(user && user.role === "driver") || <AddLoadForm />}
+                                {(user && user.role === "driver") || <AddLoadForm/>}
                             </div>
                         </main>
                     )}
                     {listBarType === "load Status" && (
                         <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar} />
+                            <div className={classes.toolbar}/>
                             <LoadsStatus
                                 resetSearchField={resetSearchField}
                                 listBarType={listBarType}
@@ -397,7 +399,7 @@ const Dashboard = ({
                     )}
                     {listBarType === "invoices" && (
                         <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar} />
+                            <div className={classes.toolbar}/>
                             <InvoicesList
                                 resetSearchField={resetSearchField}
                                 listBarType={listBarType}
@@ -414,7 +416,7 @@ const Dashboard = ({
                                         }))
                                     }
                                     deleteDoc={(doc_type) =>
-                                        setSelectedLoad((load) => ({ ...load, [doc_type]: [] }))
+                                        setSelectedLoad((load) => ({...load, [doc_type]: []}))
                                     }
                                     handleOnClose={() => setSelectedLoad(null)}
                                 />
@@ -423,23 +425,23 @@ const Dashboard = ({
                     )}
                     {listBarType === "facilities" && (
                         <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar} />
-                            <Warehouse resetSearchField={resetSearchField} />
+                            <div className={classes.toolbar}/>
+                            <Warehouse resetSearchField={resetSearchField}/>
                         </main>
                     )}
                     {listBarType === "drivers" && (
                         <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar} />
-                            <Driverlistbar />
+                            <div className={classes.toolbar}/>
+                            <Driverlistbar/>
                             <div className={classes.fab}>
-                                <AddDriverForm />
+                                <AddDriverForm/>
                             </div>
                         </main>
                     )}
                     {listBarType === "ownerOp" && (
                         <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar} />
-                            <OwnerOperator />
+                            <div className={classes.toolbar}/>
+                            <OwnerOperator/>
                             {/*<div className={classes.fab}>*/}
                             {/*  <OwnerOpForm />*/}
                             {/*</div>*/}
@@ -447,16 +449,16 @@ const Dashboard = ({
                     )}
                     {listBarType === "users" && (
                         <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar} />
-                            <UsersList />
+                            <div className={classes.toolbar}/>
+                            <UsersList/>
                             <div className={classes.fab}>
-                                <UserForm />
+                                <UserForm/>
                             </div>
                         </main>
                     )}
                     {listBarType === "Load History" && (
                         <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar} />
+                            <div className={classes.toolbar}/>
                             <LoadsStatus
                                 resetSearchField={resetSearchField}
                                 listBarType={listBarType}
@@ -465,7 +467,7 @@ const Dashboard = ({
                     )}
                     {listBarType === "carrierProfile" && (
                         <main className={classes.contentLoadList}>
-                            <div className={classes.toolbar} />
+                            <div className={classes.toolbar}/>
                             <CarrierProfile
                                 resetSearchField={resetSearchField}
                                 listBarType={listBarType}
