@@ -7,9 +7,10 @@ import { Button, Grid, Typography, Stack, IconButton } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import { v4 as uuidv4 } from 'uuid';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { placeNewTrulBid, bookNow, newTrulFinalOffer, placeNewTrulCounterOffer } from "../../actions/openBoard.action";
+import { placeNewTrulBid, bidChRobinsonLoad, newTrulFinalOffer, placeNewTrulCounterOffer } from "../../actions/openBoard.action";
 import { NEWTRUL, productionPayload } from "./constants";
 import { requestPost } from "../../utils/request";
+import {notification} from "../../actions/alert";
 
 /*
 * {
@@ -67,16 +68,14 @@ const Bid = (props) => {
                 offerRequestId: data.offerRequestId
             }
             saveCHOfferRequestId(payload, history)
+        } else if(data.error){
+            notification(data.message, 'error')
         }
         else history.goBack();
-
     }
 
 
     const afterSubmit = (success, data) => {
-        console.log("+++++++++")
-        console.log(data)
-        console.log("+++++++++")
         if (data?.success || data.status === 'success') {
             if (data.offerRequestId) {
                 const payload = {
@@ -139,9 +138,8 @@ const Bid = (props) => {
             "offerPrice": parseFloat(amount),
             "offerNote": '',
             "currencyCode": "USD",
-            // availableLoadCost: defaultCost
         }
-        await bookNow(loadNumber, body, afterChSubmit);
+        await bidChRobinsonLoad(loadNumber, body, afterChSubmit);
     };
 
     const onSubtract = () => {

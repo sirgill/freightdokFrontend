@@ -9,8 +9,10 @@ import prepareBidDataForNewTrul, {prepareBidDataForChRobinson} from "./constant"
 import {newCounterOfferAction, newTrulFinalOfferAction, placeNewCounterOffer} from "../../../actions/bid.action";
 import {CARRIER_EMAIL, MC_NUMBER, productionPayload} from "../../openBoard/constants";
 import {notification} from "../../../actions/alert";
-import {bookNow} from "../../../actions/openBoard.action";
+import {bookChRobinsonLoad} from "../../../actions/openBoard.action";
 import useMutation from "../../../hooks/useMutation";
+import {getUserDetail} from "../../../utils/utils";
+import Alert from "../../../components/Atoms/Alert";
 
 const CH_ROBINSON = 'c.h. robinson';
 
@@ -58,22 +60,26 @@ const AmountComponent = ({value, name, handleChange}) => {
 
 const OFFER_STATUS_FINAL = ['final_offer_created', 'accepted']
 
-const CHRobinsonBid = (props) => {
+const BidDetail = (props) => {
     const {location: {state = {}} = {}, history, onCloseUrl, onRefresh} = props,
-        {loadNumber = '', vendorName=''} = state;
+        {loadNumber = '', vendorName = ''} = state;
     const [bidInput, setBidInput] = useState('0.00');
-    const {mutation} = useMutation('/api/bid/deleteBidByLoadNumber/'+loadNumber, afterSubmit)
+    const {mutation} = useMutation('/api/bid/deleteBidByLoadNumber/' + loadNumber, afterSubmit)
     const [data, setData] = useState({amount: 0}),
         offerStatus = state?.offerStatus || '',
         isFinalOffer = OFFER_STATUS_FINAL.some(a => a.equalsIgnoreCase(offerStatus)) || false,
-    isCounterOffer = offerStatus.equalsIgnoreCase("COUNTER_OFFER_CREATED");
+        isCounterOffer = offerStatus.equalsIgnoreCase("COUNTER_OFFER_CREATED"),
+        isChRobinson = vendorName.equalsIgnoreCase('c.h. robinson'),
+        canProceedToBid = !!data.offerStatus,
+        showDelete = isChRobinson && offerStatus.equalsIgnoreCase('notconsidered');
+
 
     useEffect(() => {
-        if(vendorName.equalsIgnoreCase('new trul')){
+        if (vendorName.equalsIgnoreCase('new trul')) {
             const newTrulState = prepareBidDataForNewTrul(state);
             setBidInput(newTrulState.amount);
             setData(newTrulState);
-        } else if(vendorName.equalsIgnoreCase('c.h. robinson')){
+        } else if (isChRobinson) {
             const chRobinsonState = prepareBidDataForChRobinson(state);
             setData(chRobinsonState);
             setBidInput(chRobinsonState.amount)
@@ -84,20 +90,22 @@ const CHRobinsonBid = (props) => {
 
     }
 
-    const onChange = ({ value }) => {
+    const onChange = ({value}) => {
         setBidInput(value)
     }
 
     const afterUpdate = (data) => {
-        if (data.error){
+        if (data.error) {
             notification(data.message, 'error')
         } else {
             history.goBack()
         }
     }
 
+    console.log(data)
+
     const placeNewBid = () => {
-        if(vendorName.equalsIgnoreCase('new trul')){
+        if (vendorName.equalsIgnoreCase('new trul')) {
             const {counterOfferId} = data;
             const obj = {
                 offerId: counterOfferId,
@@ -107,24 +115,39 @@ const CHRobinsonBid = (props) => {
                 mcNumber: MC_NUMBER,
                 carrierMail: CARRIER_EMAIL,
             }
-            if(data.offerStatus.equalsIgnoreCase("COUNTER_OFFER_CREATED")){
+            if (data.offerStatus.equalsIgnoreCase("COUNTER_OFFER_CREATED")) {
                 placeNewCounterOffer(obj, afterUpdate);
             }
         }
-        /**
-         * new counter accept reject endpoint to be added in web hook
-         * Add new counter offer status in bids table.
-         */
     }
 
-    function afterSubmit({success, data}) {
-        if(success){
+    function afterSubmit(success, data) {
+        if (success) {
             afterUpdate({});
             notification('Bid success for Load number', loadNumber);
         } else {
             notification(data.message, 'error')
         }
     }
+
+    const customMessage = () => {
+        if (isChRobinson && !canProceedToBid) {
+            return <Alert
+                config={{
+                    open: true, message: 'We are waiting for the response on this bid.', severity: 'info',
+                }}
+            />
+        }
+        return null;
+    }
+
+    const checkVisibility = () => {
+        if (isChRobinson) {
+            return false
+        }
+        return true;
+    }
+    console.log(state)
 
     const bidAction = (action = '') => {
         const {counterOfferId} = data;
@@ -134,34 +157,52 @@ const CHRobinsonBid = (props) => {
             carrierMail: CARRIER_EMAIL,
             status: action,
         }
-        if(isFinalOffer){
-            if(vendorName.equalsIgnoreCase(CH_ROBINSON)){
-                if(action === 'reject'){
+        if (isFinalOffer) {
+            if (vendorName.equalsIgnoreCase(CH_ROBINSON)) {
+                if (action === 'reject') {
                     return mutation({}, 'delete');
                 }
+                const date = new Date().toDateString(),
+                    time = new Date().toTimeString(),
+                    {
+                        type,
+                        code,
+                        description,
+                        units,
+                        currencyCode
+                    } = state.loadDetail.availableLoadCosts[0] || {};
                 const body = {
                     carrierCode: productionPayload.carrierCode,
-                    offerPrice: bidInput,
-                    offerNote: '',
-                    currencyCode: "USD",
-                    availableLoadCost: bidInput
+                    loadNumber: Number(loadNumber),
+                    emptyDateTime: new Date(date + " " + time).toISOString(),
+                    availableLoadCosts: [{
+                        type, code, description, units, currencyCode, sourceCostPerUnit: Number(bidInput)
+                    }],
+                    emptyLocation: {
+                        "city": "Greenwood",
+                        "state": "IN",
+                        "country": "NA",
+                        "zip": "46143"
+                    },
+                    rateConfirmation: {
+                        email: getUserDetail().user.email,
+                        name: getUserDetail().user.name
+                    }
                 }
-                return bookNow(loadNumber, body, afterSubmit);
-            }
-            else newTrulFinalOfferAction(payload)
+                return bookChRobinsonLoad(loadNumber, body, afterSubmit);
+            } else newTrulFinalOfferAction(payload)
                 .then(res => {
-                    if(res.data.status === 'error'){
+                    if (res.data.status === 'error') {
                         notification(res.data.message, 'error')
                     }
                 })
                 .catch(err => console.log(err))
-        }
-        else newCounterOfferAction(payload)
+        } else newCounterOfferAction(payload)
             .then(res => {
-                if(res.data.status === 'error'){
+                if (res.data.status === 'error') {
                     notification(res.data.message, 'error')
-                } else if(res.data.status.equalsIgnoreCase('success')){
-                    if(onRefresh) onRefresh();
+                } else if (res.data.status.equalsIgnoreCase('success')) {
+                    if (onRefresh) onRefresh();
                     history.push(onCloseUrl);
                 }
             })
@@ -180,15 +221,28 @@ const CHRobinsonBid = (props) => {
                 {isFinalOffer && <Typography fontSize={18} sx={{my: 3}}>{`Final Offer: $${data.amount}`}</Typography>}
                 {isCounterOffer && <Typography fontSize={18}>{`Offer: $${data.amount}`}</Typography>}
                 <Stack gap={2} direction={'row'} justifyContent='center' my={2}>
-                    <Button variant='contained' color="success" sx={{px: 5}} onClick={bidAction.bind(this, 'accept')}>Accept</Button>
-                    <Button variant='contained' color="error" sx={{px: 5}} onClick={bidAction.bind(this, 'reject')}>Reject</Button>
+                    <Button variant='contained' color="success" sx={{px: 5}}
+                            onClick={bidAction.bind(this, 'accept')}
+                            disabled={!canProceedToBid}
+                    >
+                        Accept
+                    </Button>
+                    <Button
+                        variant='contained' color="error" sx={{px: 5}}
+                        onClick={bidAction.bind(this, 'reject')}
+                        disabled={!canProceedToBid}
+                    >
+                        {showDelete ? "Delete" : "Reject"}
+                    </Button>
                 </Stack>
-                {!isFinalOffer && <>
+                {customMessage()}
+                {!isFinalOffer && checkVisibility() && <>
                     <Typography>OR</Typography>
                     <Stack direction={'row'} sx={{py: 2}} alignItems={'end'} gap={'10px'} justifyContent={'center'}>
                         <AmountComponent value={bidInput} handleChange={onChange}/>
                     </Stack>
-                    <Button variant="contained" color="primary" sx={{px: 2, py: .5, fontSize: 14}} onClick={placeNewBid}>
+                    <Button variant="contained" color="primary" sx={{px: 2, py: .5, fontSize: 14}}
+                            onClick={placeNewBid}>
                         {isCounterOffer ? "Submit Counter" : 'Submit Bid'}
                     </Button>
                 </>}
@@ -197,4 +251,4 @@ const CHRobinsonBid = (props) => {
     </Modal>
 }
 
-export default memo(CHRobinsonBid, () => true)
+export default memo(BidDetail, () => true)

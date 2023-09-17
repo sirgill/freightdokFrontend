@@ -63,6 +63,13 @@ export const themeNew = createTheme({
     }
   },
   components: {
+    MuiAlert: {
+      styleOverrides: {
+        outlinedInfo: {
+          color: PRIMARY_BLUE
+        },
+      }
+    },
     MuiDialogContent: {
       styleOverrides: {
         root: {

@@ -4,7 +4,7 @@ import {Button} from "@mui/material";
 import {useHistory, useRouteMatch} from "react-router"
 import moment from "moment";
 import {Route, Switch} from "react-router-dom";
-import CHRobinsonBid from "./bids/CHRobinsonBid";
+import CHRobinsonBid from "./bids/BidDetail";
 import NewTrulLoadDetails from "../openBoard/NewTrulLoadDetails";
 import prepareBidDataForNewTrul from "./bids/constant";
 import useFetch from "../../hooks/useFetch";
@@ -238,7 +238,10 @@ const MyBids = () => {
         <div>
             <EnhancedTable config={tableConfig} data={bidsData} loading={dLoading} onRefetch={refetch}/>
             <Switch>
-                <Route path={path + '/bid/:loadNumber'} render={(props) => <CHRobinsonBid {...props} onCloseUrl={path} onRefresh={refetch} />}/>
+                <Route
+                    path={path + '/bid/:loadNumber'}
+                    render={(props) => <CHRobinsonBid {...props} onCloseUrl={path} onRefresh={refetch} />}
+                />
                 <Route path={path + "/newtrul/:loadId"}
                        render={(props) => <NewTrulLoadDetails {...props} callDetail={false}/>}/>
             </Switch>

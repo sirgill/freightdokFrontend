@@ -4,9 +4,20 @@ import { GET_CHROBINSON_LOADS, GET_SHIPMENTS } from "./types";
 import { getBabylonianServerUrl, getBaseUrl, getGoUrl } from "../config";
 import { requestGet, requestPost } from "../utils/request";
 
-export const bookNow = async (loadNumber, body, callback) => {
+export const bidChRobinsonLoad = async (loadNumber, body, callback) => {
     try {
         const response = await axios.post(getGoUrl() + '/CHBidding' + `?loadNumber=${loadNumber}`, body);
+        const { data, success } = response;
+        if (callback) callback(success, data);
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const bookChRobinsonLoad = async (loadNumber, body, callback) => {
+    try {
+        const response = await axios.post(getGoUrl() + '/bookload', body);
         const { data, success } = response;
         if (callback) callback(success, data);
         return response;

@@ -5,7 +5,7 @@ import TimePicker from '@mui/lab/TimePicker';
 import DatePicker from '@mui/lab/DatePicker';
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import {bookNow, saveCHLoadToDb} from "../../actions/openBoard.action";
+import {bookChRobinsonLoad, bidChRobinsonLoad, saveCHLoadToDb} from "../../actions/openBoard.action";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {notification} from "../../actions/alert";
 import {getUserDetail, triggerCustomEvent} from "../../utils/utils";
@@ -107,7 +107,7 @@ const BookNowForm = (props) => {
             .then((response) => {
                 const {success, message} = response?.data || {}
                 if (success) {
-                    bookNow(payload)
+                    bookChRobinsonLoad(payload)
                         .then(r => {
                             setIsProcessingAsyncReq(false);
                             if (r.status === 200) {

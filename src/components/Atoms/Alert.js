@@ -2,11 +2,11 @@ import {Collapse, Alert as MuiAlert} from "@mui/material";
 import React from "react";
 
 const Alert = ({config, classname='', inStyles = {}}) => {
-    const {open, message = '', severity = '', configClass = '', onClose = undefined} = config;
+    const {open, message = '', severity = '', onClose = undefined, variant = 'outlined'} = config;
 
     const alertProps = {
         severity: severity || undefined,
-        variant: 'outlined'
+        variant
     }
     if(typeof onClose === 'function'){
         alertProps.onClose = onClose;
