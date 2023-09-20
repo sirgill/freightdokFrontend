@@ -4,19 +4,19 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import MenuItem from "@material-ui/core/MenuItem";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    registerUser,
     resetUserSelected,
-    updateUser,
     fetchUsers,
     openModal,
 } from "../../actions/users";
 import {capitalizeFirstLetter} from "../../utils/helper";
-import {useStyles} from "../HelperCells";
 import InputField from "../Atoms/form/InputField";
 import {blue} from "../layout/ui/Theme";
+import useMutation from "../../hooks/useMutation";
+import {notification} from "../../actions/alert";
+import LoadingButton from "@mui/lab/LoadingButton";
+import {isEmailValid} from "../../utils/utils";
 
 const initialState = {
     email: "",
@@ -25,11 +25,12 @@ const initialState = {
 };
 
 const UserForm = () => {
-    const classes = useStyles();
+    const {mutation, loading: isSaving} = useMutation('/api/users')
     const [form, setForm] = useState({...initialState});
     const {loading, open, error, user, page, limit} = useSelector(
         (state) => state.users
     );
+    const {mutation: updateUser, loading: isSavingUpdate} = useMutation(`/api/users/${user?._id}`)
     const {user: auth} = useSelector((state) => state.auth);
     const {roles} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
@@ -93,18 +94,30 @@ const UserForm = () => {
         return diffWithVal;
     };
 
-    const onSubmit = (e) => {
+    function afterSubmit({success, data}) {
+        if(success){
+            handleClose();
+            dispatch(fetchUsers(+page, +limit));
+            notification((user._id ? 'Updated ' : 'Saved ') + 'Successfully');
+        } else {
+            notification(data.message, 'error')
+        }
+    }
+
+    const onSubmit = async (e) => {
         e.preventDefault();
         if (!loading) {
             if (!user) {
                 const {email, password, role} = form;
                 if (!email || !password || !role)
                     return alert("All fields are required");
-                dispatch(registerUser(form));
+                else if(!isEmailValid(email)){
+                   return alert('Email is not valid');
+                }
+                await mutation(form, '', afterSubmit);
             } else {
-                const {_id} = user;
                 const dataToUpdate = getDiff(form, user);
-                dispatch(updateUser(dataToUpdate, _id));
+                await updateUser(dataToUpdate, 'put', afterSubmit);
             }
         }
     };
@@ -173,14 +186,15 @@ const UserForm = () => {
                                     />
                                 </Grid>
                                 <Grid item xs={12} justifyContent='center' display={'flex'}>
-                                    <Button
+                                    <LoadingButton
+                                        loading={isSaving || isSavingUpdate}
                                         className=""
                                         type="submit"
                                         variant="contained"
                                         color="primary"
                                     >
                                         Submit
-                                    </Button>
+                                    </LoadingButton>
                                 </Grid>
                             </Grid>
                         </form>

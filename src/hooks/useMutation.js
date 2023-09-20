@@ -27,12 +27,17 @@ const getRequestCb = (type) => {
 const useMutation = (url, callback = null) => {
     const [loading, setLoading] = useState(false);
 
-    const mutation = async (body, type = 'post') => {
+    const mutation = async (body, type = 'post', afterSubmit) => {
         setLoading(true);
         const asyncApiCall = getRequestCb(type.toLowerCase());
         if(asyncApiCall) {
             return asyncApiCall({uri: url, callback, body})
-                .then(res => res.data)
+                .then(res => {
+                    if(afterSubmit){
+                        afterSubmit({...res})
+                    }
+                    return res.data
+                })
                 .catch(err => {
                     return err;
                 })
