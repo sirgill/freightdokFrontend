@@ -90,16 +90,15 @@ const MyBids = () => {
                 renderer: ({row}) => {
                     let date;
                     const [_, pickup] = row?.loadDetail?.stops || [{}];
-                    if (pickup) {
+                    if(row.vendorName === 'C.H. Robinson'){
+                        return moment(row.loadDetail.pickUpByDate).format("M/DD/YYYY")
+                    }
+                    else if (pickup) {
                         const {early_datetime = ''} = pickup || {}
                         return early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
                     }
                     const {early_datetime = ''} = pickup || {}
                     date = early_datetime ? moment(early_datetime).format("M/DD/YYYY") : '--';
-                    if(row.vendorName === 'C.H. Robinson'){
-                        console.log(row.vendorName)
-                        date = moment(row.loadDetail.pickUpByDate).format("M/DD/YYYY")
-                    }
 
                     return <Fragment>{date}</Fragment>;
                 },

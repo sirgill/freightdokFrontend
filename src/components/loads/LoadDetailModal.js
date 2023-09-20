@@ -13,7 +13,7 @@ import {
   Select,
   Modal
 } from "@mui/material";
-import { ArrowForwardIos as ArrowForwardIosIcon, Close as CloseIcon, Edit as EditIcon, Done as DoneIcon, Cancel as CancelIcon } from '@mui/icons-material'
+import { ArrowForwardIos as ArrowForwardIosIcon, Close as CloseIcon, Edit as EditIcon, Done as DoneIcon } from '@mui/icons-material'
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import { useDispatch, useSelector } from "react-redux";
@@ -265,28 +265,39 @@ const LoadDetailModal = ({
             <Grid container spacing={2} className={classes.rootLoadDetailModal}>
               <Grid item xs={12}>
                 <Grid container className={classes.rootLoadDetailModal} spacing={2} sx={{ pl: 3, pr: 3 }}>
-                  <Grid item xs={4}>
-                    <InputField
-                      value={form.status}
-                      name="status"
-                      disabled={!edit || state.auth.user.role === "driver"}
-                      onChange={handleOnChange}
-                      type={'select'}
-                      label={'Status'}
-                      options={[
-                        { id: 'loadCheckIn', label: 'Load Check-In' },
-                        { id: 'pickupCompete', label: 'Pickup Complete' },
-                        { id: 'arrivedAtDelivery', label: 'Arrived at Delivery' },
-                        { id: 'arrivedAtPickup', label: 'Arrived at Pickup' },
-                        { id: 'empty', label: 'Empty' },
-                        { id: 'unloadComplete', label: 'Unload Complete' },
-                        { id: 'enRoute', label: 'En Route to Delivery' },
-                      ]}
-                      labelKey='label'
-                      valueKey='id'
-                    />
+                  <Grid item xs={12} sm={4}>
+                    <FormControl sx={{ m: 1, minWidth: 225 }} size="small">
+                    <InputLabel id="multiple-name">Status</InputLabel>
+                      <Select
+                          id="multiple-name"
+                          name="status"
+                          value={form.status}
+                          onChange={({ target: { value } }) => setForm({ ...form, status: value, })}
+                          input={<SelectElement size='small' label="" notched={false} sx={{ width: 225 }} />}
+                          MenuProps={MenuProps}
+                          disabled={!edit || state.auth.user.role === "driver"}
+                      >
+                        {[
+                          { id: 'loadCheckIn', label: 'Load Check-In' },
+                          { id: 'pickupCompete', label: 'Pickup Complete' },
+                          { id: 'arrivedAtDelivery', label: 'Arrived at Delivery' },
+                          { id: 'arrivedAtPickup', label: 'Arrived at Pickup' },
+                          { id: 'empty', label: 'Delivered' },
+                          { id: 'unloadComplete', label: 'Unload Complete' },
+                          { id: 'enRoute', label: 'En Route to Delivery' },
+                        ].map((name) => (
+                            <MenuItem
+                                key={name.id}
+                                value={name.id}
+                                // style={getStyles(name, personName, theme)}
+                            >
+                              {name.label}
+                            </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={12} sm={4}>
                     <InputField
                       label='Assigned'
                       id="assigned-select"
@@ -300,7 +311,7 @@ const LoadDetailModal = ({
                       valueKey={'_id'}
                     />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={12} sm={4}>
                     <InputLabel id="demo-multiple-name-label">Name</InputLabel>
                     <FormControl sx={{ m: 0, width: 225 }}>
                       <Select

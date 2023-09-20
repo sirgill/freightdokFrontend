@@ -101,6 +101,14 @@ export const themeNew = createTheme({
           fontWeight: 600
         }
       }
+    },
+    MuiSelect: {
+      styleOverrides: {
+        select: {
+          border: `1px solid`,
+          paddingTop: '8px'
+        }
+      }
     }
   }
 });
