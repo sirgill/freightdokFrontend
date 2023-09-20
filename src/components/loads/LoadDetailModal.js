@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef } from "react";
+import React, {Fragment, useEffect, useRef, useState} from "react";
 import _ from 'lodash'
 import {
   Divider,
@@ -89,6 +89,7 @@ const LoadDetailModal = ({
   const state = useSelector((state) => state);
   const [edit, setEdit] = React.useState(true);
   const [form, setForm] = React.useState({ ...formInitialState });
+  const [isProcessingAsyncRequest, setIsProcessingAsyncRequest] = useState(false);
   const rateConfirmationRef = useRef();
   const proofDeliveryRef = useRef(),
     SelectElement = edit ? OutlinedInput : FilledInput;
@@ -153,6 +154,7 @@ const LoadDetailModal = ({
   };
 
   const afterSubmit = (isSuccess) => {
+    setIsProcessingAsyncRequest(false);
     if(isSuccess) handleClose();
   }
 
@@ -161,6 +163,7 @@ const LoadDetailModal = ({
     if (form.status !== "Empty") {
       form.invoice_created = false;
     }
+    setIsProcessingAsyncRequest(true);
     dispatch(updateLoad({ ...form, _id }, listBarType, bktFiles, afterSubmit));
     // resetFileInputs();
   };
@@ -168,16 +171,16 @@ const LoadDetailModal = ({
     const { name, value } = event.target;
     setForm({ ...form, [name]: value });
   };
-  const handlePickDropChange = (
-    { target: { value } },
-    keyToUpdate,
-    childKey
-  ) => {
-    if (keyToUpdate === "pickup")
-      setForm({ ...form, pickup: [{ ...form.pickup[0], [childKey]: value }] });
-    else if (keyToUpdate === "drop")
-      setForm({ ...form, drop: [{ ...form.drop[0], [childKey]: value }] });
+
+  const handlePickDropChange = (  { target: { value } },  keyToUpdate,  childKey) => {
+    if (keyToUpdate === "pickup") {
+        setForm({...form, pickup: [{...form.pickup[0], [childKey]: value}]});
+    }
+    else if (keyToUpdate === "drop") {
+        setForm({...form, drop: [{...form.drop[0], [childKey]: value}]});
+    }
   };
+
   const handleCancel = () => {
     setForm({ ...form, assignedTo: user, status, accessorials, pickup, drop });
     setEdit(false);
@@ -218,6 +221,7 @@ const LoadDetailModal = ({
     let body = { ...load };
     body = changeObjectKey(body, "pickup", "pickUp");
     body = changeObjectKey(body, "drop", "dropOff");
+    setIsProcessingAsyncRequest(true);
     dispatch(addLoad(body, afterSubmit));
   };
 
@@ -266,14 +270,14 @@ const LoadDetailModal = ({
               <Grid item xs={12}>
                 <Grid container className={classes.rootLoadDetailModal} spacing={2} sx={{ pl: 3, pr: 3 }}>
                   <Grid item xs={12} sm={4}>
-                    <FormControl sx={{ m: 1, minWidth: 225 }} size="small">
+                    <FormControl sx={{ m: 1 }} size="small" fullWidth>
                     <InputLabel id="multiple-name">Status</InputLabel>
                       <Select
                           id="multiple-name"
                           name="status"
                           value={form.status}
                           onChange={({ target: { value } }) => setForm({ ...form, status: value, })}
-                          input={<SelectElement size='small' label="" notched={false} sx={{ width: 225 }} />}
+                          input={<SelectElement size='small' label="" notched={false} sx={{  }} />}
                           MenuProps={MenuProps}
                           disabled={!edit || state.auth.user.role === "driver"}
                       >
@@ -298,29 +302,39 @@ const LoadDetailModal = ({
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <InputField
-                      label='Assigned'
-                      id="assigned-select"
-                      name="assignedTo"
-                      disabled={!edit || state.auth.user.role === "driver"}
-                      value={form.assignedTo}
-                      onChange={handleOnChange}
-                      type={'select'}
-                      options={assignedToOptions}
-                      labelKey={'name'}
-                      valueKey={'_id'}
-                    />
+                    <FormControl sx={{ m: 1 }} size="small" fullWidth>
+                      <InputLabel id="multiple-name">Assigned</InputLabel>
+                      <Select
+                          id="multiple-name"
+                          name="assignedTo"
+                          disabled={!edit || state.auth.user.role === "driver"}
+                          value={form.assignedTo}
+                          onChange={({ target: { value } }) => setForm({ ...form, assignedTo: value, })}
+                          input={<SelectElement size='small' label="" notched={false} sx={{  }} />}
+                          MenuProps={MenuProps}
+                      >
+                        {assignedToOptions.map((name) => (
+                            <MenuItem
+                                key={name.name}
+                                value={name._id}
+                                // style={getStyles(name, personName, theme)}
+                            >
+                              {name.label}
+                            </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <InputLabel id="demo-multiple-name-label">Name</InputLabel>
-                    <FormControl sx={{ m: 0, width: 225 }}>
+                    <InputLabel id="demo-multiple-name-label">Accessorials</InputLabel>
+                    <FormControl sx={{ m: 0 }} fullWidth>
                       <Select
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
                         multiple
                         value={form.accessorials}
                         onChange={({ target: { value } }) => setForm({ ...form, accessorials: typeof value === 'string' ? value.split(',') : value, })}
-                        input={<SelectElement size='small' label="" notched={false} sx={{ width: 225 }} />}
+                        input={<SelectElement size='small' label="" notched={false} />}
                         MenuProps={MenuProps}
                         disabled={!edit}
                       >
@@ -354,27 +368,27 @@ const LoadDetailModal = ({
             <Grid container>
               <Grid item xs={2} sx={{ display: 'flex' }}>
                 <Box sx={{ alignItems: 'end', display: 'flex' }}>
-                  {edit ? <IconButton onClick={handleSubmit}>
+                  {edit ? <IconButton onClick={handleSubmit} disabled={isProcessingAsyncRequest}>
                     <DoneIcon
                       fontSize="large"
-                      color="primary"
+                      color={isProcessingAsyncRequest ? "disabled" : 'primary'}
                     />
                   </IconButton>
-                    : <IconButton onClick={() => setEdit(true)} title='Edit'>
+                    : <IconButton onClick={() => setEdit(true)} title='Edit' disabled={isProcessingAsyncRequest}>
                       <EditIcon
                         fontSize="large"
-                        color="primary"
+                        color={isProcessingAsyncRequest ? "disabled" : 'primary'}
                       />
                     </IconButton>}
-                  {edit ? <IconButton onClick={handleCancel}>
+                  {edit ? <IconButton onClick={handleCancel} disabled={isProcessingAsyncRequest}>
                     <CloseIcon
                       fontSize="large"
-                      color="primary"
+                      color={isProcessingAsyncRequest ? "disabled" : 'primary'}
                     />
-                  </IconButton> : <IconButton onClick={createCopy} title='Create Copy'>
+                  </IconButton> : <IconButton onClick={createCopy} title='Create Copy' disabled={isProcessingAsyncRequest}>
                     <FileCopyOutlined
                       fontSize="large"
-                      color="primary"
+                      color={isProcessingAsyncRequest ? "disabled" : 'primary'}
                     />
                   </IconButton>}
                 </Box>
@@ -587,19 +601,28 @@ const LoadDetailModal = ({
                                 <Stack direction='row' alignItems='center' spacing={1}>
                                   <Typography fontWeight={700}>PO#</Typography>
                                   {edit ?
-                                    <InputField value={pickup && pickup[0] ? pickup[0].pickupPo : ""} />
+                                    <InputField
+                                        value={form && form.pickup[0] ? form.pickup[0].pickupPo : ""}
+                                        onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupPo')}
+                                    />
                                     : <Typography>{pickup && pickup[0] ? pickup[0].pickupPo : ""}</Typography>}
                                 </Stack>
                                 <Stack direction='row' alignItems={'center'} spacing={1}>
                                   <Typography fontWeight={700}>Reference#</Typography>
                                   {edit ?
-                                    <InputField value={pickup && pickup[0] ? pickup[0].pickupReference : ""} />
+                                    <InputField
+                                        value={pickup && form.pickup[0] ? form.pickup[0].pickupReference : ""}
+                                        onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupReference')}
+                                    />
                                     : <Typography>{pickup && pickup[0] ? pickup[0].pickupReference : ""}</Typography>}
                                 </Stack>
                                 <Stack direction='row' alignItems='center' spacing={1}>
                                   <Typography fontWeight={700}>Delivery#</Typography>
                                   {edit ?
-                                    <InputField value={pickup && pickup[0] ? pickup[0].pickupDeliverNumber : ""} />
+                                    <InputField
+                                        value={pickup && form.pickup[0] ? form.pickup[0].pickupDeliverNumber : ""}
+                                        onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupDeliverNumber')}
+                                    />
                                     : <Typography>{pickup && pickup[0] ? pickup[0].pickupDeliverNumber : ""}</Typography>}
                                 </Stack>
                               </Stack>
@@ -789,7 +812,9 @@ const LoadDetailModal = ({
                               <Typography fontWeight={700}>PO#</Typography>
                               {edit ?
                                 <InputField
-                                  value={drop && drop[0] ? drop[0].dropPo : ""}
+                                    dropPo='dropPo'
+                                  value={form && form.drop[0] ? form.drop[0].dropPo : ""}
+                                  onChange={(e) => handlePickDropChange(e, 'drop', 'dropPo')}
                                 />
                                 : <Typography>{drop && drop[0] ? drop[0].dropPo : ""}</Typography>}
                             </Stack>
@@ -797,7 +822,8 @@ const LoadDetailModal = ({
                               <Typography fontWeight={700}>Reference# </Typography>
                               {edit ?
                                 <InputField
-                                  value={drop && drop[0] ? drop[0].dropReference : ""}
+                                  value={form && form.drop[0] ? form.drop[0].dropReference : ""}
+                                  onChange={(e) => handlePickDropChange(e, 'drop', 'dropReference')}
                                 />
                                 : <Typography>{drop && drop[0] ? drop[0].dropReference : ""}</Typography>}
                             </Stack>
@@ -805,7 +831,8 @@ const LoadDetailModal = ({
                               <Typography fontWeight={700}>Deliver# </Typography>
                               {edit ?
                                 <InputField
-                                  value={drop && drop[0] ? drop[0].dropDeliverNumber : ""}
+                                  value={form && form.drop[0] ? form.drop[0].dropDeliverNumber : ""}
+                                  onChange={(e) => handlePickDropChange(e, 'drop', 'dropDeliverNumber')}
                                 />
                                 : <Typography>{drop && drop[0] ? drop[0].dropDeliverNumber : ""}</Typography>}
                             </Stack>
@@ -1509,4 +1536,4 @@ const LoadDetailModal = ({
   );
 };
 
-export default LoadDetailModal;
+export default React.memo(LoadDetailModal);

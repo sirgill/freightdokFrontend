@@ -30,6 +30,7 @@ const CarrierProfile = ({ match = {} }) => {
 
     const tableConfig = {
         rowCellPadding: 'normal',
+        showRefresh: true,
         columns: [
             {
                 id: 'companyName',
@@ -51,35 +52,11 @@ const CarrierProfile = ({ match = {} }) => {
                     return getCheckStatusIcon(operatingStatus === 'Y')
                 }
             },
-            {
-                id: 'generalLiabilityInsurance',
-                label: 'General Liability',
-                renderer: ({ row }) => {
-                    const { url } = row.generalLiabilityInsurance
-                    return url ? <Attachment url={url} /> : '--'
-                }
-            },
-            {
-                id: 'autoLiabilityInsurance',
-                label: 'Auto Liability',
-                renderer: ({ row }) => {
-                    const { url } = row.autoLiabilityInsurance
-                    return url ? <Attachment url={url} /> : '--'
-                }
-            },
-            {
-                id: 'cargoLiabilityInsurance',
-                label: 'Cargo Liability',
-                renderer: ({ row }) => {
-                    const { url } = row.cargoLiabilityInsurance
-                    return url ? <Attachment url={url} /> : '--'
-                }
-            },
         ]
     }
     return (
         <>
-            <EnhancedTable data={data} loading={loading} config={tableConfig} />
+            <EnhancedTable data={data} loading={loading} config={tableConfig} onRefetch={() => dispatch(getCarrierProfile())} />
             {isMatch && <UpdateCarrierProfile onCloseUrl={path} />}
             {role !== 'admin' && <Button variant='contained' component={Link} to={path + '/updateCarrierProfile'}
                 sx={{ position: 'absolute', right: 10, "&.MuiButton-contained:hover": { color: '#fff' } }}>Update Profile</Button>}

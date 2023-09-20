@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, {Fragment, useCallback, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import { connect, useSelector } from 'react-redux';
@@ -74,7 +74,7 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
     return [d.getMonth() + 1, d.getDate(), d.getFullYear()].join('/') + ' ' + time;
   }
 
-  const handleDeleteLoad = async (load_id, e) => {
+  const handleDeleteLoad = useCallback(async (load_id, e) => {
     e.stopPropagation();
     console.log("LOAD IS:         ", load_id)
     await deleteLoad(load_id);
@@ -85,13 +85,13 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
       searchLoads(sPage, limit, query);
 
     setOpen(false)
-  };
+  }, []);
 
-  const handleEditLoad = () => {
-    setOpen(true);
-    enableEdit(true);
-    selectLoad({});
-  };
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    enableEdit(false);
+    selectLoad();
+  }, []);
 
   return (
     <>
@@ -151,12 +151,7 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
         modalEdit={modalEdit}
         open={open}
         load={load}
-        handleClose={() => {
-          setOpen(false);
-          enableEdit(false);
-          selectLoad();
-        }}
-        deleteLoad={(_id, e) => handleDeleteLoad(_id, e)}
+        handleClose={handleClose}
       />
     </>
   );
