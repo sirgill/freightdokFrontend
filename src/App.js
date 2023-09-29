@@ -60,6 +60,7 @@ const App = () => {
             <BrowserRouter>
                 <Switch>
                     <Route exact path={'/home'} component={LandingPage} />
+                    <Route exact path={'/'}><Redirect to='/dashboard'/></Route>
                     <Route path="/entity" component={EntityType} />
                     <Route path="/ownerOperatorRegister" component={OwnerOp} />
                     <Route path="/fleetRegister" component={Fleet} />
@@ -70,7 +71,6 @@ const App = () => {
                     <PrivateRoute path="/edit-profile" component={EditProfile}/>
                     <PrivateRoute path="/loads" component={Loads}/>
                     <PreAuthRoutes/>
-                    <Route exact path={'/'}><Redirect to='/dashboard'/></Route>
                 </Switch>
             </BrowserRouter>
         </Fragment>
