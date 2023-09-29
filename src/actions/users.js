@@ -18,6 +18,7 @@ import {
     CLOSE_USER_MODAL
 } from './types';
 import {notification} from "./alert";
+import {requestDelete} from "../utils/request";
 
 export const callApi = () => ({
     type: FETCH_USERS
@@ -89,13 +90,17 @@ export const updateUser = (user, id) => async dispatch => {
     }
 };
 
-export const deleteUser = (id) => async (dispatch, getState) => {
+export const deleteUser = (id, callback) => async (dispatch, getState) => {
     try {
         dispatch({type: INIT_ADMIN_DELETE_USER});
-        const {status, data: message = ''} = await axios.delete(`/api/users/${id}`);
-        if(status === 200) notification(message)
+        const {data: data = '', success} = await requestDelete({uri: `/api/users/${id}`});
+        if(success) notification(data)
+        else {
+            notification(data.message, 'error')
+        }
         const {page, limit} = getState().users;
         dispatch(fetchUsers(+page, +limit));
+        if(callback) callback({success, data});
     } catch (e) {
         dispatch({
             type: ADMIN_DELETE_USER_FAILED,

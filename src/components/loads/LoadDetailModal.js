@@ -286,7 +286,7 @@ const LoadDetailModal = ({
                           { id: 'pickupCompete', label: 'Pickup Complete' },
                           { id: 'arrivedAtDelivery', label: 'Arrived at Delivery' },
                           { id: 'arrivedAtPickup', label: 'Arrived at Pickup' },
-                          { id: 'empty', label: 'Delivered' },
+                          { id: 'delivered', label: 'Delivered' },
                           { id: 'unloadComplete', label: 'Unload Complete' },
                           { id: 'enRoute', label: 'En Route to Delivery' },
                         ].map((name) => (

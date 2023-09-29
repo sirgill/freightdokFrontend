@@ -108,7 +108,8 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             emptyMessage = '',
             onRowClickDataCallback,
             showRefresh = false,
-            onDelete
+            onDelete,
+            deleteMessage
         } = config,
         ref = React.useRef([]);
 
@@ -133,7 +134,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             </Grid>,
             okText: 'Delete',
             onOk: () => onDelete(id, onDialogClose),
-            content: () => <DialogContentText sx={{color: '#000'}}>Are you sure you want to delete the record?</DialogContentText>
+            content: () => <DialogContentText sx={{color: '#000'}}>{deleteMessage || 'Are you sure you want to delete the record?'}</DialogContentText>
         }
         setDialog({ ...dialog, open: true, config });
     }
