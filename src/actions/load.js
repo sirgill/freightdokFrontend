@@ -23,7 +23,7 @@ import {
   MERGE_LOAD_DOCS,
   RESET_INVOICE_GENERATED,
 } from "./types";
-import {requestDelete, requestPatch} from "../utils/request";
+import {requestDelete, requestGet, requestPatch} from "../utils/request";
 
 // import { proxy } from "../../package.json";
 
@@ -33,15 +33,17 @@ export const getLoads =
   (page = 0, limit = 15, module = "") =>
   async (dispatch) => {
     try {
-      axios.defaults.headers.common["x-auth-token"] = localStorage.token;
-      const url = `/api/load/me?page=${
-        page + 1
-      }&limit=${limit}&module=${module}`;
-      const res = await axios.get(url);
-      dispatch({
-        type: GET_LOADS,
-        payload: { loads: res.data, page, limit },
-      });
+      const {success, data} = await requestGet({uri:`/api/load/me?page=${
+            page + 1
+        }&limit=${limit}&module=${module}` });
+      if(success){
+        dispatch({
+          type: GET_LOADS,
+          payload: { loads: data, page, limit },
+        });
+      } else {
+          notification(data.message, 'error');
+      }
     } catch (err) {
       dispatch(setAlert(err.message, "error"));
     }

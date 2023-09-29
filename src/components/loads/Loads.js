@@ -4,9 +4,6 @@ import { connect, useSelector } from "react-redux";
 import { getLoads, searchLoads } from "../../actions/load";
 import LoadItem from "./Loaditem";
 import Spinner from "../layout/Spinner";
-import TableRow from '@material-ui/core/TableRow';
-import TableFooter from '@material-ui/core/TableFooter';
-import TablePagination from '@material-ui/core/TablePagination';
 
 const Loads = ({ rawLoades, getLoads, searchLoads, load: { loads, loading, loads_pagination, page, rowsPerPage, search } }) => {
   const { query, loads: sLoads, page: sPage, limit, total: sTotal } = search;

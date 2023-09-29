@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 import LoadDetailModal from '../loads/LoadDetailModal';
 
 export default function InvocieEditItem({ invoice }) {

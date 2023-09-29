@@ -1,17 +1,15 @@
 import React, {Fragment, useCallback, useEffect, useState} from "react";
 import PropTypes from "prop-types";
-import AppBar from "@material-ui/core/AppBar";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Drawer from "@material-ui/core/Drawer";
-import Hidden from "@material-ui/core/Hidden";
-import IconButton from "@material-ui/core/IconButton";
+import AppBar from "@mui/material/AppBar";
+import Drawer from "@mui/material/Drawer";
+import Hidden from "@mui/material/Hidden";
+import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import MenuIcon from "@mui/icons-material/Menu";
-import Toolbar from "@material-ui/core/Toolbar";
+import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import {useTheme} from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import {Loadcard} from "../loadcard/Loadcard.js";
+import {useTheme} from "@mui/material/styles";
+import Grid from "@mui/material/Grid";
 import AddLoadForm from "../load-forms/AddLoad.js";
 import AddDriverForm from "../driver-forms/AddDriver.js";
 import {Link, Route, Switch, useRouteMatch} from "react-router-dom";
@@ -24,10 +22,9 @@ import {Warehouse} from "../warehouse/Warehouse";
 import {getLoads} from "../../actions/load";
 import {useDispatch, useSelector} from "react-redux";
 import {searchLoads, resetLoadsSearch} from "../../actions/load.js";
-import {useStyles, ListItemHelper} from "../HelperCells";
+import {useStyles, ListItemHelper, drawerWidth} from "../HelperCells";
 import {capitalizeFirstLetter} from "../../utils/helper";
 import CustomTextField from "../Atoms/CustomTextField";
-import {blue} from "../layout/ui/Theme";
 import "../../assets/vendor/nucleo/css/nucleo.css";
 import Settings from "../../views/settings/Settings.js";
 import OpenBoardIcon from '../../assets/icons/openBoard.svg'
@@ -42,6 +39,7 @@ import CarrierProfileIcon from '../../assets/icons/settings-18-1-1-1-1-1.svg'
 import Mybids from '../../assets/icons/icons8-bid-24.png'
 import LogoutIcon from '../../assets/icons/icons8-logout-24.png'
 import LoadModuleAsync from "../Atoms/LoadModuleAsync";
+import {styled} from "@mui/material/styles";
 
 const MyBids = LoadModuleAsync(() => import("../../views/mybids/Mybids.js"));
 const CarrierProfile = LoadModuleAsync(() => import("../../views/carrierProfile/CarrierProfile"));
@@ -53,6 +51,12 @@ const Driverlistbar = LoadModuleAsync(() => import("../driverbar/Driverlistbar.j
 const InvoicesWizard = LoadModuleAsync(() => import("../invoices/InvoicesWizard"));
 const Loadlistbar = LoadModuleAsync(() => import("../loadbar/Loadlistbar.js"));
 const LoadsStatus = LoadModuleAsync(() => import("../loads/LoadsStatus"));
+
+const TypographyStyled = styled(Typography)(({theme}) => ({
+    [theme.breakpoints.up('sm')]: {
+        marginLeft: drawerWidth
+    }
+}))
 
 const Dashboard = ({
                        auth: {isAuthenticated, user = {}},
@@ -116,17 +120,18 @@ const Dashboard = ({
                 {/*<div className={classes.toolbar} />*/}
                 <Grid
                     container
-                    spacing={24}
+                    // spacing={24}
                     justify="center"
-                    style={{minHeight: "100vh", maxWidth: "100%"}}
+                    // style={{minHeight: "100vh", maxWidth: "100%"}}
                 >
-                    <Typography onClick={goToHome} sx={{
-                        color: '#fff',
-                        fontWeight: 900,
-                        mt: 4,
-                        fontSize: 25,
-                        cursor: 'pointer'
-                    }}>freightdok</Typography>
+                    <Grid item xs={12}>
+                        <Typography onClick={goToHome} align='center' sx={{
+                            color: '#fff',
+                            fontWeight: 900,
+                            fontSize: 25,
+                            cursor: 'pointer'
+                        }}>freightdok</Typography>
+                    </Grid>
                     {/*Below component is  commented will be removed in future*/}
                     {/*<Grid item align="center">*/}
                     {/*  /!* Setting the Avatar for Username. *!/*/}
@@ -290,11 +295,15 @@ const Dashboard = ({
 
     return (
         <div className={classes.root}>
-            <CssBaseline/>
+            {/*<CssBaseline/>*/}
             <AppBar
                 position="fixed"
                 elevation={0}
-                className={classes.appBar}
+                // className={classes.appBar}
+                sx={{
+                    background: '#fff',
+                    color: '#3d3d3d'
+                }}
             >
                 <Toolbar>
                     <IconButton
@@ -306,9 +315,9 @@ const Dashboard = ({
                     >
                         <MenuIcon/>
                     </IconButton>
-                    <Typography className={classes.tab} sx={{fontWeight: 700, fontSize: 20}}>
+                    <TypographyStyled className={classes.tab} sx={{fontWeight: 700, fontSize: 20}}>
                         {capitalizeFirstLetter(listBarType || "")}
-                    </Typography>
+                    </TypographyStyled>
                     {listBarType === "invoices" || listBarType === "Open Load Board" || (
                         <div className={classes.loadSearchbar}>
                             <form noValidate autoComplete="off" onSubmit={handleSubmit}>

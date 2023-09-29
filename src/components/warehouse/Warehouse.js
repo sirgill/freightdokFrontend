@@ -1,81 +1,35 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {Link, useRouteMatch, Switch, Route} from 'react-router-dom';
-import {makeStyles} from '@material-ui/core/styles';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
 import {deleteWarehouse, getWarehouses} from '../../actions/warehouse';
-import {Button, IconButton} from '@mui/material';
+import {Button} from '@mui/material';
 import {useDispatch, useSelector} from 'react-redux';
 import Form from './Form';
 import Preview from './Preview';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {Box} from '@mui/material';
 import EnhancedTable from "../../components/Atoms/table/Table"
 
-const useStyles = makeStyles({
-    table: {
-        minWidth: 700,
-        position: 'relative'
-    },
-    TableContainer: {
-        borderBottom: "none"
-    },
-    addNewIcon: {
-        // color: 'white',
-        textTransform: 'none',
-        position: 'absolute',
-        right: 0,
-    }
-});
+// const useStyles = makeStyles({
+//     table: {
+//         minWidth: 700,
+//         position: 'relative'
+//     },
+//     TableContainer: {
+//         borderBottom: "none"
+//     },
+//     addNewIcon: {
+//         // color: 'white',
+//         textTransform: 'none',
+//         position: 'absolute',
+//         right: 0,
+//     }
+// });
 
-
-const List = ({data = {}, history, path, dispatch}) => {
-    const {warehouses = []} = data,
-        tableRowSx = {color: '#525F7F'}
-
-    const onRowClick = (row = {}) => {
-        const {_id: id = ''} = row;
-        history.push(`${path}/warehouse/${id}`)
-    }
-
-    const onDelete = (id, e) => {
-        e.stopPropagation();
-        dispatch(deleteWarehouse(id));
-    }
-
-    const cells = warehouses.length && warehouses.map(data => {
-        const {address = "", averageLoadTime = "", city = "delhi", name = "", state = "", zip = ""} = data;
-        return (
-            <TableRow onClick={onRowClick.bind(null, data)} hover>
-                <TableCell sx={tableRowSx} padding={'none'}>{name}</TableCell>
-                <TableCell sx={tableRowSx} padding={'none'}>{address}</TableCell>
-                <TableCell sx={tableRowSx} padding={'none'}>{city}</TableCell>
-                <TableCell sx={tableRowSx} padding={'none'}>{state}</TableCell>
-                <TableCell sx={tableRowSx} padding={'none'}>{zip}</TableCell>
-                <TableCell sx={tableRowSx} padding={'none'}>{averageLoadTime}</TableCell>
-                <TableCell sx={tableRowSx} padding={'none'} component="th" scope="row">
-                    <IconButton onClick={onDelete.bind(this, data._id)}>
-                        <DeleteIcon style={{color: "rgb(220, 0, 78)"}}/>
-                    </IconButton>
-                </TableCell>
-            </TableRow>
-        )
-    })
-
-    return (
-        <Fragment>
-            {cells}
-        </Fragment>
-    )
-}
 
 export const Warehouse = ({resetSearchField}) => {
     const {path} = useRouteMatch();
-    const classes = useStyles();
     const dispatch = useDispatch();
     const {warehouse: {totalCount, warehouses = [], loading = false} = {}, auth: {user: {role = ''} = {}} = {}} = useSelector(state => state);
-    const hasPermission = role === 'admin' || role === 'dispatch' || role === 'support',
-        tableHeaderSx = {color: '#8898AA', height: 40};
+    const hasPermission = role === 'admin' || role === 'dispatch' || role === 'support'
 
     const config = {
         hasDelete: true,
@@ -118,7 +72,7 @@ export const Warehouse = ({resetSearchField}) => {
     }, []);
 
     return (
-        <div className={classes.table}>
+        <div>
             <Box>
                 <EnhancedTable config={config} data={warehouses.warehouses} loading={loading}/>
             </Box>

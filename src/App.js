@@ -2,8 +2,6 @@ import React, {Fragment, useEffect} from "react";
 import axios from "axios";
 import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
-import Landing from "./components/layout/Landing";
-import Footer from "./components/layout/Footer";
 import Register from "./components/auth/Register";
 import EntityType from "./components/auth/EntityType";
 import OwnerOp from "./components/auth/OwnerOpRegister";
@@ -33,7 +31,7 @@ import UserOnboard from "./components/auth/signUpWithFMCSA/UserOnboard";
 import LoadModuleAsync from "./components/Atoms/LoadModuleAsync";
 
 const Login = LoadModuleAsync(() => import('./components/auth/Login'));
-const FMCSASignup  = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/FMCSASignup"))
+const FMCSASignup = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/FMCSASignup"))
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -47,8 +45,8 @@ const PreAuthRoutes = () => {
         <Route path="/login" component={Login}/>
         <Route path={FEDERAL_SIGNUP_LINK} component={SignUp}/>
         <Route path={FMCSA_VERIFICATION_LINK} component={FMCSASignup}/>
-        <Route path={SIGNUP_SUPPORT} component={Support} />
-        <Route path={ONBOARDING_USER} component={UserOnboard} />
+        <Route path={SIGNUP_SUPPORT} component={Support}/>
+        <Route path={ONBOARDING_USER} component={UserOnboard}/>
     </>
 }
 
@@ -60,11 +58,8 @@ const App = () => {
         <Fragment>
             <Notification/>
             <BrowserRouter>
-                <Route exact path="/" component={Navbar}/>
-                <Route exact path="/" component={Landing}/>
-                <Route exact path="/" component={Footer}/>
-                <Route exact path={'/home'} component={LandingPage} />
                 <Switch>
+                    <Route exact path={'/home'} component={LandingPage} />
                     <Route path="/entity" component={EntityType} />
                     <Route path="/ownerOperatorRegister" component={OwnerOp} />
                     <Route path="/fleetRegister" component={Fleet} />
@@ -74,7 +69,7 @@ const App = () => {
                     <PrivateRoute path="/create-profile" component={ProfileForm}/>
                     <PrivateRoute path="/edit-profile" component={EditProfile}/>
                     <PrivateRoute path="/loads" component={Loads}/>
-                    <PreAuthRoutes />
+                    <PreAuthRoutes/>
                     <Route exact path={'/'}><Redirect to='/dashboard'/></Route>
                 </Switch>
             </BrowserRouter>

@@ -99,7 +99,7 @@ export const CSSTimePicker = withStyles({
   },
 })(KeyboardTimePicker);
 
-const drawerWidth = 275;
+export const drawerWidth = 275;
 export const useStyles = makeStyles((theme) => ({
   form: {
     display: "flex",
@@ -125,10 +125,11 @@ export const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   profile: {
-    height: "19.82em",
+    height: "33%",
     backgroundImage: `url(${Background})`,
     backgroundRepeat: "no-repeat",
     // backgroundSize: '275px 275px'
+    padding: 15,
   },
   drawer: {
     [theme.breakpoints.up("sm")]: {
@@ -279,7 +280,6 @@ export const useStyles = makeStyles((theme) => ({
 
   tab: {
     minWidth: 10,
-    marginLeft: "15px",
     fontSize: 20,
     color: '#32325D',
     width: '100%',
