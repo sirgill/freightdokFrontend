@@ -137,9 +137,10 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
             {
                 id: "company",
                 label: "Company",
-                renderer: () => {
-                    return "C.H Robinson"
+                renderer: ({ row }) => {
+                    return row?.brokerage
                 },
+                emptyState: '--'
             },
             {
                 id: 'rate',

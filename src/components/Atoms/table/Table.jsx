@@ -19,6 +19,19 @@ import TablePagination from './Pagination';
 import Spinner from "../../layout/Spinner";
 import {Delete, Refresh} from "@mui/icons-material";
 import Dialog from "../Dialog";
+import {styled} from "@mui/material/styles";
+
+const Cell = styled(TableCell)(({theme}) => ({
+    [theme.breakpoints.down('xs')]: {
+        fontSize: 12,
+        padding: '0 8px',
+    }
+}))
+const DeleteIcon = styled(Delete)(({theme}) => ({
+    [theme.breakpoints.down('xs')]: {
+        fontSize: 14,
+    }
+}))
 
 function Headers({columns = [], config = {}}) {
     const {headerCellSx = {}, hasDelete} = config;
@@ -28,14 +41,14 @@ function Headers({columns = [], config = {}}) {
             // eslint-disable-next-line array-callback-return
             if (!visible) return;
             return (
-                <TableCell padding={'normal'} sx={{color: '#000', fontWeight: 800, ...headerCellSx}}
-                           key={id || index}>{label}</TableCell>
+                    <Cell padding={'normal'} sx={{color: '#000', fontWeight: 800, ...headerCellSx}}
+                           key={id || index}>{label}</Cell>
             )
         })
     }, [columns, headerCellSx])
     return <TableRow>
         {headers}
-        {hasDelete && <TableCell padding={'none'} sx={{headerCellSx}}/>}
+        {hasDelete && <Cell padding={'none'} sx={{headerCellSx}}/>}
     </TableRow>;
 }
 
@@ -55,23 +68,23 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowI
             e.preventDefault();
             if (_.isFunction(handleRowClick)) handleRowClick(row)
         },
-        deleteCell = <TableCell sx={{}} padding={'none'} component="th" scope="row">
+        deleteCell = <Cell sx={{}} padding={'none'} component="th" scope="row">
             <IconButton onClick={handleDelete.bind(this, row._id, row)}>
-                <Delete style={{color: "rgb(220, 0, 78)"}}/>
+                <DeleteIcon sx={{color: "rgb(220, 0, 78)"}}/>
             </IconButton>
-        </TableCell>;
+        </Cell>;
 
     const cell = columns.map((column, i) => {
         const {id = '', renderer, emptyState = ''} = column || {};
         let cell;
         if (_.isFunction(renderer)) {
-            cell = renderer({row});
+            cell = renderer({row}) || emptyState;
         } else {
             cell = row[id] || emptyState;
         }
-        return <TableCell key={id + i} padding={rowCellPadding} component="th" scope="row">
+        return <Cell key={id + i} padding={rowCellPadding} component="th" scope="row">
             {cell}
-        </TableCell>
+        </Cell>
     });
 
     return <TableRow key={rowIndex} hover={!!onRowClick} onClick={rowClickHandler}

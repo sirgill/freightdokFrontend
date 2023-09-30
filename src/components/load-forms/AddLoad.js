@@ -21,7 +21,7 @@ import { blue } from "../layout/ui/Theme";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DatePicker from "@mui/lab/DatePicker";
 import TimePicker from "@mui/lab/TimePicker";
-import TextField from "@material-ui/core/TextField";
+import TextField from "@mui/material/TextField";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
 const AddLoadForm = ({ addLoad, user }) => {
@@ -115,7 +115,7 @@ const AddLoadForm = ({ addLoad, user }) => {
     };
 
     const updatePickUp = (e) => {
-        if (e.target.name === "pickupZip" && !isNaN(parseInt(e.target.value))) {
+        if (e.target.name === "pickupZip") {
             setPickup({
                 ...pickUp,
                 [e.target.name]: parseInt(e.target.value),
@@ -211,13 +211,13 @@ const AddLoadForm = ({ addLoad, user }) => {
                                         <InputField
                                             name={"loadNumber"}
                                             placeholder={"Load Number"}
-                                            onChange={(e) => updateForm(e)}
+                                            onChange={updateForm}
                                             value={loadNumber}
                                         />
                                         <InputField
                                             name={"rate"}
                                             placeholder={"Rate"}
-                                            onChange={(e) => updateForm(e)}
+                                            onChange={updateForm}
                                             value={rate}
                                         />
                                     </Stack>
@@ -280,6 +280,7 @@ const AddLoadForm = ({ addLoad, user }) => {
                                             label={"Zip"}
                                             onChange={updatePickUp}
                                             value={pickUp.pickupZip}
+                                            type='number'
                                         />
                                     </Stack>
                                 </div>
@@ -346,7 +347,7 @@ const AddLoadForm = ({ addLoad, user }) => {
                                                 name="receiverName"
                                                 label={"Receiver"}
                                                 value={dropOff.receiverName}
-                                                handleChange={updateDropOff}
+                                                onChange={(e) => updateDropOff(e)}
                                             />
                                         </div>
 
