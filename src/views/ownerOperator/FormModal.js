@@ -31,7 +31,6 @@ const formTemplate = {
     firstName: "",
     lastName: "",
     phoneNumber: "",
-    email: ''
 }
 
 
@@ -88,7 +87,7 @@ const FormModal = (props) => {
             const {success, data} = await mutation(body);
             const {message} = data || {};
             if (success) {
-                notification(message);
+                notification(message || 'Owner operator created');
                 handleClose();
                 setTimeout(() => {
                     triggerCustomEvent('refreshOwnerOp');
@@ -154,20 +153,11 @@ const FormModal = (props) => {
                                 onBlur={onBlur}
                                 errorText={errors['phoneNumber']}
                             />
-                            <InputField
-                                name={"email"}
-                                label={"Email"}
-                                onChange={updateForm}
-                                value={form.email || ''}
-                                onBlur={onBlur}
-                                errorText={errors['email']}
-                                type={'email'}
-                            />
                             {!id && <InputField
                                 value={form.user}
                                 name="user"
                                 onChange={updateForm}
-                                label='Select Onwer Operator'
+                                label='Select Owner Operator'
                                 type={'select'}
                                 showFirstBlank={true}
                                 options={ownerops.map(driver => ({id: driver._id, label: driver.email}))}

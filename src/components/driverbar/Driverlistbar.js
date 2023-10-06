@@ -31,13 +31,17 @@ const Driverlistbar = (props = {}) => {
         setEdit({open: true, data: row})
     };
 
+    const fetchDrivers = () => {
+        dispatch(getDrivers());
+    }
+
     useEffect(() => {
         const now = moment(new Date());
         const end = moment(timestamp);
         const duration = moment.duration(now.diff(end));
-        if(duration.asMinutes() > 5 || typeof timestamp === 'undefined'){
-            dispatch(getDrivers());
-        }
+        // if(duration.asMinutes() > 5 || typeof timestamp === 'undefined'){
+        // }
+        fetchDrivers()
 
     }, [])
 
@@ -83,7 +87,7 @@ const Driverlistbar = (props = {}) => {
     return (
         <div className={classes.table}>
             <EnhancedTable config={tableConfig} data={drivers} loading={loading}/>
-            {edit.open && <EditDriver closeEditForm={closeEditForm} data={edit.data} isEdit={true}/>}
+            {edit.open && <EditDriver closeEditForm={closeEditForm} data={edit.data} isEdit={true} onRefresh={fetchDrivers} />}
         </div>
     );
 };

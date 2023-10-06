@@ -10,9 +10,9 @@ const useFetch = (url, callback = null) => {
     function requestCall() {
         requestGet({uri: url, callback, showTriggers: false })
             .then(result => {
-                setLoading(false);
                 result.data && setData(result.data);
             })
+            .finally(() => setLoading(false))
     }
 
     useEffect(() => {

@@ -29,6 +29,9 @@ const useMutation = (url, callback = null) => {
 
     const mutation = async (body, type = 'post', afterSubmit) => {
         setLoading(true);
+        if(!type){
+            type = 'post'
+        }
         const asyncApiCall = getRequestCb(type.toLowerCase());
         if(asyncApiCall) {
             return asyncApiCall({uri: url, callback, body})

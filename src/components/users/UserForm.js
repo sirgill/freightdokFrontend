@@ -113,6 +113,8 @@ const UserForm = () => {
                     return alert("All fields are required");
                 else if(!isEmailValid(email)){
                    return alert('Email is not valid');
+                } else if (password.length < 6){
+                    return alert('Please enter password with 6 or more characters');
                 }
                 await mutation(form, '', afterSubmit);
             } else {

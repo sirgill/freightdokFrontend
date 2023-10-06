@@ -14,7 +14,13 @@ const UsersList = () => {
     const dispatch = useDispatch();
     const [dialog, setDialog] = useState({open: false, config: {}});
 
-    const onDialogClose = () => setDialog({...dialog, open: false})
+    const onDialogClose = () => setDialog({...dialog, open: false});
+
+    const afterDelete = ({success, data}) => {
+        if(success) {
+            onDialogClose();
+        }
+    }
 
     const onDelete = (_id, e) => {
         e.stopPropagation();
@@ -25,7 +31,7 @@ const UsersList = () => {
                 <Typography sx={{ fontSize: '1.25rem', fontWeight: 550 }} color='error'>Delete</Typography>
             </Grid>,
             okText: 'Delete',
-            onOk: () => dispatch(deleteUser(_id, onDialogClose)),
+            onOk: () => dispatch(deleteUser(_id, afterDelete)),
             content: () => <DialogContentText sx={{color: '#000'}}>Are you sure you want to delete the user?</DialogContentText>
         }
         setDialog({open: true, config});
@@ -57,7 +63,6 @@ const UsersList = () => {
         count: total,
         limit,
         onPageChange: handleChangePage,
-        headerCellSx: { pt: 1, pb: 1 },
         rowCellPadding: 'inherit',
         columns: [
             {

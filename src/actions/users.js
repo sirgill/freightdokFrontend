@@ -92,14 +92,15 @@ export const updateUser = (user, id) => async dispatch => {
 
 export const deleteUser = (id, callback) => async (dispatch, getState) => {
     try {
-        dispatch({type: INIT_ADMIN_DELETE_USER});
         const {data: data = '', success} = await requestDelete({uri: `/api/users/${id}`});
-        if(success) notification(data)
+        if(success) {
+            const {page, limit} = getState().users;
+            notification(data);
+            dispatch(fetchUsers(+page, +limit));
+        }
         else {
             notification(data.message, 'error')
         }
-        const {page, limit} = getState().users;
-        dispatch(fetchUsers(+page, +limit));
         if(callback) callback({success, data});
     } catch (e) {
         dispatch({

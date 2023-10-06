@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 // Redux
 import PropTypes from "prop-types";
-import {connect} from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import {addDriver} from "../../actions/driver.js";
 import {getLoads} from "../../actions/load";
 //Material
@@ -15,6 +15,10 @@ import {blue} from "../layout/ui/Theme";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import {Box} from "@mui/material";
+import useMutation from "../../hooks/useMutation";
+import {notification} from "../../actions/alert";
+import LoadingButton from "@mui/lab/LoadingButton";
+import {getDrivers} from "../../actions/driver";
 
 const AddDriverForm = (props) => {
     const {
@@ -27,14 +31,15 @@ const AddDriverForm = (props) => {
             closeEditForm,
             load: {loads, allLoads, loading},
         } = props;
-
+    const {loading: isSaving, mutation} = useMutation("/api/drivers")
     const formTemplate = {
         firstName: "",
         lastName: "",
         phoneNumber: "",
         loads: [],
         user: "",
-    };
+    },
+        dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
     const [count, setCount] = useState(1);
@@ -75,8 +80,15 @@ const AddDriverForm = (props) => {
     const onSubmit = (e) => {
         e.preventDefault();
 
-        addDriver(form, isEdit);
-        handleClose();
+        mutation(form, null, ({success, data}) => {
+            if(success) {
+                dispatch(getDrivers());
+                handleClose();
+            }
+            else {
+                notification(data.message, 'error')
+            }
+        })
     };
 
     const updateForm = (e) => {
@@ -134,7 +146,7 @@ const AddDriverForm = (props) => {
                 </DialogTitle>
                 <DialogContent>
                     <div className="">
-                        <Box component={'form'} sx={{px: 4, pb: 3}}>
+                        <Box component={'form'} sx={{px: 4, pb: 3}} onSubmit={onSubmit}>
                             {count === 1 ? (
                                 <div>
 
@@ -170,16 +182,16 @@ const AddDriverForm = (props) => {
 
                                     <Grid container spacing={1} style={{marginTop: "20px"}} justifyContent={'center'}>
                                         <Grid item xs={12}>
-                                            <Button
-                                                variant={'contained'}
+                                            <LoadingButton
+                                                loading={isSaving}
                                                 className=""
                                                 type="submit"
+                                                variant="contained"
                                                 color="primary"
-                                                onClick={onSubmit}
-                                                style={{width: '100%'}}
+                                                sx={{width: '100%'}}
                                             >
                                                 {(isEdit ? 'Update ' : 'Add ') + 'Driver'}
-                                            </Button>
+                                            </LoadingButton>
                                         </Grid>
                                     </Grid>
                                 </div>
