@@ -109,6 +109,13 @@ export const themeNew = createTheme({
           paddingTop: '8px'
         }
       }
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        notchedOutline: {
+          border: '1px solid #cfcfcf'
+        }
+      }
     }
   }
 });

@@ -196,3 +196,7 @@ label {
     object-fit: contain;
   }
 }
+
+a:hover {
+  color: #fff;
+}

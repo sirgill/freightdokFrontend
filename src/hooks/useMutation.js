@@ -24,7 +24,7 @@ const getRequestCb = (type) => {
     return fn;
 }
 
-const useMutation = (url, callback = null) => {
+const useMutation = (url, callback = null, showTriggers=false) => {
     const [loading, setLoading] = useState(false);
 
     const mutation = async (body, type = 'post', afterSubmit) => {
@@ -34,7 +34,7 @@ const useMutation = (url, callback = null) => {
         }
         const asyncApiCall = getRequestCb(type.toLowerCase());
         if(asyncApiCall) {
-            return asyncApiCall({uri: url, callback, body})
+            return asyncApiCall({uri: url, callback, body, showTriggers})
                 .then(res => {
                     if(afterSubmit){
                         afterSubmit({...res})

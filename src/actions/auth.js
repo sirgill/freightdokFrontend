@@ -17,6 +17,7 @@ import {
 import setAuthToken from '../utils/setAuthToken';
 import { requestPost } from "../utils/request";
 import { notification } from "./alert";
+import {AUTH_USER} from "../config/requestEndpoints";
 
 //Load user
 export const loadUser = () => async dispatch => {
@@ -25,7 +26,7 @@ export const loadUser = () => async dispatch => {
     }
 
     try {
-        const res = await axios.get('/api/auth');
+        const res = await axios.get(AUTH_USER);
         dispatch({
             type: USER_LOADED,
             payload: res.data
@@ -72,11 +73,6 @@ export const register = ({ name, email, password }) => async dispatch => {
 
 // Login user
 export const login = ({ email, password }, history, processing) => async dispatch => {
-    const config = {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
 
     const body = JSON.stringify({ email, password });
 
