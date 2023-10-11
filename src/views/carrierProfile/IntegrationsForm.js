@@ -45,6 +45,22 @@ const IntegrationsForm = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        const {email, mc, code} = form;
+        if (!email) {
+            setErrors({...errors, email: 'Please enter Email'});
+        }
+        if (!code) {
+            setErrors({...errors, email: 'Please enter Code'});
+        }
+        if (!mc) {
+            setErrors({...errors, email: 'Please enter MC#'});
+            return;
+        }
+        if (!isEmailValid(email)) {
+            return setErrors({...errors, email: 'Invalid Email'});
+        } else {
+            // save data
+        }
     }
 
     const onAuthChange = ({name, value}) => {
@@ -55,10 +71,10 @@ const IntegrationsForm = () => {
     const onAuthSubmit = (e) => {
         e.preventDefault();
         const {email, password} = authForm;
-        if(!email){
+        if (!email) {
             setErrors({...errors, email: 'Please enter Email'});
         }
-        if(!password){
+        if (!password) {
             setErrors({...errors, email: 'Please enter Password'});
             return;
         }
@@ -90,7 +106,7 @@ const IntegrationsForm = () => {
     }
 
     return <Modal config={modalConfig}>
-        <form noValidate onSelect={onSubmit}>
+        <form noValidate onSubmit={onSubmit}>
             <Grid container spacing={3} direction='column' sx={{minWidth: 350}}>
                 <Grid item>
                     <Input
