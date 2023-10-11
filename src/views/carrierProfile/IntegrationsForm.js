@@ -1,14 +1,14 @@
-import {modalConfig} from "./config";
-import Modal from "../ownerOperator/Modal";
-import Input from "../../components/Atoms/form/Input";
-import {Button, Grid, Typography} from "@mui/material";
 import {memo, useState} from "react";
+import {Button, Grid, Typography} from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import Modal from "../ownerOperator/Modal";
+
+import {modalConfig} from "./config";
 import {isEmailValid} from "../../utils/utils";
-import Password from "../../components/Atoms/form/Password";
 import useMutation from "../../hooks/useMutation";
 import {AUTH_USER} from "../../config/requestEndpoints";
-import LoadingButton from "@mui/lab/LoadingButton";
 import {PRIMARY_BLUE} from "../../components/layout/ui/Theme";
+import {Input, Password} from "../../components/Atoms";
 
 const AuthForm = memo(({onChange, form, onSubmit, errors, loading}) => {
     const {password, email} = form;
