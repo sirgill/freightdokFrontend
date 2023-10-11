@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import {Box, CircularProgress, Grid, Typography} from "@mui/material";
+import CompanyText from "./CompanyText";
 
-const Container = ({children}) => {
-    return <Grid sx={{height: '100dvh'}} alignItems='center' justifyContent='center'>
-        <Box sx={{height: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3}}>
+const Container = ({children, sx={}}) => {
+    return <Grid sx={{height: '100dvh', ...sx}}>
+        <CompanyText style={{textAlign: 'left', pl: 4, pt: 4}} />
+        <Box sx={{height: 'calc(100% - 70px)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3, px: 2}}>
             {children}
         </Box>
     </Grid>
@@ -33,7 +35,7 @@ const LoadModuleAsync = (importComponent) => {
             const C = this.state.component;
             if(this.state.error) {
                 return <Container>
-                        <Typography variant='h6'>{this.state.error}</Typography>
+                    <Typography variant='h6'>{this.state.error}</Typography>
                 </Container>
             }
             return C ? <C {...this.props}/> : <Container>
