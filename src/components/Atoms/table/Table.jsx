@@ -75,10 +75,13 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowI
         </Cell>;
 
     const cell = columns.map((column, i) => {
-        const {id = '', renderer, emptyState = ''} = column || {};
+        const {id = '', renderer, emptyState = '', valueFormatter} = column || {};
         let cell;
-        if (_.isFunction(renderer)) {
-            cell = renderer({row}) || emptyState;
+        if(valueFormatter && _.isFunction(valueFormatter)){
+            cell = valueFormatter(row[id]);
+        }
+        else if (_.isFunction(renderer)) {
+            cell = renderer({row}, rowIndex) || emptyState;
         } else {
             cell = row[id] || emptyState;
         }
@@ -107,7 +110,7 @@ const TableData = ({columns, data = [], config = {}, handleRowClick, handleDelet
 
 
 const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch}) => {
-
+    data = data || [];
     const [tableState, setTableState] = useState({}),
         [dialog, setDialog] = useState({ open: false, config: {} }),
         {

@@ -2,8 +2,9 @@ import {getCheckStatusIcon} from "../../utils/utils";
 import {Button} from "@mui/material";
 import {Link} from "react-router-dom";
 import {UPDATE_INTEGRATIONS_LINK} from "../../components/constants";
+import React from "react";
 
-export const integrationCredentialConfig = ({path}) => ({
+export const integrationCredentialConfig = ({path, _dbData, list, refetch}) => ({
     rowCellPadding: 'normal',
     showRefresh: false,
     columns: [
@@ -12,8 +13,11 @@ export const integrationCredentialConfig = ({path}) => ({
             label: 'Integrations'
         },
         {
-            id: 'key',
-            label: 'Key/Code'
+            id: 'code',
+            label: 'Key/Code',
+            valueFormatter: () => {
+                return '********'
+            }
         },
         {
             id: 'email',
@@ -24,8 +28,12 @@ export const integrationCredentialConfig = ({path}) => ({
             label: 'MC#',
         },
         {
-            renderer: ({}) => {
-                return <Button component={Link} to={path + UPDATE_INTEGRATIONS_LINK} variant='contained'>Update</Button>
+            renderer: ({row}, rowIndex) => {
+                return <Button
+                    component={Link}
+                    to={{pathname: path + UPDATE_INTEGRATIONS_LINK, state: {row, rowIndex, _dbData, list, refetch}}}
+                    variant='contained'
+                >Update</Button>
             }
         }
     ]
@@ -50,8 +58,8 @@ export const tableConfig = {
         {
             id: 'operatingStatus',
             label: 'Operating Status',
-            renderer: ({ row = {} }) => {
-                const { operatingStatus } = row;
+            renderer: ({row = {}}) => {
+                const {operatingStatus} = row;
                 return getCheckStatusIcon(operatingStatus === 'Y')
             }
         },
