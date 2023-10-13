@@ -29,6 +29,7 @@ import {FEDERAL_SIGNUP_LINK, FMCSA_VERIFICATION_LINK, ONBOARDING_USER, SIGNUP_SU
 import Support from "./components/auth/signUpWithFMCSA/Support";
 import UserOnboard from "./components/auth/signUpWithFMCSA/UserOnboard";
 import LoadModuleAsync from "./components/Atoms/LoadModuleAsync";
+import EnhancedDashboard from "./layout/EnhancedDashboard";
 
 const Login = LoadModuleAsync(() => import('./components/auth/Login'), true);
 const FMCSASignup = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/FMCSASignup"), true)
@@ -66,7 +67,8 @@ const App = () => {
                     <Route path="/fleetRegister" component={Fleet} />
                     <Route path='/setPassword' component={SetPassword} />
                     <PrivateRoute path="/profile" component={Profile}/>
-                    <PrivateRoute path="/dashboard" component={Dashboard}/>
+                    {/*<PrivateRoute path="/dashboard" component={Dashboard}/>*/}
+                    <PrivateRoute path='/enhancedDashboard' component={EnhancedDashboard} />
                     <PrivateRoute path="/create-profile" component={ProfileForm}/>
                     <PrivateRoute path="/edit-profile" component={EditProfile}/>
                     <PrivateRoute path="/loads" component={Loads}/>

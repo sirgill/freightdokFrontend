@@ -49,6 +49,10 @@ export const SUCCESS_COLOR = 'rgb(40, 167, 69)',
 
 export const themeNew = createTheme({
   palette: {
+    text: {
+      primary: '#000',
+      secondary: '#6f6f6f'
+    },
     primary: {
       main: PRIMARY_BLUE,
     },
@@ -60,9 +64,18 @@ export const themeNew = createTheme({
     fontFamily: ['Myriad-Pro Regular',  "Sans-serif"].join(','),
     button: {
       textTransform: 'none'
-    }
+    },
   },
   components: {
+    MuiTypography: {
+      styleOverrides: {
+        color: {
+          secondary: {
+            color: 'blue'
+          }
+        }
+      }
+    },
     MuiAlert: {
       styleOverrides: {
         outlinedInfo: {
@@ -114,6 +127,13 @@ export const themeNew = createTheme({
       styleOverrides: {
         notchedOutline: {
           border: '1px solid #cfcfcf'
+        }
+      }
+    },
+    MuiAppBar: {
+      styleOverrides:{
+        colorPrimary: {
+          backgroundColor: white
         }
       }
     }
