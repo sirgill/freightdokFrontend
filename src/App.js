@@ -30,8 +30,8 @@ import Support from "./components/auth/signUpWithFMCSA/Support";
 import UserOnboard from "./components/auth/signUpWithFMCSA/UserOnboard";
 import LoadModuleAsync from "./components/Atoms/LoadModuleAsync";
 
-const Login = LoadModuleAsync(() => import('./components/auth/Login'));
-const FMCSASignup = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/FMCSASignup"))
+const Login = LoadModuleAsync(() => import('./components/auth/Login'), true);
+const FMCSASignup = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/FMCSASignup"), true)
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
