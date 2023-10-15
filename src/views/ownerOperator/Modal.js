@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import {useMemo} from "react";
 import {useHistory} from "react-router-dom";
 import {useMediaQuery, Zoom} from "@mui/material";
+import {addEvent, removeEvent} from "../../utils/utils";
 
 const BootstrapDialog = styled(Dialog)(({theme}) => ({
     "& .MuiDialogContent-root": {
@@ -84,6 +85,9 @@ export default function Modal(props) {
 
     React.useEffect(() => {
         setOpen(true);
+        addEvent(window, 'closeModal', handleClose)
+
+        return () => removeEvent(window, 'closeModal', handleClose)
     }, []);
 
     const Transition = useMemo(() => {

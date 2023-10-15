@@ -4,7 +4,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Modal from "../ownerOperator/Modal";
 
 import {modalConfig} from "./config";
-import {isEmailValid} from "../../utils/utils";
+import {isEmailValid, triggerCustomEvent} from "../../utils/utils";
 import useMutation from "../../hooks/useMutation";
 import {AUTH_USER} from "../../config/requestEndpoints";
 import {PRIMARY_BLUE} from "../../components/layout/ui/Theme";
@@ -36,30 +36,41 @@ const AuthForm = memo(({onChange, form, onSubmit, errors, loading}) => {
     </Grid>
 })
 
-const IntegrationsForm = () => {
-    const [form, setForm] = useState({});
+const IntegrationsForm = (props) => {
+    const {state: {row, rowIndex, list} = {}} = props.location;
+    const [form, setForm] = useState({email: '', mc: '', code: ''});
     const [isAuthorised, setIsAuthorised] = useState(false);
-    const [authForm, setAuthForm] = useState({});
+    const [authForm, setAuthForm] = useState({email: '', password: ''});
     const [errors, setErrors] = useState({});
     const {loading: loadingSignIn, mutation: verifyUserAsync} = useMutation(AUTH_USER, null, true)
+    const {loading: isSaving, mutation: updateMutation} = useMutation('/api/carrierProfile/secret-manager?update=true', null, true)
 
     const onSubmit = (e) => {
         e.preventDefault();
         const {email, mc, code} = form;
-        if (!email) {
-            setErrors({...errors, email: 'Please enter Email'});
-        }
-        if (!code) {
-            setErrors({...errors, email: 'Please enter Code'});
-        }
-        if (!mc) {
-            setErrors({...errors, email: 'Please enter MC#'});
-            return;
-        }
-        if (!isEmailValid(email)) {
+        if (!isEmailValid(email) || !email) {
             return setErrors({...errors, email: 'Invalid Email'});
         } else {
             // save data
+            const item = list[rowIndex]
+            const integrationName = item['integrationName'];
+            const obj = {
+                [integrationName]: form['code'],
+                mc: form.mc,
+                email: form.email
+            }
+            list.forEach(item => {
+                if(item.integrationName !== integrationName){
+                    Object.assign(obj, {[item.integrationName]: item.code})
+                }
+            })
+
+            updateMutation(obj)
+                .then(res => {
+                    console.log(res);
+                    triggerCustomEvent('fetchCarrierProfile');
+                    triggerCustomEvent('closeModal')
+                })
         }
     }
 
@@ -83,6 +94,7 @@ const IntegrationsForm = () => {
                 .then(res => {
                     if (res.token) {
                         setIsAuthorised(true);
+                        setForm(row)
                     }
                 })
         } else {
@@ -112,7 +124,9 @@ const IntegrationsForm = () => {
                     <Input
                         fullWidth
                         label='Code'
+                        name='code'
                         onChange={onChange}
+                        value={form.code || ''}
                     />
                 </Grid>
                 <Grid item>
@@ -120,17 +134,28 @@ const IntegrationsForm = () => {
                         fullWidth
                         label='Email'
                         onChange={onChange}
+                        name={'email'}
+                        value={form.email || ''}
                     />
                 </Grid>
                 <Grid item>
                     <Input
                         fullWidth
                         label='MC#'
+                        name='mc'
                         onChange={onChange}
+                        value={form.mc || ''}
                     />
                 </Grid>
                 <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
-                    <Button type='submit' variant='contained'>Update</Button>
+                    <LoadingButton
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        loading={isSaving}
+                    >
+                        {isSaving ? 'Updating...' : 'Update'}
+                    </LoadingButton>
                 </Grid>
             </Grid>
         </form>
