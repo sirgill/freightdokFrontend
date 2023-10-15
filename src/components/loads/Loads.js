@@ -25,13 +25,13 @@ const Loads = ({ rawLoades, getLoads, searchLoads, load: { loads, loading, loads
       ) : (
         <Fragment>
 
-          {!query && rawLoades.length ? (
+          {!query && rawLoades?.length ? (
             rawLoades.map((l) => <LoadItem key={l._id} load={l} loads={rawLoades} page={page} rowsPerPage={rowsPerPage} />)
           ) : query && sLoads.length ? (
             sLoads.map((l) => <LoadItem key={l._id} load={l} loads={rawLoades} page={sPage} rowsPerPage={limit} />)
           ) : ''}
 
-          {(!query && !rawLoades.length) || (query && !sLoads.length) ? <h4>No loads</h4> : ''}
+          {(!query && !rawLoades?.length) || (query && !sLoads.length) ? <h4>No loads</h4> : ''}
 
 
         </Fragment>

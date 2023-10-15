@@ -19,6 +19,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import CompanyText from "../components/Atoms/CompanyText";
 import BackgroundImage from '../assets/images/ProfileBackground.png'
 import {Tooltip} from "../components/Atoms";
+import NavLinks from "./NavLinks";
 
 const drawerWidth = 240;
 
@@ -89,7 +90,12 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})
     }),
 );
 
-function MiniDrawer({children, routes=[]}) {
+const Title = ({routes, basePath}) => {
+    const {title = 'Dashboard'} = routes.find(route => basePath + `/${route.id}` === window.location.pathname) || ''
+    return title;
+}
+
+function MiniDrawer({children, routes=[], basePath}) {
     const [open, setOpen] = React.useState(true);
 
     const handleDrawerOpen = () => {
@@ -100,7 +106,6 @@ function MiniDrawer({children, routes=[]}) {
         setOpen(false);
     };
 
-    console.log(routes)
 
     return (
         <Box sx={{display: 'flex'}}>
@@ -118,8 +123,8 @@ function MiniDrawer({children, routes=[]}) {
                     >
                         {open ? <ChevronLeftIcon/> : <MenuIcon/>}
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div" color='text.primary'>
-                        Mini variant drawer
+                    <Typography variant="h6" noWrap component="div" color='text.primary' fontWeight='bold'>
+                        <Title routes={routes} basePath={basePath}/>
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -137,32 +142,7 @@ function MiniDrawer({children, routes=[]}) {
                         }}
                     />
                 </Box>
-                <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <Tooltip key={text} title={!open && text}>
-                            <ListItem disablePadding sx={{display: 'block'}}>
-                                <ListItemButton
-                                    sx={{
-                                        minHeight: 48,
-                                        justifyContent: open ? 'initial' : 'center',
-                                        px: 2.5,
-                                    }}
-                                >
-                                    <ListItemIcon
-                                        sx={{
-                                            minWidth: 0,
-                                            mr: open ? 3 : 'auto',
-                                            justifyContent: 'center',
-                                        }}
-                                    >
-                                        {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
-                                    </ListItemIcon>
-                                    <ListItemText primary={text} sx={{opacity: open ? 1 : 0}}/>
-                                </ListItemButton>
-                            </ListItem>
-                        </Tooltip>
-                    ))}
-                </List>
+                <NavLinks open={open} config={routes} basePath={basePath} />
             </Drawer>
             <Box component="main" sx={{flexGrow: 1, p: 3}}>
                 <DrawerHeader/>
@@ -172,4 +152,4 @@ function MiniDrawer({children, routes=[]}) {
     );
 }
 
-export default React.memo(MiniDrawer, () => true);
+export default (MiniDrawer);

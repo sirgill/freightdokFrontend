@@ -18,6 +18,7 @@ import setAuthToken from '../utils/setAuthToken';
 import { requestPost } from "../utils/request";
 import { notification } from "./alert";
 import {AUTH_USER} from "../config/requestEndpoints";
+import {ENHANCED_DASHBOARD} from "../components/client/routes";
 
 //Load user
 export const loadUser = () => async dispatch => {
@@ -90,7 +91,7 @@ export const login = ({ email, password }, history, processing) => async dispatc
             dispatch(loadUser());
 
             if (data.token) {
-                history.push('/dashboard');
+                history.push(ENHANCED_DASHBOARD);
             }
         }
         else {

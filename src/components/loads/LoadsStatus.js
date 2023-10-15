@@ -32,10 +32,10 @@ export default function LoadsStatus({ resetSearchField, listBarType }) {
         setTimeout(() => {
             setLoading(false);
         }, 1000);
-        resetSearchField();
+        resetSearchField && resetSearchField();
         dispatch(resetLoadsSearch(listBarType));
         return () => {
-            resetSearchField();
+            resetSearchField && resetSearchField();
             dispatch(resetLoadsSearch(listBarType));
         };
     }, []);

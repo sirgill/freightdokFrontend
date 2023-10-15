@@ -26,14 +26,14 @@ const Loadlistbar = ({
         setTimeout(() => {
             setLoading(false);
         }, 1000);
-        resetSearchField();
+        resetSearchField && resetSearchField();
         if (searchText) {
             searchLoads(+page, +limit, search, 'loads');
         } else {
             getLoads(page);
         }
         return () => {
-            resetSearchField();
+            resetSearchField && resetSearchField();
         };
     }, []);
 

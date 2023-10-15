@@ -35,12 +35,12 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
         setTimeout(() => {
             setLoading(false);
         }, 1000);
-        resetSearchField();
+        resetSearchField && resetSearchField();
         dispatch(resetLoadsSearch(listBarType));
         dispatch(getInvoiceLoads());
         // dispatch(getCHLoads(true));
         return () => {
-            resetSearchField();
+            resetSearchField && resetSearchField();
             dispatch(resetLoadsSearch(listBarType));
         }
     }, []);

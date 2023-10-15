@@ -30,6 +30,7 @@ import Support from "./components/auth/signUpWithFMCSA/Support";
 import UserOnboard from "./components/auth/signUpWithFMCSA/UserOnboard";
 import LoadModuleAsync from "./components/Atoms/LoadModuleAsync";
 import EnhancedDashboard from "./layout/EnhancedDashboard";
+import {ENHANCED_DASHBOARD} from "./components/client/routes";
 
 const Login = LoadModuleAsync(() => import('./components/auth/Login'), true);
 const FMCSASignup = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/FMCSASignup"), true)
@@ -68,10 +69,11 @@ const App = () => {
                     <Route path='/setPassword' component={SetPassword} />
                     <PrivateRoute path="/profile" component={Profile}/>
                     {/*<PrivateRoute path="/dashboard" component={Dashboard}/>*/}
-                    <PrivateRoute path='/enhancedDashboard' component={EnhancedDashboard} />
-                    <PrivateRoute path="/create-profile" component={ProfileForm}/>
-                    <PrivateRoute path="/edit-profile" component={EditProfile}/>
-                    <PrivateRoute path="/loads" component={Loads}/>
+                    <PrivateRoute path={ENHANCED_DASHBOARD} component={EnhancedDashboard} />
+                    {/*<PrivateRoute path='*'><Redirect to={ENHANCED_DASHBOARD} /></PrivateRoute>*/}
+                    {/*<PrivateRoute path="/create-profile" component={ProfileForm}/>*/}
+                    {/*<PrivateRoute path="/edit-profile" component={EditProfile}/>*/}
+                    {/*<PrivateRoute path="/loads" component={Loads}/>*/}
                     <PreAuthRoutes/>
                 </Switch>
             </BrowserRouter>
