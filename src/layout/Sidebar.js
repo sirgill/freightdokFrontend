@@ -4,22 +4,18 @@ import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import CompanyText from "../components/Atoms/CompanyText";
 import BackgroundImage from '../assets/images/ProfileBackground.png'
-import {Tooltip} from "../components/Atoms";
 import NavLinks from "./NavLinks";
+import {Tooltip, UserMenu} from "../components/Atoms";
+import {useMediaQuery} from "@mui/material";
+import {useTheme} from "@mui/material/styles";
+import {useEffect} from "react";
 
 const drawerWidth = 240;
 
@@ -91,12 +87,14 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})
 );
 
 const Title = ({routes, basePath}) => {
-    const {title = 'Dashboard'} = routes.find(route => basePath + `/${route.id}` === window.location.pathname) || ''
+    const {title = 'Dashboard'} = routes.find(route => window.location.pathname.includes(basePath + `/${route.id}`)) || ''
     return title;
 }
 
 function MiniDrawer({children, routes=[], basePath}) {
     const [open, setOpen] = React.useState(true);
+    const theme = useTheme();
+    const isSmallDevice  = useMediaQuery(theme.breakpoints.down('xs'));
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -106,29 +104,44 @@ function MiniDrawer({children, routes=[], basePath}) {
         setOpen(false);
     };
 
+    useEffect(() => {
+        if(isSmallDevice && open){
+            setOpen(false)
+        }
+    }, [isSmallDevice])
+
 
     return (
         <Box sx={{display: 'flex'}}>
             <CssBaseline/>
             <AppBar position="fixed" open={open}>
                 <Toolbar>
-                    <IconButton
-                        color="primary"
-                        aria-label="open drawer"
-                        onClick={open ? handleDrawerClose : handleDrawerOpen}
-                        edge="start"
-                        sx={{
-                            marginRight: 3,
-                        }}
-                    >
-                        {open ? <ChevronLeftIcon/> : <MenuIcon/>}
-                    </IconButton>
-                    <Typography variant="h6" noWrap component="div" color='text.primary' fontWeight='bold'>
-                        <Title routes={routes} basePath={basePath}/>
-                    </Typography>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'flex' }, alignItems: 'center' }}>
+                        <Tooltip title={open ? 'Minimize Sidebar' : 'Maximize Sidebar'}>
+                            <IconButton
+                                color="primary"
+                                aria-label="open drawer"
+                                onClick={open ? handleDrawerClose : handleDrawerOpen}
+                                edge="start"
+                                sx={{
+                                    marginRight: 3,
+                                }}
+                            >
+                                {open ? <ChevronLeftIcon/> : <MenuIcon/>}
+                            </IconButton>
+                        </Tooltip>
+                        <Typography variant="h6" noWrap component="div" color='text.primary' fontWeight='bold'>
+                            <Title routes={routes} basePath={basePath}/>
+                        </Typography>
+                    </Box>
+                    <Box sx={{ flexGrow: 0 }}>
+                        <UserMenu />
+                    </Box>
                 </Toolbar>
             </AppBar>
-            <Drawer variant="permanent" open={open}>
+            <Drawer variant="permanent" open={open} PaperProps={{sx: {
+                overflow: 'hidden'
+                }}}>
                 <Box sx={{height: 277, background: `url(${BackgroundImage})`}}>
                     <CompanyText
                         style={{
@@ -142,7 +155,9 @@ function MiniDrawer({children, routes=[], basePath}) {
                         }}
                     />
                 </Box>
-                <NavLinks open={open} config={routes} basePath={basePath} />
+                <Box sx={{overflow: 'hidden', overflowY: 'auto', height: `calc(100% - ${277}px)`}}>
+                    <NavLinks open={open} config={routes} basePath={basePath} />
+                </Box>
             </Drawer>
             <Box component="main" sx={{flexGrow: 1, p: 3}}>
                 <DrawerHeader/>

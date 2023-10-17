@@ -117,6 +117,18 @@ export const verticalAlignStyle = {
     transform: "translate(-50%, -50%)",
 }
 
+export const getRoutesByPermission = (routes) => {
+    const {user: {role = ''} = {}} = getUserDetail();
+    const arr = [];
+    routes.forEach(route => {
+        const {permissions = []} = route;
+        if(permissions.indexOf(role) > -1){
+            arr.push(route)
+        }
+    })
+    return arr;
+}
+
 export {
     addEvent,
     removeEvent,

@@ -94,6 +94,9 @@ export const themeNew = createTheme({
       styleOverrides: {
         root: {
           minWidth: 80,
+          '&: hover': {
+            color: '#000'
+          }
         }
       }
     },

@@ -2,9 +2,10 @@ import React, {Fragment, useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, selectUserToEdit, deleteUser } from "../../actions/users";
 import EnhancedTable from "../Atoms/table/Table";
-import {Button, DialogContentText, Grid, Typography} from "@mui/material";
+import {Box, Button, DialogContentText, Grid, Typography} from "@mui/material";
 import Dialog from "../Atoms/Dialog";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import UserForm from "./UserForm";
 
 const UsersList = () => {
     const { list, loading, page, limit, total } = useSelector(
@@ -63,7 +64,7 @@ const UsersList = () => {
         count: total,
         limit,
         onPageChange: handleChangePage,
-        rowCellPadding: 'inherit',
+        rowCellPadding: 'normal',
         columns: [
             {
                 id: 'name',
@@ -113,6 +114,9 @@ const UsersList = () => {
     return (
         <Fragment>
             <EnhancedTable loading={loading} data={list} config={config} />
+            <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
+                <UserForm/>
+            </Box>
             <Dialog className='enhancedTable_dialog' open={dialog.open} config={dialog.config} onClose={onDialogClose} />
         </Fragment>
     );

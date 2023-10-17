@@ -11,7 +11,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function Dialog(props) {
-    const {open, config, onClose, preventBackdropClose = false, className} = props,
+    const {open = false, config, onClose, preventBackdropClose = false, className} = props,
         {title, onOk, okText = 'Save', content} = config;
 
     const handleClose = (e, reason = '') => {

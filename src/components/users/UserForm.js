@@ -131,7 +131,6 @@ const UserForm = () => {
                     color="primary"
                     variant={'contained'}
                     onClick={handleClickOpen}
-                    style={{marginBottom: "20%"}}
                 >
                     Add User
                 </Button>

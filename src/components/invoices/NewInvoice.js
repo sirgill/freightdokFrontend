@@ -314,7 +314,7 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {}, history }) => {
                     ref={ref}
                     {...props}
                     onExited={() => {
-                        return history.push("/dashboard");
+                        return history.goBack();
                     }}
                 />
             );

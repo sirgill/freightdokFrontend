@@ -40,6 +40,7 @@ import Mybids from '../../assets/icons/icons8-bid-24.png'
 import LogoutIcon from '../../assets/icons/icons8-logout-24.png'
 import LoadModuleAsync from "../Atoms/LoadModuleAsync";
 import {styled} from "@mui/material/styles";
+import {ENHANCED_DASHBOARD} from "../client/routes";
 
 const MyBids = LoadModuleAsync(() => import("../../views/mybids/Mybids.js"));
 const CarrierProfile = LoadModuleAsync(() => import("../../views/carrierProfile/CarrierProfile"));
@@ -83,6 +84,7 @@ const Dashboard = ({
 
     useEffect(() => {
         getCurrentProfile();
+        history.push(ENHANCED_DASHBOARD)
     }, []);
 
     const handleDrawerToggle = () => {

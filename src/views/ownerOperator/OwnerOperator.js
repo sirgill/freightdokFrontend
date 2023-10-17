@@ -60,7 +60,7 @@ const OwnerOperator = () => {
       {
         id: "role",
         label: "Role",
-        renderer: ({ row }) => {
+        renderer: ({}) => {
           return <Fragment>Owner Operator</Fragment>;
         },
       },
@@ -110,8 +110,8 @@ const OwnerOperator = () => {
         >
             Add Owner Operator
         </Button>
-      <Route path={path + "/ownerOp/add"} component={FormModal} />
-      <Route path={path + "/ownerOp/edit/:id"} component={FormModal} />
+      <Route path={path + "/ownerOp/add"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
+      <Route path={path + "/ownerOp/edit/:id"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
     </div>
   );
 };

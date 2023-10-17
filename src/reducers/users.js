@@ -60,7 +60,8 @@ export default function users(state = initialState, action) {
         case SELECT_USER_TO_EDIT:
             return {
                 ...state,
-                user: payload
+                user: payload,
+                open: true
             };
         case RESET_SELECTED_USER:
             return {

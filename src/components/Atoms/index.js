@@ -6,3 +6,4 @@ export {default as DateRangePicker} from './form/DateRangePicker';
 export {default as SubmitButton} from './form/SubmitButton';
 export {default as Alert} from './Alert';
 export {default as Tooltip} from './Tooltip';
+export {default as UserMenu} from './UserMenu';

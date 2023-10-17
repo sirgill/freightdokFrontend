@@ -21,10 +21,10 @@ const NavLinks = ({open, config: routes = [], basePath, ...rest}) => {
 
     const links = useMemo(() => {
         return routes.map(route => {
-            const {id, title, link, icon: Icon} = route;
+            const {id, title, icon: Icon} = route;
             const url = basePath + `/${id}`;
-            const isSelected = url === location.pathname
-            return <Tooltip key={id} title={!open ? title : undefined}>
+            const isSelected = location.pathname.includes(url)
+            return <Tooltip key={id} title={!open ? title : undefined} sx={{fontSize: '1em'}}>
                     <ListItemButton
                         sx={{
                             minHeight: 48,
@@ -32,10 +32,21 @@ const NavLinks = ({open, config: routes = [], basePath, ...rest}) => {
                             px: 2.5,
                             '&.active': {background: ''}
                         }}
-                        disablePadding
                         component={LinkComponent}
                         to={url}
                         selected={isSelected}
+                        isActive={(match, location) => {
+                            if (!match) {
+                                return false;
+                            }
+                            if(match.url === location.pathname){
+                                document.title = 'freightdok: ' + title;
+                            }
+
+                            // only consider an event active if its event id is an odd number
+                            const eventID = parseInt(match.params.eventID);
+                            return !isNaN(eventID) && eventID % 2 === 1;
+                        }}
                     >
                         <ListItemIcon
                             sx={{

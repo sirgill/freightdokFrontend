@@ -35,7 +35,7 @@ const formTemplate = {
 
 
 const FormModal = (props) => {
-    const {history, match: {params: {id = ''} = {}} = {}} = props;
+    const {history, match: {params: {id = ''} = {}} = {}, onCloseUrl} = props;
     const [users, setUsers] = useState([])
     const [form, setForm] = React.useState(formTemplate);
     const [errors, setErrors] = useState(formTemplate);
@@ -101,7 +101,7 @@ const FormModal = (props) => {
     };
 
     const handleClose = () => {
-        history.push('/dashboard');
+        history.push(onCloseUrl);
     }
     return (
         <Dialog
@@ -165,7 +165,7 @@ const FormModal = (props) => {
                         </div>
 
                         <Grid container spacing={1} style={{marginTop: "20px"}}>
-                            <Grid item xs={3}></Grid>
+                            <Grid item xs={3}/>
                             <Grid item xs={6}>
                                 <Button
                                     className=""
@@ -178,7 +178,7 @@ const FormModal = (props) => {
                                     Save
                                 </Button>
                             </Grid>
-                            <Grid item xs={3}></Grid>
+                            <Grid item xs={3}/>
                         </Grid>
 
                     </form>

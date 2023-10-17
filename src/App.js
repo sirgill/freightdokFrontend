@@ -68,7 +68,7 @@ const App = () => {
                     <Route path="/fleetRegister" component={Fleet} />
                     <Route path='/setPassword' component={SetPassword} />
                     <PrivateRoute path="/profile" component={Profile}/>
-                    {/*<PrivateRoute path="/dashboard" component={Dashboard}/>*/}
+                    <PrivateRoute path="/dashboard" component={Dashboard}/>
                     <PrivateRoute path={ENHANCED_DASHBOARD} component={EnhancedDashboard} />
                     {/*<PrivateRoute path='*'><Redirect to={ENHANCED_DASHBOARD} /></PrivateRoute>*/}
                     {/*<PrivateRoute path="/create-profile" component={ProfileForm}/>*/}

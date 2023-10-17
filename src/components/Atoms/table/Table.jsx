@@ -55,7 +55,6 @@ function Headers({columns = [], config = {}}) {
 const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowIndex, handleDelete}) => {
     const {
         hasDelete = false,
-        hover = false,
         rowCellPadding = 'none',
         onRowClick = undefined,
         rowStyleCb
@@ -85,7 +84,7 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowI
         } else {
             cell = row[id] || emptyState;
         }
-        return <Cell key={id + i} padding={rowCellPadding} component="th" scope="row">
+        return <Cell key={id + i} padding={rowCellPadding || 'normal'} component="th" scope="row">
             {cell}
         </Cell>
     });

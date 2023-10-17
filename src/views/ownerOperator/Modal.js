@@ -11,6 +11,7 @@ import {useMemo} from "react";
 import {useHistory} from "react-router-dom";
 import {useMediaQuery, Zoom} from "@mui/material";
 import {addEvent, removeEvent} from "../../utils/utils";
+import {ENHANCED_DASHBOARD} from "../../components/client/routes";
 
 const BootstrapDialog = styled(Dialog)(({theme}) => ({
     "& .MuiDialogContent-root": {
@@ -98,7 +99,7 @@ export default function Modal(props) {
                     ref={ref}
                     {...props}
                     onExited={() => {
-                        return history.push(closeUrl || "/dashboard");
+                        return closeUrl ? history.push(closeUrl || ENHANCED_DASHBOARD) : history.goBack()
                     }}
                 />
             );

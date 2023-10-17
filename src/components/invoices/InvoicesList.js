@@ -5,7 +5,7 @@ import { resetLoadsSearch } from '../../actions/load.js';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { getInvoiceLoads } from "../../actions/load";
 import EnhancedTable from "../Atoms/table/Table";
-import { Link, Route } from "react-router-dom";
+import { Link, Route, useRouteMatch } from "react-router-dom";
 import Invoice from "./NewInvoice";
 import moment from "moment";
 import { getParsedLoadEquipment } from "../../views/openBoard/constants";
@@ -23,6 +23,7 @@ const useStyles = makeStyles({
 export default function InvoicesList({ setSelectedLoad, resetSearchField, listBarType, load_selected }) {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const {path} = useRouteMatch();
     const [loading, setLoading] = useState(true);
     const { page, limit, total } = useSelector(state => state.load.invoices);
     const invoices = useSelector(state => state.load.invoices.data);
@@ -153,7 +154,7 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
                 renderer: ({ row }) => {
                     return <Button
                         component={Link}
-                        to={'/dashboard/invoice/' + row._id}
+                        to={path + '/' + row._id}
                         variant="outlined"
                         color="primary"
                     >
@@ -169,7 +170,7 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
             {/*{loading ? <Spinner/> : (*/}
             <Fragment>
                 <EnhancedTable config={config} data={invoices} />
-                <Route path={'/dashboard/invoice/:id'} component={Invoice} />
+                <Route path={path + '/:id'} component={Invoice} />
                 {/*<TablePagination*/}
                 {/*    rowsPerPageOptions={[5, 10, 15]}*/}
                 {/*    colSpan={3}*/}
