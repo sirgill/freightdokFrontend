@@ -60,7 +60,7 @@ const OwnerOperator = () => {
       {
         id: "role",
         label: "Role",
-        renderer: ({}) => {
+        renderer: () => {
           return <Fragment>Owner Operator</Fragment>;
         },
       },

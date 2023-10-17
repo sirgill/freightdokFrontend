@@ -6,6 +6,7 @@ import {Box, Button, DialogContentText, Grid, Typography} from "@mui/material";
 import Dialog from "../Atoms/Dialog";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import UserForm from "./UserForm";
+import {ROLES} from "../constants";
 
 const UsersList = () => {
     const { list, loading, page, limit, total } = useSelector(
@@ -52,10 +53,9 @@ const UsersList = () => {
     };
 
     const allowedRolesForDispatch = [
-        "driver",
-        "afterhours",
-        "load planner",
-        "support",
+        ROLES.dispatch,
+        ROLES.admin,
+        ROLES.superadmin,
     ];
 
     const config = {
@@ -69,7 +69,8 @@ const UsersList = () => {
             {
                 id: 'name',
                 label: 'Name',
-                renderer: ({ row: { name = '' } }) => name || '--'
+                emptyState: '--',
+                renderer: ({ row: { name = '' } }) => name
             },
             {
                 id: 'email',
@@ -82,26 +83,18 @@ const UsersList = () => {
             {
                 id: 'actions',
                 label: 'Actions',
-                renderer: ({ row: { _id, email, role } = {} }) => {
+                renderer: ({ row: { _id, email, role } = {}, role: userRole }) => {
                     return <Fragment>
-                        {user && user.role !== "dispatch" ? (
-                            <Button sx={{ mr: 1 }} variant='contained' onClick={() => {
-                                dispatch(selectUserToEdit({ _id, email, role }))
-                            }}>
-                                Update
-                            </Button>
-                        ) : (
-                            allowedRolesForDispatch.includes(role) && (
-                                <Button variant='contained' onClick={() => {
+                        {allowedRolesForDispatch.includes(userRole) && (
+                                <Button variant='contained' sx={{mr: 1}} onClick={() => {
                                     dispatch(selectUserToEdit({ _id, email, role }))
                                 }}>
                                     Update
                                 </Button>
                             )
-                        )}
+                        }
                         {user &&
-                            (user.role === "user" || user.role === "admin") &&
-                            user.role !== "dispatch" &&
+                            [ROLES.admin, ROLES.superadmin].includes(user.role) &&
                             <Button variant='contained' color='error' onClick={onDelete.bind(this, _id)}>
                                 Delete
                             </Button>}
@@ -115,7 +108,7 @@ const UsersList = () => {
         <Fragment>
             <EnhancedTable loading={loading} data={list} config={config} />
             <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
-                <UserForm/>
+                <UserForm />
             </Box>
             <Dialog className='enhancedTable_dialog' open={dialog.open} config={dialog.config} onClose={onDialogClose} />
         </Fragment>

@@ -20,6 +20,7 @@ import Spinner from "../../layout/Spinner";
 import {Delete, Refresh} from "@mui/icons-material";
 import Dialog from "../Dialog";
 import {styled} from "@mui/material/styles";
+import {getUserDetail} from "../../../utils/utils";
 
 const Cell = styled(TableCell)(({theme}) => ({
     [theme.breakpoints.down('xs')]: {
@@ -39,7 +40,10 @@ function Headers({columns = [], config = {}}) {
         return columns.map((column, index) => {
             const {label = '', id = '', visible = true} = column || {};
             // eslint-disable-next-line array-callback-return
-            if (!visible) return;
+            const isVisible = _.isFunction(visible) ? visible({column}) : visible;
+            if(!isVisible){
+                return null;
+            }
             return (
                     <Cell padding={'normal'} sx={{color: '#000', fontWeight: 800, ...headerCellSx}}
                            key={id || index}>{label}</Cell>
@@ -52,13 +56,14 @@ function Headers({columns = [], config = {}}) {
     </TableRow>;
 }
 
-const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowIndex, handleDelete}) => {
+const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowIndex, handleDelete, hasDeletePermission, ...rest}) => {
     const {
         hasDelete = false,
         rowCellPadding = 'none',
         onRowClick = undefined,
         rowStyleCb
     } = config;
+    const {role} = rest;
     let rowStyle = {}
     if (rowStyleCb) {
         rowStyle = rowStyleCb({row}) || {};
@@ -68,19 +73,23 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowI
             if (_.isFunction(handleRowClick)) handleRowClick(row)
         },
         deleteCell = <Cell sx={{}} padding={'none'} component="th" scope="row">
-            <IconButton onClick={handleDelete.bind(this, row._id, row)}>
-                <DeleteIcon sx={{color: "rgb(220, 0, 78)"}}/>
+            <IconButton onClick={handleDelete.bind(this, row._id, row)} disabled={!hasDeletePermission}>
+                <DeleteIcon color={'error'} />
             </IconButton>
         </Cell>;
 
     const cell = columns.map((column, i) => {
-        const {id = '', renderer, emptyState = '', valueFormatter} = column || {};
+        const {id = '', renderer, emptyState = '', valueFormatter, visible = true} = column || {};
+        const isVisible = _.isFunction(visible) ? visible({column}) : visible;
+        if(!isVisible){
+            return null;
+        }
         let cell;
         if(valueFormatter && _.isFunction(valueFormatter)){
             cell = valueFormatter(row[id]);
         }
         else if (_.isFunction(renderer)) {
-            cell = renderer({row}, rowIndex) || emptyState;
+            cell = renderer({row, role}, rowIndex) || emptyState;
         } else {
             cell = row[id] || emptyState;
         }
@@ -96,14 +105,14 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowI
     </TableRow>;
 }
 
-const TableData = ({columns, data = [], config = {}, handleRowClick, handleDelete}) => {
+const TableData = ({columns, data = [], config = {}, handleRowClick, handleDelete, ...rest}) => {
 
     return (data || []).map((row, index) => {
         const {dataKey = ''} = config;
         if (dataKey) {
             row = row[dataKey];
         }
-        return getTableCell({row, columns, config, handleRowClick, rowIndex: index, handleDelete})
+        return getTableCell({row, columns, config, handleRowClick, rowIndex: index, handleDelete, ...rest})
     })
 }
 
@@ -124,8 +133,11 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             onRowClickDataCallback,
             showRefresh = false,
             onDelete,
-            deleteMessage
+            deleteMessage,
+            deletePermissions = []
         } = config,
+        {role = ''} = getUserDetail().user,
+        hasDeletePermission = deletePermissions.indexOf(role) > -1 || false,
         ref = React.useRef([]);
 
     const handleRowClick = (row) => {
@@ -182,12 +194,14 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             </TableHead>
             <TableBody>
                 <TableData
+                    role={role}
                     key={Date.now()}
                     columns={columns}
                     data={data}
                     config={config}
                     handleRowClick={handleRowClick}
                     handleDelete={handleDelete}
+                    hasDeletePermission={hasDeletePermission}
                 />
             </TableBody>
         </Fragment>
@@ -223,4 +237,4 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
     </div>;
 };
 
-export default memo(withRouter(EnhancedTable));
+export default withRouter(memo(EnhancedTable));

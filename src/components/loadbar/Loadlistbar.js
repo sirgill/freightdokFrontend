@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import moment from 'moment';
 import {connect, useDispatch, useSelector} from "react-redux";
 import {deleteLoad, getLoads, searchLoads, selectLoad} from "../../actions/load";
 import {useStyles} from "../HelperCells.js";
 import EnhancedTable from "../Atoms/table/Table";
 import LoadDetailModal from "../loads/LoadDetailModal";
+import AddLoadForm from "../load-forms/AddLoad";
+import {Box} from "@mui/material";
 
 const Loadlistbar = ({
                          getLoads,
@@ -19,7 +21,7 @@ const Loadlistbar = ({
     const [open, setOpen] = useState({open: false, data: {}});
     const {total, currPage} = loads_pagination;
     const [rawLoades, setRawLoads] = useState([]);
-    const {auth: {user = {}} = {}, driver: {drivers = []} = {}} = useSelector((state) => state),
+    const {auth: {user = {}, roles = []} = {}, driver: {drivers = []} = {}} = useSelector((state) => state),
         {query, loads: sLoads, page: sPage, limit, total: sTotal} = useSelector(state => state.load.search);
 
     useEffect(() => {
@@ -82,7 +84,7 @@ const Loadlistbar = ({
         }))
     }
 
-    const tableConfig = {
+    const tableConfig = useMemo(() => ({
         onRowClick: (row) => setOpen({open: true, data: row}),
         rowCellPadding: 'normal',
         count: query ? sTotal : total,
@@ -91,6 +93,7 @@ const Loadlistbar = ({
         onPageChange: handleChangePage,
         hasDelete: true,
         onDelete,
+        deletePermissions: ['admin', 'ownerOperator', 'superAdmin'],
         columns: [
             {
                 id: 'loadNumber',
@@ -151,11 +154,14 @@ const Loadlistbar = ({
                 }
             },
         ]
-    }
+    }), [rawLoades])
 
     return (
         <div className={classes.table}>
             <EnhancedTable config={tableConfig} data={rawLoades} loading={loading}/>
+            <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
+                {['admin', 'superAdmin', 'dispatch'].includes(user.role) && <AddLoadForm />}
+            </Box>
             {open.open && <LoadDetailModal
                 modalEdit={false}
                 open={open.open}

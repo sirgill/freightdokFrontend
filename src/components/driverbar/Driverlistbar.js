@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect, useState} from "react";
 import {connect, shallowEqual, useDispatch, useSelector} from "react-redux";
-import {Button} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import moment from "moment";
 
 import {useStyles} from "../HelperCells.js";
@@ -12,6 +12,7 @@ import {
     deleteDriver,
 } from "../../actions/driver";
 import EditDriver from "../driver-forms/AddDriver";
+import AddDriverForm from "../driver-forms/AddDriver";
 
 const Driverlistbar = (props = {}) => {
     const {deleteDriver} = props;
@@ -88,6 +89,9 @@ const Driverlistbar = (props = {}) => {
         <div className={classes.table}>
             <EnhancedTable config={tableConfig} data={drivers} loading={loading}/>
             {edit.open && <EditDriver closeEditForm={closeEditForm} data={edit.data} isEdit={true} onRefresh={fetchDrivers} />}
+            <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
+                <AddDriverForm/>
+            </Box>
         </div>
     );
 };

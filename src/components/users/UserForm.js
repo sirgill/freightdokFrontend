@@ -17,6 +17,7 @@ import useMutation from "../../hooks/useMutation";
 import {notification} from "../../actions/alert";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {isEmailValid} from "../../utils/utils";
+import {ROLES} from "../constants";
 
 const initialState = {
     email: "",
@@ -31,15 +32,14 @@ const UserForm = () => {
         (state) => state.users
     );
     const {mutation: updateUser, loading: isSavingUpdate} = useMutation(`/api/users/${user?._id}`)
-    const {user: auth} = useSelector((state) => state.auth);
-    const {roles} = useSelector((state) => state.auth);
+    const {user: auth  = {}} = useSelector((state) => state.auth);
+    const {roles=[]} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const [userRoles, setUserRoles] = useState();
 
     useEffect(() => {
-        setUserRoles(roles);
 
-        if (auth.role === "dispatch") {
+        if (auth?.role === "dispatch") {
             const newRoles = roles.filter(
                 (item) =>
                     item === "driver" ||
@@ -48,7 +48,7 @@ const UserForm = () => {
                     item === "support"
             );
             setUserRoles(newRoles);
-        }
+        } else setUserRoles(roles);
     }, []);
 
     useEffect(() => {
@@ -126,15 +126,13 @@ const UserForm = () => {
 
     return (
         <>
-            {(auth && ["user"].indexOf(auth.role) > -1) || (
-                <Button
-                    color="primary"
-                    variant={'contained'}
-                    onClick={handleClickOpen}
-                >
-                    Add User
-                </Button>
-            )}
+            <Button
+                color="primary"
+                variant={'contained'}
+                onClick={handleClickOpen}
+            >
+                Add User
+            </Button>
             <Dialog
                 fullWidth={false}
                 maxWidth={"md"}
