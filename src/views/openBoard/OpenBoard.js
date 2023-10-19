@@ -12,7 +12,6 @@ import BookNowForm from "./BookNowForm";
 import {addEvent, removeEvent} from "../../utils/utils";
 import NewTrulLoadDetails from "./NewTrulLoadDetails";
 import NewtrulFilters from "./NewtrulFilters";
-import {UserSettings} from "../../components/Atoms/client";
 import {Refresh} from "@mui/icons-material";
 import {tableConfig} from "./config";
 import Dialog from "../../components/Atoms/Dialog";
@@ -28,7 +27,6 @@ if (process.env.NODE_ENV === "production") {
 const OpenBoard = () => {
     const {path} = useRouteMatch(),
         [filters, setFilters] = useState(payload),
-        [vendor, setVendor] = useState(UserSettings.getActiveOpenBoard()),
         [params, setParams] = useState(''),
         [dialog, setDialog] = useState({open: false, content: null}),
         dispatch = useDispatch(),
@@ -69,7 +67,7 @@ const OpenBoard = () => {
     };
 
     const table = useMemo(() => <EnhancedTable
-        config={tableConfig({showDialog, history, path, totalResults, onPageChange, vendor, pageSize: filters.pageSize, pageIndex: filters.pageIndex })}
+        config={tableConfig({showDialog, history, path, totalResults, onPageChange, pageSize: filters.pageSize, pageIndex: filters.pageIndex })}
         data={results || []}
         loading={loading}
         // eslint-disable-next-line react-hooks/exhaustive-deps

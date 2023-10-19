@@ -1,6 +1,6 @@
 import {Route, Switch} from "react-router-dom";
 import LoadModuleAsync from "../components/Atoms/LoadModuleAsync";
-import React, {useEffect, useMemo} from "react";
+import React, {useEffect} from "react";
 import OpenBoardIcon from '../assets/icons/openBoard.svg'
 
 import MybidsIcon from "../assets/icons/icons8-bid-24.png";
@@ -12,9 +12,10 @@ import OwnerOperatorIcon from "../assets/icons/icons8-engineer-24.png";
 import LoadHistoryIcon from "../assets/icons/icons8-bulleted-list-24.png";
 import CarrierProfileIcon from "../assets/icons/settings-18-1-1-1-1-1.svg";
 import {ENHANCED_DASHBOARD} from "../components/client/routes";
-import {filterRoutesByPermission, getRoutesByPermission} from "../utils/utils";
+import {getRoutesByPermission} from "../utils/utils";
 import useRoutes from "../hooks/useRoutes";
 import Error401 from "./Error401";
+import DeleteComponent from "../components/Atoms/DeleteComponent";
 
 const MiniDrawer = LoadModuleAsync(() => import("./Sidebar"));
 const OpenBoard = LoadModuleAsync(() => import("../views/openBoard/OpenBoard.js"));
@@ -24,7 +25,6 @@ const OwnerOperator = LoadModuleAsync(() => import("../views/ownerOperator/Owner
 const UsersList = LoadModuleAsync(() => import("../components/users/UsersList"));
 const InvoicesList = LoadModuleAsync(() => import("../components/invoices/InvoicesList"));
 const Driverlistbar = LoadModuleAsync(() => import("../components/driverbar/Driverlistbar.js"));
-const InvoicesWizard = LoadModuleAsync(() => import("../components/invoices/InvoicesWizard"));
 const Loadlistbar = LoadModuleAsync(() => import("../components/loadbar/Loadlistbar.js"));
 const LoadsStatus = LoadModuleAsync(() => import("../components/loads/LoadsStatus"));
 
@@ -104,6 +104,7 @@ const Dashboard = ({match = {}, history, location}) => {
                 {links}
                 <Route path="*" component={Error401} />
             </Switch>
+            <DeleteComponent />
         </MiniDrawer>
     </>
 }

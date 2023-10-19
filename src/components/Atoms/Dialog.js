@@ -12,7 +12,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function Dialog(props) {
     const {open = false, config, onClose, preventBackdropClose = false, className} = props,
-        {title, onOk, okText = 'Save', content} = config;
+        {title, onOk, okText = 'Save', content, onCancel} = config;
 
     const handleClose = (e, reason = '') => {
         if (preventBackdropClose && reason.equalsIgnoreCase('backdropclick')) {
@@ -37,7 +37,7 @@ export default function Dialog(props) {
                     {typeof content === 'function' ? content({config}) : content}
                 </DialogContent>
                 <DialogActions>
-                    <Button variant='outlined' onClick={handleClose}>Cancel</Button>
+                    {typeof onCancel === 'function' ? onCancel({config, onClose}): <Button variant='outlined' onClick={handleClose}>Cancel</Button>}
                     {typeof okText === 'function' ? okText({config, onOk}) : <Button variant='contained'
                                                                                      color={okText.equalsIgnoreCase('delete') ? 'error' : 'primary'}
                                                                                      onClick={onOk}

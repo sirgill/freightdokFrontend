@@ -1,12 +1,11 @@
-import React, {Fragment, useEffect, useState} from "react";
+import React, {Fragment, useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, selectUserToEdit, deleteUser } from "../../actions/users";
+import { fetchUsers, selectUserToEdit } from "../../actions/users";
 import EnhancedTable from "../Atoms/table/Table";
-import {Box, Button, DialogContentText, Grid, Typography} from "@mui/material";
-import Dialog from "../Atoms/Dialog";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import {Box, Button} from "@mui/material";
 import UserForm from "./UserForm";
 import {ROLES} from "../constants";
+import {showDelete} from "../../actions/component.action";
 
 const UsersList = () => {
     const { list, loading, page, limit, total } = useSelector(
@@ -14,30 +13,14 @@ const UsersList = () => {
     );
     const { user } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
-    const [dialog, setDialog] = useState({open: false, config: {}});
 
-    const onDialogClose = () => setDialog({...dialog, open: false});
 
-    const afterDelete = ({success, data}) => {
+    const afterDelete = ({success}) => {
         if(success) {
-            onDialogClose();
+            dispatch(fetchUsers(+page, +limit));
         }
     }
 
-    const onDelete = (_id, e) => {
-        e.stopPropagation();
-
-        const config = {
-            title: () => <Grid container alignItems='center' sx={{ p: '16px 24px' }} gap={1}>
-                <ErrorOutlineIcon color='error' />
-                <Typography sx={{ fontSize: '1.25rem', fontWeight: 550 }} color='error'>Delete</Typography>
-            </Grid>,
-            okText: 'Delete',
-            onOk: () => dispatch(deleteUser(_id, afterDelete)),
-            content: () => <DialogContentText sx={{color: '#000'}}>Are you sure you want to delete the user?</DialogContentText>
-        }
-        setDialog({open: true, config});
-    }
 
     useEffect(() => {
         dispatch(fetchUsers(+page, +limit));
@@ -84,6 +67,7 @@ const UsersList = () => {
                 id: 'actions',
                 label: 'Actions',
                 renderer: ({ row: { _id, email, role } = {}, role: userRole }) => {
+                    // onDelete.bind(this, _id)
                     return <Fragment>
                         {allowedRolesForDispatch.includes(userRole) && (
                                 <Button variant='contained' sx={{mr: 1}} onClick={() => {
@@ -95,7 +79,11 @@ const UsersList = () => {
                         }
                         {user &&
                             [ROLES.admin, ROLES.superadmin].includes(user.role) &&
-                            <Button variant='contained' color='error' onClick={onDelete.bind(this, _id)}>
+                            <Button variant='contained' color='error' onClick={() => showDelete({
+                                message: 'Are you sure you want to delete the user?',
+                                uri: `/api/users/${_id}`,
+                                afterSuccessCb: afterDelete
+                            })}>
                                 Delete
                             </Button>}
                     </Fragment>
@@ -110,7 +98,6 @@ const UsersList = () => {
             <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
                 <UserForm />
             </Box>
-            <Dialog className='enhancedTable_dialog' open={dialog.open} config={dialog.config} onClose={onDialogClose} />
         </Fragment>
     );
 };
