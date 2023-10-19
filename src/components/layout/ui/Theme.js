@@ -92,8 +92,15 @@ export const themeNew = createTheme({
         },
         MuiButton: {
             styleOverrides: {
-                root: {
-                    minWidth: 80,
+                root: ({theme}) => {
+                    return {
+                        minWidth: 80,
+                        '&: disabled': {
+                            color: theme.palette.error.contrastText,
+                            backgroundColor: theme.palette.error.light,
+                            opacity: .6
+                        }
+                    }
                 },
                 containedPrimary: {
                     '&:hover': {

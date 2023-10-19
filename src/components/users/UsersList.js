@@ -24,7 +24,7 @@ const UsersList = () => {
 
     useEffect(() => {
         dispatch(fetchUsers(+page, +limit));
-    }, []);
+    }, [dispatch]);
 
     const handleChangePage = (event, newPage) => {
         dispatch(fetchUsers(newPage - 1, +limit));
