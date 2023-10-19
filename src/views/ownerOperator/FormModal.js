@@ -127,7 +127,6 @@ const FormModal = (props) => {
             <DialogContent>
                 <div className="">
                     <form className={''}>
-
                         <div>
                             <InputField
                                 name={"firstName"}

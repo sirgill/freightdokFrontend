@@ -67,14 +67,14 @@ const OwnerOperator = () => {
 
       {
         id: "update",
-        renderer: ({ row }) => {
+        renderer: ({ row, role }) => {
           return (
             <Fragment>
               <Button
                 variant="contained"
                 onClick={(e) => {
                   e.stopPropagation();
-                  history.push(path + `/ownerOp/edit/${row._id}`);
+                  history.push(path + `/edit/${row._id}`);
                 }}
                 sx={{mr: 1}}
               >
@@ -84,6 +84,7 @@ const OwnerOperator = () => {
                   variant="contained"
                   color={'error'}
                   onClick={onDelete.bind(this, row._id)}
+                  disabled={['ownerOperator', 'dispatch',].includes(role)}
               >
                 Delete
               </Button>
@@ -104,14 +105,14 @@ const OwnerOperator = () => {
         <Button
             variant='contained'
             component={Link}
-            to={path + '/ownerOp/add'}
+            to={path + '/add'}
             className={'addNewOwnerOp'}
             sx={{position: 'absolute', right: 10}}
         >
             Add Owner Operator
         </Button>
-      <Route path={path + "/ownerOp/add"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
-      <Route path={path + "/ownerOp/edit/:id"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
+      <Route path={path + "/add"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
+      <Route path={path + "/edit/:id"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
     </div>
   );
 };

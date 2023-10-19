@@ -1,4 +1,4 @@
-import Modal from "../ownerOperator/Modal";
+import Modal from "../../components/Atoms/Modal";
 import {Grid, Typography, useMediaQuery} from "@mui/material";
 import Details from "./PickupDetails";
 import moment from "moment";

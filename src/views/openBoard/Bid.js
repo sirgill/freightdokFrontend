@@ -1,4 +1,4 @@
-import Modal from "../ownerOperator/Modal";
+import Modal from "../../components/Atoms/Modal";
 import moment from "moment";
 import { useHistory } from 'react-router-dom';
 import InputField from "../../components/Atoms/form/InputField";

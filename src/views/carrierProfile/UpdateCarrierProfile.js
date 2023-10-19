@@ -1,4 +1,4 @@
-import Modal from "../ownerOperator/Modal";
+import Modal from "../../components/Atoms/Modal";
 import {Box, Button, Stack, TextField, Typography} from '@mui/material'
 import React, {useEffect, useState} from "react";
 import LoadingButton from "@mui/lab/LoadingButton";

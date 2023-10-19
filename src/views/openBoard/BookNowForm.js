@@ -1,4 +1,4 @@
-import Modal from "../ownerOperator/Modal";
+import Modal from "../../components/Atoms/Modal";
 import {Button, Grid, TextField, Typography} from "@mui/material";
 import React, {useState} from "react";
 import TimePicker from '@mui/lab/TimePicker';

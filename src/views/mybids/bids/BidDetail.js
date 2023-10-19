@@ -1,4 +1,4 @@
-import Modal from "../../ownerOperator/Modal";
+import Modal from "../../../components/Atoms/Modal";
 import {Button, Grid, IconButton, Stack, Typography} from "@mui/material";
 import {v4 as uuidv4} from 'uuid';
 import InputField from "../../../components/Atoms/form/InputField";
@@ -147,7 +147,6 @@ const BidDetail = (props) => {
         }
         return true;
     }
-    console.log(state)
 
     const bidAction = (action = '') => {
         const {counterOfferId} = data;

@@ -1,7 +1,7 @@
 import {memo, useState} from "react";
 import {Button, Grid, Typography} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import Modal from "../ownerOperator/Modal";
+import Modal from "../../components/Atoms/Modal";
 
 import {modalConfig} from "./config";
 import {isEmailValid, triggerCustomEvent} from "../../utils/utils";

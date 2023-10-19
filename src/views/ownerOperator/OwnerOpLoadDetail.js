@@ -1,7 +1,7 @@
 import React from "react";
 import { Accordion, AccordionSummary, AccordionDetails, Grid, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Modal from "./Modal";
+import Modal from "../../components/Atoms/Modal";
 
 
 

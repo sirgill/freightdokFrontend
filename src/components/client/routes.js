@@ -12,3 +12,4 @@ export const MY_LOADS = '/my_loads';
 export const INVOICES = '/invoices';
 export const WAREHOUSE = '/warehouse';
 export const USERS = '/users';
+export const OWNER_OPERATOR = '/owner_operator';

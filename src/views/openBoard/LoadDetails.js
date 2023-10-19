@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import moment from 'moment'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Modal from "../ownerOperator/Modal";
+import Modal from "../../components/Atoms/Modal";
 import Details from "./PickupDetails";
 import {getParsedLoadEquipment} from "./constants";
 
