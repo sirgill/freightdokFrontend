@@ -27,7 +27,6 @@ export default function Dialog(props) {
                 className={className}
                 open={open}
                 TransitionComponent={Transition}
-                keepMounted
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description"
             >

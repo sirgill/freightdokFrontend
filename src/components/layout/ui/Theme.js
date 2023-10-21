@@ -94,12 +94,11 @@ export const themeNew = createTheme({
             styleOverrides: {
                 root: ({theme}) => {
                     return {
-                        minWidth: 80,
-                        '&: disabled': {
-                            color: theme.palette.error.contrastText,
-                            backgroundColor: theme.palette.error.light,
-                            opacity: .6
-                        }
+                        // '&: disabled': {
+                        //     color: theme.palette.error.contrastText,
+                        //     backgroundColor: theme.palette.error.light,
+                        //     opacity: .6
+                        // }
                     }
                 },
                 containedPrimary: {

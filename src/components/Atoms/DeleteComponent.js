@@ -37,6 +37,7 @@ const DeleteComponent = () => {
         open={open}
         config={config}
         onClose={onClose}
+        className='deleteDialogBox'
     />
 }
 
