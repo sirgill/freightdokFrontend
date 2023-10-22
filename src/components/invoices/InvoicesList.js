@@ -27,7 +27,6 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
     const [loading, setLoading] = useState(true);
     const { page, limit, total } = useSelector(state => state.load.invoices);
     const { role } = useSelector(state => state.auth.user);
-    console.log(role)
     const invoices = useSelector(state => state.load.invoices.data);
     const [modalEdit, enableEdit] = useState(false);
     const [open, setOpen] = useState({ show: false, data: {} });
@@ -170,35 +169,10 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
 
     return (
         <div className={classes.table}>
-            {/*{loading ? <Spinner/> : (*/}
             <Fragment>
                 <EnhancedTable config={config} data={invoices} />
                 <Route path={path + '/:id'} component={Invoice} />
-                {/*<TablePagination*/}
-                {/*    rowsPerPageOptions={[5, 10, 15]}*/}
-                {/*    colSpan={3}*/}
-                {/*    count={+total}*/}
-                {/*    rowsPerPage={+limit}*/}
-                {/*    page={+page}*/}
-                {/*    SelectProps={{*/}
-                {/*        inputProps: {'aria-label': 'rows per page'},*/}
-                {/*        native: false,*/}
-                {/*    }}*/}
-                {/*    onChangePage={handleChangePage}*/}
-                {/*    onChangeRowsPerPage={handleChangeRowsPerPage}*/}
-                {/*/>*/}
-
-                {/*<LoadDetailModal*/}
-                {/*    modalEdit={true}*/}
-                {/*    open={!!open.show}*/}
-                {/*    load={open?.data}*/}
-                {/*    handleClose={() => {*/}
-                {/*        setOpen(false);*/}
-                {/*        enableEdit(false);*/}
-                {/*    }}*/}
-                {/*/>*/}
             </Fragment>
-            {/*// )}*/}
         </div>
     )
 }
