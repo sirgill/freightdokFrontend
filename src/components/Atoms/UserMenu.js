@@ -1,4 +1,4 @@
-import {Avatar, Box, IconButton, Menu, MenuItem, Typography} from "@mui/material";
+import {Avatar, Box, Divider, IconButton, Menu, MenuItem, Typography} from "@mui/material";
 import {Tooltip} from "./index";
 import React, {memo} from 'react'
 import {getUserDetail} from "../../utils/utils";
@@ -6,6 +6,7 @@ import {logout} from "../../actions/auth";
 import {useDispatch} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {LOGIN_LINK} from "../constants";
+import {getRoleNameString} from "../client/constants";
 
 function stringToColor(string) {
     let hash = 0;
@@ -29,10 +30,10 @@ function stringToColor(string) {
 
 function stringAvatar(name) {
     let userName = ''
-    if(!!name.split(' ')[0]){
+    if (!!name.split(' ')[0]) {
         userName = (name.split(' ')[0][0])
     }
-    if(!!name.split(' ') && name.split(' ')[1]){
+    if (!!name.split(' ') && name.split(' ')[1]) {
         userName += (name.split(' ')[1][0]);
     }
     return {
@@ -45,17 +46,17 @@ function stringAvatar(name) {
 
 const UserMenu = ({history}) => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
-    const {user: {name = ''} = {}} = getUserDetail();
+    const {user: {name = '', email = '', role = ''} = {}} = getUserDetail();
     const dispatch = useDispatch();
     const settings = [{title: 'Logout', onClick: onLogout}];
 
-    const handleOpenUserMenu = (event) => {
+    const onOpen = (event) => {
         setAnchorElUser(event.currentTarget);
     };
 
-    const handleCloseUserMenu = (callback) => {
+    const onClose = (callback) => {
         setAnchorElUser(null);
-        if(typeof callback === 'function') callback();
+        if (typeof callback === 'function') callback();
     };
 
     function onLogout() {
@@ -65,12 +66,17 @@ const UserMenu = ({history}) => {
 
     return <Box>
         <Tooltip title="Open settings" placement='bottom'>
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar {...stringAvatar(name||'')} />
+            <IconButton onClick={onOpen} sx={{p: 0}}>
+                <Avatar {...stringAvatar(name || '')} />
             </IconButton>
         </Tooltip>
         <Menu
-            sx={{ mt: '45px' }}
+            sx={{mt: '45px'}}
+            MenuListProps={{
+                sx: {
+                    minWidth: '8em'
+                }
+            }}
             id="menu-appbar"
             anchorEl={anchorElUser}
             anchorOrigin={{
@@ -82,10 +88,16 @@ const UserMenu = ({history}) => {
                 horizontal: 'right',
             }}
             open={Boolean(anchorElUser)}
-            onClose={handleCloseUserMenu.bind(null)}
+            onClose={onClose.bind(null)}
         >
+            <Box sx={{px: 2, py: 1, display: 'flex', flexDirection: 'column'}}>
+                <Typography fontWeight={600}>{name}</Typography>
+                <Typography variant='caption'>{email}</Typography>
+                <Typography variant='caption'>{getRoleNameString(role)}</Typography>
+            </Box>
+            <Divider/>
             {settings.map((setting) => (
-                <MenuItem key={setting.title} onClick={handleCloseUserMenu.bind(null, setting.onClick)}>
+                <MenuItem key={setting.title} onClick={onClose.bind(null, setting.onClick)}>
                     <Typography textAlign="center">{setting.title}</Typography>
                 </MenuItem>
             ))}

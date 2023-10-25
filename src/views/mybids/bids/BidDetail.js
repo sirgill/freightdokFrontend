@@ -102,7 +102,6 @@ const BidDetail = (props) => {
         }
     }
 
-    console.log(data)
 
     const placeNewBid = () => {
         if (vendorName.equalsIgnoreCase('new trul')) {
