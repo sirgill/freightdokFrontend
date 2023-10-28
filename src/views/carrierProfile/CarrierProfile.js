@@ -17,10 +17,10 @@ import useFetch from "../../hooks/useFetch";
 const CarrierProfile = ({ match = {} }) => {
     const { path } = match,
         isMatch = useRouteMatch(path + '/updateCarrierProfile'),
-        { role = 'admin' } = getUserDetail().user || {};
+        { role = 'admin', orgId  = '' } = getUserDetail().user || {};
     const { data, loading } = useSelector(state => state.carrierProfile);
     const dispatch = useDispatch();
-    const {data: integrationsData = {}, loading: integrationsLoading, refetch} = useFetch('/api/carrierProfile/secret-manager?orgId=62115ab8019d32486c260888');
+    const {data: integrationsData = {}, loading: integrationsLoading, refetch} = useFetch('/api/carrierProfile/secret-manager?orgId=' + orgId);
     const {data: integrationsList, _dbData} = integrationsData || {};
 
     useEffect(() => {
@@ -42,9 +42,10 @@ const CarrierProfile = ({ match = {} }) => {
         <>
             <EnhancedTable data={data} loading={loading} config={tableConfig} onRefetch={() => dispatch(getCarrierProfile())} />
             {isMatch && <UpdateCarrierProfile onCloseUrl={path} />}
-            {role !== 'admin' && <Button variant='contained' component={Link} to={path + '/updateCarrierProfile'}
-                sx={{ position: 'absolute', right: 10, "&.MuiButton-contained:hover": { color: '#fff' } }}>Update Profile</Button>}
-            <Box sx={{mt: 2}}>
+            {role !== 'admin' && <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
+                <Button variant='contained' component={Link} to={path + '/updateCarrierProfile'}>Update Profile</Button>
+            </Box>}
+            <Box sx={{mt: 4}}>
                 <EnhancedTable data={integrationsList} loading={integrationsLoading} config={integrationCredentialConfig({path, data:_dbData, list: integrationsList})} />
             </Box>
             <Route component={IntegrationsForm} path={path + UPDATE_INTEGRATIONS_LINK} />

@@ -9,6 +9,7 @@ import useMutation from "../../hooks/useMutation";
 import {AUTH_USER} from "../../config/requestEndpoints";
 import {PRIMARY_BLUE} from "../../components/layout/ui/Theme";
 import {Input, Password} from "../../components/Atoms";
+import {notification} from "../../actions/alert";
 
 const AuthForm = memo(({onChange, form, onSubmit, errors, loading}) => {
     const {password, email} = form;
@@ -67,7 +68,9 @@ const IntegrationsForm = (props) => {
 
             updateMutation(obj)
                 .then(res => {
-                    console.log(res);
+                    if(!res.success){
+                        return notification(res.message, 'error')
+                    }
                     triggerCustomEvent('fetchCarrierProfile');
                     triggerCustomEvent('closeModal')
                 })

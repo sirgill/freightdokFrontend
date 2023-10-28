@@ -26,7 +26,7 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
     const {path} = useRouteMatch();
     const [loading, setLoading] = useState(true);
     const { page, limit, total } = useSelector(state => state.load.invoices);
-    const { role } = useSelector(state => state.auth.user);
+    const { role } = useSelector(state => state.auth?.user) || {};
     const invoices = useSelector(state => state.load.invoices.data);
     const [modalEdit, enableEdit] = useState(false);
     const [open, setOpen] = useState({ show: false, data: {} });
