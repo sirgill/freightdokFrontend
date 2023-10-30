@@ -38,7 +38,8 @@ const AuthForm = memo(({onChange, form, onSubmit, errors, loading}) => {
 })
 
 const IntegrationsForm = (props) => {
-    const {state: {row, rowIndex, list} = {}} = props.location;
+    const {state: {row, rowIndex, list} = {}} = props.location,
+    isChrobinson = row.integrationName.equalsIgnoreCase('chrobinson');
     const [form, setForm] = useState({email: '', mc: '', code: ''});
     const [isAuthorised, setIsAuthorised] = useState(false);
     const [authForm, setAuthForm] = useState({email: '', password: ''});
@@ -59,6 +60,10 @@ const IntegrationsForm = (props) => {
                 [integrationName]: form['code'],
                 mc: form.mc,
                 email: form.email
+            }
+
+            if(isChrobinson){
+                Object.assign(obj, {token: form.token})
             }
             list.forEach(item => {
                 if(item.integrationName !== integrationName){
@@ -123,6 +128,17 @@ const IntegrationsForm = (props) => {
     return <Modal config={modalConfig}>
         <form noValidate onSubmit={onSubmit}>
             <Grid container spacing={3} direction='column' sx={{minWidth: 350}}>
+                {isChrobinson && <Grid item>
+                    <Input
+                        fullWidth
+                        label='Token'
+                        name='token'
+                        onChange={onChange}
+                        value={form.token || ''}
+                        multiline
+                        rows={3}
+                    />
+                </Grid>}
                 <Grid item>
                     <Input
                         fullWidth

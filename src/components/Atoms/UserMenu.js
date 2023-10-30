@@ -91,7 +91,7 @@ const UserMenu = ({history}) => {
             onClose={onClose.bind(null)}
         >
             <Box sx={{px: 2, py: 1, display: 'flex', flexDirection: 'column'}}>
-                <Typography fontWeight={600}>{name}</Typography>
+                <Typography fontWeight={600}>{name || 'No Name'}</Typography>
                 <Typography variant='caption'>{email}</Typography>
                 <Typography variant='caption'>{getRoleNameString(role)}</Typography>
             </Box>
