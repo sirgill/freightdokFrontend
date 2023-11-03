@@ -117,7 +117,7 @@ const TableData = ({columns, data = [], config = {}, handleRowClick, handleDelet
 }
 
 
-const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch}) => {
+const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch, isRefetching}) => {
     data = data || [];
     const [tableState, setTableState] = useState({}),
         [dialog, setDialog] = useState({ open: false, config: {} }),
@@ -217,7 +217,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
     return <div>
         {showRefresh && <Stack alignItems='flex-end'>
             <IconButton title='Refresh' onClick={onRefetch}>
-                <Refresh className={loading ? 'rotateIcon' : undefined}/>
+                <Refresh className={(isRefetching) ? 'rotateIcon' : undefined}/>
             </IconButton>
         </Stack>}
         <TableContainer

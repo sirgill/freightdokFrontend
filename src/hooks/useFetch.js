@@ -4,7 +4,8 @@ import {requestGet} from "../utils/request";
 const useFetch = (url, callback = null) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(null),
+        [isRefetching, setIsRefetching] = useState(false);
 
 
     function requestCall() {
@@ -12,7 +13,15 @@ const useFetch = (url, callback = null) => {
             .then(result => {
                 result.data && setData(result.data);
             })
-            .finally(() => setLoading(false))
+            .finally(() => {
+                setLoading(false);
+                setIsRefetching(false);
+            })
+    }
+
+    function onRefetch() {
+        setIsRefetching(true);
+        requestCall();
     }
 
     useEffect(() => {
@@ -23,7 +32,7 @@ const useFetch = (url, callback = null) => {
 
     }, [url])
 
-    return {data, loading, error, refetch: requestCall}
+    return {data, loading, error, refetch: onRefetch, isRefetching}
 }
 
 export default useFetch;

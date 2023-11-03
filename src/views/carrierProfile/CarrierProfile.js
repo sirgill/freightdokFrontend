@@ -20,7 +20,7 @@ const CarrierProfile = ({ match = {} }) => {
         { role = 'admin', orgId  = '' } = getUserDetail().user || {};
     const { data, loading } = useSelector(state => state.carrierProfile);
     const dispatch = useDispatch();
-    const {data: integrationsData = {}, loading: integrationsLoading, refetch} = useFetch('/api/carrierProfile/secret-manager?orgId=' + orgId);
+    const {data: integrationsData = {}, loading: integrationsLoading, refetch, isRefetching} = useFetch('/api/carrierProfile/secret-manager?orgId=' + orgId);
     const {data: integrationsList, _dbData} = integrationsData || {};
 
     useEffect(() => {
@@ -40,7 +40,7 @@ const CarrierProfile = ({ match = {} }) => {
 
     return (
         <>
-            <EnhancedTable data={data} loading={loading} config={tableConfig} onRefetch={() => dispatch(getCarrierProfile())} />
+            <EnhancedTable data={data} loading={loading} config={tableConfig} onRefetch={refetch} isRefetching={isRefetching} />
             {isMatch && <UpdateCarrierProfile onCloseUrl={path} />}
             {role !== 'admin' && <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
                 <Button variant='contained' component={Link} to={path + '/updateCarrierProfile'}>Update Profile</Button>

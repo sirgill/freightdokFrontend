@@ -4,21 +4,18 @@ import {
     FETCH_USERS_FAILED,
     FETCH_USERS,
     ADMIN_REG_USER,
-    ADMIN_REG_USER_SUCCEED,
     ADMIN_REG_USER_FAILED,
     SELECT_USER_TO_EDIT,
     RESET_SELECTED_USER,
     INIT_ADMIN_UPDATE_USER,
     ADMIN_UPDATE_USER_SUCCEED,
     ADMIN_UPDATE_USER_FAILED,
-    INIT_ADMIN_DELETE_USER,
-    ADMIN_DELETE_USER_SUCCEED,
     ADMIN_DELETE_USER_FAILED,
     OPEN_USER_MODAL,
     CLOSE_USER_MODAL
 } from './types';
 import {notification} from "./alert";
-import {requestDelete} from "../utils/request";
+import {requestDelete, requestGet} from "../utils/request";
 
 export const callApi = () => ({
     type: FETCH_USERS
@@ -27,10 +24,13 @@ export const callApi = () => ({
 export const fetchUsers = (page = 0, limit = 5) => async dispatch => {
     try {
         dispatch({type: FETCH_USERS});
-        const res = await axios.get(`/api/users?page=${page + 1}&limit=${limit}`);
+        const {success, data} = await requestGet({uri: `/api/users?page=${page + 1}&limit=${limit}`});
+        if(!success){
+            notification(data.message, 'error');
+        }
         dispatch({
             type: FETCH_USERS_SUCCEED,
-            payload: res.data
+            payload: data || []
         });
     } catch (err) {
         dispatch({

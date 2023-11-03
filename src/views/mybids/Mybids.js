@@ -24,7 +24,7 @@ const getBidStatus = (bidLevel) => {
 const MyBids = () => {
     const {path} = useRouteMatch()
     const history = useHistory()
-    const {data = {}, loading: dLoading, refetch} = useFetch('/api/bid/biddings'),
+    const {data = {}, loading: dLoading, refetch, isRefetching} = useFetch('/api/bid/biddings'),
         {data: bidsData = [], totalCount = 0} = data || {};
 
     useEffect(() => {
@@ -235,7 +235,7 @@ const MyBids = () => {
 
     return (
         <div>
-            <EnhancedTable config={tableConfig} data={bidsData} loading={dLoading} onRefetch={refetch}/>
+            <EnhancedTable config={tableConfig} data={bidsData} loading={dLoading} onRefetch={refetch} isRefetching={isRefetching} />
             <Switch>
                 <Route
                     path={path + '/bid/:loadNumber'}

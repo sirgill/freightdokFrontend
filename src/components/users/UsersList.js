@@ -48,6 +48,7 @@ const UsersList = () => {
         limit,
         onPageChange: handleChangePage,
         rowCellPadding: 'normal',
+        showRefresh: true,
         columns: [
             {
                 id: 'name',
@@ -94,7 +95,7 @@ const UsersList = () => {
 
     return (
         <Fragment>
-            <EnhancedTable loading={loading} data={list} config={config} />
+            <EnhancedTable loading={loading} data={list} config={config} onRefetch={() => dispatch(fetchUsers(+page, +limit))}/>
             <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
                 <UserForm />
             </Box>
