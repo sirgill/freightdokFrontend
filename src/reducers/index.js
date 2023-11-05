@@ -9,6 +9,7 @@ import warehouse from '../reducers/warehouse.reducer';
 import openBoard from '../reducers/openBoard.reducer';
 import carrierProfile from '../reducers/carrierProfile.reducer';
 import {app} from "./app.reducer";
+import {LOGOUT} from "../actions/types";
 
 const appReducer = combineReducers({
   alert,
@@ -24,7 +25,7 @@ const appReducer = combineReducers({
 })
 
 const rootReducer = (state, action) => {
-  if (action.type === 'LOGOUT') {
+  if (action.type === LOGOUT) {
     localStorage.clear();
     return appReducer(undefined, action)
   }

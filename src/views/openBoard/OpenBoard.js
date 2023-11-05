@@ -35,7 +35,7 @@ const OpenBoard = () => {
 
     const getBidListWithFilter = useCallback((filters, params = '') => {
         dispatch(getNewLoads({...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageSize: 100}))
-    }, [])
+    }, [dispatch])
 
     const getBiddingList = useCallback(() => {
         dispatch(getNewLoads({...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageSize: 100}))

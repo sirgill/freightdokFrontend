@@ -19,6 +19,9 @@ const Dashboard = ({match = {}, history, location}) => {
         if (pathname === ENHANCED_DASHBOARD || pathname === ENHANCED_DASHBOARD + '/') {
             history.push(firstLink);
         }
+        return () => {
+            document.title = 'freightdok'
+        }
     }, [])
 
     return <>

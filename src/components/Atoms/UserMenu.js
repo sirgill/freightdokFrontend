@@ -60,7 +60,7 @@ const UserMenu = ({history}) => {
     };
 
     function onLogout() {
-        dispatch(logout);
+        dispatch(logout());
         history.replace(LOGIN_LINK);
     }
 
