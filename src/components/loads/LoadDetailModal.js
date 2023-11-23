@@ -287,7 +287,6 @@ const LoadDetailModal = ({
                           { id: 'arrivedAtDelivery', label: 'Arrived at Delivery' },
                           { id: 'arrivedAtPickup', label: 'Arrived at Pickup' },
                           { id: 'delivered', label: 'Delivered' },
-                          { id: 'unloadComplete', label: 'Unload Complete' },
                           { id: 'enRoute', label: 'En Route to Delivery' },
                         ].map((name) => (
                             <MenuItem
@@ -341,7 +340,6 @@ const LoadDetailModal = ({
                         {[
                           { id: 'Tonu', label: 'Tonu' },
                           { id: 'Detention', label: 'Detention' },
-                          { id: 'Lumper', label: 'Lumper' },
                           { id: 'Lumper-by-Broker', label: 'Lumper by Broker' },
                           { id: 'Lumper-by-Carrier', label: 'Lumper by Carrier' },
                           { id: 'Layover', label: 'Layover' },

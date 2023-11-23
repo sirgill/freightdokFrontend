@@ -80,12 +80,11 @@ const NewTrulLoadDetails = (props) => {
         <Modal config={config}>
             <Grid container gap={3} sx={{ p: 0 }}>
                 <Grid item xs={12}>
-                    <Typography align='center' variant='h4'>New Trul</Typography>
+                    {client_name && <Typography align='center' variant='h4'>{client_name}</Typography>}
                 </Grid>
                 <Grid item xs={12} textAlign={'center'}>
                     <BasicLoadDetails loadNumber={loadNumber} trip={loaded_miles} weight={weight}
                         equipment={equipment} />
-                    {client_name && <Typography fontSize={24}>Company: {client_name}</Typography>}
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container justifyContent={'center'}>
