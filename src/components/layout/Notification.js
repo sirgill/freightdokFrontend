@@ -56,8 +56,16 @@ const Notification = () => {
             autoHideDuration={delay}
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             TransitionComponent={SlideTransition}
+            sx={{
+                '.alert_success': {
+                    border: '1px solid green'
+                },
+                '.alert_error': {
+                    border: '1px solid red'
+                },
+            }}
         >
-            <Alert severity={type} sx={{ width: '100%' }} elevation={5}>
+            <Alert severity={type} sx={{ width: '100%' }} elevation={5} className={'alert_' + type}>
                 {message}
             </Alert>
         </Snackbar>

@@ -71,6 +71,7 @@ const BidDetail = (props) => {
         isCounterOffer = offerStatus.equalsIgnoreCase("COUNTER_OFFER_CREATED"),
         isChRobinson = vendorName.equalsIgnoreCase('c.h. robinson'),
         canProceedToBid = !!data.offerStatus,
+        clientName = data.client_name,
         showDelete = isChRobinson && offerStatus.equalsIgnoreCase('notconsidered');
 
 
@@ -211,7 +212,7 @@ const BidDetail = (props) => {
         <Grid sx={{px: 3}} justifyContent="center" display="flex">
             <form onSubmit={onSubmit} style={{textAlign: 'center'}} className={'form_bidding'}>
                 <Typography sx={{fontSize: 32}}>
-                    {vendorName || 'C.H Robinson'}
+                    {clientName || vendorName || '--'}
                 </Typography>
                 <Typography sx={{fontSize: 32}}>
                     Load Number: {loadNumber}

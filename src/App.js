@@ -1,18 +1,12 @@
-import React, {Fragment, useEffect} from "react";
+import React, {useEffect} from "react";
 import axios from "axios";
 import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
-import Navbar from "./components/layout/Navbar";
 import Register from "./components/auth/Register";
 import EntityType from "./components/auth/EntityType";
 import OwnerOp from "./components/auth/OwnerOpRegister";
 import Fleet from "./components/auth/FleetRegister";
 import Dashboard from "./components/dashboard/Dashboard";
 import PrivateRoute from "./components/routing/PrivateRoute";
-import ProfileForm from "./components/profile-forms/CreateProfile";
-import EditProfile from "./components/profile-forms/EditProfile";
-
-import Loads from "./components/loads/Loads";
-
 import store from "./store";
 import {loadUser} from "./actions/auth";
 import setAuthToken from "./utils/setAuthToken";
@@ -57,7 +51,7 @@ const App = () => {
         store.dispatch(loadUser());
     }, []);
     return (
-        <Fragment>
+        <div className='root'>
             <Notification/>
             <BrowserRouter>
                 <Switch>
@@ -77,7 +71,7 @@ const App = () => {
                     <PreAuthRoutes/>
                 </Switch>
             </BrowserRouter>
-        </Fragment>
+        </div>
     );
 };
 

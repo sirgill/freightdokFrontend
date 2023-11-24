@@ -42,7 +42,7 @@ const UsersList = () => {
     ];
 
     const config = {
-        emptyMessage: 'No Users',
+        emptyMessage: 'No Users found',
         page,
         count: total,
         limit,
@@ -80,7 +80,7 @@ const UsersList = () => {
                         }
                         {user &&
                             [ROLES.admin, ROLES.superadmin].includes(user.role) &&
-                            <Button variant='contained' color='error' onClick={() => showDelete({
+                            <Button variant='contained' color='error' onClick={showDelete({
                                 message: 'Are you sure you want to delete the user?',
                                 uri: `/api/users/${_id}`,
                                 afterSuccessCb: afterDelete
