@@ -1,9 +1,9 @@
-import { FormControl, IconButton, InputAdornment, TextField } from '@mui/material';
+import {FormControl, IconButton, InputAdornment, TextField} from '@mui/material';
 import React from 'react'
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-const Password = ({ onChange, name, label = 'Password', errors = {} }) => {
+const Password = ({onChange, name, label = 'Password', value, errors = {}, startAdornment, ...rest}) => {
     const [showPassword, setShowPassword] = React.useState(false);
     const hasError = !!errors[name],
         errorText = errors[name];
@@ -15,8 +15,8 @@ const Password = ({ onChange, name, label = 'Password', errors = {} }) => {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (onChange) onChange({ name, value });
+        const {name, value} = e.target;
+        if (onChange) onChange({name, value});
     }
 
     return (
@@ -26,27 +26,29 @@ const Password = ({ onChange, name, label = 'Password', errors = {} }) => {
                 type={showPassword ? 'text' : 'password'}
                 fullWidth
                 label={label}
+                value={value}
                 error={hasError}
                 helperText={hasError ? errorText : ''}
                 size='small'
                 onChange={handleChange}
                 name={name}
                 InputProps={{
-                    endAdornment: <InputAdornment position="end" >
+                    startAdornment,
+                    endAdornment: <InputAdornment position="end">
                         <IconButton
                             aria-label="toggle password visibility"
                             onClick={handleClickShowPassword}
                             onMouseDown={handleMouseDownPassword}
                             edge="end"
                         >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                            {showPassword ? <VisibilityOff/> : <Visibility/>}
                         </IconButton>
                     </InputAdornment>
 
                 }}
-
+                {...rest}
             />
-        </FormControl >
+        </FormControl>
     )
 }
 

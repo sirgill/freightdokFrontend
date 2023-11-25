@@ -95,13 +95,10 @@ const LoadDetailModal = ({
     SelectElement = edit ? OutlinedInput : FilledInput;
   const assignedToOptions = state.driver.drivers.map(({ user = {} }) => {
     const { name = '', _id = '' } = user || '';
-    if (!_id) return {
-      name: 'Invalid Driver', _id: ''
-    };
     return {
       name, _id
     }
-  })
+  }).filter((driver) => !!driver?._id) || [];
 
   useEffect(() => {
     setupDrivers();
@@ -319,7 +316,7 @@ const LoadDetailModal = ({
                                 value={name._id}
                                 // style={getStyles(name, personName, theme)}
                             >
-                              {name.label}
+                              {name.name}
                             </MenuItem>
                         ))}
                       </Select>
@@ -1345,190 +1342,6 @@ const LoadDetailModal = ({
               </Grid>
               <Grid item xs={1}></Grid>
             </Grid>
-            <Grid container spacing={2} className={classes.rootLoadDetailModal}>
-              {/*<Grid item xs={4} style={{ textAlign: "left" }}>*/}
-              {/*  <Stack spacing={2}>*/}
-              {/*    <Stack direction='row' alignItems={'center'} spacing={1}>*/}
-              {/*      <Typography fontWeight={700}>Pickup Reference#{" "}</Typography>*/}
-              {/*      <Typography>{pickup && pickup[0] ? pickup[0].pickupReference : ""}</Typography>*/}
-              {/*    </Stack>*/}
-              {/*    <Stack direction='row' alignItems='center' spacing={1}>*/}
-              {/*      <Typography fontWeight={700}>PO#</Typography>*/}
-              {/*      <Typography>{pickup && pickup[0] ? pickup[0].pickupPo : ""}</Typography>*/}
-              {/*    </Stack>*/}
-              {/*    <Stack direction='row' alignItems='center' spacing={1}>*/}
-              {/*      <Typography fontWeight={700}>Pickup delivery#</Typography>*/}
-              {/*      <Typography>{pickup && pickup[0] ? pickup[0].pickupDeliverNumber : ""}</Typography>*/}
-              {/*    </Stack>*/}
-              {/*  </Stack>*/}
-
-              {/*  /!* <p>PO Ref# {pickup && pickup[0] ? pickup[0].pickupReference : ''}</p> *!/*/}
-
-              {/*  {!edit ? (*/}
-              {/*    <p*/}
-              {/*      dangerouslySetInnerHTML={{*/}
-              {/*        __html:*/}
-              {/*          pickup && pickup[0]*/}
-              {/*            ? "Notes: " +*/}
-              {/*              pickup[0].notes.replace(/(.{15})/g, "$1<br>")*/}
-              {/*            : "Notes:",*/}
-              {/*      }}*/}
-              {/*    ></p>*/}
-              {/*  ) : state.auth.user.role !== "driver" ? (*/}
-              {/*    <InputField*/}
-              {/*      id="outlined-multiline-static"*/}
-              {/*      placeholder="Pickup Notes"*/}
-              {/*      multiline*/}
-              {/*      rows={2}*/}
-              {/*      type='textarea'*/}
-              {/*      value={form.pickup[0] ? form.pickup[0].notes : ""}*/}
-              {/*      onChange={(event) =>*/}
-              {/*        handlePickDropChange(event, "pickup", "notes")*/}
-              {/*      }*/}
-              {/*      variant="outlined"*/}
-              {/*    />*/}
-              {/*  ) : (*/}
-              {/*    ""*/}
-              {/*  )}*/}
-              {/*</Grid>*/}
-            </Grid>
-            {/*<Grid*/}
-            {/*  container*/}
-            {/*  spacing={2}*/}
-            {/*  className={classes.rootLoadDetailModal}*/}
-            {/*  style={{ height: "100px" }}*/}
-            {/*>*/}
-            {/*  /!*<Grid item xs={4} style={{ position: "relative" }}>*!/*/}
-            {/*  /!*  /!*<div>*!/*!/*/}
-            {/*  /!*  /!*  {!edit ? (*!/*!/*/}
-            {/*  /!*  /!*    <Fragment>*!/*!/*/}
-            {/*  /!*  /!*      <IconButton onClick={() => setEdit(true)} title='Edit'>*!/*!/*/}
-            {/*  /!*  /!*        <EditIcon*!/*!/*/}
-            {/*  /!*  /!*          fontSize="large"*!/*!/*/}
-            {/*  /!*  /!*          color="primary"*!/*!/*/}
-            {/*  /!*  /!*        />*!/*!/*/}
-            {/*  /!*  /!*      </IconButton>*!/*!/*/}
-            {/*  /!*  /!*      <IconButton onClick={createCopy} title='Create Copy'>*!/*!/*/}
-            {/*  /!*  /!*        <FileCopyOutlined*!/*!/*/}
-            {/*  /!*  /!*          fontSize="large"*!/*!/*/}
-            {/*  /!*  /!*          color="primary"*!/*!/*/}
-            {/*  /!*  /!*        />*!/*!/*/}
-            {/*  /!*  /!*      </IconButton>*!/*!/*/}
-            {/*  /!*  /!*    </Fragment>*!/*!/*/}
-            {/*  /!*  /!*  ) : (*!/*!/*/}
-            {/*  /!*  /!*    <>*!/*!/*/}
-            {/*  /!*  /!*      <IconButton onClick={handleSubmit}>*!/*!/*/}
-            {/*  /!*  /!*        <DoneIcon*!/*!/*/}
-            {/*  /!*  /!*          fontSize="large"*!/*!/*/}
-            {/*  /!*  /!*          color="primary"*!/*!/*/}
-            {/*  /!*  /!*        />*!/*!/*/}
-            {/*  /!*  /!*      </IconButton>*!/*!/*/}
-            {/*  /!*  /!*      <IconButton onClick={handleCancel}>*!/*!/*/}
-            {/*  /!*  /!*        <CloseIcon*!/*!/*/}
-            {/*  /!*  /!*          fontSize="large"*!/*!/*/}
-            {/*  /!*  /!*          color="primary"*!/*!/*/}
-            {/*  /!*  /!*        />*!/*!/*/}
-            {/*  /!*  /!*      </IconButton>*!/*!/*/}
-            {/*  /!*  /!*    </>*!/*!/*/}
-            {/*  /!*  /!*  )}*!/*!/*/}
-            {/*  /!*  /!*</div>*!/*!/*/}
-            {/*  /!*</Grid>*!/*/}
-            {/*  /!*<Grid*!/*/}
-            {/*  /!*  item*!/*/}
-            {/*  /!*  xs={4}*!/*/}
-            {/*  /!*  style={{ textAlign: "center", position: "relative" }}*!/*/}
-            {/*  /!*>*!/*/}
-            {/*  /!*  {edit ? (*!/*/}
-            {/*  /!*    <div style={verticalAlignStyle}>*!/*/}
-            {/*  /!*      <Grid container style={{ margin: "10px" }}>*!/*/}
-            {/*  /!*        <Grid item xs={6} style={{ textAlign: "left" }}>*!/*/}
-            {/*  /!*          <label>Rate Confirmation</label>*!/*/}
-            {/*  /!*        </Grid>*!/*/}
-            {/*  /!*        <Grid item xs={6}>*!/*/}
-            {/*  /!*          <input*!/*/}
-            {/*  /!*            type="file"*!/*/}
-            {/*  /!*            multiple*!/*/}
-            {/*  /!*            name="rateConfirmation"*!/*/}
-            {/*  /!*            disabled={!edit || state.auth.user.role === "driver"}*!/*/}
-            {/*  /!*            onChange={handleFileChange}*!/*/}
-            {/*  /!*            ref={rateConfirmationRef}*!/*/}
-            {/*  /!*          />*!/*/}
-            {/*  /!*        </Grid>*!/*/}
-            {/*  /!*      </Grid>*!/*/}
-            {/*  /!*      <Grid container style={{ margin: "10px" }}>*!/*/}
-            {/*  /!*        <Grid item xs={6} style={{ textAlign: "left" }}>*!/*/}
-            {/*  /!*          <label>Proof of Address</label>*!/*/}
-            {/*  /!*        </Grid>*!/*/}
-            {/*  /!*        <Grid item xs={6}>*!/*/}
-            {/*  /!*          <input*!/*/}
-            {/*  /!*            type="file"*!/*/}
-            {/*  /!*            multiple*!/*/}
-            {/*  /!*            name="proofDelivery"*!/*/}
-            {/*  /!*            disabled={!edit}*!/*/}
-            {/*  /!*            onChange={handleFileChange}*!/*/}
-            {/*  /!*            ref={proofDeliveryRef}*!/*/}
-            {/*  /!*          />*!/*/}
-            {/*  /!*        </Grid>*!/*/}
-            {/*  /!*      </Grid>*!/*/}
-            {/*  /!*    </div>*!/*/}
-            {/*  /!*  ) : (*!/*/}
-            {/*  /!*    <div style={verticalAlignStyle}>*!/*/}
-            {/*  /!*      /!* <p style={{margin: 0}}>Echo Global Logisitcs</p>*!/*/}
-            {/*  /!*                  <p style={{margin: 0}}>Rep: William Penske</p>*!/*/}
-            {/*  /!*                  <p style={{margin: 0}}>618-501-2250</p>*!/*/}
-            {/*  /!*                  <p style={{margin: 0}}>wpenske@echo.com</p> *!/*!/*/}
-            {/*  /!*    </div>*!/*/}
-            {/*  /!*  )}*!/*/}
-            {/*  /!*</Grid>*!/*/}
-            {/*  /!*<Grid item xs={4} style={{ position: "relative" }}>*!/*/}
-            {/*  /!*  <div*!/*/}
-            {/*  /!*    className="load-checklist"*!/*/}
-            {/*  /!*    style={{*!/*/}
-            {/*  /!*      position: "absolute",*!/*/}
-            {/*  /!*      top: "50%",*!/*/}
-            {/*  /!*      left: "80%",*!/*/}
-            {/*  /!*      transform: "translate(-50%, -50%)",*!/*/}
-            {/*  /!*    }}*!/*/}
-            {/*  /!*  >*!/*/}
-            {/*  /!*    <p style={{ margin: 0 }}>*!/*/}
-            {/*  /!*      {rateConfirmation ? (*!/*/}
-            {/*  /!*        <span>*!/*/}
-            {/*  /!*          <a href={rateConfirmation} target="_blank">*!/*/}
-            {/*  /!*            Rate Confirmation*!/*/}
-            {/*  /!*          </a>*!/*/}
-            {/*  /!*        </span>*!/*/}
-            {/*  /!*      ) : (*!/*/}
-            {/*  /!*        <span>Rate Confirmation</span>*!/*/}
-            {/*  /!*      )}*!/*/}
-            {/*  /!*      <span>*!/*/}
-            {/*  /!*        {rateConfirmation ? (*!/*/}
-            {/*  /!*          <CheckCircleIcon style={{color: successIconColor}}/>*!/*/}
-            {/*  /!*        ) : (*!/*/}
-            {/*  /!*           <CancelIcon style={{color: errorIconColor}}/>*!/*/}
-            {/*  /!*        )}*!/*/}
-            {/*  /!*      </span>*!/*/}
-            {/*  /!*    </p>*!/*/}
-            {/*  /!*    <p style={{ margin: 0 }}>*!/*/}
-            {/*  /!*      {proofDelivery ? (*!/*/}
-            {/*  /!*        <span>*!/*/}
-            {/*  /!*          <a href={rateConfirmation} target="_blank">*!/*/}
-            {/*  /!*            Proof of Delivery*!/*/}
-            {/*  /!*          </a>*!/*/}
-            {/*  /!*        </span>*!/*/}
-            {/*  /!*      ) : (*!/*/}
-            {/*  /!*        <span>Proof of Delivery</span>*!/*/}
-            {/*  /!*      )}*!/*/}
-            {/*  /!*      <span>*!/*/}
-            {/*  /!*        {proofDelivery ? (*!/*/}
-            {/*  /!*          <CheckCircleIcon style={{color: successIconColor}}/>*!/*/}
-            {/*  /!*        ) : (*!/*/}
-            {/*  /!*           <CancelIcon style={{color: errorIconColor}}/>*!/*/}
-            {/*  /!*        )}*!/*/}
-            {/*  /!*      </span>*!/*/}
-            {/*  /!*    </p>*!/*/}
-            {/*  /!*  </div>*!/*/}
-            {/*  /!*</Grid>*!/*/}
-            {/*</Grid>*/}
           </form>
         </div>
       </Modal>
@@ -1536,4 +1349,4 @@ const LoadDetailModal = ({
   );
 };
 
-export default React.memo(LoadDetailModal);
+export default React.memo(LoadDetailModal, () => true);

@@ -1,17 +1,18 @@
 import React, { Fragment, useState } from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import {useDispatch} from 'react-redux';
+import _ from 'lodash';
+import {Key, MailOutline} from "@mui/icons-material";
+import { makeStyles } from '@material-ui/core/styles';
+import {Divider, Grid,  InputAdornment, Typography} from '@mui/material';
+import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/auth';
 import './authcss/LoginRegister.css';
-import Grid from '@mui/material/Grid';
-import EmailIcon from '@mui/icons-material/Email';
-import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@mui/material/Button';
-import { Divider, Typography } from '@mui/material';
-import { Form, FormGroup, Input, InputGroup, InputGroupText, InputGroupAddon } from 'reactstrap';
+import Input from '../../components/Atoms/form/Input'
 import {FEDERAL_SIGNUP_LINK} from "../constants";
+import Password from "../Atoms/form/Password";
+import {isEmailValid} from "../../utils/utils";
 
   const useStyles = makeStyles(() => ({
     root: {
@@ -45,7 +46,7 @@ const Login = () => {
   const dispatch = useDispatch(),
     history = useHistory();
   const classes = useStyles();
-
+  const [errors, setErrors] = useState({email: '', password: ''});
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -54,12 +55,29 @@ const Login = () => {
 
   const { email, password } = formData;
 
-  const onChange = e =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const onChange = ({name, value}) => {
+    setFormData({ ...formData, [name]: value });
+    setErrors({...errors, [name]: ''})
+  }
 
   const onSubmit = async e => {
     e.preventDefault();
-    dispatch(login({ email, password }, history, setProcessingAsync));
+    const err = {};
+    if(!formData.email) {
+      Object.assign(err, { email: 'Email is required' })
+    }
+    if(!formData.password) {
+      Object.assign(err, { password: 'Password is required' })
+    }
+    if(!isEmailValid(formData.email)) {
+      Object.assign(err, { email: 'Invalid Email' })
+    }
+
+    if(_.isEmpty(err)){
+      dispatch(login({ email, password }, history, setProcessingAsync));
+    } else {
+      setErrors(err);
+    }
   };
 
   //Redirect if logged in
@@ -93,47 +111,43 @@ const Login = () => {
               <Divider />
             </Grid>
             <Grid item xs={12} className={classes.gridBottom} style={{ textAlign: 'center' }}>
-              <Form role='form' className="" onSubmit={onSubmit}>
-                <FormGroup>
-                  <InputGroup className="input-group-merge inputGroup">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <EmailIcon className="ni ni-email-83" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
+              <Grid container component='form' onSubmit={onSubmit} spacing={2} noValidate px={3}>
+                <Grid item xs={12}>
+                  <Input
                       placeholder="Email"
                       type="email"
                       onChange={onChange}
                       value={email}
                       name='email'
-                      autoFocus
-                    />
-                  </InputGroup>
-                </FormGroup>
-
-                <FormGroup>
-                  <InputGroup className="input-group-merge inputGroup">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <LockOpenIcon className="ni ni-lock-circle-open" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
+                      autoFocus={true}
+                      fullWidth={true}
+                      errors={errors}
+                      InputProps={{
+                        startAdornment: <InputAdornment position="start">
+                          <MailOutline />
+                        </InputAdornment>,
+                      }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Password
+                      label={null}
                       placeholder="Password"
-                      type="password"
                       onChange={onChange}
                       name="password"
                       value={password}
-                    />
-                  </InputGroup>
-                </FormGroup>
-
-                {/* <Button type="submit" variant="contained" color="primary" style={{ marginTop: '5%' }} >Sign in</Button> */}
-                <Button variant='contained' type="submit" disabled={processingAsync}>
-                  {processingAsync ? 'Signing In...' : 'Sign in' }
-                </Button>
-              </Form>
+                      errors={errors}
+                      startAdornment={<InputAdornment position="start">
+                        <Key />
+                      </InputAdornment>}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Button variant='contained' type="submit" disabled={processingAsync}>
+                    {processingAsync ? 'Signing In...' : 'Sign in' }
+                  </Button>
+                </Grid>
+              </Grid>
               <br/>
                 <Link to={FEDERAL_SIGNUP_LINK} className="text-center" underline="none">Register</Link>
             </Grid>

@@ -159,9 +159,9 @@ const Loadlistbar = ({
     return (
         <div className={classes.table}>
             <EnhancedTable config={tableConfig} data={rawLoades} loading={loading}/>
-            <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                {['admin', 'superAdmin', 'dispatch'].includes(user.role) && <AddLoadForm />}
-            </Box>
+            {user?.role && <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
+                {['admin', 'superAdmin', 'dispatch'].includes(user.role) && <AddLoadForm/>}
+            </Box>}
             {open.open && <LoadDetailModal
                 modalEdit={false}
                 open={open.open}
