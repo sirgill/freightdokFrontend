@@ -32,23 +32,25 @@ const UserForm = () => {
         (state) => state.users
     );
     const {mutation: updateUser, loading: isSavingUpdate} = useMutation(`/api/users/${user?._id}`)
-    const {user: auth  = {}} = useSelector((state) => state.auth);
-    const {roles=[]} = useSelector((state) => state.auth);
+    const {user: auth = {}} = useSelector((state) => state.auth);
+    const {roles = []} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const [userRoles, setUserRoles] = useState();
 
     useEffect(() => {
-
-        if (auth?.role === "dispatch") {
+        if(auth?.role.equalsIgnoreCase(ROLES.superadmin)) {
+            setUserRoles(roles)
+        } else {
             const newRoles = roles.filter(
                 (item) =>
                     item === "driver" ||
                     item === "afterhours" ||
                     item === "load planner" ||
-                    item === "support"
+                    item === "support" ||
+                    item === 'dispatch'
             );
             setUserRoles(newRoles);
-        } else setUserRoles(roles);
+        }
     }, []);
 
     useEffect(() => {
@@ -95,7 +97,7 @@ const UserForm = () => {
     };
 
     function afterSubmit({success, data}) {
-        if(success){
+        if (success) {
             handleClose();
             dispatch(fetchUsers(+page, +limit));
             notification((user._id ? 'Updated ' : 'Saved ') + 'Successfully');
@@ -111,9 +113,9 @@ const UserForm = () => {
                 const {email, password, role} = form;
                 if (!email || !password || !role)
                     return alert("All fields are required");
-                else if(!isEmailValid(email)){
-                   return alert('Email is not valid');
-                } else if (password.length < 6){
+                else if (!isEmailValid(email)) {
+                    return alert('Email is not valid');
+                } else if (password.length < 6) {
                     return alert('Please enter password with 6 or more characters');
                 }
                 await mutation(form, '', afterSubmit);
@@ -181,7 +183,7 @@ const UserForm = () => {
                                         autoComplete={"off"}
                                         type='select'
                                         options={userRoles &&
-                                        userRoles.map((role) => ({id: role, label: capitalizeFirstLetter(role)}))}
+                                            userRoles.map((role) => ({id: role, label: capitalizeFirstLetter(role)}))}
                                     />
                                 </Grid>
                                 <Grid item xs={12} justifyContent='center' display={'flex'}>
