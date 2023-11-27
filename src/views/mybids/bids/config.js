@@ -14,11 +14,15 @@ const getBidStatus = (bidLevel) => {
     }
 }
 
-const tableConfigCb = (history, path, totalCount) => {
+const tableConfigCb = ({history, path, totalCount, onPageChange, page, limit}) => {
     return {
         rowCellPadding: "normal",
+        size: 'small',
         emptyMessage: "No Bids Found",
         showRefresh: true,
+        onPageChange,
+        page: page - 1,
+        limit,
         onRowClick: ({
                          loadNumber,
                          vendorName = ''

@@ -129,6 +129,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             page,
             count,
             limit,
+            size = 'medium',
             emptyMessage = '',
             onRowClickDataCallback,
             showRefresh = false,
@@ -227,7 +228,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         >
             {loading
                 ? getLoader()
-                : <Table ref={el => ref.current['table'] = el} aria-label="caption table">
+                : <Table ref={el => ref.current['table'] = el} aria-label="caption table" size={size}>
                     {getTableContent}
                 </Table>}
             {!loading && data.length > 0 &&
