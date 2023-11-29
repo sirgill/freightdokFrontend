@@ -26,7 +26,7 @@ const MyBids = () => {
         }, 5000);
 
         return () => clearInterval(bidIntervals);
-    }, [page, limit])
+    }, [page, limit, refetch])
 
     const onPageChange = (event, newPage) => {
         setParams(params => {
