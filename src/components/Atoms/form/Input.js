@@ -42,7 +42,7 @@ const InputField = memo(InputFieldPure)
 const Input = (props) => {
     const {
         label, name, errors = {}, onChange, value, className, classNameRoot, isCapitalize = false, inputProps = {},
-        type = 'text', onBlur, InputProps, readOnly, helperText, fullWidth = false, ...rest
+        type = 'text', onBlur, InputProps, readOnly, helperText, fullWidth = false, trimValue = false, ...rest
     } = props;
     const hasError = errors[name] || false,
         errorText = errors[name]
@@ -51,6 +51,9 @@ const Input = (props) => {
         let {name, value} = e.target;
         if (isCapitalize) {
             value = value.capitalize()
+        }
+        if (trimValue) {
+            value = value.trim();
         }
         if (onChange) onChange({name, value});
     }

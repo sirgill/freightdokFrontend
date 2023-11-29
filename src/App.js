@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import axios from "axios";
 import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
 import Register from "./components/auth/Register";
@@ -7,8 +7,6 @@ import OwnerOp from "./components/auth/OwnerOpRegister";
 import Fleet from "./components/auth/FleetRegister";
 import Dashboard from "./components/dashboard/Dashboard";
 import PrivateRoute from "./components/routing/PrivateRoute";
-import store from "./store";
-import {loadUser} from "./actions/auth";
 import setAuthToken from "./utils/setAuthToken";
 import Profile from "./components/users/Profile";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -19,7 +17,13 @@ import {getBaseUrl} from "./config";
 import LandingPage from "./views/landingPage/LandingPage";
 import SetPassword from "./components/auth/SetPassword";
 import SignUp from "./components/auth/signUpWithFMCSA/SignUp";
-import {FEDERAL_SIGNUP_LINK, FMCSA_VERIFICATION_LINK, ONBOARDING_USER, SIGNUP_SUPPORT} from "./components/constants";
+import {
+    FEDERAL_SIGNUP_LINK,
+    FMCSA_VERIFICATION_LINK,
+    LOGIN_LINK,
+    ONBOARDING_USER,
+    SIGNUP_SUPPORT
+} from "./components/constants";
 import Support from "./components/auth/signUpWithFMCSA/Support";
 import UserOnboard from "./components/auth/signUpWithFMCSA/UserOnboard";
 import LoadModuleAsync from "./components/Atoms/LoadModuleAsync";
@@ -38,7 +42,7 @@ axios.defaults.baseURL = getBaseUrl();
 const PreAuthRoutes = () => {
     return <>
         <Route path="/register" component={Register}/>
-        <Route path="/login" component={Login}/>
+        <Route path={LOGIN_LINK} component={Login}/>
         <Route path={FEDERAL_SIGNUP_LINK} component={SignUp}/>
         <Route path={FMCSA_VERIFICATION_LINK} component={FMCSASignup}/>
         <Route path={SIGNUP_SUPPORT} component={Support}/>
@@ -47,9 +51,6 @@ const PreAuthRoutes = () => {
 }
 
 const App = () => {
-    useEffect(() => {
-        store.dispatch(loadUser());
-    }, []);
     return (
         <div className='root'>
             <Notification/>

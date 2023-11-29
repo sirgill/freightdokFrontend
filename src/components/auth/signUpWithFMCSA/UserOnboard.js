@@ -7,19 +7,24 @@ import Password from "../../Atoms/form/Password";
 import { requestPost } from "../../../utils/request";
 import { notification } from "../../../actions/alert";
 import { LOGIN_LINK } from "../../constants";
+import useMutation from "../../../hooks/useMutation";
 
 const UserOnboard = (props) => {
     const { match: { params: { email } = {} } = {}, history } = props;
     const [formData, setFormData] = useState({});
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({}),
+        {loading, mutation} = useMutation('/api/onBoarding/register');
 
     useEffect(() => {
         requestPost({ uri: '/api/onBoarding/validateOtp', body: { email }, skipTriggers: false })
-            .then(({ success, data }) => {
+            .then((res = {}) => {
+                const { success, data } = res || {}
                 if (!success) {
                     setFormData({ ...formData, disabled: true });
-                    if (!data.success)
-                        notification(data.message, 'error')
+                    if (!data?.success){
+                        notification(data?.message || 'Server Error', 'error');
+                        console.error('Server Error')
+                    }
                 }
             });
     }, []);
@@ -31,19 +36,31 @@ const UserOnboard = (props) => {
 
     async function onSubmit(e) {
         e.preventDefault();
-        const { otp, password } = formData;
+        let isValid = true;
+        debugger
+        const { otp, password, firstName = '', lastName = ''} = formData;
+        if(!firstName){
+            isValid = false;
+            setErrors(errors => ({...errors, firstName: 'Please Enter First Name'}));
+        }
         if (!otp) {
+            isValid = false;
             setErrors(errors => ({ ...errors, otp: 'Please enter OTP' }));
-        } else if (otp.length !== 6) {
+        } else if (String(otp).length !== 6) {
+            isValid = false;
             setErrors(errors => ({ ...errors, otp: 'OTP should be of six digits' }));
         }
         if (!password) {
+            isValid = false;
             setErrors(errors => ({ ...errors, password: 'Please enter Password' }))
         } else if (password.length < 8) {
+            isValid = false;
             return setErrors(errors => ({ ...errors, password: 'Password must be 8 letters' }))
         }
-        const { success, data } = await requestPost(
-            { uri: '/api/onBoarding/register', body: { email, password, otp } });
+        isValid && mutation({ email, password, otp, firstName: firstName.trim(), lastName: lastName.trim() }, null, afterSubmit);
+    }
+
+    const afterSubmit = ({success, data}) => {
         if (success) {
             notification(data.message);
             history.push(LOGIN_LINK);
@@ -59,13 +76,21 @@ const UserOnboard = (props) => {
                         <Input name='email' value={email} disabled label='Email' fullWidth />
                     </Grid>
                     <Grid item xs={12}>
-                        <Input fullWidth name='otp' errors={errors} type='number' value={formData['otp']} label='OTP' placeholder='Enter OTP' onChange={onChange} />
+                        <Input name='firstName' required errors={errors} value={formData['firstName']} label='First Name' fullWidth trimValue onChange={onChange} />
                     </Grid>
                     <Grid item xs={12}>
-                        <Password name='password' errors={errors} value={formData['password']} onChange={onChange} />
+                        <Input name='lastName' value={formData['lastName']} label='Last Name' onChange={onChange} fullWidth />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Input fullWidth name='otp' required errors={errors} type='number' inputProps={{ max: 999999 }} value={formData['otp']} label='OTP' placeholder='Enter OTP' onChange={onChange} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Password name='password' required errors={errors} value={formData['password']} onChange={onChange} />
                     </Grid>
                     <Grid item textAlign='center' xs={12}>
-                        <Button type='submit' variant='contained' disabled={formData['disabled']}>Submit</Button>
+                        <Button type='submit' variant='contained' disabled={formData['disabled'] || loading}>
+                            {loading ? 'Submitting...' : 'Submit'}
+                        </Button>
                     </Grid>
                 </Grid>
             </Box>

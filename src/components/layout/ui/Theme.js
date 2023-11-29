@@ -67,6 +67,13 @@ export const themeNew = createTheme({
         },
     },
     components: {
+        MuiInputLabel: {
+            styleOverrides: {
+                asterisk: {
+                    color: "red"
+                },
+            },
+        },
         MuiTypography: {
             styleOverrides: {
                 color: {
