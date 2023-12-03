@@ -3,7 +3,7 @@ import {IconButton, Stack} from "@mui/material";
 import {Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import {LoadDetails} from "./LoadDetails";
-import {getNewLoads} from "../../actions/openBoard.action";
+import {getOpenBoardLoads} from "../../actions/openBoard.action";
 import Bid from "./Bid";
 import {withRouter} from "react-router-dom/cjs/react-router-dom.min";
 import {useDispatch, useSelector} from "react-redux";
@@ -34,11 +34,11 @@ const OpenBoard = () => {
         history = useHistory();
 
     const getBidListWithFilter = useCallback((filters, params = '') => {
-        dispatch(getNewLoads({...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageSize: 100}))
+        dispatch(getOpenBoardLoads({...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageSize: 100}))
     }, [dispatch])
 
     const getBiddingList = useCallback(() => {
-        dispatch(getNewLoads({...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageSize: 100}))
+        dispatch(getOpenBoardLoads({...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageSize: 100}))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, filters, params])
 

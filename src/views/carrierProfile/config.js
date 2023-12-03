@@ -15,8 +15,8 @@ export const integrationCredentialConfig = ({path, _dbData, list, refetch}) => (
         {
             id: 'code',
             label: 'Key/Code',
-            valueFormatter: () => {
-                return '********'
+            renderer:({row}) => {
+                return row.code ? '******' : row.clientSecret ? '******' : '--'
             }
         },
         {
@@ -33,7 +33,9 @@ export const integrationCredentialConfig = ({path, _dbData, list, refetch}) => (
                     component={Link}
                     to={{pathname: path + UPDATE_INTEGRATIONS_LINK, state: {row, rowIndex, _dbData, list, refetch}}}
                     variant='contained'
-                >Update</Button>
+                >
+                    Update
+                </Button>
             }
         }
     ]

@@ -39,7 +39,7 @@ const AuthForm = memo(({onChange, form, onSubmit, errors, loading}) => {
 
 const IntegrationsForm = (props) => {
     const {state: {row, rowIndex, list} = {}} = props.location,
-    isChrobinson = row.integrationName.equalsIgnoreCase('chrobinson');
+        isChrobinson = row.integrationName.equalsIgnoreCase('chrobinson');
     const [form, setForm] = useState({email: '', mc: '', code: ''});
     const [isAuthorised, setIsAuthorised] = useState(false);
     const [authForm, setAuthForm] = useState({email: '', password: ''});
@@ -54,24 +54,22 @@ const IntegrationsForm = (props) => {
             return setErrors({...errors, email: 'Invalid Email'});
         } else {
             // save data
-            const item = list[rowIndex]
-            const integrationName = item['integrationName'];
             const obj = {
-                [integrationName]: form['code'],
                 mc: form.mc,
-                email: form.email
+                email: form.email,
+            }
+            if(code){
+                Object.assign(obj, {code})
             }
 
             if(isChrobinson){
-                Object.assign(obj, {token: form.token})
+                const {clientId, clientSecret} = form;
+                Object.assign(obj, { clientId, clientSecret });
             }
-            list.forEach(item => {
-                if(item.integrationName !== integrationName){
-                    Object.assign(obj, {[item.integrationName]: item.code})
-                }
-            })
-
-            updateMutation(obj)
+            /*
+                Create payload as Object with integrationName: {...}
+             */
+            updateMutation({ [row.integrationName]: {...obj} })
                 .then(res => {
                     if(!res.success){
                         return notification(res.message, 'error')
@@ -131,23 +129,34 @@ const IntegrationsForm = (props) => {
                 {isChrobinson && <Grid item>
                     <Input
                         fullWidth
-                        label='Token'
-                        name='token'
+                        label='Client ID'
+                        name='clientId'
                         onChange={onChange}
-                        value={form.token || ''}
+                        value={form.clientId || ''}
+                    />
+                </Grid>}
+                {isChrobinson && <Grid item>
+                    <Input
+                        fullWidth
+                        label='Client Secret'
+                        name='clientSecret'
+                        onChange={onChange}
+                        value={form.clientSecret || ''}
                         multiline
                         rows={3}
                     />
                 </Grid>}
-                <Grid item>
+                {!isChrobinson && <Grid item>
                     <Input
                         fullWidth
                         label='Code'
                         name='code'
                         onChange={onChange}
                         value={form.code || ''}
+                        multiline
+                        rows={5}
                     />
-                </Grid>
+                </Grid>}
                 <Grid item>
                     <Input
                         fullWidth

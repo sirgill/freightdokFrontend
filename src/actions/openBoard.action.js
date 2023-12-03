@@ -3,6 +3,7 @@ import { notification } from "./alert";
 import { GET_CHROBINSON_LOADS, GET_SHIPMENTS } from "./types";
 import { getBabylonianServerUrl, getBaseUrl, getGoUrl } from "../config";
 import { requestGet, requestPost } from "../utils/request";
+import {getUserDetail} from "../utils/utils";
 
 export const bidChRobinsonLoad = async (loadNumber, body, callback) => {
     try {
@@ -251,7 +252,7 @@ export const getNewTrulLoads = (pageSize, pageIndex, params) => async dispatch =
 
 }
 
-export const getNewLoads = (filters) => async (dispatch) => {
+export const getOpenBoardLoads = (filters) => async (dispatch) => {
     dispatch({
         type: GET_SHIPMENTS,
         payload: {
@@ -259,7 +260,8 @@ export const getNewLoads = (filters) => async (dispatch) => {
         }
     });
     try {
-        const { success, data = [] } = await requestPost({ baseUrl: getBabylonianServerUrl(), uri: '/fetchOpenBoardLoads', body: filters })
+        const {user: {orgId = null} = {}} = getUserDetail();
+        const { success, data = [] } = await requestPost({ baseUrl: getBabylonianServerUrl(), uri: '/fetchOpenBoardLoads?orgId='+orgId, body: filters })
         if (success) {
             dispatch({
                 type: GET_SHIPMENTS,
