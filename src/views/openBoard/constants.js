@@ -2,6 +2,7 @@ import moment from "moment";
 import { requestPost } from "../../utils/request";
 import { getGoUrl } from "../../config";
 import { notification } from "../../actions/alert";
+import {getUserDetail} from "../../utils/utils";
 
 export const productionPayload = {
   pageIndex: 0,
@@ -75,9 +76,10 @@ export const getParsedLoadEquipment = (row = {}) => {
 
 export const MC_NUMBER = '476757'
 export const CARRIER_EMAIL = 'accounting@sunnyfreight.co'
+const {user: {orgId = null} = {}} = getUserDetail();
 
 export const bookNewTrulLoad = async (body, row, callback) => {
-  requestPost({ uri: '/newTrulBookLoad', baseUrl: getGoUrl(), body })
+  requestPost({ uri: '/newTrulBookLoad?orgId='+orgId, baseUrl: getGoUrl(), body })
     .then(async res => {
       const { data, success } = res || {};
       if (data.status === 'success') {
