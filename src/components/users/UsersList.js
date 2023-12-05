@@ -8,7 +8,7 @@ import {ROLES} from "../constants";
 import {showDelete} from "../../actions/component.action";
 
 const UsersList = () => {
-    const { list, loading, page, limit, total } = useSelector(
+    const { list, loading, page = 0, limit = 5, total } = useSelector(
         (state) => state.users
     );
     const { user } = useSelector((state) => state.auth);

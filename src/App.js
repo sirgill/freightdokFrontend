@@ -1,20 +1,18 @@
 import React from "react";
 import axios from "axios";
 import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
-import Register from "./components/auth/Register";
 import EntityType from "./components/auth/EntityType";
-import OwnerOp from "./components/auth/OwnerOpRegister";
-import Fleet from "./components/auth/FleetRegister";
-import Dashboard from "./components/dashboard/Dashboard";
+// import OwnerOp from "./components/auth/OwnerOpRegister";
+// import Fleet from "./components/auth/FleetRegister";
+// import Dashboard from "./components/dashboard/Dashboard";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import setAuthToken from "./utils/setAuthToken";
-import Profile from "./components/users/Profile";
+// import Profile from "./components/users/Profile";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Notification from "./components/layout/Notification";
 
 import "./App.css";
 import {getBaseUrl} from "./config";
-import LandingPage from "./views/landingPage/LandingPage";
 import SetPassword from "./components/auth/SetPassword";
 import SignUp from "./components/auth/signUpWithFMCSA/SignUp";
 import {
@@ -25,11 +23,13 @@ import {
     SIGNUP_SUPPORT
 } from "./components/constants";
 import Support from "./components/auth/signUpWithFMCSA/Support";
-import UserOnboard from "./components/auth/signUpWithFMCSA/UserOnboard";
 import LoadModuleAsync from "./components/Atoms/LoadModuleAsync";
-import EnhancedDashboard from "./layout/EnhancedDashboard";
 import {ENHANCED_DASHBOARD} from "./components/client/routes";
 
+const Register = LoadModuleAsync(() => import("./components/auth/Register"));
+const LandingPage = LoadModuleAsync(() => import("./views/landingPage/LandingPage"));
+const UserOnboard = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/UserOnboard")) ;
+const EnhancedDashboard = LoadModuleAsync(() => import("./layout/EnhancedDashboard"), true);
 const Login = LoadModuleAsync(() => import('./components/auth/Login'), true);
 const FMCSASignup = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/FMCSASignup"), true)
 
@@ -56,15 +56,15 @@ const App = () => {
             <Notification/>
             <BrowserRouter>
                 <Switch>
-                    <Route exact path={'/home'} component={LandingPage} />
-                    <Route exact path={'/'}><Redirect to='/dashboard'/></Route>
+                    <Route exact path={'/'}><Redirect to={ENHANCED_DASHBOARD} /></Route>
+                    <Route path={'/home'} component={LandingPage} />
                     <Route path="/entity" component={EntityType} />
-                    <Route path="/ownerOperatorRegister" component={OwnerOp} />
-                    <Route path="/fleetRegister" component={Fleet} />
+                    {/*<Route path="/ownerOperatorRegister" component={OwnerOp} />*/}
                     <Route path='/setPassword' component={SetPassword} />
-                    <PrivateRoute path="/profile" component={Profile}/>
-                    <PrivateRoute path="/dashboard" component={Dashboard}/>
                     <PrivateRoute path={ENHANCED_DASHBOARD} component={EnhancedDashboard} />
+                    {/*<PrivateRoute path="/dashboard" component={Dashboard}/>*/}
+                    {/*<PrivateRoute path="/profile" component={Profile}/>*/}
+                    {/*<Route path="/fleetRegister" component={Fleet} />*/}
                     {/*<PrivateRoute path='*'><Redirect to={ENHANCED_DASHBOARD} /></PrivateRoute>*/}
                     {/*<PrivateRoute path="/create-profile" component={ProfileForm}/>*/}
                     {/*<PrivateRoute path="/edit-profile" component={EditProfile}/>*/}
