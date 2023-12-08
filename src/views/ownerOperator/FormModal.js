@@ -150,8 +150,9 @@ const FormModal = (props) => {
                             fullWidth
                             type="submit"
                             onClick={onSubmit}
-                            isLoading={isFetching || loading}
-                            loadingText='Updating...'
+                            disabled={isFetching || loading}
+                            isLoading={loading}
+                            loadingText={loading ? 'Updating...' : null}
                         >
                             Update
                         </LoadingButton>
