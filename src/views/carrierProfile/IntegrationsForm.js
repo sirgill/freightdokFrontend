@@ -1,5 +1,5 @@
 import {memo, useState} from "react";
-import {Button, Grid, Typography} from "@mui/material";
+import {Grid, Typography} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Modal from "../../components/Atoms/Modal";
 
@@ -38,7 +38,7 @@ const AuthForm = memo(({onChange, form, onSubmit, errors, loading}) => {
 })
 
 const IntegrationsForm = (props) => {
-    const {state: {row, rowIndex, list} = {}} = props.location,
+    const {state: {row} = {}} = props.location,
         isChrobinson = row.integrationName.equalsIgnoreCase('chrobinson');
     const [form, setForm] = useState({email: '', mc: '', code: ''});
     const [isAuthorised, setIsAuthorised] = useState(false);
@@ -49,7 +49,7 @@ const IntegrationsForm = (props) => {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        const {email, mc, code} = form;
+        const {email, code} = form;
         if (!isEmailValid(email) || !email) {
             return setErrors({...errors, email: 'Invalid Email'});
         } else {

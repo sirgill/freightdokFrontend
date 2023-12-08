@@ -58,7 +58,7 @@ const UserForm = () => {
     }, [open]);
 
     useEffect(() => {
-        if (+page === 0) {
+        if (+page === 0 && open) {
             handleClose();
             dispatch(fetchUsers(+page, +limit));
         }

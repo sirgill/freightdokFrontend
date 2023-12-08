@@ -60,16 +60,12 @@ export default function Modal(props) {
             showClose = true,
             onOk = _.noop(),
             paperProps = {},
-            maxWidth = 'xl',
             preventBackdropClick = false
         } = config;
     const [open, setOpen] = React.useState(false);
     const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
+    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
     const handleClose = (e, reason = '') => {
         if (preventBackdropClick && reason.equalsIgnoreCase('backdropClick')) {
             return;
@@ -112,7 +108,7 @@ export default function Modal(props) {
             onClose={handleClose}
             aria-labelledby="customized-dialog-title"
             open={open}
-            maxWidth={maxWidth}
+            maxWidth={'lg'}
             TransitionComponent={Transition}
             PaperProps={paperProps}
             fullScreen={fullScreen}

@@ -23,10 +23,7 @@ export const callApi = () => ({
 
 export const fetchUsers = (page = 0, limit = 5) => async dispatch => {
     try {
-        /**
-         * Below line is commented as api is being called twice when FETCH_USERS is dispatched
-         */
-        // dispatch({type: FETCH_USERS});
+        dispatch({type: FETCH_USERS});
         const {success, data} = await requestGet({uri: `/api/users?page=${page + 1}&limit=${limit}`});
         if(!success){
             notification(data.message, 'error');

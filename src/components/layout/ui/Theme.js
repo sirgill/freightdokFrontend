@@ -47,7 +47,7 @@ export const theme = createTheme({
 export const SUCCESS_COLOR = 'rgb(40, 167, 69)',
     PRIMARY_BLUE = 'rgb(0, 145, 255)';
 
-export const themeNew = createTheme({
+export const themeNew = muiCreateTheme({
     palette: {
         text: {
             primary: '#000',
@@ -85,8 +85,9 @@ export const themeNew = createTheme({
         },
         MuiAlert: {
             styleOverrides: {
-                outlinedInfo: {
-                    color: PRIMARY_BLUE
+                standardSuccess: {
+                    color: SUCCESS_COLOR,
+                    border: `1px solid ${SUCCESS_COLOR}`
                 },
             }
         },
