@@ -15,9 +15,9 @@ import InputField from "../Atoms/form/InputField";
 import {blue} from "../layout/ui/Theme";
 import useMutation from "../../hooks/useMutation";
 import {notification} from "../../actions/alert";
-import LoadingButton from "@mui/lab/LoadingButton";
 import {isEmailValid} from "../../utils/utils";
 import {ROLES} from "../constants";
+import {LoadingButton} from "../Atoms";
 
 const initialState = {
     email: "",
@@ -188,7 +188,7 @@ const UserForm = () => {
                                 </Grid>
                                 <Grid item xs={12} justifyContent='center' display={'flex'}>
                                     <LoadingButton
-                                        loading={isSaving || isSavingUpdate}
+                                        isLoading={isSaving || isSavingUpdate}
                                         className=""
                                         type="submit"
                                         variant="contained"

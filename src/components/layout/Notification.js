@@ -1,12 +1,8 @@
-import React from "react";
+import React, {useCallback} from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Alert as MuiAlert, Snackbar, Slide } from "@mui/material";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {Alert as MuiAlert, Snackbar, Slide, useMediaQuery} from "@mui/material";
+import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
 import { NOTIFICATION } from "../../actions/types";
-
-function SlideTransition(props) {
-    return <Slide {...props} direction="down" />;
-}
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} {...props} />;
@@ -37,8 +33,10 @@ const theme = createTheme({
 })
 
 const Notification = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch(),
+        muiTheme = useTheme();
     const { app: { notification = {} } = {} } = useSelector(state => state),
+        isSmDevice = useMediaQuery(muiTheme.breakpoints.down('md')),
         { open, type = 'success', message = '', id, delay = 3000 } = notification;
 
     const handleClose = (e, reason) => {
@@ -48,13 +46,19 @@ const Notification = () => {
         dispatch({ type: NOTIFICATION, payload: { ...notification, open: false } })
     }
 
+    const SlideTransition = useCallback((props) => {
+        return <Slide {...props} direction={isSmDevice ? 'up' : "down"}>
+            {props.children}
+        </Slide>;
+    }, [isSmDevice])
+
     return <ThemeProvider theme={theme}>
         <Snackbar
             open={open}
             onClose={handleClose}
             key={id}
             autoHideDuration={delay}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            anchorOrigin={{ vertical: isSmDevice ? 'bottom' : 'top', horizontal: 'center' }}
             TransitionComponent={SlideTransition}
             sx={{
                 '.alert_success': {

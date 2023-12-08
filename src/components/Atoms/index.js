@@ -7,3 +7,4 @@ export {default as SubmitButton} from './form/SubmitButton';
 export {default as Alert} from './Alert';
 export {default as Tooltip} from './Tooltip';
 export {default as UserMenu} from './UserMenu';
+export {default as LoadingButton} from './form/LoadingButton';

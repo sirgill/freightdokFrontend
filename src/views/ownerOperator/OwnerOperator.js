@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect, useState} from "react";
 import {Button} from "@mui/material";
-import {Link, Route, useHistory, useRouteMatch} from "react-router-dom";
+import {Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import axios from "axios";
 import {getBaseUrl} from "../../config";
@@ -102,15 +102,15 @@ const OwnerOperator = () => {
         data={row}
         loading={loading}
       />
-        <Button
-            variant='contained'
-            component={Link}
-            to={path + '/add'}
-            className={'addNewOwnerOp'}
-            sx={{position: 'absolute', right: 10}}
-        >
-            Add Owner Operator
-        </Button>
+        {/*<Button*/}
+        {/*    variant='contained'*/}
+        {/*    component={Link}*/}
+        {/*    to={path + '/add'}*/}
+        {/*    className={'addNewOwnerOp'}*/}
+        {/*    sx={{position: 'absolute', right: 10}}*/}
+        {/*>*/}
+        {/*    Add Owner Operator*/}
+        {/*</Button>*/}
       <Route path={path + "/add"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
       <Route path={path + "/edit/:id"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
     </div>

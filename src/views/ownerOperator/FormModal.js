@@ -1,19 +1,17 @@
 import DialogTitle from "@mui/material/DialogTitle";
 import _ from 'lodash';
 import {blue} from "../../components/layout/ui/Theme";
+import Grid from '@mui/material/Grid'
 import DialogContent from "@mui/material/DialogContent";
-import InputField from "../../components/Atoms/form/InputField";
-import Grid from "@mui/material/Grid";
 import Dialog from "@mui/material/Dialog";
-import React, {useEffect, useMemo, useState} from "react";
-import axios from "axios";
-import {getBaseUrl} from "../../config";
+import React, {useEffect, useState} from "react";
 import {notification} from "../../actions/alert";
-import {checkObjProperties, triggerCustomEvent} from "../../utils/utils";
-import {Button} from "@mui/material";
+import {triggerCustomEvent} from "../../utils/utils";
 import useMutation from "../../hooks/useMutation";
+import useFetch from "../../hooks/useFetch";
+import {Input, LoadingButton} from "../../components/Atoms";
 
-const validateForm = ({firstName, lastName, phoneNumber}) => {
+const validateForm = ({firstName, lastName, phone}) => {
     let errors = {}
     if (!firstName) {
         errors.firstName = 'Please provide the First Name'
@@ -22,83 +20,63 @@ const validateForm = ({firstName, lastName, phoneNumber}) => {
         errors.lastName = 'Please provide the Last Name'
         // return [false, 'Please provide the Last Name', 'lastName']
     }
-    if (!phoneNumber) {
-        errors.phoneNumber = 'Please provide the Phone Number'
+    if (!phone) {
+        errors.phone = 'Please provide the Phone Number'
     }
     return errors
 }
 const formTemplate = {
     firstName: "",
     lastName: "",
-    phoneNumber: "",
+    phone: "",
 }
 
 
 const FormModal = (props) => {
     const {history, match: {params: {id = ''} = {}} = {}, onCloseUrl} = props;
-    const [users, setUsers] = useState([])
     const [form, setForm] = React.useState(formTemplate);
     const [errors, setErrors] = useState(formTemplate);
-    const {mutation, loading} = useMutation("/api/ownerOperator")
-    const updateForm = (e) => {
-        const {target: {name, value} = {}} = e
+    const {mutation, loading} = useMutation("/api/ownerOperator"),
+        {loading: isFetching, data} = useFetch("/api/ownerOperator/" + id),
+        {data: ownerOpData} = data || {};
+
+    const updateForm = ({name, value}) => {
         setForm({...form, [name]: value});
     }
-    const ownerops = useMemo(() => {
-        return (users || []).filter(user => user.role.toLowerCase() === 'owneroperator')
-    }, [users]);
 
     useEffect(() => {
-        if (id) {
-            axios.get(getBaseUrl() + "/api/ownerOperator/" + id)
-                .then(res => {
-                    const {data: {data = {}} = {}} = res;
-                    if (data) {
-                        setForm(data);
-                    }
-                })
-                .catch(err => {
-                    notification(err.message)
-                })
+        if (ownerOpData) {
+            setForm(ownerOpData);
         }
-        if (_.isEmpty(ownerops)) {
-            axios.get(`/api/users?page=${0}&limit=${0}`)
-                .then(r => {
-                    setUsers(r.data.users)
-                })
-                .catch(e => {
-                    console.log(e.message);
-                    notification(e.message, 'error')
-                })
-        }
-    }, [id, ownerops])
+    }, [ownerOpData])
 
-    const onBlur = (name, value) => {
+    const onBlur = ({name, value}) => {
         if (value) {
             setErrors({...errors, [name]: ''});
         }
     }
 
-    const onSubmit = async (e) => {
+    const onSubmit = (e) => {
         e.preventDefault();
         const body = {...form};
         const errors = validateForm(body);
         if (_.isEmpty(errors)) {
-            const {success, data} = await mutation(body);
-            const {message} = data || {};
-            if (success) {
-                notification(message || 'Owner operator created');
-                handleClose();
-                setTimeout(() => {
-                    triggerCustomEvent('refreshOwnerOp');
-                }, 500)
-            } else {
-                notification(message, 'error');
-            }
+            mutation(body, null, afterSubmit);
         } else {
             setErrors({...errors})
         }
     };
+
+    const afterSubmit = ({success, data}) => {
+        const {message} = data || {};
+        if (success) {
+            triggerCustomEvent('refreshOwnerOp');
+            notification(message || 'Owner operator created');
+            handleClose();
+        } else {
+            notification(message, 'error');
+        }
+    }
 
     const handleClose = () => {
         history.push(onCloseUrl);
@@ -125,63 +103,60 @@ const FormModal = (props) => {
                 {id ? "Edit" : 'Add'} Owner Operator
             </DialogTitle>
             <DialogContent>
-                <div className="">
-                    <form className={''}>
+                <Grid container component='form' noValidate direction='column' rowSpacing={3} p={1}>
+                    <Grid item xs={12}>
                         <div>
-                            <InputField
+                            <Input
                                 name={"firstName"}
                                 label={"First Name"}
                                 onChange={updateForm}
                                 value={form.firstName || ''}
-                                errorText={errors['firstName']}
+                                errors={errors}
                                 onBlur={onBlur}
+                                fullWidth
+                                disabled={isFetching || loading}
+                                required
                             />
-                            <InputField
-                                name={"lastName"}
-                                label={"Last Name"}
-                                onChange={updateForm}
-                                value={form.lastName || ''}
-                                errorText={errors['lastName']}
-                                onBlur={onBlur}
-                            />
-                            <InputField
-                                name={"phoneNumber"}
-                                label={"Phone Number"}
-                                onChange={updateForm}
-                                value={form.phoneNumber || ''}
-                                onBlur={onBlur}
-                                errorText={errors['phoneNumber']}
-                            />
-                            {!id && <InputField
-                                value={form.user}
-                                name="user"
-                                onChange={updateForm}
-                                label='Select Owner Operator'
-                                type={'select'}
-                                showFirstBlank={true}
-                                options={ownerops.map(driver => ({id: driver._id, label: driver.email}))}
-                            />}
                         </div>
-
-                        <Grid container spacing={1} style={{marginTop: "20px"}}>
-                            <Grid item xs={3}/>
-                            <Grid item xs={6}>
-                                <Button
-                                    className=""
-                                    type="submit"
-                                    variant={'contained'}
-                                    onClick={onSubmit}
-                                    style={{width: '100%'}}
-                                    disabled={!checkObjProperties(form) || loading}
-                                >
-                                    Save
-                                </Button>
-                            </Grid>
-                            <Grid item xs={3}/>
-                        </Grid>
-
-                    </form>
-                </div>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Input
+                            name={"lastName"}
+                            label={"Last Name"}
+                            onChange={updateForm}
+                            value={form.lastName || ''}
+                            errors={errors}
+                            onBlur={onBlur}
+                            fullWidth
+                            disabled={isFetching || loading}
+                            required
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Input
+                            name={"phone"}
+                            label={"Phone Number"}
+                            onChange={updateForm}
+                            value={form.phone || ''}
+                            onBlur={onBlur}
+                            errors={errors}
+                            fullWidth
+                            disabled={isFetching || loading}
+                            required
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <LoadingButton
+                            fullWidth
+                            type="submit"
+                            onClick={onSubmit}
+                            isLoading={isFetching || loading}
+                            loadingText='Updating...'
+                        >
+                            Update
+                        </LoadingButton>
+                    </Grid>
+                </Grid>
             </DialogContent>
         </Dialog>
     )
