@@ -11,13 +11,12 @@ import {
     openModal,
 } from "../../actions/users";
 import {capitalizeFirstLetter} from "../../utils/helper";
-import InputField from "../Atoms/form/InputField";
-import {blue} from "../layout/ui/Theme";
+import {PRIMARY_BLUE} from "../layout/ui/Theme";
 import useMutation from "../../hooks/useMutation";
 import {notification} from "../../actions/alert";
 import {isEmailValid} from "../../utils/utils";
 import {ROLES} from "../constants";
-import {LoadingButton} from "../Atoms";
+import {Input, LoadingButton, Password, Select} from "../Atoms";
 
 const initialState = {
     email: "",
@@ -47,7 +46,8 @@ const UserForm = () => {
                     item === "afterhours" ||
                     item === "load planner" ||
                     item === "support" ||
-                    item === 'dispatch'
+                    item === 'dispatch' ||
+                    item === 'ownerOperator'
             );
             setUserRoles(newRoles);
         }
@@ -72,8 +72,7 @@ const UserForm = () => {
         }
     }, [user]);
 
-    const handleChange = ({target}) => {
-        const {name, value} = target;
+    const handleChange = ({name, value}) => {
         setForm((f) => ({...f, [name]: value}));
     };
     const handleClose = () => {
@@ -147,41 +146,40 @@ const UserForm = () => {
                     }
                 }}
             >
-                <DialogTitle id="form-dialog-title" sx={{textAlign: 'center', color: blue}}>
+                <DialogTitle id="form-dialog-title" sx={{textAlign: 'center', color: PRIMARY_BLUE}}>
                     {user ? "Update" : "Add"} User
                 </DialogTitle>
                 {error ? <p style={{textAlign: "center"}}>{error}</p> : ""}
                 <DialogContent sx={{p: 0, overflow: 'hidden'}}>
                     <div className="">
                         <form noValidate onSubmit={onSubmit}>
-                            <Grid container spacing={1} direction={'column'} sx={{p: 3}}>
+                            <Grid container spacing={2} direction={'column'} sx={{p: 3}}>
                                 <Grid item>
-                                    <InputField
+                                    <Input
                                         name={"email"}
                                         label={"Email"}
-                                        autoComplete={"off"}
                                         onChange={handleChange}
                                         value={form.email}
                                         autoFocus
+                                        fullWidth
                                     />
                                 </Grid>
                                 <Grid item>
-                                    <InputField
+                                    <Password
                                         name={"password"}
                                         label={"Password"}
-                                        autoComplete={"off"}
                                         onChange={handleChange}
                                         value={form.password}
+                                        autoFocus
+                                        fullWidth
                                     />
                                 </Grid>
                                 <Grid item>
-                                    <InputField
-                                        value={form.role}
-                                        name="role"
+                                    <Select
                                         onChange={handleChange}
                                         label={"Role"}
-                                        autoComplete={"off"}
-                                        type='select'
+                                        name="role"
+                                        value={form.role}
                                         options={userRoles &&
                                             userRoles.map((role) => ({id: role, label: capitalizeFirstLetter(role)}))}
                                     />
