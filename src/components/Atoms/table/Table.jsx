@@ -91,7 +91,7 @@ const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick, rowI
         else if (_.isFunction(renderer)) {
             cell = renderer({row, role}, rowIndex) || emptyState;
         } else {
-            cell = row[id] || emptyState;
+            cell = _.isObject(row) ? _.get(row, id, emptyState) : (row[id] || emptyState);
         }
         return <Cell key={id + i} padding={rowCellPadding || 'normal'} component="th" scope="row">
             {cell}

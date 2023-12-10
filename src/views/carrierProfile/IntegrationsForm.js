@@ -4,7 +4,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Modal from "../../components/Atoms/Modal";
 
 import {modalConfig} from "./config";
-import {isEmailValid, triggerCustomEvent} from "../../utils/utils";
+import {getUserDetail, isEmailValid, triggerCustomEvent} from "../../utils/utils";
 import useMutation from "../../hooks/useMutation";
 import {AUTH_USER} from "../../config/requestEndpoints";
 import {PRIMARY_BLUE} from "../../components/layout/ui/Theme";
@@ -19,7 +19,7 @@ const AuthForm = memo(({onChange, form, onSubmit, errors, loading}) => {
             <Typography fontWeight={600} color={PRIMARY_BLUE}>Please verify your credentials.</Typography>
         </Grid>
         <Grid item>
-            <Input label='Email' fullWidth type='email' value={email} name='email' onChange={onChange} errors={errors}/>
+            <Input readOnly label='Email' fullWidth type='email' value={email} name='email' onChange={onChange} errors={errors}/>
         </Grid>
         <Grid item>
             <Password label='Password' fullWidth value={password} name='password' onChange={onChange} errors={errors}/>
@@ -42,7 +42,7 @@ const IntegrationsForm = (props) => {
         isChrobinson = row.integrationName.equalsIgnoreCase('chrobinson');
     const [form, setForm] = useState({email: '', mc: '', code: ''});
     const [isAuthorised, setIsAuthorised] = useState(false);
-    const [authForm, setAuthForm] = useState({email: '', password: ''});
+    const [authForm, setAuthForm] = useState({email: getUserDetail().user.email, password: ''});
     const [errors, setErrors] = useState({});
     const {loading: loadingSignIn, mutation: verifyUserAsync} = useMutation(AUTH_USER, null, true)
     const {loading: isSaving, mutation: updateMutation} = useMutation('/api/carrierProfile/secret-manager?update=true', null, true)
@@ -73,6 +73,8 @@ const IntegrationsForm = (props) => {
                 .then(res => {
                     if(!res.success){
                         return notification(res.message, 'error')
+                    } else {
+                        notification('Updated Successfully');
                     }
                     triggerCustomEvent('fetchCarrierProfile');
                     triggerCustomEvent('closeModal')

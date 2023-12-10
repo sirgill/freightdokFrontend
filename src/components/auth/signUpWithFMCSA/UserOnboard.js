@@ -37,7 +37,6 @@ const UserOnboard = (props) => {
     async function onSubmit(e) {
         e.preventDefault();
         let isValid = true;
-        debugger
         const { otp, password, firstName = '', lastName = ''} = formData;
         if(!firstName){
             isValid = false;
