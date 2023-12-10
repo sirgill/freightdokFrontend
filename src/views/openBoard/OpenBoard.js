@@ -34,8 +34,6 @@ const OpenBoard = () => {
         { data: { results, totalResults, message } = {}, loading = false } = useSelector((state) => state.openBoard),
         history = useHistory();
 
-    console.log("data", useSelector((state) => state.openBoard))
-
     const getBidListWithFilter = useCallback((filters, params = '') => {
         dispatch(getOpenBoardLoads({ ...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageSize: 100 }))
     }, [dispatch])
