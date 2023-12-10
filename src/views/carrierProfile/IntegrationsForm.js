@@ -8,7 +8,7 @@ import {getUserDetail, isEmailValid, triggerCustomEvent} from "../../utils/utils
 import useMutation from "../../hooks/useMutation";
 import {AUTH_USER} from "../../config/requestEndpoints";
 import {PRIMARY_BLUE} from "../../components/layout/ui/Theme";
-import {Input, Password} from "../../components/Atoms";
+import {Alert, Input, Password} from "../../components/Atoms";
 import {notification} from "../../actions/alert";
 
 const AuthForm = memo(({onChange, form, onSubmit, errors, loading}) => {
@@ -94,7 +94,7 @@ const IntegrationsForm = (props) => {
             setErrors({...errors, email: 'Please enter Email'});
         }
         if (!password) {
-            setErrors({...errors, email: 'Please enter Password'});
+            setErrors({...errors, password: 'Please enter Password'});
             return;
         }
         if (isEmailValid(email)) {
@@ -126,6 +126,10 @@ const IntegrationsForm = (props) => {
     }
 
     return <Modal config={modalConfig}>
+        <Alert
+            config={{open: true, message: 'Data changes will reflect after an hour of saving.', severity: 'info'}}
+            inStyles={{mb:2}}
+        />
         <form noValidate onSubmit={onSubmit}>
             <Grid container spacing={3} direction='column' sx={{minWidth: 350}}>
                 {isChrobinson && <Grid item>

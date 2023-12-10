@@ -58,7 +58,7 @@ export const themeNew = muiCreateTheme({
         },
         success: {
             main: SUCCESS_COLOR
-        }
+        },
     },
     typography: {
         fontFamily: ['Myriad-Pro Regular', "Sans-serif"].join(','),
@@ -89,6 +89,12 @@ export const themeNew = muiCreateTheme({
                     color: SUCCESS_COLOR,
                     border: `1px solid ${SUCCESS_COLOR}`
                 },
+                standardInfo: ({}) => {
+                    return {
+                        borderStyle: "solid",
+                        borderWidth: '1px'
+                    }
+                }
             }
         },
         MuiDialogContent: {
