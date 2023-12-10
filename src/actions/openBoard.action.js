@@ -1,16 +1,16 @@
 import axios from "axios";
-import {notification} from "./alert";
-import {GET_CHROBINSON_LOADS, GET_SHIPMENTS} from "./types";
-import {getBabylonianServerUrl, getBaseUrl, getGoUrl} from "../config";
-import {requestGet, requestPost} from "../utils/request";
-import {getUserDetail} from "../utils/utils";
+import { notification } from "./alert";
+import { GET_CHROBINSON_LOADS, GET_SHIPMENTS } from "./types";
+import { getBabylonianServerUrl, getBaseUrl, getGoUrl } from "../config";
+import { requestGet, requestPost } from "../utils/request";
+import { getUserDetail } from "../utils/utils";
 
-const {user: {orgId = null} = {}} = getUserDetail();
+const { user: { orgId = null } = {} } = getUserDetail();
 
 export const bidChRobinsonLoad = async (loadNumber, body, callback) => {
     try {
         const response = await axios.post(getGoUrl() + '/CHBidding' + `?loadNumber=${loadNumber}?orgId=${orgId}`, body);
-        const {data, success} = response;
+        const { data, success } = response;
         if (callback) callback(success, data);
         return response;
     } catch (error) {
@@ -21,7 +21,7 @@ export const bidChRobinsonLoad = async (loadNumber, body, callback) => {
 export const bookChRobinsonLoad = async (loadNumber, body, callback) => {
     try {
         const response = await axios.post(getGoUrl() + '/bookload?orgId=' + orgId, body);
-        const {data, success} = response;
+        const { data, success } = response;
         if (callback) callback(success, data);
         return response;
     } catch (error) {
@@ -31,10 +31,10 @@ export const bookChRobinsonLoad = async (loadNumber, body, callback) => {
 
 export const placeNewTrulBid = async (body, loadNumber, callback) => {
     try {
-        const {success, data} = await requestPost({uri: "/api/bid/newTrulBidding/" + loadNumber, body});
+        const { success, data } = await requestPost({ uri: "/api/bid/newTrulBidding/" + loadNumber, body });
         if (success) {
             delete body.loadDetail;
-            const {success, data} = await requestPost({
+            const { success, data } = await requestPost({
                 baseUrl: getGoUrl(),
                 uri: '/newTrulBidLoad?orgId=' + orgId,
                 body
@@ -56,7 +56,7 @@ export const placeNewTrulBid = async (body, loadNumber, callback) => {
 
 export const placeNewTrulCounterOffer = (body, callback) => async () => {
     try {
-        const {success, data} = await requestPost({
+        const { success, data } = await requestPost({
             baseUrl: getGoUrl(),
             uri: '/newTrulCounterOffer?orgId=' + orgId,
             body
@@ -70,7 +70,7 @@ export const placeNewTrulCounterOffer = (body, callback) => async () => {
 
 export const newTrulFinalOffer = (body, callback) => async () => {
     try {
-        const {success, data} = await requestPost({
+        const { success, data } = await requestPost({
             baseUrl: getGoUrl(),
             uri: '/newTrulFinalOffer?orgId=' + orgId,
             body
@@ -110,12 +110,13 @@ export const getShipments = (payload) => {
 
 export const getAllBiddings = async () => {
     try {
-        const {success, data} = await requestGet({uri: '/api/bid/biddings'})
+        const { success, data } = await requestGet({ uri: '/api/bid/biddings' })
         if (success) return data;
         else {
             return {
                 totalCount: 0,
                 data: []
+
             }
         }
     } catch (e) {
@@ -143,19 +144,19 @@ export const getBiddings = (payload) => (dispatch) => {
         },
     };
 
-    dispatch({type: GET_SHIPMENTS, payload: {data: {}, loading: true}});
+    dispatch({ type: GET_SHIPMENTS, payload: { data: {}, loading: true } });
     try {
         axios(config)
-            .then(async function ({data: {data: dbData = []} = {}}) {
+            .then(async function ({ data: { data: dbData = [] } = {} }) {
                 const shipmentsResData = await getShipments(payload);
 
-                const {data: {results = [], totalResults, statusCode, message = ''} = {}} = shipmentsResData;
+                const { data: { results = [], totalResults, statusCode, message = '' } = {} } = shipmentsResData;
                 if (statusCode === 401) {
                     notification(message, 'error');
                 }
 
                 results.forEach(function (shipment, index) {
-                    const {loadNumber} = shipment;
+                    const { loadNumber } = shipment;
                     dbData.forEach(function (bid) {
                         if (
                             parseInt(bid.loadNumber) === loadNumber &&
@@ -169,7 +170,7 @@ export const getBiddings = (payload) => (dispatch) => {
                 dispatch({
                     type: GET_SHIPMENTS,
                     payload: {
-                        data: {results, totalResults: totalResults},
+                        data: { results, totalResults: totalResults },
                         loading: false,
                     },
                 });
@@ -180,7 +181,7 @@ export const getBiddings = (payload) => (dispatch) => {
                 notification(error.message, 'error')
                 dispatch({
                     type: GET_SHIPMENTS,
-                    payload: {data: {}, loading: false, message: error.message},
+                    payload: { data: {}, loading: false, message: error.message },
                 });
             });
     } catch (e) {
@@ -190,7 +191,7 @@ export const getBiddings = (payload) => (dispatch) => {
 
 export const saveCHLoadToDb = async (row = {}, isBooked = false) => {
     try {
-        let payload = {isBooked, loadNumber: row.loadNumber, loadDetail: row};
+        let payload = { isBooked, loadNumber: row.loadNumber, loadDetail: row };
         return await axios.post(getBaseUrl() + '/api/chRobinson', payload);
     } catch (e) {
         console.log('response', e.response)
@@ -199,13 +200,13 @@ export const saveCHLoadToDb = async (row = {}, isBooked = false) => {
 
 export const getCHLoads = (onlyDelivered = false) => async (dispatch) => {
     try {
-        let {success, data} = await requestGet({uri: '/api/chRobinson'})
+        let { success, data } = await requestGet({ uri: '/api/chRobinson' })
         if (success) {
             if (onlyDelivered) {
-                const {loads} = data;
+                const { loads } = data;
                 data.loads = loads.filter(load => load.isDelivered)
             }
-            dispatch({type: GET_CHROBINSON_LOADS, payload: data});
+            dispatch({ type: GET_CHROBINSON_LOADS, payload: data });
         }
     } catch (e) {
         console.log(e.message)
@@ -216,23 +217,23 @@ export const getNewTrulLoads = (pageSize, pageIndex, params) => async dispatch =
     dispatch({
         type: GET_SHIPMENTS,
         payload: {
-            newTrulLoads: {data: [], totalResults: 0},
+            newTrulLoads: { data: [], totalResults: 0 },
             loading: true,
         },
     });
-    const {data: allBiddings} = await getAllBiddings();
-    const {success, data = {}} = await requestPost({
-            uri: '/newTrulGetAllLoads', baseUrl: getGoUrl(),
-            body: {
-                "page": pageIndex + 1,
-                "pagesize": pageSize,
-                "params": params ? params : ''
-            }
+    const { data: allBiddings } = await getAllBiddings();
+    const { success, data = {} } = await requestPost({
+        uri: '/newTrulGetAllLoads', baseUrl: getGoUrl(),
+        body: {
+            "page": pageIndex + 1,
+            "pagesize": pageSize,
+            "params": params ? params : ''
         }
+    }
     )
 
     if (success) {
-        const {pagination: {total_items} = {}, data: list = []} = data
+        const { pagination: { total_items } = {}, data: list = [] } = data
         if (allBiddings) {
             list.forEach(load => {
                 allBiddings.forEach(bidding => {
@@ -247,7 +248,7 @@ export const getNewTrulLoads = (pageSize, pageIndex, params) => async dispatch =
         dispatch({
             type: GET_SHIPMENTS,
             payload: {
-                data: {results: list, totalResults: total_items},
+                data: { results: list, totalResults: total_items },
                 loading: false,
             },
         });
@@ -258,7 +259,7 @@ export const getNewTrulLoads = (pageSize, pageIndex, params) => async dispatch =
         dispatch({
             type: GET_SHIPMENTS,
             payload: {
-                data: {results: [], totalResults: 0},
+                data: { results: [], totalResults: 0 },
                 loading: false,
             },
         });
@@ -270,11 +271,11 @@ export const getOpenBoardLoads = (filters) => async (dispatch) => {
     dispatch({
         type: GET_SHIPMENTS,
         payload: {
-            data: {results: [], totalResults: 0}, loading: true
+            data: { results: [], totalResults: 0 }, loading: true
         }
     });
     try {
-        const {success, data = []} = await requestPost({
+        const { success, data = [] } = await requestPost({
             baseUrl: getBabylonianServerUrl(),
             uri: '/fetchOpenBoardLoads?orgId=' + orgId,
             body: filters
@@ -283,7 +284,7 @@ export const getOpenBoardLoads = (filters) => async (dispatch) => {
             dispatch({
                 type: GET_SHIPMENTS,
                 payload: {
-                    data: {results: data.data, totalResults: data.totalResults}, loading: false
+                    data: { results: data.data, totalResults: data.totalResults, message: data.message }, loading: false
                 }
             });
             return
@@ -291,14 +292,14 @@ export const getOpenBoardLoads = (filters) => async (dispatch) => {
         dispatch({
             type: GET_SHIPMENTS,
             payload: {
-                data: {results: [], totalResults: 0}, loading: false
+                data: { results: [], totalResults: 0, message: data.message }, loading: false
             }
         });
     } catch (e) {
         dispatch({
             type: GET_SHIPMENTS,
             payload: {
-                data: {results: [], totalResults: 0}, loading: false
+                data: { results: [], totalResults: 0 }, loading: false
             }
         });
     }
