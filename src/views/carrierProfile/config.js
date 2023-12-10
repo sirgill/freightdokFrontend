@@ -46,23 +46,23 @@ export const tableConfig = {
     showRefresh: true,
     columns: [
         {
-            id: 'companyName',
+            id: 'name',
             label: 'Company Name'
         },
         {
-            id: 'ein',
+            id: 'otherOrgMetaData.carrier.ein',
             label: 'EIN#'
         },
         {
-            id: 'dotNumber',
+            id: 'adminData.dot',
             label: 'DOT#'
         },
         {
             id: 'operatingStatus',
             label: 'Operating Status',
             renderer: ({row = {}}) => {
-                const {operatingStatus} = row;
-                return getCheckStatusIcon(operatingStatus === 'Y')
+                const {otherOrgMetaData: {carrier: {allowedToOperate} ={}} = {}} = row;
+                return getCheckStatusIcon(allowedToOperate === 'Y')
             }
         },
     ]
