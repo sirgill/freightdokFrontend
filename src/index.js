@@ -9,11 +9,11 @@ import {themeNew} from "./components/layout/ui/Theme";
 
 
 ReactDOM.render(
-    // <StyledEngineProvider injectFirst>
+    <StyledEngineProvider injectFirst>
         <ThemeProvider theme={themeNew}>
             <Provider store={store}>
                 <App/>
             </Provider>
         </ThemeProvider>
-    // </StyledEngineProvider>
+    </StyledEngineProvider>
     , document.getElementById('root'));

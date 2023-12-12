@@ -36,7 +36,7 @@ const Notification = () => {
     const dispatch = useDispatch(),
         muiTheme = useTheme();
     const { app: { notification = {} } = {} } = useSelector(state => state),
-        isSmDevice = useMediaQuery(muiTheme.breakpoints.down('md')),
+        isSmDevice = useMediaQuery(muiTheme.breakpoints.down('sm')),
         { open, type = 'success', message = '', id, delay = 3000 } = notification;
 
     const handleClose = (e, reason) => {

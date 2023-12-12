@@ -28,6 +28,7 @@ body {
   margin: 0;
   box-sizing: border-box;
   background-color: #fff !important;
+  height: 100dvh;
 }
 
 .accountDashboardLink {

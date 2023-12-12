@@ -34,9 +34,9 @@ const closedMixin = (theme) => ({
         duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
-    width: `calc(${theme.spacing(7)}px + 1px)`,
+    width: `calc(${theme.spacing(7)} + 1px)`,
     [theme.breakpoints.up('sm')]: {
-        width: `calc(${theme.spacing(8)}px + 1px)`,
+        width: `calc(${theme.spacing(8)} + 1px)`,
     },
 });
 
@@ -91,10 +91,10 @@ const Title = ({routes, basePath}) => {
     return title;
 }
 
-function MiniDrawer({children, routes=[], basePath}) {
+function MiniDrawer({children, routes = [], basePath}) {
     const [open, setOpen] = React.useState(true);
     const theme = useTheme();
-    const isSmallDevice  = useMediaQuery(theme.breakpoints.down('xs'));
+    const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -105,19 +105,19 @@ function MiniDrawer({children, routes=[], basePath}) {
     };
 
     useEffect(() => {
-        if(isSmallDevice && open){
+        if (isSmallDevice && open) {
             setOpen(false)
         }
     }, [isSmallDevice])
 
 
     return (
-        <Box sx={{display: 'flex'}}>
+        <Box sx={{display: 'flex', height: 'inherit'}} className='sidebar-container'>
             <CssBaseline/>
             <AppBar position="fixed" open={open}>
                 <Toolbar>
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex' }, alignItems: 'center' }}>
-                        <Tooltip title={open ? 'Minimize Sidebar' : 'Maximize Sidebar'}>
+                        <Tooltip title={open ? 'Minimize Sidebar' : 'Maximize Sidebar'} placement='bottom'>
                             <IconButton
                                 color="primary"
                                 aria-label="open drawer"

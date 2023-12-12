@@ -25,6 +25,7 @@ import {
 import Support from "./components/auth/signUpWithFMCSA/Support";
 import LoadModuleAsync from "./components/Atoms/LoadModuleAsync";
 import {ENHANCED_DASHBOARD} from "./components/client/routes";
+import {Box} from "@mui/material";
 
 const Register = LoadModuleAsync(() => import("./components/auth/Register"));
 const LandingPage = LoadModuleAsync(() => import("./views/landingPage/LandingPage"));
@@ -52,7 +53,7 @@ const PreAuthRoutes = () => {
 
 const App = () => {
     return (
-        <div className='root'>
+        <Box sx={{height: '100%'}} className='app'>
             <Notification/>
             <BrowserRouter>
                 <Switch>
@@ -72,7 +73,7 @@ const App = () => {
                     <PreAuthRoutes/>
                 </Switch>
             </BrowserRouter>
-        </div>
+        </Box>
     );
 };
 
