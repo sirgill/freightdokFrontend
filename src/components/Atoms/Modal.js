@@ -11,7 +11,7 @@ import {useMemo} from "react";
 import {useHistory} from "react-router-dom";
 import {useMediaQuery, Zoom} from "@mui/material";
 import {addEvent, removeEvent} from "../../utils/utils";
-import {ENHANCED_DASHBOARD} from "../../components/client/routes";
+import {ENHANCED_DASHBOARD} from "../client/routes";
 
 const BootstrapDialog = styled(Dialog)(({theme}) => ({
     "& .MuiDialogContent-root": {
@@ -23,10 +23,10 @@ const BootstrapDialog = styled(Dialog)(({theme}) => ({
 }));
 
 const BootstrapDialogTitle = (props) => {
-    const {children, onClose, showClose, ...other} = props;
+    const {children, onClose, showClose,titleStyles, ...other} = props;
 
     return (
-        <DialogTitle sx={{m: 0, p: 2, textAlign: 'center'}} {...other}>
+        <DialogTitle sx={{ m: 0, p: 2, textAlign: 'center', ...titleStyles }} {...other}>
             {showClose ? (
                 <IconButton
                     aria-label="close"
@@ -56,11 +56,11 @@ export default function Modal(props) {
         {
             title = "",
             closeUrl = "",
-            okButtonText = "Save",
             showClose = true,
             onOk = _.noop(),
             paperProps = {},
-            preventBackdropClick = false
+            preventBackdropClick = false,
+            titleStyles = {}
         } = config;
     const [open, setOpen] = React.useState(false);
     const theme = useTheme();
@@ -106,7 +106,7 @@ export default function Modal(props) {
     return (
         <BootstrapDialog
             onClose={handleClose}
-            aria-labelledby="customized-dialog-title"
+            aria-labelledby={title || "customized-dialog-title"}
             open={open}
             maxWidth={'lg'}
             TransitionComponent={Transition}
@@ -114,9 +114,10 @@ export default function Modal(props) {
             fullScreen={fullScreen}
         >
             {title && <BootstrapDialogTitle
-                id="customized-dialog-title"
+                id={title || "customized-dialog-title"}
                 onClose={handleClose}
                 showClose={showClose}
+                titleStyles={titleStyles}
             >
                 {title}
             </BootstrapDialogTitle>}

@@ -4,13 +4,16 @@ import {Link} from "react-router-dom";
 import {UPDATE_INTEGRATIONS_LINK} from "../../components/constants";
 import React from "react";
 
+export const integrationNameMap = {chRobinson: 'C.H. Robinson', newtrul: 'New Trul'};
+
 export const integrationCredentialConfig = ({path, _dbData, list, refetch}) => ({
     rowCellPadding: 'normal',
     showRefresh: false,
     columns: [
         {
             id: 'integrationName',
-            label: 'Integrations'
+            label: 'Integrations',
+            valueFormatter: (value) => integrationNameMap[value] || value,
         },
         {
             id: 'code',
@@ -70,5 +73,8 @@ export const tableConfig = {
 
 export const modalConfig = {
     title: 'Update Integration Details',
-    preventBackdropClick: true
+    preventBackdropClick: true,
+    titleStyles: {
+        // p: 1
+    }
 }

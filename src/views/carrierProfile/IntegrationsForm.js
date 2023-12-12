@@ -3,7 +3,7 @@ import {Grid, Typography} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Modal from "../../components/Atoms/Modal";
 
-import {modalConfig} from "./config";
+import {integrationNameMap, modalConfig} from "./config";
 import {getUserDetail, isEmailValid, triggerCustomEvent} from "../../utils/utils";
 import useMutation from "../../hooks/useMutation";
 import {AUTH_USER} from "../../config/requestEndpoints";
@@ -39,7 +39,8 @@ const AuthForm = memo(({onChange, form, onSubmit, errors, loading}) => {
 
 const IntegrationsForm = (props) => {
     const {state: {row} = {}} = props.location,
-        isChrobinson = row.integrationName.equalsIgnoreCase('chrobinson');
+        isChrobinson = row.integrationName.equalsIgnoreCase('chrobinson'),
+        title = integrationNameMap[row.integrationName];
     const [form, setForm] = useState({email: '', mc: '', code: ''});
     const [isAuthorised, setIsAuthorised] = useState(false);
     const [authForm, setAuthForm] = useState({email: getUserDetail().user.email, password: ''});
@@ -63,8 +64,8 @@ const IntegrationsForm = (props) => {
             }
 
             if(isChrobinson){
-                const {clientId, clientSecret} = form;
-                Object.assign(obj, { clientId, clientSecret });
+                const {clientId, clientSecret, tCode} = form;
+                Object.assign(obj, { clientId, clientSecret, tCode });
             }
             /*
                 Create payload as Object with integrationName: {...}
@@ -126,32 +127,44 @@ const IntegrationsForm = (props) => {
     }
 
     return <Modal config={modalConfig}>
+        <Typography align='center' variant='h6' fontWeight={550} mb={1}>{title}</Typography>
         <Alert
             config={{open: true, message: 'Data changes will reflect after an hour of saving.', severity: 'info'}}
             inStyles={{mb:2}}
         />
         <form noValidate onSubmit={onSubmit}>
             <Grid container spacing={3} direction='column' sx={{minWidth: 350}}>
-                {isChrobinson && <Grid item>
-                    <Input
-                        fullWidth
-                        label='Client ID'
-                        name='clientId'
-                        onChange={onChange}
-                        value={form.clientId || ''}
-                    />
-                </Grid>}
-                {isChrobinson && <Grid item>
-                    <Input
-                        fullWidth
-                        label='Client Secret'
-                        name='clientSecret'
-                        onChange={onChange}
-                        value={form.clientSecret || ''}
-                        multiline
-                        rows={3}
-                    />
-                </Grid>}
+                {isChrobinson && <>
+                    <Grid item>
+                        <Input
+                            fullWidth
+                            label='Client ID'
+                            name='clientId'
+                            onChange={onChange}
+                            value={form.clientId || ''}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <Input
+                            fullWidth
+                            label='Client Secret'
+                            name='clientSecret'
+                            onChange={onChange}
+                            value={form.clientSecret || ''}
+                            multiline
+                            rows={3}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <Input
+                            fullWidth
+                            label='TCode'
+                            name='tCode'
+                            onChange={onChange}
+                            value={form.tCode || ''}
+                        />
+                    </Grid>
+                </>}
                 {!isChrobinson && <Grid item>
                     <Input
                         fullWidth
