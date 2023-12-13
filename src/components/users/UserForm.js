@@ -73,6 +73,7 @@ const UserForm = () => {
     }, [user]);
 
     const handleChange = ({name, value}) => {
+        debugger
         setForm((f) => ({...f, [name]: value}));
     };
     const handleClose = () => {
@@ -170,7 +171,6 @@ const UserForm = () => {
                                         label={"Password"}
                                         onChange={handleChange}
                                         value={form.password}
-                                        autoFocus
                                         fullWidth
                                     />
                                 </Grid>

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { IconButton, Stack } from "@mui/material";
+import {Box, IconButton, Stack} from "@mui/material";
 import { Route, useHistory, useRouteMatch } from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import { LoadDetails } from "./LoadDetails";
@@ -79,7 +79,7 @@ const OpenBoard = () => {
     }
 
     return (
-        <Stack style={{ gap: '10px' }}>
+        <Stack style={{ gap: '10px', height: '100%', }}>
             <Stack direction={'row'} justifyContent='end'>
                 <Stack>
                     <IconButton title='Refresh' onClick={getBiddingList}>
@@ -96,7 +96,9 @@ const OpenBoard = () => {
                 getNewTrulList={getBidListWithFilter}
                 onRefetch={getBiddingList}
             />
-            {table}
+            <Box sx={{height: 'calc(100% - 220px)' , overflow: 'hidden'}}>
+                {table}
+            </Box>
             <Route path={path + "/newtrul/:loadId"} component={NewTrulLoadDetails} />
             <Route path={path + "/:loadNumber"} exact component={LoadDetails} />
             <Route path={path + "/:loadNumber/bid"} component={Bid} />

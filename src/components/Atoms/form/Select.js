@@ -24,6 +24,7 @@ const Select = ({ options = [], labelKey = 'label', valueKey = 'id', label, valu
     return  <FormControl error={hasError} fullWidth size='small'>
         <InputLabel id="demo-simple-select-error-label">{label}</InputLabel>
         <MuiSelect
+            name={name}
             labelId="demo-simple-select-error-label"
             id="demo-simple-select-error"
             value={value}

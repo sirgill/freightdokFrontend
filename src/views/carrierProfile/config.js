@@ -45,6 +45,7 @@ export const integrationCredentialConfig = ({path, _dbData, list, refetch}) => (
 })
 
 export const tableConfig = {
+    containerHeight: 'auto',
     rowCellPadding: 'normal',
     showRefresh: true,
     columns: [

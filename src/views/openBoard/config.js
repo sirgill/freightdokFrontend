@@ -6,6 +6,7 @@ import {v4 as uuidv4} from 'uuid';
 
 const tableConfig = ({history, path, totalResults, onPageChange, pageIndex, pageSize, showDialog}) => {
     return {
+        containerHeight: '100%',
         rowCellPadding: "normal",
         emptyMessage: "No Shipments Found",
         onRowClick: ({

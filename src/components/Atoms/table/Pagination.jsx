@@ -22,7 +22,7 @@ const TablePagination = ({data = [], onPageChange, page = 0, count = 0, limit = 
         return null;
     }
     return (
-        <Stack direction='row' sx={{display: 'flex', justifyContent: 'space-between', p: 3}} alignItems={'center'}>
+        <Stack direction='row' sx={{display: 'flex', justifyContent: 'space-between'}} alignItems={'center'}>
             {count > 10 && <Typography sx={{color: '#525F7F'}} fontSize={13}>Showing {data.length} of {count} entries</Typography>}
             {data.length !== count && <Pagination
                 count={Math.ceil(count / limit)}
