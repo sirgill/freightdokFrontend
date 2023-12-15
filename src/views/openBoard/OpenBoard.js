@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {Box, IconButton, Stack} from "@mui/material";
+import {Box, Button, IconButton, Popover, Stack, useMediaQuery} from "@mui/material";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Route, useHistory, useRouteMatch } from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import { LoadDetails } from "./LoadDetails";
@@ -26,6 +27,7 @@ if (process.env.NODE_ENV === "production") {
 // const CARRIER_CODE = "T2244688";
 
 const OpenBoard = () => {
+    const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
     const { path } = useRouteMatch(),
         [filters, setFilters] = useState(payload),
         [params, setParams] = useState(''),
@@ -33,8 +35,14 @@ const OpenBoard = () => {
         dispatch = useDispatch(),
         { data: { results, totalResults, message } = {}, loading = false } = useSelector((state) => state.openBoard),
         history = useHistory();
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
 
     const getBidListWithFilter = useCallback((filters, params = '') => {
+        onClosePopover();
         dispatch(getOpenBoardLoads({ ...filters, newTrulQuery: params, env: process.env.NODE_ENV, pageSize: 100 }))
     }, [dispatch])
 
@@ -67,12 +75,26 @@ const OpenBoard = () => {
         });
     };
 
+    const onClosePopover = () => {
+        setAnchorEl(null);
+    }
+
     const table = useMemo(() => <EnhancedTable
         config={tableConfig({ showDialog, history, path, totalResults, onPageChange, pageSize: filters.pageSize, pageIndex: filters.pageIndex })}
         data={results || []}
         loading={loading}
     // eslint-disable-next-line react-hooks/exhaustive-deps
     />, [results])
+
+    const filtersComp = <NewtrulFilters
+        defaultParams={payload}
+        setParams={setParams}
+        setFilters={setFilters}
+        pageSize={filters.pageSize}
+        pageIndex={filters.pageIndex}
+        getNewTrulList={getBidListWithFilter}
+        onRefetch={getBiddingList}
+    />
 
     if (message) {
         return <BrokerSetupMessage message={message} />
@@ -86,17 +108,32 @@ const OpenBoard = () => {
                         <Refresh className={loading ? 'rotateIcon' : undefined} />
                     </IconButton>
                 </Stack>
+                {isMobile && <Stack>
+                    <Button
+                        aria-describedby={'open-board-filters'} variant='outlined'
+                        onClick={handleClick}
+                        endIcon={<ArrowDropDownIcon />}
+                    >
+                        Filters
+                    </Button>
+                </Stack>}
             </Stack>
-            <NewtrulFilters
-                defaultParams={payload}
-                setParams={setParams}
-                setFilters={setFilters}
-                pageSize={filters.pageSize}
-                pageIndex={filters.pageIndex}
-                getNewTrulList={getBidListWithFilter}
-                onRefetch={getBiddingList}
-            />
-            <Box sx={{height: 'calc(100% - 220px)' , overflow: 'hidden'}}>
+            {isMobile ?
+                <Popover
+                    open={!!anchorEl}
+                    PaperProps={{sx: {p: 3}}}
+                    id='open-board-filters' onClose={onClosePopover}
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                >
+                    {filtersComp}
+                </Popover> :
+                filtersComp
+            }
+            <Box sx={{height: '100%' , overflow: 'hidden'}}>
                 {table}
             </Box>
             <Route path={path + "/newtrul/:loadId"} component={NewTrulLoadDetails} />

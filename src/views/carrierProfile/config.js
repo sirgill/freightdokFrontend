@@ -58,8 +58,9 @@ export const tableConfig = {
             label: 'EIN#'
         },
         {
-            id: 'adminData.dot',
-            label: 'DOT#'
+            id: 'otherOrgMetaData.carrier.dotNumber',
+            label: 'DOT#',
+            emptyState: '--'
         },
         {
             id: 'operatingStatus',

@@ -1,14 +1,22 @@
 import Modal from "../../components/Atoms/Modal";
-import {Grid, Typography, useMediaQuery} from "@mui/material";
+import {Grid, Typography} from "@mui/material";
 import Details from "./PickupDetails";
 import moment from "moment";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import React, { useCallback, useEffect } from "react";
 import { BasicLoadDetails } from "./LoadDetails";
 import { requestPost } from "../../utils/request";
 import { getGoUrl } from "../../config";
 import { CARRIER_EMAIL, MC_NUMBER } from "./constants";
+import styled from "@mui/material/styles/styled";
+
+const ArrowIcon = styled(ArrowForwardIcon)(({theme}) => ({
+    fontSize: '8rem',
+    [theme.breakpoints.down('sm')]: {
+        transform: 'rotate(90deg)',
+        fontSize: '5rem'
+    }
+}))
 
 const LeftDetails = ({ state }) => {
     const { stops = [] } = state || {};
@@ -48,12 +56,16 @@ const RightDetails = ({ state }) => {
 
 const NewTrulLoadDetails = (props) => {
     const { location: { state = {} } = {}, callDetail = true } = props;
-    const isSizeSm = useMediaQuery('(max-width:600px)');
     const { id: loadNumber, loaded_miles, weight, equipment, client: { compliance_link = '', client_name } = {} } = state
     // console.log(state)
     const config = {
-        title: "",
-        maxWidth: 'xs'
+        title: client_name,
+        showClose: true,
+        titleStyles: {
+            fontSize: '2rem',
+            p: 1
+        },
+        preventBackdropClick: true
     };
 
     const postDetailToNewTrul = useCallback(async () => {
@@ -79,9 +91,6 @@ const NewTrulLoadDetails = (props) => {
     return (
         <Modal config={config}>
             <Grid container gap={3} sx={{ p: 0 }}>
-                <Grid item xs={12}>
-                    {client_name && <Typography align='center' variant='h4'>{client_name}</Typography>}
-                </Grid>
                 <Grid item xs={12} textAlign={'center'}>
                     <BasicLoadDetails loadNumber={loadNumber} trip={loaded_miles} weight={weight}
                         equipment={equipment} />
@@ -92,7 +101,7 @@ const NewTrulLoadDetails = (props) => {
                             <LeftDetails state={state} />
                         </Grid>
                         <Grid item sm={2} xs={12} textAlign={'center'}>
-                            {isSizeSm ? <ArrowDownwardIcon sx={{fontSize: '8rem'}}/> : <ArrowForwardIcon sx={{fontSize: '8rem'}}/>}
+                            <ArrowIcon />
                         </Grid>
                         <Grid item sm={5} xs={12} textAlign={'center'}>
                             <RightDetails state={state} />

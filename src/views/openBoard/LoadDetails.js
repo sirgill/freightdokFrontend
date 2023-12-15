@@ -8,6 +8,14 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Modal from "../../components/Atoms/Modal";
 import Details from "./PickupDetails";
 import {getParsedLoadEquipment} from "./constants";
+import styled from "@mui/material/styles/styled";
+
+const ArrowIcon = styled(ArrowForwardIcon)(({theme}) => ({
+    [theme.breakpoints.down('sm')]: {
+        transform: 'rotate(90deg)',
+        fontSize: '5rem'
+    }
+}))
 
 const Typo = ({label = '', value = '', labelSx = {}}) => {
     return <Stack direction={'row'}>
@@ -62,21 +70,24 @@ const LoadDetails = (props) => {
         {calculatedArriveByEndDateTime: destEndDateTime, calculatedArriveByStartDateTime: destStartDateTime} = destinationDetails,
         deliverByRange = `${formatTimeZone(destStartDateTime, timeZoneDeliveryBy)} - ${formatTimeZone(destEndDateTime, timeZoneDeliveryBy)}`;
     const config = {
-        title: "",
+        title: "C.H Robinson",
+        showClose: true,
+        titleStyles: {
+            fontSize: '2rem',
+            p: 1
+        },
+        preventBackdropClick: true
     };
     
     return (
         <Modal config={config}>
             <Grid container spacing={2} sx={{p: 2}}>
-                <Grid item xs={12}>
-                    <Typography align='center' variant='h4'>CH Robinson</Typography>
-                </Grid>
                 <Grid item xs={12} textAlign={'center'}>
                     <BasicLoadDetails loadNumber={loadNumber} trip={miles} weight={pounds} equipment={equipment}/>
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container justifyContent={'center'}>
-                        <Grid xs={4} textAlign={'center'} className={'openBoardPickupDetails'}>
+                        <Grid xs={12} sm={5} textAlign={'center'} className={'openBoardPickupDetails'}>
                             <Details
                                 title={'Pickup'}
                                 name={name}
@@ -89,10 +100,10 @@ const LoadDetails = (props) => {
                                 loadByType='Ready By'
                             />
                         </Grid>
-                        <Grid xs={4} textAlign={'center'}>
-                            <ArrowForwardIcon sx={{fontSize: '8rem'}}/>
+                        <Grid xs={12} sm={2} textAlign={'center'}>
+                            <ArrowIcon sx={{fontSize: '8rem'}}/>
                         </Grid>
-                        <Grid xs={4} textAlign={'center'}>
+                        <Grid xs={12} sm={5} textAlign={'center'}>
                             <Details
                                 title={'Delivery'}
                                 name={destinationName}
