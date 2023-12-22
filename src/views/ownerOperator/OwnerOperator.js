@@ -52,10 +52,12 @@ const OwnerOperator = () => {
       {
         id: "firstName",
         label: "First Name",
+        emptyState: '--',
       },
       {
         id: "lastName",
         label: "Last Name",
+        emptyState: '--',
       },
       {
         id: "role",

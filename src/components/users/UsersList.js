@@ -54,7 +54,7 @@ const UsersList = () => {
                 id: 'name',
                 label: 'Name',
                 emptyState: '--',
-                renderer: ({ row: { name = '' } }) => name
+                renderer: ({ row: { name = '', firstName, lastName } }) => name || `${firstName || '--'} ${lastName || ''}`
             },
             {
                 id: 'email',
@@ -81,7 +81,7 @@ const UsersList = () => {
                         {user &&
                             [ROLES.admin, ROLES.superadmin].includes(user.role) &&
                             <Button variant='contained' color='error' onClick={showDelete({
-                                message: 'Are you sure you want to delete the user?',
+                                message: 'Are you sure you want to delete '+email + '?',
                                 uri: `/api/users/${_id}`,
                                 afterSuccessCb: afterDelete
                             })}>

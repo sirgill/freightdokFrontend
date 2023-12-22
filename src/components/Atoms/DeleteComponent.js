@@ -10,7 +10,6 @@ const DeleteComponent = () => {
     const {open, message, uri, body = {}, afterSuccessCb} = useSelector((state) => state.app?.deleteComponent)
     const {mutation, loading} = useMutation(uri, null, true);
 
-
     function afterSubmit({success, data}) {
         if(success){
             removeDelete();

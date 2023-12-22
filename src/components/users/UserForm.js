@@ -51,7 +51,7 @@ const UserForm = () => {
             );
             setUserRoles(newRoles);
         }
-    }, []);
+    }, [roles]);
 
     useEffect(() => {
         if (!open) handleClose();
@@ -73,7 +73,6 @@ const UserForm = () => {
     }, [user]);
 
     const handleChange = ({name, value}) => {
-        debugger
         setForm((f) => ({...f, [name]: value}));
     };
     const handleClose = () => {

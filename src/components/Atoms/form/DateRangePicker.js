@@ -117,7 +117,10 @@ const DateRangePicker = ({ value, onChange, label, name }) => {
                 <Box sx={{
                     p: 1,
                     bgcolor: 'background.paper',
-                    '&.rdrStaticRangeLabel': { fontSize: "14px!important" }
+                    '&.rdrStaticRangeLabel': { fontSize: "14px!important" },
+                    '& .rdrDayNumber span::after': {
+                        bottom: '1px !important'
+                    }
                 }}
                 >
                     <Picker
