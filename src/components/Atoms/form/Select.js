@@ -8,7 +8,7 @@ const Select = ({ options = [], labelKey = 'label', valueKey = 'id', label, valu
         errorText = errors[name];
     const items = useMemo(() => {
         return (options || []).map(item => {
-            return <MenuItem value={item[valueKey]} key={item[valueKey]}>
+            return <MenuItem value={item[valueKey]} key={item[valueKey]} disabled={!!item['disabled']}>
                 {item[labelKey]}
             </MenuItem>
         })
@@ -28,7 +28,7 @@ const Select = ({ options = [], labelKey = 'label', valueKey = 'id', label, valu
             labelId="demo-simple-select-error-label"
             id="demo-simple-select-error"
             value={value}
-            label="Age"
+            label={label}
             onChange={handleChange}
             renderValue={renderValue}
             sx={{

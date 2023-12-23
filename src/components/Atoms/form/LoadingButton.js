@@ -2,11 +2,12 @@ import { Button, CircularProgress } from '@mui/material'
 import React from 'react'
 import PropTypes from "prop-types";
 
-const LoadingButton = ({ children, variant = 'contained', isLoading = false, loadingText, ...rest }) => {
+const LoadingButton = ({ children, variant = 'contained', isLoading = false, loadingText, disabled, ...rest }) => {
     const text = isLoading ? !!loadingText ? loadingText: children : children
+    const isDisabled = isLoading || disabled;
     return (
         <Button
-            disabled={isLoading}
+            disabled={isDisabled}
             variant={variant}
             {...rest}
             startIcon={isLoading ? <CircularProgress size={20} color='inherit' /> : undefined}

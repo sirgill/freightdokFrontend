@@ -1,5 +1,4 @@
-import * as React from "react";
-import _ from "lodash";
+import React from "react";
 import PropTypes from "prop-types";
 import {styled, useTheme} from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -34,7 +33,7 @@ const BootstrapDialogTitle = (props) => {
                     sx={{
                         position: "absolute",
                         left: 8,
-                        top: 8,
+                        top: 12,
                         color: (theme) => theme.palette.grey[500],
                     }}
                 >
@@ -57,7 +56,6 @@ export default function Modal(props) {
             title = "",
             closeUrl = "",
             showClose = true,
-            onOk = _.noop(),
             paperProps = {},
             preventBackdropClick = false,
             titleStyles = {}
@@ -73,12 +71,6 @@ export default function Modal(props) {
         setOpen(false);
     };
 
-    const onOkHandler = () => {
-        if (_.isFunction(onOk)) {
-            onOk();
-        }
-        handleClose();
-    };
 
     React.useEffect(() => {
         setOpen(true);

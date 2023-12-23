@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import Button from '@mui/material/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import {Box, Button} from "@mui/material";
 import { resetLoadsSearch } from '../../actions/load.js';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { getInvoiceLoads } from "../../actions/load";
@@ -9,19 +8,12 @@ import { Link, Route, useRouteMatch } from "react-router-dom";
 import Invoice from "./NewInvoice";
 import moment from "moment";
 import { getParsedLoadEquipment } from "../../views/openBoard/constants";
+import MoveToMyLoads from "./MoveToMyLoads";
+import ReplayIcon from '@mui/icons-material/Replay';
+import DescriptionIcon from '@mui/icons-material/Description';
 
-const useStyles = makeStyles({
-    TableContainer: {
-        borderBottom: "none"
-    },
-    loadSearchbar: {
-        textAlign: 'right',
-        paddingBottom: 10
-    },
-});
 
 export default function InvoicesList({ setSelectedLoad, resetSearchField, listBarType, load_selected }) {
-    const classes = useStyles();
     const dispatch = useDispatch();
     const {path} = useRouteMatch();
     const [loading, setLoading] = useState(true);
@@ -39,7 +31,7 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
         }, 1000);
         resetSearchField && resetSearchField();
         dispatch(resetLoadsSearch(listBarType));
-        dispatch(getInvoiceLoads());
+        getInvoices();
         // dispatch(getCHLoads(true));
         return () => {
             resetSearchField && resetSearchField();
@@ -47,8 +39,12 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
         }
     }, []);
 
-    useEffect(() => {
+    const getInvoices = () => {
         dispatch(getInvoiceLoads());
+    }
+
+    useEffect(() => {
+        getInvoices();
     }, [loads]);
 
     const handleChangePage = (event, newPage) => {
@@ -159,8 +155,25 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
                         to={path + '/' + row._id}
                         variant="outlined"
                         color="primary"
+                        startIcon={<DescriptionIcon />}
                     >
                         Create Invoice
+                    </Button>
+                }
+            },
+            {
+                id: '',
+                label: 'Move',
+                visible: ['driver', 'admin', 'superAdmin', 'ownerOperator'].includes(role),
+                renderer: ({ row }) => {
+                    return <Button
+                        component={Link}
+                        to={path + '/moveToMyLoads/' + row._id}
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<ReplayIcon />}
+                    >
+                        My loads
                     </Button>
                 }
             },
@@ -168,11 +181,12 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
     }
 
     return (
-        <div className={classes.table}>
+        <Box sx={{mt: 3}}>
             <Fragment>
                 <EnhancedTable config={config} data={invoices} />
-                <Route path={path + '/:id'} component={Invoice} />
+                <Route path={path + '/moveToMyLoads/:id'} render={(props) => <MoveToMyLoads onCloseUrl={path} getInvoices={getInvoices} {...props} />} />
+                <Route path={path + '/:id'} exact component={Invoice} onCloseUrl={path} />
             </Fragment>
-        </div>
+        </Box>
     )
 }

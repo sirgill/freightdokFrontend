@@ -5,8 +5,8 @@ import EnhancedTable from "../../components/Atoms/table/Table";
 import axios from "axios";
 import {getBaseUrl} from "../../config";
 import FormModal from "./FormModal";
-import {notification} from "../../actions/alert";
 import {addEvent, removeEvent} from "../../utils/utils";
+import {showDelete} from "../../actions/component.action";
 
 
 const OwnerOperator = () => {
@@ -35,15 +35,12 @@ const OwnerOperator = () => {
       return () => removeEvent(window, 'refreshOwnerOp', fetchOwnerOp)
   }, [])
 
-    const onDelete = (id, e) => {
-      e.stopPropagation();
-      axios.delete(getBaseUrl() + "/api/ownerOperator/"+id)
-          .then(({data = {}}) => {
-              notification(data.message)
-              fetchOwnerOp()
-          })
-        .catch(err => console.log(err.message))
+    const afterDelete = ({success}) => {
+        if(success) {
+            fetchOwnerOp()
+        }
     }
+
 
   const tableConfig = {
     rowCellPadding: "inherit",
@@ -85,7 +82,11 @@ const OwnerOperator = () => {
               <Button
                   variant="contained"
                   color={'error'}
-                  onClick={onDelete.bind(this, row._id)}
+                  onClick={showDelete({
+                      uri: "/api/ownerOperator/"+ row._id,
+                      message: 'Are you sure you want to delete this Owner Operator?',
+                      afterSuccessCb: afterDelete
+                  })}
                   disabled={['ownerOperator', 'dispatch',].includes(role)}
               >
                 Delete

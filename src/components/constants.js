@@ -13,3 +13,12 @@ export const ROLES = {
     ownerOperator: 'ownerOperator',
     afterhours: 'afterhours'
 }
+
+export const LOAD_STATUSES = [
+    { id: 'loadCheckIn', label: 'Load Check-In' },
+    { id: 'pickupCompete', label: 'Pickup Complete' },
+    { id: 'arrivedAtDelivery', label: 'Arrived at Delivery' },
+    { id: 'arrivedAtPickup', label: 'Arrived at Pickup' },
+    { id: 'delivered', label: 'Delivered' },
+    { id: 'enRoute', label: 'En Route to Delivery' },
+]

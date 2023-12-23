@@ -33,6 +33,7 @@ import TimePicker from '@mui/lab/TimePicker';
 import DatePicker from '@mui/lab/DatePicker';
 import { blue } from "../layout/ui/Theme";
 import { getCheckStatusIcon } from "../../utils/utils";
+import {LOAD_STATUSES} from "../constants";
 
 
 const formInitialState = {
@@ -278,14 +279,7 @@ const LoadDetailModal = ({
                           MenuProps={MenuProps}
                           disabled={!edit || state.auth.user.role === "driver"}
                       >
-                        {[
-                          { id: 'loadCheckIn', label: 'Load Check-In' },
-                          { id: 'pickupCompete', label: 'Pickup Complete' },
-                          { id: 'arrivedAtDelivery', label: 'Arrived at Delivery' },
-                          { id: 'arrivedAtPickup', label: 'Arrived at Pickup' },
-                          { id: 'delivered', label: 'Delivered' },
-                          { id: 'enRoute', label: 'En Route to Delivery' },
-                        ].map((name) => (
+                        {LOAD_STATUSES.map((name) => (
                             <MenuItem
                                 key={name.id}
                                 value={name.id}
