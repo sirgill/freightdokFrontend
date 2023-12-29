@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import {LOGIN_LINK} from "../constants";
 
 const PrivateRoute = ({
   component: Component,
@@ -13,7 +14,7 @@ const PrivateRoute = ({
       <Route
           {...rest}
           render={props =>
-              !!token ? <Component {...props} /> : <Redirect to={{pathname: "/login", state: {from: props.location}}} />
+              !!token ? <Component {...props} /> : <Redirect to={{pathname: LOGIN_LINK, state: {from: props.location}}} />
           }
       />
   )

@@ -73,32 +73,17 @@ export const register = ({ name, email, password }) => async dispatch => {
 };
 
 // Login user
-export const login = ({ email, password }, history, processing) => async dispatch => {
-
-    const body = JSON.stringify({ email, password });
+export const login = ({data}) => async dispatch => {
 
     try {
-        processing && processing(true)
-        const { success, data } = await requestPost({ uri: '/api/auth', body, showTriggers: false });
-        if (success) {
-            setAuthToken(data.token)
+        setAuthToken(data.token)
 
-            dispatch({
-                type: LOGIN_SUCCESS,
-                payload: data
-            });
+        dispatch({
+            type: LOGIN_SUCCESS,
+            payload: data
+        });
 
-            dispatch(loadUser());
-
-            if (data.token) {
-                history.push(ENHANCED_DASHBOARD);
-            }
-        }
-        else {
-            const { errors = [] } = data || {},
-                [{ msg = '' }] = errors || [{}];
-            notification(msg, 'error')
-        }
+        dispatch(loadUser());
     } catch (err) {
         console.log("ERROR:", err);
         const errors = err;
@@ -110,8 +95,6 @@ export const login = ({ email, password }, history, processing) => async dispatc
         dispatch({
             type: LOGIN_FAIL
         });
-    } finally {
-        processing && processing(false)
     }
 
 };

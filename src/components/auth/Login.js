@@ -5,14 +5,17 @@ import _ from 'lodash';
 import {Key, MailOutline} from "@mui/icons-material";
 import { makeStyles } from '@material-ui/core/styles';
 import {Divider, Grid,  InputAdornment, Typography} from '@mui/material';
-import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
-import { login } from '../../actions/auth';
+import {login} from '../../actions/auth';
 import './authcss/LoginRegister.css';
 import Input from '../../components/Atoms/form/Input'
 import {FEDERAL_SIGNUP_LINK} from "../constants";
 import Password from "../Atoms/form/Password";
 import {isEmailValid} from "../../utils/utils";
+import useMutation from "../../hooks/useMutation";
+import {ENHANCED_DASHBOARD} from "../client/routes";
+import {notification} from "../../actions/alert";
+import {LoadingButton} from "../Atoms";
 
   const useStyles = makeStyles(() => ({
     root: {
@@ -42,7 +45,9 @@ import {isEmailValid} from "../../utils/utils";
   }));
   const verticalAlignStyle = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
 
-const Login = () => {
+const Login = (props) => {
+  const {state: {from = {}} = {}} = props.location || {},
+      {pathname: redirectLink = ''} = from || {};
   const dispatch = useDispatch(),
     history = useHistory();
   const classes = useStyles();
@@ -50,14 +55,25 @@ const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
-  });
-  const [processingAsync, setProcessingAsync] = useState(false);
+  }),
+      {mutation, loading } = useMutation('/api/auth');
 
   const { email, password } = formData;
 
   const onChange = ({name, value}) => {
     setFormData({ ...formData, [name]: value });
     setErrors({...errors, [name]: ''})
+  }
+
+  function afterSubmit({data, success}) {
+    if(success) {
+      dispatch(login({success, data}));
+      history.push(redirectLink || ENHANCED_DASHBOARD);
+    } else {
+      const { errors = [] } = data || {},
+          [{ msg = '' }] = errors || [{}];
+      notification(msg, 'error')
+    }
   }
 
   const onSubmit = async e => {
@@ -74,7 +90,7 @@ const Login = () => {
     }
 
     if(_.isEmpty(err)){
-      dispatch(login({ email, password }, history, setProcessingAsync));
+      mutation({email, password}, null, afterSubmit);
     } else {
       setErrors(err);
     }
@@ -112,6 +128,9 @@ const Login = () => {
             </Grid>
             <Grid item xs={12} className={classes.gridBottom} style={{ textAlign: 'center' }}>
               <Grid container component='form' onSubmit={onSubmit} spacing={2} noValidate px={3}>
+                {redirectLink && <Typography variant='subtitle2' color='error' align='center' sx={{width: '100%', textTransform: 'capitalize'}}>
+                  Invalid session. Please Login again.
+                </Typography>}
                 <Grid item xs={12}>
                   <Input
                       placeholder="Email"
@@ -143,9 +162,9 @@ const Login = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Button variant='contained' type="submit" disabled={processingAsync}>
-                    {processingAsync ? 'Signing In...' : 'Sign in' }
-                  </Button>
+                  <LoadingButton type="submit" isLoading={loading} loadingText='Signing In...'>
+                    Sign in
+                  </LoadingButton>
                 </Grid>
               </Grid>
               <br/>
