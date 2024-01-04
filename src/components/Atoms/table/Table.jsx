@@ -108,7 +108,7 @@ const getTableCell = ({
     });
 
     return <TableRow key={rowIndex} hover={!!onRowClick} onClick={rowClickHandler}
-                     sx={!!onRowClick ? {cursor: 'pointer', ...rowStyle} : {}}>
+                     sx={!!onRowClick ? {cursor: 'pointer', ...rowStyle} : {...rowStyle}}>
         {cell}
         {hasDelete && deleteCell}
     </TableRow>;
