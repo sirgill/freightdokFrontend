@@ -43,7 +43,9 @@ const initialState = {
     page: 0,
     limit: 5,
     total: 0,
-    totalPages: 0
+    totalPages: 0,
+    isRefetching: false,
+    loading: false
   },
   invoiceGenerated: null
 };
@@ -73,12 +75,14 @@ export default function(state = initialState, action) {
         ...state,
         invoices: {
           ...state.invoices,
-          data: payload.invoices,
+          data: payload.data,
           search: payload.search,
           page: payload.page,
           limit: payload.limit,
           total: payload.total,
-          totalPages: payload.totalPages
+          totalPages: payload.totalPages,
+          loading: payload.loading,
+          isRefetching: payload.isRefetching,
         }
       };
     case LOAD_DOC_DELETE:

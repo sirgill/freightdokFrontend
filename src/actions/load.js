@@ -52,6 +52,11 @@ export const getLoads =
 export const getInvoiceLoads =
   (page = 0, limit = 5, search = "") =>
   async (dispatch) => {
+    dispatch({
+      type: INVOICE_LOAD_FETCHED,
+      payload: { data: [], loading: true },
+    });
+
     try {
       const url = `/api/load/invoice_loads?page=${
         page + 1
@@ -60,7 +65,7 @@ export const getInvoiceLoads =
       const { loads, total, totalPages } = response.data;
       dispatch({
         type: INVOICE_LOAD_FETCHED,
-        payload: { invoices: loads, page, limit, search, total, totalPages },
+        payload: { data: loads, page, limit, search, total, totalPages, loading: false },
       });
     } catch (err) {
       dispatch(setAlert(err.message, "error"));

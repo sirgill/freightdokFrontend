@@ -1,7 +1,7 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import {Box, Button} from "@mui/material";
 import { resetLoadsSearch } from '../../actions/load.js';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getInvoiceLoads } from "../../actions/load";
 import EnhancedTable from "../Atoms/table/Table";
 import { Link, Route, useRouteMatch } from "react-router-dom";
@@ -13,28 +13,18 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import DescriptionIcon from '@mui/icons-material/Description';
 
 
-export default function InvoicesList({ setSelectedLoad, resetSearchField, listBarType, load_selected }) {
+export default function InvoicesList({ listBarType }) {
     const dispatch = useDispatch();
     const {path} = useRouteMatch();
-    const [loading, setLoading] = useState(true);
-    const { page, limit, total } = useSelector(state => state.load.invoices);
     const { role } = useSelector(state => state.auth?.user) || {};
-    const invoices = useSelector(state => state.load.invoices.data);
-    const [modalEdit, enableEdit] = useState(false);
-    const [open, setOpen] = useState({ show: false, data: {} });
+    const {data = [], page, limit, loading} = useSelector(state => state.load.invoices);
     const loads = useSelector(state => state.load.loads);
-    const { loads: chLoads = [], totalCount } = useSelector(state => state.openBoard.chRobinsonLoads, shallowEqual);
 
     useEffect(() => {
-        setTimeout(() => {
-            setLoading(false);
-        }, 1000);
-        resetSearchField && resetSearchField();
         dispatch(resetLoadsSearch(listBarType));
         getInvoices();
         // dispatch(getCHLoads(true));
         return () => {
-            resetSearchField && resetSearchField();
             dispatch(resetLoadsSearch(listBarType));
         }
     }, []);
@@ -47,20 +37,11 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
         getInvoices();
     }, [loads]);
 
-    const handleChangePage = (event, newPage) => {
-        dispatch(getInvoiceLoads(newPage, limit));
-    };
-    const handleChangeRowsPerPage = (event) => {
-        const limit = event.target.value;
-        dispatch(getInvoiceLoads(0, limit));
-    };
-
     const config = {
         rowCellPadding: "inherit",
         headerCellSx: { pt: 1, pb: 1 },
         emptyMessage: 'No Invoices found',
         page,
-        count: totalCount,
         limit,
         columns: [
             {
@@ -183,7 +164,7 @@ export default function InvoicesList({ setSelectedLoad, resetSearchField, listBa
     return (
         <Box sx={{mt: 3}}>
             <Fragment>
-                <EnhancedTable config={config} data={invoices} />
+                <EnhancedTable config={config} data={data} loading={loading} />
                 <Route path={path + '/moveToMyLoads/:id'} render={(props) => <MoveToMyLoads onCloseUrl={path} getInvoices={getInvoices} {...props} />} />
                 <Route path={path + '/:id'} exact component={Invoice} onCloseUrl={path} />
             </Fragment>
