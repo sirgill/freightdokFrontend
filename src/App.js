@@ -17,9 +17,8 @@ import SetPassword from "./components/auth/SetPassword";
 import SignUp from "./components/auth/signUpWithFMCSA/SignUp";
 import {
     FEDERAL_SIGNUP_LINK,
-    FMCSA_VERIFICATION_LINK,
+    FMCSA_VERIFICATION_LINK, FORGOT_PASSWORD,
     LOGIN_LINK,
-    ONBOARDING_USER,
     SIGNUP_SUPPORT
 } from "./components/constants";
 import Support from "./components/auth/signUpWithFMCSA/Support";
@@ -33,6 +32,7 @@ const UserOnboard = LoadModuleAsync(() => import("./components/auth/signUpWithFM
 const EnhancedDashboard = LoadModuleAsync(() => import("./layout/EnhancedDashboard"), true);
 const Login = LoadModuleAsync(() => import('./components/auth/Login'), true);
 const FMCSASignup = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/FMCSASignup"), true)
+const ForgotPassword = LoadModuleAsync(() => import("./views/auth/ForgotPassword"), true)
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -47,7 +47,7 @@ const PreAuthRoutes = () => {
         <Route path={FEDERAL_SIGNUP_LINK} component={SignUp}/>
         <Route path={FMCSA_VERIFICATION_LINK} component={FMCSASignup}/>
         <Route path={SIGNUP_SUPPORT} component={Support}/>
-        <Route path={ONBOARDING_USER} component={UserOnboard}/>
+        <Route path={FORGOT_PASSWORD} component={ForgotPassword}/>
     </>
 }
 

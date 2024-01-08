@@ -7,6 +7,7 @@ import {useDispatch} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {LOGIN_LINK} from "../constants";
 import {getRoleNameString} from "../client/constants";
+import {changePasswordModal} from "../../actions/component.action";
 
 function stringToColor(string) {
     let hash = 0;
@@ -48,7 +49,15 @@ const UserMenu = ({history}) => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const {user: {name = '', email = '', role = ''} = {}} = getUserDetail();
     const dispatch = useDispatch();
-    const settings = [{title: 'Logout', onClick: onLogout}];
+
+    const settings = [
+        {title: 'Change Password', onClick: handlePasswordChange},
+        {title: 'Logout', onClick: onLogout},
+    ];
+
+    function handlePasswordChange() {
+        changePasswordModal(true);
+    }
 
     const onOpen = (event) => {
         setAnchorElUser(event.currentTarget);

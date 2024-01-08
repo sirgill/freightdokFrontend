@@ -38,9 +38,10 @@ export default function InvoicesList({ listBarType }) {
     }, [loads]);
 
     const config = {
-        rowCellPadding: "inherit",
+        rowCellPadding: "normal",
         headerCellSx: { pt: 1, pb: 1 },
         emptyMessage: 'No Invoices found',
+        showRefresh:true,
         page,
         limit,
         columns: [
@@ -164,7 +165,7 @@ export default function InvoicesList({ listBarType }) {
     return (
         <Box sx={{mt: 3}}>
             <Fragment>
-                <EnhancedTable config={config} data={data} loading={loading} />
+                <EnhancedTable config={config} data={data} loading={loading} onRefetch={getInvoices} />
                 <Route path={path + '/moveToMyLoads/:id'} render={(props) => <MoveToMyLoads onCloseUrl={path} getInvoices={getInvoices} {...props} />} />
                 <Route path={path + '/:id'} exact component={Invoice} onCloseUrl={path} />
             </Fragment>

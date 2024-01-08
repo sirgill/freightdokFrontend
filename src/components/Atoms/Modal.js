@@ -51,7 +51,7 @@ BootstrapDialogTitle.propTypes = {
 };
 
 export default function Modal(props) {
-    const {config = {}, children} = props,
+    const {config = {}, children, closeCallback} = props,
         {
             title = "",
             closeUrl = "",
@@ -87,7 +87,7 @@ export default function Modal(props) {
                     ref={ref}
                     {...props}
                     onExited={() => {
-                        return closeUrl ? history.push(closeUrl || ENHANCED_DASHBOARD) : history.goBack()
+                        return closeCallback ? closeCallback() : closeUrl ? history.push(closeUrl || ENHANCED_DASHBOARD) : history.goBack()
                     }}
                 />
             );

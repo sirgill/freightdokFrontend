@@ -1,5 +1,5 @@
 import store from "../store";
-import {DELETE_COMPONENT} from "./types";
+import {CHANGE_PASSWORD, DELETE_COMPONENT} from "./types";
 
 
 const showDelete = ({message, uri, afterSuccessCb}) => () => {
@@ -11,7 +11,12 @@ const removeDelete = () => {
     store.dispatch({type: DELETE_COMPONENT, payload: {...data, open: false}})
 }
 
+const changePasswordModal = (open) => {
+    store.dispatch({type: CHANGE_PASSWORD, payload: { open }})
+}
+
 export {
     showDelete,
-    removeDelete
+    removeDelete,
+    changePasswordModal
 }

@@ -2,6 +2,7 @@ import {FormControl, IconButton, InputAdornment, TextField} from '@mui/material'
 import React from 'react'
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import PropTypes from "prop-types";
 
 const Password = ({onChange, name, label = 'Password', value, errors = {}, startAdornment, ...rest}) => {
     const [showPassword, setShowPassword] = React.useState(false);
@@ -41,7 +42,7 @@ const Password = ({onChange, name, label = 'Password', value, errors = {}, start
                             onMouseDown={handleMouseDownPassword}
                             edge="end"
                         >
-                            {showPassword ? <VisibilityOff/> : <Visibility/>}
+                            {showPassword ? <Visibility/> : <VisibilityOff/>}
                         </IconButton>
                     </InputAdornment>
 
@@ -50,6 +51,13 @@ const Password = ({onChange, name, label = 'Password', value, errors = {}, start
             />
         </FormControl>
     )
+}
+
+Password.proptype = {
+    label: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
 }
 
 export default Password

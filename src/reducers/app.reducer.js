@@ -1,8 +1,9 @@
-import {DELETE_COMPONENT, NOTIFICATION} from '../actions/types';
+import {CHANGE_PASSWORD, DELETE_COMPONENT, NOTIFICATION} from '../actions/types';
 
 const initialState = {
     deleteComponent: {},
-    notification: {}
+    notification: {},
+    changePasswordModal: {open: false}
 };
 
 function app(state = initialState, action) {
@@ -18,6 +19,11 @@ function app(state = initialState, action) {
             return {
                 ...state,
                 deleteComponent: payload
+        }
+        case CHANGE_PASSWORD:
+            return {
+                ...state,
+                changePasswordModal: payload
             }
         default:
             return state;

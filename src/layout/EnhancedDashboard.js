@@ -9,6 +9,7 @@ import {routes} from "../config/dashboardRoutes";
 import MiniDrawer from "./Sidebar";
 import store from "../store";
 import {loadUser} from "../actions/auth";
+import ChangePasswordModal from "../views/auth/ChangePasswordModal";
 
 
 const Dashboard = ({match = {}, history, location}) => {
@@ -34,6 +35,7 @@ const Dashboard = ({match = {}, history, location}) => {
                 <Route path="*" component={Error401} />
             </Switch>
             <DeleteComponent />
+            <ChangePasswordModal />
         </MiniDrawer>
     </>
 }
