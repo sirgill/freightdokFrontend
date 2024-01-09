@@ -18,11 +18,11 @@ const ForgotPassword = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        mutation()
     }
 
     return <div className='auth-wrapper' style={verticalAlignStyle}>
         <AuthContainer container direction='column' gap={2} p={8} component={'form'} onSubmit={onSubmit}>
+            <Typography align='center' color='error' textTransform='capitalize'>This feature is in Development.</Typography>
             <Grid item sx={{mb: 3}}>
                 <CompanyText style={{pointer: 'default'}}/>
             </Grid>

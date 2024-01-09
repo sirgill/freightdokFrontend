@@ -268,6 +268,7 @@ export const getNewTrulLoads = (pageSize, pageIndex, params) => async dispatch =
 }
 
 export const getOpenBoardLoads = (filters) => async (dispatch) => {
+    const { user: { orgId = null } = {} } = getUserDetail();
     dispatch({
         type: GET_SHIPMENTS,
         payload: {

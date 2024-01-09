@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import {login} from '../../actions/auth';
 import './authcss/LoginRegister.css';
 import Input from '../../components/Atoms/form/Input'
-import {FEDERAL_SIGNUP_LINK} from "../constants";
+import {FEDERAL_SIGNUP_LINK, FORGOT_PASSWORD} from "../constants";
 import Password from "../Atoms/form/Password";
 import {isEmailValid} from "../../utils/utils";
 import useMutation from "../../hooks/useMutation";
@@ -168,7 +168,8 @@ const Login = (props) => {
                 </Grid>
               </Grid>
               <br/>
-                <Link to={FEDERAL_SIGNUP_LINK} className="text-center" underline="none">Register</Link>
+              <Typography component={Link} to={FEDERAL_SIGNUP_LINK} sx={{display: 'block', }} align='center'>Register</Typography>
+              <Typography component={Link} to={FORGOT_PASSWORD} sx={{display: 'block', }} align='center'>Forgot Password?</Typography>
             </Grid>
           </Grid>
         </div>
