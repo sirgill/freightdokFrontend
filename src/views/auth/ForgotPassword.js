@@ -76,7 +76,6 @@ const ForgotPassword = ({history}) => {
             else {
                 changePasswordMutation({confirmPass, email, otp, newPass: form.pass}, 'put')
                     .then(({success, data}) => {
-                        debugger
                         notification(data?.message, success ? undefined : 'error');
                         if(success) {
                             history.push(LOGIN_LINK);
