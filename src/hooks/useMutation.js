@@ -39,7 +39,7 @@ const useMutation = (url, callback = null, showTriggers=false) => {
                     if(afterSubmit){
                         afterSubmit({...res})
                     }
-                    return res.data
+                    return res
                 })
                 .catch(err => {
                     return err;

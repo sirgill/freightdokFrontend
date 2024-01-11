@@ -16,6 +16,22 @@ const validatePasswords = (currentPass, pass, confirmPass) => {
     return {isValid, err};
 }
 
+const validatePasswordsPreLogin = ({pass, confirmPass}) => {
+    let isValid = true;
+    const err = {}
+    if(!pass){
+        isValid = false
+        err.pass = 'Please enter Password'
+    }
+    if(!confirmPass){
+        err.confirmPass = 'Please enter Confirm Password'
+        isValid= false
+    }
+
+    return {isValid, err};
+}
+
 export {
-    validatePasswords
+    validatePasswords,
+    validatePasswordsPreLogin
 }

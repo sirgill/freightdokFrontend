@@ -42,7 +42,7 @@ const InputField = memo(InputFieldPure)
 const Input = (props) => {
     const {
         label, name, errors = {}, onChange, value, className, classNameRoot, isCapitalize = false, inputProps = {},
-        type = 'text', onBlur, InputProps, readOnly, helperText, fullWidth = false, trimValue = false, ...rest
+        type = 'text', onBlur, InputProps, readOnly, helperText, fullWidth = true, trimValue = false, ...rest
     } = props;
     const hasError = errors[name] || false,
         errorText = errors[name]
