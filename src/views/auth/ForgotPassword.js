@@ -76,12 +76,15 @@ const ForgotPassword = ({history}) => {
             else {
                 changePasswordMutation({confirmPass, email, otp, newPass: form.pass}, 'put')
                     .then(({success, data}) => {
-                        notification(data?.message, success ? undefined : 'error');
                         if(success) {
+                            notification(data?.message);
                             history.push(LOGIN_LINK);
+                        } else {
+                            setAlert({...alert, open: true, message: data.message});
                         }
                     })
                     .catch(err => {
+                        debugger
                         notification(err.message, 'error')
                     })
             }
