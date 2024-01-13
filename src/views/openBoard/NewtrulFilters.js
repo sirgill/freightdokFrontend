@@ -161,6 +161,7 @@ const NewtrulFilters = ({ getNewTrulList, setFilters, pageSize, pageIndex, setPa
                 value={form['origin_radius']}
                 onChange={onChange}
                 name='origin_radius'
+                fullWidth={false}
             />
             <Stack>
                 <SearchAutoComplete name='destination' label='Destination' onSelect={onChange}
@@ -182,6 +183,7 @@ const NewtrulFilters = ({ getNewTrulList, setFilters, pageSize, pageIndex, setPa
                 value={form['destination_radius']}
                 onChange={onChange}
                 name='destination_radius'
+                fullWidth={false}
             />
             <Stack>
                 <AutoComplete
