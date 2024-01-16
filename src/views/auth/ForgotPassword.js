@@ -1,6 +1,7 @@
-import {isEmailValid, verticalAlignStyle} from "../../utils/utils";
-import {Grid, Typography} from "@mui/material";
+import {Grid, InputAdornment, Typography} from "@mui/material";
+import {MailOutline} from "@mui/icons-material";
 import {Input, LoadingButton, Password} from "../../components/Atoms";
+import {isEmailValid, verticalAlignStyle} from "../../utils/utils";
 import {useState} from "react";
 import AuthContainer from "../../components/common/AuthContainer";
 import CompanyText from "../../components/Atoms/CompanyText";
@@ -10,10 +11,10 @@ import {LOGIN_LINK} from "../../components/client/routes";
 import {notification} from "../../actions/alert";
 import {validatePasswordsPreLogin} from "./utils";
 
-const ChangePassword = ({form, onChange, loading, errors}) => {
+const ChangePasswordForm = ({form, onChange, loading, errors}) => {
     return <>
         <Grid item xs={12}>
-            <Input type='number' label='OTP' onChange={onChange} value={form.otp} name='otp' errors={errors} />
+            <Input type='number' label='OTP' onChange={onChange} value={form.otp} name='otp' errors={errors}/>
         </Grid>
         <Grid item xs={12}>
             <Password label='New Password' onChange={onChange} value={form.pass} name='pass' errors={errors}/>
@@ -57,7 +58,7 @@ const ForgotPassword = ({history}) => {
             mutation({email: form.email}, 'post')
                 .then(({success, data}) => {
                     notification(data?.message, success ? undefined : 'error');
-                    if(success) {
+                    if (success) {
                         setIsOtpSent(true);
                     }
                 })
@@ -67,16 +68,15 @@ const ForgotPassword = ({history}) => {
         } else {
             const {confirmPass, pass, otp, email} = form;
             const {isValid, err} = validatePasswordsPreLogin({confirmPass, pass});
-            if(!isValid){
+            if (!isValid) {
                 return setErrors(err);
             }
-            if(confirmPass !== pass) {
+            if (confirmPass !== pass) {
                 setAlert({...alert, open: true, message: 'Passwords do not match'})
-            }
-            else {
+            } else {
                 changePasswordMutation({confirmPass, email, otp, newPass: form.pass}, 'put')
                     .then(({success, data}) => {
-                        if(success) {
+                        if (success) {
                             notification(data?.message);
                             history.push(LOGIN_LINK);
                         } else {
@@ -93,11 +93,21 @@ const ForgotPassword = ({history}) => {
 
     let comp;
     if (isOtpSent) {
-        comp = <ChangePassword form={form} onChange={onChange} loading={isChangingPassword} errors={errors}/>
+        comp = <ChangePasswordForm form={form} onChange={onChange} loading={isChangingPassword} errors={errors}/>
     } else {
         comp = <>
             <Grid item xs={12}>
-                <Input label='Email' onChange={onChange} value={form.email} name='email' errors={errors}/>
+                <Input
+                    label='Email'
+                    onChange={onChange}
+                    value={form.email}
+                    name='email'
+                    errors={errors}
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start">
+                            <MailOutline/>
+                        </InputAdornment>,
+                    }}/>
             </Grid>
             <Grid item xs={12} sx={{m: 'auto'}}>
                 <LoadingButton isLoading={loading} type='submit' loadingText='Please wait...'>Verify</LoadingButton>
@@ -106,7 +116,8 @@ const ForgotPassword = ({history}) => {
     }
 
     return <div className='auth-wrapper' style={verticalAlignStyle}>
-        <AuthContainer container direction='column' gap={2} px={8} py={4} component={'form'} onSubmit={onSubmit} alertConfig={alert}>
+        <AuthContainer container direction='column' gap={2} px={8} py={4} component={'form'} onSubmit={onSubmit}
+                       alertConfig={alert}>
             <Grid item sx={{mb: 3}}>
                 <CompanyText style={{pointer: 'default'}}/>
             </Grid>
