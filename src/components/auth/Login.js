@@ -14,8 +14,7 @@ import Password from "../Atoms/form/Password";
 import {isEmailValid} from "../../utils/utils";
 import useMutation from "../../hooks/useMutation";
 import {ENHANCED_DASHBOARD} from "../client/routes";
-import {notification} from "../../actions/alert";
-import {LoadingButton} from "../Atoms";
+import {Alert, LoadingButton} from "../Atoms";
 
   const useStyles = makeStyles(() => ({
     root: {
@@ -56,6 +55,7 @@ const Login = (props) => {
     email: '',
     password: ''
   }),
+      [alert, setAlert] = useState({open: false, message: '', severity: 'error'}),
       {mutation, loading } = useMutation('/api/auth');
 
   const { email, password } = formData;
@@ -65,18 +65,22 @@ const Login = (props) => {
     setErrors({...errors, [name]: ''})
   }
 
+  const closeAlert = () => {
+    setAlert({...alert, open: false});
+  }
+
   function afterSubmit({data, success}) {
     if(success) {
       dispatch(login({success, data}));
       history.push(redirectLink || ENHANCED_DASHBOARD);
     } else {
-      const { errors = [] } = data || {},
-          [{ msg = '' }] = errors || [{}];
-      notification(msg, 'error')
+      const { message } = data || {}
+      setAlert({...alert, open: true, message: message})
     }
   }
 
   const onSubmit = async e => {
+    closeAlert();
     e.preventDefault();
     const err = {};
     if(!formData.email) {
@@ -131,6 +135,13 @@ const Login = (props) => {
                 {redirectLink && <Typography variant='subtitle2' color='error' align='center' sx={{width: '100%', textTransform: 'capitalize'}}>
                   Invalid session. Please Login again.
                 </Typography>}
+                <Grid item xs={12} sx={{
+                  '.MuiAlert-message' : {
+                    textAlign: 'left'
+                  }
+                }}>
+                  <Alert config={alert} />
+                </Grid>
                 <Grid item xs={12}>
                   <Input
                       placeholder="Email"
