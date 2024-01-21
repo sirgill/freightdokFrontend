@@ -7,6 +7,7 @@ import DriverIcon from "../assets/icons/icons8-driver-24.png";
 import OwnerOperatorIcon from "../assets/icons/icons8-engineer-24.png";
 import LoadHistoryIcon from "../assets/icons/icons8-bulleted-list-24.png";
 import CarrierProfileIcon from "../assets/icons/settings-18-1-1-1-1-1.svg";
+import FacilitiesIcon from '../assets/icons/icons8-warehouse-24.png'
 import LoadModuleAsync from "../components/Atoms/LoadModuleAsync";
 
 const OpenBoard = LoadModuleAsync(() => import("../views/openBoard/OpenBoard.js"));
@@ -18,6 +19,7 @@ const InvoicesList = LoadModuleAsync(() => import("../components/invoices/Invoic
 const Driverlistbar = LoadModuleAsync(() => import("../components/driverbar/Driverlistbar.js"));
 const Loadlistbar = LoadModuleAsync(() => import("../components/loadbar/Loadlistbar.js"));
 const LoadsStatus = LoadModuleAsync(() => import("../components/loads/LoadsStatus"));
+const Facilities = LoadModuleAsync(() => import("../components/warehouse/Warehouse"));
 
 export const routes = [
     {
@@ -74,5 +76,11 @@ export const routes = [
         component: CarrierProfile,
         icon: CarrierProfileIcon,
         permissions: ['admin', 'superAdmin', 'dispatch']
+    }, {
+        id: 'facilities',
+        title: 'Facilities',
+        component: Facilities,
+        icon: FacilitiesIcon,
+        permissions: ['admin', 'superAdmin']
     },
 ]

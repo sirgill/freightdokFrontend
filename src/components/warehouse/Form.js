@@ -20,6 +20,7 @@ import { useHistory } from "react-router";
 import InputField from "../Atoms/form/InputField";
 import { Button, Form as ReactForm } from "reactstrap";
 import SubmitButton from "../Atoms/form/SubmitButton";
+import {FACILITIES_LINK} from "../client/routes";
 
 const useStyles = makeStyles((theme) => ({
   backButton: {
@@ -43,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PageTwoForm = ({ setData2, setPage, data, classes, getLocation }) => {
-  console.log(data);
   const handleChange = (e) => {
     const {
       target: { name, value },
@@ -211,7 +211,7 @@ const FormBody = ({ id = null }) => {
 
   const afterSubmit = () => {
     dispatch(getWarehouses());
-    history.push("/dashboard");
+    history.push(FACILITIES_LINK);
   };
 
   const validateFields = () => {
@@ -343,7 +343,7 @@ const Form = (props = {}) => {
   return (
     <Dialog
       maxWidth="sm"
-      onClose={() => history.push("/dashboard")}
+      onClose={() => history.push(FACILITIES_LINK)}
       aria-labelledby="customized-dialog-title"
       open
     >

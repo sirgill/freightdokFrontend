@@ -2,7 +2,8 @@ import store from "../store";
 import {CHANGE_PASSWORD, DELETE_COMPONENT} from "./types";
 
 
-const showDelete = ({message, uri, afterSuccessCb}) => () => {
+const showDelete = ({message, uri, afterSuccessCb}) => (e) => {
+    e.stopPropagation();
     store.dispatch({type: DELETE_COMPONENT, payload: {open: true, message, uri, afterSuccessCb}})
 }
 

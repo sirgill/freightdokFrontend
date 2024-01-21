@@ -5,6 +5,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getWarehouseById } from '../../actions/warehouse';
+import {FACILITIES_LINK} from "../client/routes";
 
 const useStyles = makeStyles((theme) => ({
     formTitle: {
@@ -68,7 +69,7 @@ const InfoComponent = ({ data = {}, hasPermission }) => {
                 </Grid>
             </Grid>
             <Grid item xs={12} style={{ marginTop: '3rem' }}>
-                <Link to={'/dashboard/warehouse/edit/' + _id}>
+                <Link to={FACILITIES_LINK + '/edit/' + _id}>
                     <IconButton disabled={!hasPermission}>
                         <Edit className={classes.editIcon} />
                     </IconButton></Link>
@@ -81,12 +82,12 @@ const InfoComponent = ({ data = {}, hasPermission }) => {
 function Preview(props) {
     const classes = useStyles();
     const dispatch = useDispatch()
-    const { history, match: { params: { id = '' } } } = props;
+    const { history, match: { params: { id = '' } }, closeUrl } = props;
     const { warehouse: { warehouseById: { data = {} } = {} } = {}, auth: { user: { role = '' } = {} } = {} } = useSelector(store => store) || {};
     const hasPermission = role === 'admin' || role === 'dispatch' || role === 'support';
 
     const closeModal = () => {
-        history.push('/dashboard');
+        history.push(closeUrl);
     }
 
     useEffect(() => {

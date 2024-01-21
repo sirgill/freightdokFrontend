@@ -11,8 +11,6 @@ const getWarehouses = () => async (dispatch) => {
         // console.log(status, data);
         if (status === 200) {
             dispatch({ type: FETCH_WAREHOUSES, payload: { warehouses: data, loading: false } })
-        } else {
-            throw new Error(response)
         }
     } catch (err) {
         console.log(err)
@@ -23,7 +21,7 @@ const addWarehouse = (data, callback) => async () => {
     try {
         const response = await axios.post('/api/warehouse', data)
         if (response.status === 200) {
-            notification(data.message || data._id ? 'Warehouse Updated' : 'Warehouse Added')
+            notification(response.data.message || data._id ? 'Facility Updated' : 'Facility Added')
             if (callback) callback(response);
         }
     } catch (error) {

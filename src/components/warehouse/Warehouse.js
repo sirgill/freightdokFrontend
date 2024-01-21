@@ -1,41 +1,34 @@
 import React, {useEffect} from 'react';
 import {Link, useRouteMatch, Switch, Route} from 'react-router-dom';
-import {deleteWarehouse, getWarehouses} from '../../actions/warehouse';
+import {getWarehouses} from '../../actions/warehouse';
 import {Button} from '@mui/material';
 import {useDispatch, useSelector} from 'react-redux';
 import Form from './Form';
 import Preview from './Preview';
 import {Box} from '@mui/material';
 import EnhancedTable from "../../components/Atoms/table/Table"
-
-// const useStyles = makeStyles({
-//     table: {
-//         minWidth: 700,
-//         position: 'relative'
-//     },
-//     TableContainer: {
-//         borderBottom: "none"
-//     },
-//     addNewIcon: {
-//         // color: 'white',
-//         textTransform: 'none',
-//         position: 'absolute',
-//         right: 0,
-//     }
-// });
+import {ROLES} from "../constants";
+import {showDelete} from "../../actions/component.action";
 
 
-export const Warehouse = ({resetSearchField}) => {
+const Warehouse = () => {
     const {path} = useRouteMatch();
     const dispatch = useDispatch();
     const {warehouse: {totalCount, warehouses = [], loading = false} = {}, auth: {user: {role = ''} = {}} = {}} = useSelector(state => state);
     const hasPermission = role === 'admin' || role === 'dispatch' || role === 'support'
+    const { user } = useSelector((state) => state.auth);
+
+    const afterDelete = ({success}) => {
+        if(success) {
+            dispatch(getWarehouses());
+        }
+    }
 
     const config = {
-        hasDelete: true,
         count: totalCount,
-        onRowClick: ({_id}) => `${path}/warehouse/${_id}`,
-        onDelete: (id) => dispatch(deleteWarehouse(id)),
+        deletePermissions: ['admin', 'superAdmin'],
+        onRowClick: ({_id}) => `${path}/preview/${_id}`,
+        rowCellPadding: 'normal',
         columns: [
             {
                 id: 'name',
@@ -60,15 +53,25 @@ export const Warehouse = ({resetSearchField}) => {
             {
                 id: 'averageLoadTime',
                 label: 'Average Load Time'
+            },
+            {
+                id: 'actions',
+                label: 'Actions',
+                renderer: ({row: {_id, name}}) => {
+                    return <Button variant='contained' color='error' disabled={![ROLES.admin, ROLES.superadmin].includes(user.role)} onClick={showDelete({
+                        message: 'Are you sure you want to delete ' + name + '?',
+                        uri: '/api/warehouse/' + _id,
+                        afterSuccessCb: afterDelete
+                    })}>
+                        Delete
+                    </Button>
+                }
             }
         ]
     }
 
     useEffect(() => {
         dispatch(getWarehouses())
-        return () => {
-            resetSearchField();
-        };
     }, []);
 
     return (
@@ -76,13 +79,15 @@ export const Warehouse = ({resetSearchField}) => {
             <Box>
                 <EnhancedTable config={config} data={warehouses.warehouses} loading={loading}/>
             </Box>
-            {hasPermission && <Button variant='contained' component={Link} to={path + '/warehouse/add'}
-                                      sx={{position: 'absolute', right: 0}}>Add Warehouse</Button>}
+            {hasPermission && <Button variant='contained' component={Link} to={path +'/add'}
+                                      sx={{position: 'absolute', right: 10}}>Add Facility</Button>}
             <Switch>
-                <Route component={Form} path={path + '/warehouse/add'}/>
-                <Route component={Form} path={path + '/warehouse/edit/:id'}/>
-                <Route component={Preview} path={path + '/warehouse/:id'}/>
+                <Route component={Form} path={path + '/add'}/>
+                <Route component={Form} path={path + '/edit/:id'}/>
+                <Route render={(props) => <Preview {...props} closeUrl={path} />} path={path + '/preview/:id'}/>
             </Switch>
         </div>
     )
 }
+
+export default Warehouse;
