@@ -9,17 +9,18 @@ import {Box} from '@mui/material';
 import EnhancedTable from "../../components/Atoms/table/Table"
 import {ROLES} from "../constants";
 import {showDelete} from "../../actions/component.action";
+import {getUserDetail} from "../../utils/utils";
 
 
 const Warehouse = () => {
     const {path} = useRouteMatch();
     const dispatch = useDispatch();
-    const {warehouse: {totalCount, warehouses = [], loading = false} = {}, auth: {user: {role = ''} = {}} = {}} = useSelector(state => state);
-    const hasPermission = role === 'admin' || role === 'dispatch' || role === 'support'
-    const { user } = useSelector((state) => state.auth);
+    const {totalCount, warehouses = [], loading = false} = useSelector(state => state.warehouse)
+    const {role = ''} = getUserDetail().user;
+    const hasPermission = [ROLES.admin, ROLES.dispatch, ROLES.support].includes(role)
 
     const afterDelete = ({success}) => {
-        if(success) {
+        if (success) {
             dispatch(getWarehouses());
         }
     }
@@ -56,13 +57,17 @@ const Warehouse = () => {
             },
             {
                 id: 'actions',
-                label: 'Actions',
+                visible: ({role}) => role === ROLES.admin || role === ROLES.superadmin,
                 renderer: ({row: {_id, name}}) => {
-                    return <Button variant='contained' color='error' disabled={![ROLES.admin, ROLES.superadmin].includes(user.role)} onClick={showDelete({
-                        message: 'Are you sure you want to delete ' + name + '?',
-                        uri: '/api/warehouse/' + _id,
-                        afterSuccessCb: afterDelete
-                    })}>
+                    return <Button
+                        variant='contained'
+                        color='error'
+                        onClick={showDelete({
+                            message: 'Are you sure you want to delete Facility ' + name + '?',
+                            uri: '/api/warehouse/' + _id,
+                            afterSuccessCb: afterDelete,
+                        })}
+                    >
                         Delete
                     </Button>
                 }
@@ -79,12 +84,12 @@ const Warehouse = () => {
             <Box>
                 <EnhancedTable config={config} data={warehouses.warehouses} loading={loading}/>
             </Box>
-            {hasPermission && <Button variant='contained' component={Link} to={path +'/add'}
+            {hasPermission && <Button variant='contained' component={Link} to={path + '/add'}
                                       sx={{position: 'absolute', right: 10}}>Add Facility</Button>}
             <Switch>
                 <Route component={Form} path={path + '/add'}/>
                 <Route component={Form} path={path + '/edit/:id'}/>
-                <Route render={(props) => <Preview {...props} closeUrl={path} />} path={path + '/preview/:id'}/>
+                <Route render={(props) => <Preview {...props} closeUrl={path}/>} path={path + '/preview/:id'}/>
             </Switch>
         </div>
     )

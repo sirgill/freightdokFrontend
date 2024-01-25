@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import {useMemo} from "react";
 
 const Select = ({ options = [], labelKey = 'label', valueKey = 'id', label, value, name, onChange, errors={},
-                    renderValue = null }) => {
+                    renderValue = null, showNone=false, className='' }) => {
     const hasError = !!errors[name],
         errorText = errors[name];
     const items = useMemo(() => {
@@ -21,7 +21,7 @@ const Select = ({ options = [], labelKey = 'label', valueKey = 'id', label, valu
         }
     }
 
-    return  <FormControl error={hasError} fullWidth size='small'>
+    return  <FormControl error={hasError} fullWidth size='small' className={className}>
         <InputLabel id="demo-simple-select-error-label">{label}</InputLabel>
         <MuiSelect
             name={name}
@@ -37,9 +37,9 @@ const Select = ({ options = [], labelKey = 'label', valueKey = 'id', label, valu
                 }
             }}
         >
-            <MenuItem value="">
+            {showNone && <MenuItem value="">
                 <em>None</em>
-            </MenuItem>
+            </MenuItem>}
             {items}
         </MuiSelect>
         {hasError && <FormHelperText>{errorText}</FormHelperText>}
@@ -55,7 +55,9 @@ Select.proptype = {
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     errors: PropTypes.object,
-    renderValue: PropTypes.node
+    renderValue: PropTypes.node,
+    className: PropTypes.string,
+    showNone: PropTypes.bool
 }
 
 export default Select;

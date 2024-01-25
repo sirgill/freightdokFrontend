@@ -12,7 +12,8 @@ export const ROLES = {
     superadmin: 'superAdmin',
     admin: 'admin',
     ownerOperator: 'ownerOperator',
-    afterhours: 'afterhours'
+    afterhours: 'afterhours',
+    support: 'support'
 }
 
 export const LOAD_STATUSES = [

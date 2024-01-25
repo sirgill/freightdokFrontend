@@ -46,6 +46,7 @@ const MoveToMyLoads = (props) => {
                     options={statuses}
                     onChange={onChange}
                     value={value}
+                    showNone={true}
                 />
             </Grid>
             <Grid item xs={12}>

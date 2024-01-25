@@ -35,13 +35,13 @@ const DeleteIcon = styled(Delete)(({theme}) => ({
     }
 }))
 
-function Headers({columns = [], config = {}}) {
+function Headers({columns = [], config = {}, role}) {
     const {headerCellSx = {}, hasDelete} = config;
     const headers = useMemo(() => {
         return columns.map((column, index) => {
             const {label = '', id = '', visible = true} = column || {};
             // eslint-disable-next-line array-callback-return
-            const isVisible = _.isFunction(visible) ? visible({column}) : visible;
+            const isVisible = _.isFunction(visible) ? visible({column, role}) : visible;
             if (!isVisible) {
                 return null;
             }
@@ -90,7 +90,7 @@ const getTableCell = ({
 
     const cell = columns.map((column, i) => {
         const {id = '', renderer, emptyState = '', valueFormatter, visible = true} = column || {};
-        const isVisible = _.isFunction(visible) ? visible({column}) : visible;
+        const isVisible = _.isFunction(visible) ? visible({column, role}) : visible;
         if (!isVisible) {
             return null;
         }
@@ -202,7 +202,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         }
         return <Fragment>
             <TableHead className={''} sx={{backgroundColor: '#fafafa', borderTop: '1px solid rgba(224, 224, 224, 1)'}}>
-                <Headers columns={columns} config={config}/>
+                <Headers columns={columns} config={config} role={role} />
             </TableHead>
             <TableBody>
                 <TableData
