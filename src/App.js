@@ -1,7 +1,6 @@
 import React from "react";
 import axios from "axios";
 import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
-import EntityType from "./components/auth/EntityType";
 // import OwnerOp from "./components/auth/OwnerOpRegister";
 // import Fleet from "./components/auth/FleetRegister";
 // import Dashboard from "./components/dashboard/Dashboard";
@@ -13,20 +12,18 @@ import Notification from "./components/layout/Notification";
 
 import "./App.css";
 import {getBaseUrl} from "./config";
-import SetPassword from "./components/auth/SetPassword";
-import SignUp from "./components/auth/signUpWithFMCSA/SignUp";
 import {
     FEDERAL_SIGNUP_LINK,
     FMCSA_VERIFICATION_LINK, FORGOT_PASSWORD,
-    LOGIN_LINK,
+    LOGIN_LINK, ONBOARDING_USER,
     SIGNUP_SUPPORT
 } from "./components/constants";
-import Support from "./components/auth/signUpWithFMCSA/Support";
 import LoadModuleAsync from "./components/Atoms/LoadModuleAsync";
 import {ENHANCED_DASHBOARD} from "./components/client/routes";
 import {Box} from "@mui/material";
 
-const Register = LoadModuleAsync(() => import("./components/auth/Register"));
+const SignUp = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/SignUp"))
+const Support = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/Support"))
 const LandingPage = LoadModuleAsync(() => import("./views/landingPage/LandingPage"));
 const UserOnboard = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/UserOnboard")) ;
 const EnhancedDashboard = LoadModuleAsync(() => import("./layout/EnhancedDashboard"), true);
@@ -42,11 +39,12 @@ axios.defaults.baseURL = getBaseUrl();
 
 const PreAuthRoutes = () => {
     return <>
-        <Route path="/register" component={Register}/>
+        {/*<Route path="/register" component={Register}/>*/}
         <Route path={LOGIN_LINK} component={Login}/>
         <Route path={FEDERAL_SIGNUP_LINK} component={SignUp}/>
         <Route path={FMCSA_VERIFICATION_LINK} component={FMCSASignup}/>
         <Route path={SIGNUP_SUPPORT} component={Support}/>
+        <Route path={ONBOARDING_USER} component={UserOnboard}/>
         <Route path={FORGOT_PASSWORD} component={ForgotPassword}/>
     </>
 }
@@ -59,9 +57,9 @@ const App = () => {
                 <Switch>
                     <Route exact path={'/'}><Redirect to={ENHANCED_DASHBOARD} /></Route>
                     <Route path={'/home'} component={LandingPage} />
-                    <Route path="/entity" component={EntityType} />
+                    {/*<Route path="/entity" component={EntityType} />*/}
                     {/*<Route path="/ownerOperatorRegister" component={OwnerOp} />*/}
-                    <Route path='/setPassword' component={SetPassword} />
+                    {/*<Route path='/setPassword' component={SetPassword} />*/}
                     <PrivateRoute path={ENHANCED_DASHBOARD} component={EnhancedDashboard} />
                     {/*<PrivateRoute path="/dashboard" component={Dashboard}/>*/}
                     {/*<PrivateRoute path="/profile" component={Profile}/>*/}

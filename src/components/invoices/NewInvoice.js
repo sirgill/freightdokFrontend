@@ -112,7 +112,7 @@ const DialogComponent = ({
 
     return (
         <Dialog
-            class="printThisFull"
+            className="printThisFull"
             PaperProps={{
                 sx: { width: "70%" },
             }}
@@ -206,8 +206,11 @@ const DialogComponent = ({
                                                     width: 150,
                                                     background: 'rgb(0, 123, 255)',
                                                     color: '#FFF',
-                                                    borderRadius: '4px'
-                                                }}>Rate Con</Typography>
+                                                    borderRadius: '4px',
+                                                    cursor: 'pointer'
+                                                }}>
+                                                    Rate Con
+                                                </Typography>
                                                 <input type={'file'} accept={'pdf'} id={'rateCon'} style={{ display: 'none' }} />
                                             </label>
                                             <div>
@@ -220,7 +223,8 @@ const DialogComponent = ({
                                                     width: 150,
                                                     background: 'rgb(0, 123, 255)',
                                                     color: '#FFF',
-                                                    borderRadius: '4px'
+                                                    borderRadius: '4px',
+                                                    cursor: 'pointer'
                                                 }}>
                                                     Proof Of Delivery
                                                 </Typography>
@@ -236,7 +240,8 @@ const DialogComponent = ({
                                                     width: 150,
                                                     background: 'rgb(0, 123, 255)',
                                                     color: '#FFF',
-                                                    borderRadius: '4px'
+                                                    borderRadius: '4px',
+                                                    cursor: 'pointer'
                                                 }}>Accessorials</Typography>
                                                 <input type={'file'} accept={'pdf'} id={'accessorials'} style={{ display: 'none' }} />
                                             </label>

@@ -4,7 +4,6 @@ import { verticalAlignStyle } from "../../../utils/utils";
 import CompanyText from "../../Atoms/CompanyText";
 import Input from "../../Atoms/form/Input";
 import Password from "../../Atoms/form/Password";
-import { requestPost } from "../../../utils/request";
 import { notification } from "../../../actions/alert";
 import { LOGIN_LINK } from "../../constants";
 import useMutation from "../../../hooks/useMutation";
@@ -13,11 +12,12 @@ const UserOnboard = (props) => {
     const { match: { params: { email } = {} } = {}, history } = props;
     const [formData, setFormData] = useState({});
     const [errors, setErrors] = useState({}),
-        {loading, mutation} = useMutation('/api/onBoarding/register');
+        {loading, mutation} = useMutation('/api/onBoarding/register'),
+        {mutation: validateOtpMutation, loading: validateOtpLoading} = useMutation('/api/onBoarding/validateOtp');
 
     useEffect(() => {
-        requestPost({ uri: '/api/onBoarding/validateOtp', body: { email }, skipTriggers: false })
-            .then((res = {}) => {
+        validateOtpMutation({email})
+            .then(res => {
                 const { success, data } = res || {}
                 if (!success) {
                     setFormData({ ...formData, disabled: true });
@@ -26,7 +26,7 @@ const UserOnboard = (props) => {
                         console.error('Server Error')
                     }
                 }
-            });
+            })
     }, []);
 
     const onChange = ({ name, value }) => {
@@ -53,7 +53,6 @@ const UserOnboard = (props) => {
             isValid = false;
             setErrors(errors => ({ ...errors, password: 'Please enter Password' }))
         } else if (password.length < 8) {
-            isValid = false;
             return setErrors(errors => ({ ...errors, password: 'Password must be 8 letters' }))
         }
         isValid && mutation({ email, password, otp, firstName: firstName.trim(), lastName: lastName.trim() }, null, afterSubmit);
@@ -87,8 +86,8 @@ const UserOnboard = (props) => {
                         <Password name='password' required errors={errors} value={formData['password']} onChange={onChange} />
                     </Grid>
                     <Grid item textAlign='center' xs={12}>
-                        <Button type='submit' variant='contained' disabled={formData['disabled'] || loading}>
-                            {loading ? 'Submitting...' : 'Submit'}
+                        <Button type='submit' variant='contained' disabled={formData['disabled'] || loading || validateOtpLoading}>
+                            {validateOtpLoading ? 'Validating User...' : loading ? 'Submitting...' : 'Submit'}
                         </Button>
                     </Grid>
                 </Grid>

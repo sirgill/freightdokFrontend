@@ -7,25 +7,29 @@ const validatePasswords = (currentPass, pass, confirmPass) => {
     }
     if (!pass) {
         err.pass = 'Please enter Password'
-        isValid= false
+        isValid = false
     }
     if (!confirmPass) {
         err.confirmPass = 'Please enter Confirm Password'
-        isValid= false
+        isValid = false
     }
     return {isValid, err};
 }
 
-const validatePasswordsPreLogin = ({pass, confirmPass}) => {
+const validatePasswordsPreLogin = ({pass, confirmPass, otp}) => {
     let isValid = true;
     const err = {}
-    if(!pass){
+    if (!pass) {
         isValid = false
         err.pass = 'Please enter Password'
     }
-    if(!confirmPass){
+    if (!confirmPass) {
         err.confirmPass = 'Please enter Confirm Password'
-        isValid= false
+        isValid = false
+    }
+    if (!otp) {
+        isValid = false;
+        err.otp = 'Please enter OTP'
     }
 
     return {isValid, err};

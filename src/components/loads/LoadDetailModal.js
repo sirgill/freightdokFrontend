@@ -11,7 +11,8 @@ import {
   Button,
   IconButton,
   Select,
-  Modal
+  Modal,
+  CircularProgress
 } from "@mui/material";
 import { ArrowForwardIos as ArrowForwardIosIcon, Close as CloseIcon, Edit as EditIcon, Done as DoneIcon } from '@mui/icons-material'
 import FormControl from "@material-ui/core/FormControl";
@@ -34,6 +35,7 @@ import DatePicker from '@mui/lab/DatePicker';
 import { blue } from "../layout/ui/Theme";
 import { getCheckStatusIcon } from "../../utils/utils";
 import {LOAD_STATUSES} from "../constants";
+import {green} from "@mui/material/colors";
 
 
 const formInitialState = {
@@ -357,12 +359,24 @@ const LoadDetailModal = ({
             <Grid container>
               <Grid item xs={2} sx={{ display: 'flex' }}>
                 <Box sx={{ alignItems: 'end', display: 'flex' }}>
-                  {edit ? <IconButton onClick={handleSubmit} disabled={isProcessingAsyncRequest}>
-                    <DoneIcon
-                      fontSize="large"
-                      color={isProcessingAsyncRequest ? "disabled" : 'primary'}
-                    />
-                  </IconButton>
+                  {edit ? <Box sx={{position: 'relative'}}>
+                        <IconButton onClick={handleSubmit} disabled={isProcessingAsyncRequest}>
+                          <DoneIcon
+                              fontSize="large"
+                              color={isProcessingAsyncRequest ? "disabled" : 'primary'}
+                          />
+                        </IconButton>
+                        {isProcessingAsyncRequest && <CircularProgress
+                            size={65}
+                            sx={{
+                              color: green[500],
+                              position: 'absolute',
+                              top: -6,
+                              left: -6,
+                              zIndex: 1,
+                            }}
+                        />}
+                      </Box>
                     : <IconButton onClick={() => setEdit(true)} title='Edit' disabled={isProcessingAsyncRequest}>
                       <EditIcon
                         fontSize="large"

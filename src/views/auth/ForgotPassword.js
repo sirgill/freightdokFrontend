@@ -10,18 +10,20 @@ import {Link} from "react-router-dom";
 import {LOGIN_LINK} from "../../components/client/routes";
 import {notification} from "../../actions/alert";
 import {validatePasswordsPreLogin} from "./utils";
+import OTPInput from "../../components/Atoms/form/OTPInput";
 
 const ChangePasswordForm = ({form, onChange, loading, errors}) => {
     return <>
         <Grid item xs={12}>
-            <Input type='number' label='OTP' onChange={onChange} value={form.otp} name='otp' errors={errors}/>
+            {/*<Input type='number' label='OTP' onChange={onChange} value={form.otp} name='otp' errors={errors}/>*/}
+            <OTPInput length={6} onChange={onChange} name='otp' errors={errors} />
         </Grid>
         <Grid item xs={12}>
             <Password label='New Password' onChange={onChange} value={form.pass} name='pass' errors={errors}/>
         </Grid>
         <Grid item xs={12}>
             <Password label='Confirm Password' onChange={onChange} value={form.confirmPass} name='confirmPass'
-                      errors={errors}/>
+                      errors={errors} autoComplete={'false'}/>
         </Grid>
         <Grid item xs={12} sx={{m: 'auto'}}>
             <LoadingButton isLoading={loading} type='submit' loadingText='Please wait...'>Submit</LoadingButton>
@@ -67,7 +69,7 @@ const ForgotPassword = ({history}) => {
                 })
         } else {
             const {confirmPass, pass, otp, email} = form;
-            const {isValid, err} = validatePasswordsPreLogin({confirmPass, pass});
+            const {isValid, err} = validatePasswordsPreLogin({confirmPass, pass, otp});
             if (!isValid) {
                 return setErrors(err);
             }

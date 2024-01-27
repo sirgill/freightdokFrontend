@@ -5,11 +5,21 @@ import {LOAD_STATUSES} from "../constants";
 import {useState} from "react";
 import useMutation from "../../hooks/useMutation";
 import {LoadingButton} from "../Atoms";
+import {styled} from "@mui/material/styles";
 
 const config = {
     title: 'Move Invoice to My Loads',
     preventBackdropClick: true
 }
+
+const Container = styled(Grid)(({theme}) => ({
+    [theme.breakpoints.down('sm')]: {
+        width: 'auto'
+    },
+    [theme.breakpoints.up('sm')]: {
+        width: 300
+    }
+}))
 
 const MoveToMyLoads = (props) => {
     const {onCloseUrl, getInvoices, match: {params: {id} = {}} = {}, history} = props,
@@ -35,7 +45,7 @@ const MoveToMyLoads = (props) => {
     }
 
     return <Modal config={config}>
-        <Grid container component='form' sx={{}} spacing={2} onSubmit={onSubmit}>
+        <Container container component='form' spacing={2} onSubmit={onSubmit}>
             <Grid item>
                 <Typography>Select a load status</Typography>
             </Grid>
@@ -54,7 +64,7 @@ const MoveToMyLoads = (props) => {
                     Move
                 </LoadingButton>
             </Grid>
-        </Grid>
+        </Container>
     </Modal>
 }
 
