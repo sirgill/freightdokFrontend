@@ -1,14 +1,15 @@
 import Modal from "../../components/Atoms/Modal";
 import {Button, Grid, TextField, Typography} from "@mui/material";
 import React, {useState} from "react";
-import TimePicker from '@mui/lab/TimePicker';
-import DatePicker from '@mui/lab/DatePicker';
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
+import {TimePicker} from '@mui/x-date-pickers/TimePicker';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {AdapterMoment} from '@mui/x-date-pickers/AdapterMoment';
 import {bookChRobinsonLoad, bidChRobinsonLoad, saveCHLoadToDb} from "../../actions/openBoard.action";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {notification} from "../../actions/alert";
 import {getUserDetail, triggerCustomEvent} from "../../utils/utils";
+import moment from "moment";
 
 const CARRIER_CODE = "T2244688";
 
@@ -74,9 +75,9 @@ const BookNowForm = (props) => {
         e.preventDefault();
         const date = form.emptyDate.toDateString(),
             time = form.emptyTime.toTimeString(),
-            dateTime =  new Date(date + " " + time);
+            dateTime = new Date(date + " " + time);
 
-        if(dateTime < new Date()){
+        if (dateTime < new Date()) {
             return notification('Empty Date and Time cannot be a past', 'error')
         }
         setIsProcessingAsyncReq(true)
@@ -152,32 +153,36 @@ const BookNowForm = (props) => {
                         </Grid>
                         <Grid item>
                             <CustomGrid label={'Empty Date'}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <LocalizationProvider dateAdapter={AdapterMoment}>
                                     <DatePicker
-                                        disablePast={true}
-                                        value={
-                                            form.emptyDate || new Date()
-                                        }
-                                        onChange={(date) =>
-                                            setForm({...form, emptyDate: date})
-                                        }
-                                        renderInput={(params) => <TextField {...params} fullWidth variant='standard'/>}
+                                        slotProps={{
+                                            textField: {
+                                                helperText: 'MM/DD/YYYY',
+                                                size: 'small'
+                                            },
+                                        }}
+                                        disablePast
+                                        value={moment(form.emptyDate || new Date())}
+                                        onChange={(newValue) => setForm({...form, emptyDate: newValue})}
                                     />
                                 </LocalizationProvider>
                             </CustomGrid>
                         </Grid>
                         <Grid item mt={2}>
                             <CustomGrid label={'Empty Time'}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <LocalizationProvider dateAdapter={AdapterMoment}>
                                     <TimePicker
-                                        value={
-                                            form.emptyTime || new Date()
-                                        }
+                                        value={moment(form.emptyTime || new Date())}
                                         onChange={(time) => {
-                                            setForm({...form, emptyTime: time})
+                                                setForm({...form, emptyTime: time})
+                                            }
                                         }
-                                        }
-                                        renderInput={(params) => <TextField {...params} fullWidth variant='standard'/>}
+                                        slotProps={{
+                                            textField: {
+                                                helperText: 'hh:mm AM/PM',
+                                                size: 'small'
+                                            },
+                                        }}
                                     />
                                 </LocalizationProvider>
                             </CustomGrid>
