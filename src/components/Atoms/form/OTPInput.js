@@ -40,6 +40,13 @@ const OTPInput = ({length = 6, onChange, name, errors={}}) => {
         }
     }, [])
 
+    const handleKeyDown = (index, e) => {
+        if (e.key === 'Backspace' && index > 0 && !otp[index]) {
+            const prevField = refs.current[index - 1];
+            prevField && prevField.focus();
+        }
+    };
+
     return <FormControl aria-autocomplete='none'>
         <FormLabel error={!!errorText} sx={{fontSize: 14}}>OTP</FormLabel>
         <Grid container width={'100%'} spacing={1}>
@@ -54,6 +61,7 @@ const OTPInput = ({length = 6, onChange, name, errors={}}) => {
                         autoComplete='false'
                         size='small'
                         error={!!errorText}
+                        onKeyDown={(e) => handleKeyDown(index, e)}
                         sx={{
                             '.MuiInputBase-root': {
                                 width: 37
