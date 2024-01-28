@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useRef, useState} from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import _ from 'lodash'
 import {
   Divider,
@@ -34,8 +34,8 @@ import TimePicker from '@mui/lab/TimePicker';
 import DatePicker from '@mui/lab/DatePicker';
 import { blue } from "../layout/ui/Theme";
 import { getCheckStatusIcon } from "../../utils/utils";
-import {LOAD_STATUSES} from "../constants";
-import {green} from "@mui/material/colors";
+import { LOAD_STATUSES } from "../constants";
+import { green } from "@mui/material/colors";
 
 
 const formInitialState = {
@@ -94,7 +94,8 @@ const LoadDetailModal = ({
   const [form, setForm] = React.useState({ ...formInitialState });
   const [isProcessingAsyncRequest, setIsProcessingAsyncRequest] = useState(false);
   const rateConfirmationRef = useRef();
-  const proofDeliveryRef = useRef(),
+  const proofDeliveryRef = useRef();
+  const accessorialsRef = useRef(),
     SelectElement = edit ? OutlinedInput : FilledInput;
   const assignedToOptions = state.driver.drivers.map(({ user = {} }) => {
     const { name = '', _id = '' } = user || '';
@@ -155,7 +156,7 @@ const LoadDetailModal = ({
 
   const afterSubmit = (isSuccess) => {
     setIsProcessingAsyncRequest(false);
-    if(isSuccess) handleClose();
+    if (isSuccess) handleClose();
   }
 
   const handleSubmit = (event) => {
@@ -172,12 +173,12 @@ const LoadDetailModal = ({
     setForm({ ...form, [name]: value });
   };
 
-  const handlePickDropChange = (  { target: { value } },  keyToUpdate,  childKey) => {
+  const handlePickDropChange = ({ target: { value } }, keyToUpdate, childKey) => {
     if (keyToUpdate === "pickup") {
-        setForm({...form, pickup: [{...form.pickup[0], [childKey]: value}]});
+      setForm({ ...form, pickup: [{ ...form.pickup[0], [childKey]: value }] });
     }
     else if (keyToUpdate === "drop") {
-        setForm({...form, drop: [{...form.drop[0], [childKey]: value}]});
+      setForm({ ...form, drop: [{ ...form.drop[0], [childKey]: value }] });
     }
   };
 
@@ -227,14 +228,19 @@ const LoadDetailModal = ({
 
   if (bucketFiles.length) {
     const alpha = [...bucketFiles];
-    bucketFiles = {};
-    alpha.forEach((item = {}) => {
+    bucketFiles = {
+      'proofDelivery': [],
+      'rateConfirmation': [],
+      'accessorialsFiles': []
+    };
+    alpha.forEach((item = {}, idx) => {
       const { fileType = "", fileLocation = "" } = item;
-      Object.assign(bucketFiles, { [fileType]: fileLocation });
+      bucketFiles[fileType].push(fileLocation)
+
     });
   } else bucketFiles = {};
 
-  const { rateConfirmation = "", proofDelivery = "" } = bucketFiles || {};
+  const { rateConfirmation = [], proofDelivery = [], accessorialsFiles = [] } = bucketFiles || {};
 
   const StaticDataShow = ({ heading, values = [], spacing = 2, sxObject = {} }) => {
     return <Stack spacing={spacing} sx={{ ...sxObject }}>
@@ -250,8 +256,9 @@ const LoadDetailModal = ({
         open={open}
         onClose={handleClose}
         aria-labelledby="server-modal-title"
+
       >
-        <div className={classes.paper}>
+        <div style={{ width: '90%', height: '90%' }} className={classes.paper}>
           <Stack direction={'row'} justifyContent={'space-between'} sx={{ mb: 2 }}>
             {/*<DeleteIcon*/}
             {/*    onClick={(e) => deleteLoad(_id, e)}*/}
@@ -271,24 +278,24 @@ const LoadDetailModal = ({
                 <Grid container className={classes.rootLoadDetailModal} spacing={2} sx={{ pl: 3, pr: 3 }}>
                   <Grid item xs={12} sm={4}>
                     <FormControl sx={{ m: 1 }} size="small" fullWidth>
-                    <InputLabel id="multiple-name">Status</InputLabel>
+                      <InputLabel id="multiple-name">Status</InputLabel>
                       <Select
-                          id="multiple-name"
-                          name="status"
-                          value={form.status}
-                          onChange={({ target: { value } }) => setForm({ ...form, status: value, })}
-                          input={<SelectElement size='small' label="" notched={false} sx={{  }} />}
-                          MenuProps={MenuProps}
-                          disabled={!edit || state.auth.user.role === "driver"}
+                        id="multiple-name"
+                        name="status"
+                        value={form.status}
+                        onChange={({ target: { value } }) => setForm({ ...form, status: value, })}
+                        input={<SelectElement size='small' label="" notched={false} sx={{}} />}
+                        MenuProps={MenuProps}
+                        disabled={!edit || state.auth.user.role === "driver"}
                       >
                         {LOAD_STATUSES.map((name) => (
-                            <MenuItem
-                                key={name.id}
-                                value={name.id}
-                                // style={getStyles(name, personName, theme)}
-                            >
-                              {name.label}
-                            </MenuItem>
+                          <MenuItem
+                            key={name.id}
+                            value={name.id}
+                          // style={getStyles(name, personName, theme)}
+                          >
+                            {name.label}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -297,22 +304,22 @@ const LoadDetailModal = ({
                     <FormControl sx={{ m: 1 }} size="small" fullWidth>
                       <InputLabel id="multiple-name">Assigned</InputLabel>
                       <Select
-                          id="multiple-name"
-                          name="assignedTo"
-                          disabled={!edit || state.auth.user.role === "driver"}
-                          value={form.assignedTo}
-                          onChange={({ target: { value } }) => setForm({ ...form, assignedTo: value, })}
-                          input={<SelectElement size='small' label="" notched={false} sx={{  }} />}
-                          MenuProps={MenuProps}
+                        id="multiple-name"
+                        name="assignedTo"
+                        disabled={!edit || state.auth.user.role === "driver"}
+                        value={form.assignedTo}
+                        onChange={({ target: { value } }) => setForm({ ...form, assignedTo: value, })}
+                        input={<SelectElement size='small' label="" notched={false} sx={{}} />}
+                        MenuProps={MenuProps}
                       >
                         {assignedToOptions.map((name) => (
-                            <MenuItem
-                                key={name.name}
-                                value={name._id}
-                                // style={getStyles(name, personName, theme)}
-                            >
-                              {name.name}
-                            </MenuItem>
+                          <MenuItem
+                            key={name.name}
+                            value={name._id}
+                          // style={getStyles(name, personName, theme)}
+                          >
+                            {name.name}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -359,24 +366,24 @@ const LoadDetailModal = ({
             <Grid container>
               <Grid item xs={2} sx={{ display: 'flex' }}>
                 <Box sx={{ alignItems: 'end', display: 'flex' }}>
-                  {edit ? <Box sx={{position: 'relative'}}>
-                        <IconButton onClick={handleSubmit} disabled={isProcessingAsyncRequest}>
-                          <DoneIcon
-                              fontSize="large"
-                              color={isProcessingAsyncRequest ? "disabled" : 'primary'}
-                          />
-                        </IconButton>
-                        {isProcessingAsyncRequest && <CircularProgress
-                            size={65}
-                            sx={{
-                              color: green[500],
-                              position: 'absolute',
-                              top: -6,
-                              left: -6,
-                              zIndex: 1,
-                            }}
-                        />}
-                      </Box>
+                  {edit ? <Box sx={{ position: 'relative' }}>
+                    <IconButton onClick={handleSubmit} disabled={isProcessingAsyncRequest}>
+                      <DoneIcon
+                        fontSize="large"
+                        color={isProcessingAsyncRequest ? "disabled" : 'primary'}
+                      />
+                    </IconButton>
+                    {isProcessingAsyncRequest && <CircularProgress
+                      size={65}
+                      sx={{
+                        color: green[500],
+                        position: 'absolute',
+                        top: -6,
+                        left: -6,
+                        zIndex: 1,
+                      }}
+                    />}
+                  </Box>
                     : <IconButton onClick={() => setEdit(true)} title='Edit' disabled={isProcessingAsyncRequest}>
                       <EditIcon
                         fontSize="large"
@@ -605,8 +612,8 @@ const LoadDetailModal = ({
                                   <Typography fontWeight={700}>PO#</Typography>
                                   {edit ?
                                     <InputField
-                                        value={form && form.pickup[0] ? form.pickup[0].pickupPo : ""}
-                                        onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupPo')}
+                                      value={form && form.pickup[0] ? form.pickup[0].pickupPo : ""}
+                                      onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupPo')}
                                     />
                                     : <Typography>{pickup && pickup[0] ? pickup[0].pickupPo : ""}</Typography>}
                                 </Stack>
@@ -614,8 +621,8 @@ const LoadDetailModal = ({
                                   <Typography fontWeight={700}>Reference#</Typography>
                                   {edit ?
                                     <InputField
-                                        value={pickup && form.pickup[0] ? form.pickup[0].pickupReference : ""}
-                                        onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupReference')}
+                                      value={pickup && form.pickup[0] ? form.pickup[0].pickupReference : ""}
+                                      onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupReference')}
                                     />
                                     : <Typography>{pickup && pickup[0] ? pickup[0].pickupReference : ""}</Typography>}
                                 </Stack>
@@ -623,8 +630,8 @@ const LoadDetailModal = ({
                                   <Typography fontWeight={700}>Delivery#</Typography>
                                   {edit ?
                                     <InputField
-                                        value={pickup && form.pickup[0] ? form.pickup[0].pickupDeliverNumber : ""}
-                                        onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupDeliverNumber')}
+                                      value={pickup && form.pickup[0] ? form.pickup[0].pickupDeliverNumber : ""}
+                                      onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupDeliverNumber')}
                                     />
                                     : <Typography>{pickup && pickup[0] ? pickup[0].pickupDeliverNumber : ""}</Typography>}
                                 </Stack>
@@ -815,7 +822,7 @@ const LoadDetailModal = ({
                               <Typography fontWeight={700}>PO#</Typography>
                               {edit ?
                                 <InputField
-                                    dropPo='dropPo'
+                                  dropPo='dropPo'
                                   value={form && form.drop[0] ? form.drop[0].dropPo : ""}
                                   onChange={(e) => handlePickDropChange(e, 'drop', 'dropPo')}
                                 />
@@ -868,11 +875,13 @@ const LoadDetailModal = ({
                 <Stack spacing={2} sx={{ alignItems: 'end' }}>
                   <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
                     {rateConfirmation ? (
-                      <span>
-                        <a href={rateConfirmation} target="_blank">
-                          Rate Con
-                        </a>
-                      </span>
+                      rateConfirmation.map((roc, idx) => {
+                        return (<><span style={{ margin: 0, padding: 0, marginLeft: '2px' }}>
+                          <a href={roc} target="_blank">
+                            Rate Con-{idx + 1}
+                          </a>
+                        </span></>)
+                      })
                     ) : (
                       <span>Rate Con</span>
                     )}
@@ -899,11 +908,15 @@ const LoadDetailModal = ({
                   </Stack>
                   <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
                     {proofDelivery ? (
-                      <span>
-                        <a href={proofDelivery} target="_blank">
-                          POD
-                        </a>
-                      </span>
+                      proofDelivery.map((pod, idx) => {
+                        return (<>
+                          <span style={{ margin: 0, padding: 0, marginLeft: '2px' }}>
+                            <a href={pod} target="_blank">
+                              POD-{idx + 1}
+                            </a>
+                          </span>
+                        </>)
+                      })
                     ) : (
                       <span>POD</span>
                     )}
@@ -928,12 +941,15 @@ const LoadDetailModal = ({
                     </span>
                   </Stack>
                   <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
-                    {accessorials.length ? (
-                      <span>
-                        <a href={"#"} target="_blank">
-                          Accessorials
-                        </a>
-                      </span>
+                    {accessorialsFiles.length ? (
+                      accessorialsFiles.map((acc, idx) => {
+                        return (<>
+                          <span style={{ margin: 0, padding: 0, marginLeft: '2px' }}>
+                            <a href={acc} target="_blank">
+                              Accessorials-{idx + 1}
+                            </a>
+                          </span></>)
+                      })
                     ) : (
                       <span>Accessorials</span>
                     )}
@@ -944,10 +960,10 @@ const LoadDetailModal = ({
                             style={{ display: 'none' }}
                             type="file"
                             multiple
-                            name="accessorials"
+                            name="accessorialsFiles"
                             disabled={!edit || state.auth.user.role === "driver"}
                             onChange={handleFileChange}
-                            ref={rateConfirmationRef}
+                            ref={accessorialsRef}
                             id="contained-button-file3"
                           />
                           <Button variant="outlined" component="span" size='small'>
@@ -955,7 +971,7 @@ const LoadDetailModal = ({
                           </Button>
                         </label>
                       </Fragment>
-                        : getCheckStatusIcon(!!accessorials?.length)}
+                        : getCheckStatusIcon(!!accessorialsFiles?.length)}
                     </span>
                   </Stack>
                 </Stack>
