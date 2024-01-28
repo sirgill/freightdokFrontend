@@ -1,1 +1,0 @@
-{"version":3,"sources":["webpack://src/components/Atoms/form/dateRangePicker.css"],"names":[],"mappings":"AAAA,yDACI,cACJ","file":"6.f5cca0da.chunk.css","sourcesContent":[".basePicker .rdrDefinedRangesWrapper, .rdrCalendarWrapper{\r\n    font-size: 14px;\r\n}"]}
