@@ -17,6 +17,15 @@ const plugins = [
         },
         'icons',
     ],
+    [
+        'babel-plugin-import',
+        {
+            libraryName: '@mui/x-date-pickers',
+            libraryDirectory: '',
+            camel2DashComponentName: false,
+        },
+        'x-date-pickers',
+    ],
 ];
 
 module.exports = { plugins };
