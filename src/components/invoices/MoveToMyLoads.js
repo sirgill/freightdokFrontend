@@ -24,7 +24,7 @@ const Container = styled(Grid)(({theme}) => ({
 const MoveToMyLoads = (props) => {
     const {onCloseUrl, getInvoices, match: {params: {id} = {}} = {}, history} = props,
         [value, setValue] = useState(),
-        {mutation, loading} = useMutation('/api/invoice/moveBackToMyLoads'),
+        {mutation, loading} = useMutation('/api/invoice/moveToMyLoads'),
         statuses = LOAD_STATUSES.map(status => {
             if(status.id.equalsIgnoreCase('delivered')){
                 return {...status, disabled: true}

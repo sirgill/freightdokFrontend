@@ -33,9 +33,9 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TimePicker from '@mui/lab/TimePicker';
 import DatePicker from '@mui/lab/DatePicker';
 import { blue } from "../layout/ui/Theme";
-import { getCheckStatusIcon } from "../../utils/utils";
 import { LOAD_STATUSES } from "../constants";
 import { green } from "@mui/material/colors";
+import LoadDetailsUploadComponent from "./components/LoadDetailsUploadComponent";
 
 
 const formInitialState = {
@@ -258,7 +258,7 @@ const LoadDetailModal = ({
         aria-labelledby="server-modal-title"
 
       >
-        <div style={{ width: '90%', height: '90%' }} className={classes.paper}>
+        <div style={{ width: '90%' }} className={classes.paper}>
           <Stack direction={'row'} justifyContent={'space-between'} sx={{ mb: 2 }}>
             {/*<DeleteIcon*/}
             {/*    onClick={(e) => deleteLoad(_id, e)}*/}
@@ -872,109 +872,19 @@ const LoadDetailModal = ({
                 </Grid>
               </Grid>
               <Grid item xs={2} sx={{ display: 'flex', alignItems: 'end', justifyContent: 'flex-end' }}>
-                <Stack spacing={2} sx={{ alignItems: 'end' }}>
-                  <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
-                    {rateConfirmation ? (
-                      rateConfirmation.map((roc, idx) => {
-                        return (<><span style={{ margin: 0, padding: 0, marginLeft: '2px' }}>
-                          <a href={roc} target="_blank">
-                            Rate Con-{idx + 1}
-                          </a>
-                        </span></>)
-                      })
-                    ) : (
-                      <span>Rate Con</span>
-                    )}
-                    <span>
-                      {edit ? <Fragment>
-                        <label htmlFor="contained-button-file1">
-                          <input
-                            style={{ display: 'none' }}
-                            type="file"
-                            multiple
-                            name="rateConfirmation"
-                            disabled={!edit || state.auth.user.role === "driver"}
-                            onChange={handleFileChange}
-                            ref={rateConfirmationRef}
-                            id="contained-button-file1"
-                          />
-                          <Button variant="outlined" component="span" size='small'>
-                            Attach
-                          </Button>
-                        </label>
-                      </Fragment>
-                        : getCheckStatusIcon(!!rateConfirmation)}
-                    </span>
-                  </Stack>
-                  <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
-                    {proofDelivery ? (
-                      proofDelivery.map((pod, idx) => {
-                        return (<>
-                          <span style={{ margin: 0, padding: 0, marginLeft: '2px' }}>
-                            <a href={pod} target="_blank">
-                              POD-{idx + 1}
-                            </a>
-                          </span>
-                        </>)
-                      })
-                    ) : (
-                      <span>POD</span>
-                    )}
-                    <span>
-                      {edit ?
-                        <label htmlFor="contained-button-file2">
-                          <input
-                            style={{ display: 'none' }}
-                            type="file"
-                            multiple
-                            name="proofDelivery"
-                            disabled={!edit}
-                            onChange={handleFileChange}
-                            ref={proofDeliveryRef}
-                            id="contained-button-file2"
-                          />
-                          <Button variant="outlined" component="span" size='small'>
-                            Attach
-                          </Button>
-                        </label>
-                        : getCheckStatusIcon(!!proofDelivery)}
-                    </span>
-                  </Stack>
-                  <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
-                    {accessorialsFiles.length ? (
-                      accessorialsFiles.map((acc, idx) => {
-                        return (<>
-                          <span style={{ margin: 0, padding: 0, marginLeft: '2px' }}>
-                            <a href={acc} target="_blank">
-                              Accessorials-{idx + 1}
-                            </a>
-                          </span></>)
-                      })
-                    ) : (
-                      <span>Accessorials</span>
-                    )}
-                    <span>
-                      {edit ? <Fragment>
-                        <label htmlFor="contained-button-file3">
-                          <input
-                            style={{ display: 'none' }}
-                            type="file"
-                            multiple
-                            name="accessorialsFiles"
-                            disabled={!edit || state.auth.user.role === "driver"}
-                            onChange={handleFileChange}
-                            ref={accessorialsRef}
-                            id="contained-button-file3"
-                          />
-                          <Button variant="outlined" component="span" size='small'>
-                            Attach
-                          </Button>
-                        </label>
-                      </Fragment>
-                        : getCheckStatusIcon(!!accessorialsFiles?.length)}
-                    </span>
-                  </Stack>
-                </Stack>
+                <LoadDetailsUploadComponent
+                    edit={edit}
+                    rateConfirmation = {rateConfirmation}
+                    proofDelivery = {proofDelivery}
+                    accessorialsFiles = {accessorialsFiles}
+                    handleFileChange={handleFileChange}
+                    rateConfirmationRef={rateConfirmationRef}
+                    proofDeliveryRef={proofDeliveryRef}
+                    accessorialsRef={accessorialsRef}
+                    state={state}
+                    rateConFile={form.rateConfirmation}
+                    podFile={form.proofDelivery}
+                />
               </Grid>
             </Grid>
             {/*******************NEW Grid END***********************************/}
