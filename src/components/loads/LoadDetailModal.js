@@ -884,6 +884,7 @@ const LoadDetailModal = ({
                     state={state}
                     rateConFile={form.rateConfirmation}
                     podFile={form.proofDelivery}
+                    formAccessorialsFiles={form.accessorialsFiles}
                 />
               </Grid>
             </Grid>

@@ -6,6 +6,7 @@ import {styled} from "@mui/material/styles";
 import {PRIMARY_BLUE} from "../../layout/ui/Theme";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import DescriptionIcon from '@mui/icons-material/Description';
+import {Alert} from "../../Atoms";
 
 const FileContainer = styled(Paper)(({}) => ({
     width: 100,
@@ -33,6 +34,9 @@ const FileViewer = ({files = [], onClose, onRemoveAll}) => {
 
     return <Modal config={config} closeCallback={onClose}>
         <Grid container spacing={2} sx={{display: 'grid'}}>
+            <Grid item>
+                <Alert config={{open: true, message: 'Previous files, if exist will be overwritten with new files.', severity: 'info'}} />
+            </Grid>
             {files && <Grid item>
                 <Button variant='outlined' sx={{float: 'right'}} onClick={onRemoveAll} color='error'>Remove All</Button>
             </Grid>}
@@ -49,10 +53,10 @@ const LoadDetailsUploadComponent = (props) => {
     const [fileViewConfig, setFileViewConfig] = useState({open: false, config: {}})
     const {
         edit, rateConfirmation = [], proofDelivery = [], accessorialsFiles = [], handleFileChange, rateConfirmationRef,
-        proofDeliveryRef, accessorialsRef, state, rateConFile, podFile
+        proofDeliveryRef, accessorialsRef, state, rateConFile, podFile, formAccessorialsFiles
     } = props;
     // console.log(rateConFile)
-    // console.log(podFile)
+    // console.log(accessorialsFiles)
 
     function viewClickHandler(file, name, e) {
         e.stopPropagation()
@@ -80,7 +84,7 @@ const LoadDetailsUploadComponent = (props) => {
             })) : (<span>Rate Con</span>)}
             <span>
                       {edit ? <Fragment>
-                              {(rateConfirmation.length || rateConFile)
+                              {rateConFile
                                   ? <Button variant="outlined" component="span" size='small' onClick={viewClickHandler.bind(this, rateConFile, 'rateConfirmation')} startIcon={<OpenInNewIcon />}>
                                         View
                                     </Button>
@@ -145,7 +149,11 @@ const LoadDetailsUploadComponent = (props) => {
                           </span></>)
             })) : (<span>Accessorials</span>)}
             <span>
-                      {edit ? <Fragment>
+                      {edit ? formAccessorialsFiles
+                          ? <Button variant="outlined" component="span" size='small' onClick={viewClickHandler.bind(this, formAccessorialsFiles, 'accessorialsFiles')} startIcon={<OpenInNewIcon />}>
+                              View
+                          </Button>
+                          : <Fragment>
                           <label htmlFor="contained-button-file3">
                               <input
                                   style={{display: 'none'}}
