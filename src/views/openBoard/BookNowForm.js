@@ -10,8 +10,8 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {notification} from "../../actions/alert";
 import {getUserDetail, triggerCustomEvent} from "../../utils/utils";
 import moment from "moment";
-
-const CARRIER_CODE = "T2244688";
+import useFetch from "../../hooks/useFetch";
+import {GET_SECRETS_MANAGER} from "../../config/requestEndpoints";
 
 const CustomGrid = ({label, children}) => {
     return <Grid container justifyContent='space-between' alignItems='center'>
@@ -45,7 +45,13 @@ const BookNowForm = (props) => {
         {loadNumber} = row;
     const [form, setForm] = useState({emptyDate: new Date(), emptyTime: new Date()}),
         [isBookingDone, setIsBookingDone] = useState(false),
-        [isProcessingAsyncReq, setIsProcessingAsyncReq] = useState(false);
+        [isProcessingAsyncReq, setIsProcessingAsyncReq] = useState(false),
+        {data, loading} = useFetch(GET_SECRETS_MANAGER, null, {
+            queryParams: {
+                orgId: getUserDetail().user.orgId
+            },
+        }),
+        {_dbData: {chRobinson: { tCode } = {}} = {}} = data || {};
 
     const config = {
         paperProps: {
@@ -87,7 +93,7 @@ const BookNowForm = (props) => {
 
         const payload = {
             loadNumber,
-            carrierCode: CARRIER_CODE,
+            carrierCode: tCode,
             emptyDateTime: new Date(date + " " + time).toISOString(),
             availableLoadCosts: [{
                 type, code, description, units, currencyCode, sourceCostPerUnit
@@ -147,7 +153,7 @@ const BookNowForm = (props) => {
                         <Grid item display={'flex'} justifyContent={'space-between'} mt={2}>
                             <CustomGrid label={'Carrier T-Code'}>
                                 <TextField disabled variant={'standard'} fullWidth
-                                           value={CARRIER_CODE}
+                                           value={tCode}
                                            readOnly/>
                             </CustomGrid>
                         </Grid>
@@ -174,8 +180,8 @@ const BookNowForm = (props) => {
                                     <TimePicker
                                         value={moment(form.emptyTime || new Date())}
                                         onChange={(time) => {
-                                                setForm({...form, emptyTime: time})
-                                            }
+                                            setForm({...form, emptyTime: time})
+                                        }
                                         }
                                         slotProps={{
                                             textField: {
@@ -189,7 +195,7 @@ const BookNowForm = (props) => {
                         </Grid>
                     </>}
                     {!isBookingDone && <Grid item mt={2}>
-                        <Button type='submit' disabled={isProcessingAsyncReq} variant={'contained'}
+                        <Button type='submit' disabled={isProcessingAsyncReq || loading} variant={'contained'}
                                 sx={{p: 2, fontSize: 16, px: 3, py: 2}}>Book Now ${defaultCost}</Button>
                     </Grid>}
                 </Grid>

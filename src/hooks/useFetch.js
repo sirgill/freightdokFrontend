@@ -1,15 +1,19 @@
 import {useEffect, useState} from "react";
 import {requestGet} from "../utils/request";
+import {serialize} from "../utils/utils";
 
-const useFetch = (url, callback = null) => {
+const useFetch = (url, callback = null, options = {}) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null),
         [isRefetching, setIsRefetching] = useState(false);
 
-
     function requestCall() {
-        requestGet({uri: url, callback, showTriggers: false })
+        let uri = url
+        if (options.queryParams) {
+            uri = `${uri}?${serialize(options.queryParams)}`
+        }
+        requestGet({uri, callback, showTriggers: false})
             .then(result => {
                 result.data && setData(result.data);
             })
@@ -29,7 +33,6 @@ const useFetch = (url, callback = null) => {
         setData(null);
         setError(null);
         requestCall();
-
     }, [url])
 
     return {data, loading, error, refetch: onRefetch, isRefetching}

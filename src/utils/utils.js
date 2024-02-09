@@ -133,6 +133,16 @@ export const getRoutesByPermission = (routes) => {
     return arr;
 }
 
+export const serialize = (obj = {}) => {
+    const str = [];
+    for (let p in obj)
+        if (obj.hasOwnProperty(p)) {
+            const q = encodeURIComponent(p) + "=" + encodeURIComponent(obj[p])
+            str.push(q.replaceAll('%20', '+'));
+        }
+    return str.join("&");
+}
+
 export {
     addEvent,
     removeEvent,
