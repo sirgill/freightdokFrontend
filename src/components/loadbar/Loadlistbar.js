@@ -7,6 +7,7 @@ import EnhancedTable from "../Atoms/table/Table";
 import LoadDetailModal from "../loads/LoadDetailModal";
 import AddLoadForm from "../load-forms/AddLoad";
 import {Box} from "@mui/material";
+import {ROLES} from "../constants";
 
 const Loadlistbar = ({
                          getLoads,
@@ -76,7 +77,7 @@ const Loadlistbar = ({
     };
 
     const onDelete = (id, onDialogClose) => {
-        dispatch(deleteLoad(id, (success, data) => {
+        dispatch(deleteLoad(id, (success) => {
             if(success){
                 setTimeout(() => getLoads(page), 500)
                 onDialogClose();
@@ -93,7 +94,7 @@ const Loadlistbar = ({
         onPageChange: handleChangePage,
         hasDelete: true,
         onDelete,
-        deletePermissions: ['admin', 'ownerOperator', 'superAdmin'],
+        deletePermissions: [ROLES.admin, ROLES.ownerOperator, ROLES.superadmin, ROLES.dispatch],
         columns: [
             {
                 id: 'loadNumber',
@@ -160,7 +161,7 @@ const Loadlistbar = ({
         <div className={classes.table}>
             <EnhancedTable config={tableConfig} data={rawLoades} loading={loading}/>
             {user?.role && <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                {['admin', 'superAdmin', 'dispatch'].includes(user.role) && <AddLoadForm/>}
+                {['admin', 'superAdmin', 'dispatch', 'support'].includes(user.role) && <AddLoadForm/>}
             </Box>}
             {open.open && <LoadDetailModal
                 modalEdit={false}

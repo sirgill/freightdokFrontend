@@ -45,7 +45,7 @@ export const routes = [
         title: 'Invoices',
         component: InvoicesList,
         icon: InvoiceIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch', 'ownerOperator', 'support']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'support']
     }, {
         id: 'users',
         title: 'Users',
@@ -63,7 +63,7 @@ export const routes = [
         title: 'Owner Operator',
         component: OwnerOperator,
         icon: OwnerOperatorIcon,
-        permissions: ['admin', 'superAdmin', 'ownerOperator', 'dispatch', 'support']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'support']
     }, {
         id: 'loadHistory',
         title: 'Load History',
