@@ -27,60 +27,60 @@ export const routes = [
         title: 'Open Board',
         component: OpenBoard,
         icon: OpenBoardIcon,
-        permissions: ['superAdmin', 'admin', 'dispatch', 'ownerOperator']
+        permissions: ['superAdmin', 'admin', 'dispatch', 'ownerOperator', 'support']
     }, {
         id: 'my_bids',
         title: 'My Bids',
         component: MyBids,
         icon: MybidsIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch', 'ownerOperator']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'ownerOperator', 'support']
     }, {
         id: 'my_loads',
         title: 'My Loads',
         component: Loadlistbar,
         icon: MyLoadsIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch', 'afterhours', 'ownerOperator', 'driver']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'afterhours', 'ownerOperator', 'driver', 'support']
     }, {
         id: 'invoices',
         title: 'Invoices',
         component: InvoicesList,
         icon: InvoiceIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch', 'ownerOperator']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'ownerOperator', 'support']
     }, {
         id: 'users',
         title: 'Users',
         component: UsersList,
         icon: UsersIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'support']
     }, {
         id: 'drivers',
         title: 'Drivers',
         component: Driverlistbar,
         icon: DriverIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'support']
     }, {
         id: 'owner_operator',
         title: 'Owner Operator',
         component: OwnerOperator,
         icon: OwnerOperatorIcon,
-        permissions: ['admin', 'superAdmin', 'ownerOperator', 'dispatch']
+        permissions: ['admin', 'superAdmin', 'ownerOperator', 'dispatch', 'support']
     }, {
         id: 'loadHistory',
         title: 'Load History',
         component: LoadsStatus,
         icon: LoadHistoryIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch', 'afterhours', 'ownerOperator', 'driver']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'afterhours', 'ownerOperator', 'driver', 'support']
     }, {
         id: 'carrier_profile',
         title: 'Carrier Profile',
         component: CarrierProfile,
         icon: CarrierProfileIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'support']
     }, {
         id: 'facilities',
         title: 'Facilities',
         component: Facilities,
         icon: FacilitiesIcon,
-        permissions: ['admin', 'superAdmin']
+        permissions: ['admin', 'superAdmin', 'support']
     },
 ]

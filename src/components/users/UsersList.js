@@ -93,12 +93,15 @@ const UsersList = () => {
         ]
     }
 
+    const Actions = () => {
+        return <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
+            <UserForm />
+        </Box>
+    }
+
     return (
         <Fragment>
-            <EnhancedTable loading={loading} data={list} config={config} onRefetch={() => dispatch(fetchUsers(+page, +limit))}/>
-            <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
-                <UserForm />
-            </Box>
+            <EnhancedTable loading={loading} data={list} config={config} onRefetch={() => dispatch(fetchUsers(+page, +limit))} actions={<Actions />}/>
         </Fragment>
     );
 };

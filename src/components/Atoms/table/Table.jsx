@@ -126,7 +126,7 @@ const TableData = ({columns, data = [], config = {}, handleRowClick, handleDelet
 }
 
 
-const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch, isRefetching}) => {
+const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch, isRefetching, actions}) => {
     data = data || [];
     const [tableState, setTableState] = useState({}),
         [dialog, setDialog] = useState({open: false, config: {}}),
@@ -150,7 +150,13 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         {role = ''} = getUserDetail().user,
         hasDeletePermission = deletePermissions.indexOf(role) > -1 || false,
         ref = React.useRef([]);
-    const length = Array.isArray(data) && data.length;
+    const length = Array.isArray(data) && data.length,
+        Actions = useMemo(() => {
+        if(actions && React.isValidElement(actions)){
+            return actions;
+        }
+        return <></>
+    }, []);
 
     const handleRowClick = (row) => {
         if (hasOnClickUrl && onRowClick) {
@@ -227,11 +233,12 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
     }, [])
 
     return <Box className='enhanced-table' sx={{height: length && !loading ? (containerHeight || '95%') : 'auto'}}>
-        {showRefresh && <Stack alignItems='flex-end'>
-            <IconButton title='Refresh' onClick={onRefetch}>
+        <Stack alignItems='flex-end' justifyContent='flex-end' direction='row' py={1} gap={.5}>
+            {Actions}
+            {showRefresh && <IconButton title='Refresh' onClick={onRefetch}>
                 <Refresh className={(isRefetching) ? 'rotateIcon' : undefined}/>
-            </IconButton>
-        </Stack>}
+            </IconButton>}
+        </Stack>
         <TableContainer
             component={Paper}
             className={''}

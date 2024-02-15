@@ -7,6 +7,7 @@ export const ONBOARDING_USER = ONBOARD_USER_LINK + '/:email';
 export const UPDATE_INTEGRATIONS_LINK = '/updateIntegrations';
 export const ENHANCED_DASHBOARD = '/enhancedDashboard';
 export const FACILITIES_LINK = ENHANCED_DASHBOARD + '/facilities'
+export const ERROR_404_LINK = ENHANCED_DASHBOARD + '/404'
 export const OPEN_BOARD = '/open_board';
 export const MY_BIDS = '/my_bids';
 export const MY_LOADS = '/my_loads';
