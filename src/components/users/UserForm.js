@@ -24,6 +24,8 @@ const initialState = {
     role: "dispatch",
 };
 
+const ADD_USERS_ROLES_PERMITTED = [ROLES.superadmin, ROLES.admin, ROLES.dispatch];
+
 const UserForm = () => {
     const {mutation, loading: isSaving} = useMutation('/api/users')
     const [form, setForm] = useState({...initialState});
@@ -34,7 +36,8 @@ const UserForm = () => {
     const {user: auth = {}} = useSelector((state) => state.auth);
     const {roles = []} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
-    const [userRoles, setUserRoles] = useState();
+    const [userRoles, setUserRoles] = useState(),
+        hasAddPermission = ADD_USERS_ROLES_PERMITTED.includes(auth?.role);
 
     useEffect(() => {
         if(auth?.role.equalsIgnoreCase(ROLES.superadmin)) {
@@ -127,13 +130,13 @@ const UserForm = () => {
 
     return (
         <>
-            <Button
+            {hasAddPermission && <Button
                 color="primary"
                 variant={'contained'}
                 onClick={handleClickOpen}
             >
                 Add User
-            </Button>
+            </Button>}
             <Dialog
                 fullWidth={false}
                 maxWidth={"md"}

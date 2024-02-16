@@ -19,6 +19,10 @@ import useMutation from "../../hooks/useMutation";
 import {notification} from "../../actions/alert";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {getDrivers} from "../../actions/driver";
+import {ROLES} from "../constants";
+import {getUserDetail} from "../../utils/utils";
+
+const ADD_DRIVERS_ROLES_PERMITTED = [ROLES.superadmin, ROLES.admin, ROLES.afterhours];
 
 const AddDriverForm = (props) => {
     const {
@@ -39,14 +43,16 @@ const AddDriverForm = (props) => {
         loads: [],
         user: "",
     },
-        dispatch = useDispatch();
+        dispatch = useDispatch(),
+        {role} = getUserDetail().user,
+        hasAddPermission = ADD_DRIVERS_ROLES_PERMITTED.includes(role);
 
     const [open, setOpen] = useState(false);
     const [count, setCount] = useState(1);
     const [form, setForm] = useState(formTemplate);
 
     useEffect(() => {
-        if (count == 2) {
+        if (count === 2) {
             getLoads();
         }
     }, [count]);
@@ -100,7 +106,7 @@ const AddDriverForm = (props) => {
 
     return (
         <>
-            {(user && user.role === "afterhours") || (!isEdit &&
+            {(hasAddPermission && !isEdit &&
                 <Button
                     color="primary"
                     onClick={handleClickOpen}

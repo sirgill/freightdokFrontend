@@ -27,13 +27,13 @@ export const routes = [
         title: 'Open Board',
         component: OpenBoard,
         icon: OpenBoardIcon,
-        permissions: ['superAdmin', 'admin', 'dispatch', 'ownerOperator', 'support']
+        permissions: ['superAdmin', 'admin', 'dispatch', 'ownerOperator',]
     }, {
         id: 'my_bids',
         title: 'My Bids',
         component: MyBids,
         icon: MybidsIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch', 'ownerOperator', 'support']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'ownerOperator']
     }, {
         id: 'my_loads',
         title: 'My Loads',

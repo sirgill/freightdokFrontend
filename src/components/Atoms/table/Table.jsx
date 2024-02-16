@@ -242,7 +242,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         <TableContainer
             component={Paper}
             className={''}
-            sx={{boxShadow: '0px 0px 32px #8898AA26', mb: 2, height: length && !loading ? 'calc(100% - 64px)' : 'auto'}}
+            sx={{boxShadow: '0px 0px 32px #8898AA26', mb: 2, height: length && !loading ? 'calc(100% - 80px)' : 'auto'}}
         >
             {loading
                 ? getLoader()
