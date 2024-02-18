@@ -5,6 +5,7 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import Dialog from "./Dialog";
 import useMutation from "../../hooks/useMutation";
 import {removeDelete} from "../../actions/component.action";
+import {notification} from "../../actions/alert";
 
 const DeleteComponent = () => {
     const {open, message, uri, body = {}, afterSuccessCb} = useSelector((state) => state.app?.deleteComponent)
@@ -13,6 +14,7 @@ const DeleteComponent = () => {
     function afterSubmit({success, data}) {
         if(success){
             removeDelete();
+            notification(data.message || 'Deleted Successfully');
         }
         afterSuccessCb && afterSuccessCb({success, data})
     }

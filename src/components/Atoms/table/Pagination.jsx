@@ -50,7 +50,6 @@ const TablePagination = ({data = [], onPageChange, page = 0, count = 0, limit = 
     if (length < 10 && count < 10) {
         return null;
     }
-    console.log(count, limit)
     return (
         <StyledStack direction='row' alignItems={'center'}>
             {count > 10 &&

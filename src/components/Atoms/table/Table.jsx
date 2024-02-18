@@ -179,9 +179,9 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
                 <Typography sx={{fontSize: '1.25rem', fontWeight: 550}} color='error'>Delete</Typography>
             </Grid>,
             okText: 'Delete',
-            onOk: () => onDelete(id, onDialogClose),
+            onOk: () => onDelete(id, onDialogClose, {row}),
             content: () => <DialogContentText
-                sx={{color: '#000'}}>{deleteMessage || 'Are you sure you want to delete the record?'}</DialogContentText>
+                sx={{color: '#000'}}>{_.isFunction(deleteMessage) ? deleteMessage({row}) : deleteMessage || 'Are you sure you want to delete the record?'}</DialogContentText>
         }
         setDialog({...dialog, open: true, config});
     }

@@ -13,6 +13,8 @@ import {
 } from "../../actions/driver";
 import EditDriver from "../driver-forms/AddDriver";
 import AddDriverForm from "../driver-forms/AddDriver";
+import {showDelete} from "../../actions/component.action";
+import {ROLES} from "../constants";
 
 const Driverlistbar = (props = {}) => {
     const {deleteDriver} = props;
@@ -21,10 +23,9 @@ const Driverlistbar = (props = {}) => {
     const classes = useStyles(),
         dispatch = useDispatch();
 
-    const handleDeleteDriver = (driver = {}, e) => {
-        e.stopPropagation();
-        const _id = typeof driver.user !== "string" ? driver.user._id : driver.user;
-        deleteDriver(_id);
+    const handleDeleteDriver = (driver = {}, onDialogClose, {row}) => {
+        const _id = typeof row.user !== "string" ? row.user._id : row.user;
+        deleteDriver(_id, onDialogClose);
     };
 
     const handleUpdate = (row = {}, e) => {
@@ -51,6 +52,10 @@ const Driverlistbar = (props = {}) => {
         rowCellPadding: 'inherit',
         emptyMessage: 'No drivers found',
         // onRowClick: (row) => setEdit({open: true, data: row}),
+        hasDelete: true,
+        deletePermissions: [ROLES.superadmin, ROLES.admin, ROLES.dispatch],
+        deleteMessage: ({row}) => 'Are you sure you want to delete ' + row.firstName + " " + (row.lastName || '') + '?',
+        onDelete: handleDeleteDriver,
         columns: [
             {
                 id: 'firstName',
@@ -71,9 +76,6 @@ const Driverlistbar = (props = {}) => {
                         <Button variant={'contained'} sx={{mr: 2}} onClick={handleUpdate.bind(this, row)}
                                 color='primary'>
                             Update
-                        </Button>
-                        <Button variant={'contained'} onClick={handleDeleteDriver.bind(this, row)} color='error'>
-                            Delete
                         </Button>
                     </Fragment>
                 }
