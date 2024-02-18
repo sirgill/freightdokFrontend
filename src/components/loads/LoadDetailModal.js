@@ -8,7 +8,6 @@ import {
   TextField,
   Box,
   MenuItem,
-  Button,
   IconButton,
   Select,
   Modal,
@@ -36,6 +35,7 @@ import { blue } from "../layout/ui/Theme";
 import { LOAD_STATUSES } from "../constants";
 import { green } from "@mui/material/colors";
 import LoadDetailsUploadComponent from "./components/LoadDetailsUploadComponent";
+import {getRoleNameString} from "../client/constants";
 
 
 const formInitialState = {
@@ -97,18 +97,19 @@ const LoadDetailModal = ({
   const proofDeliveryRef = useRef();
   const accessorialsRef = useRef(),
     SelectElement = edit ? OutlinedInput : FilledInput;
-  const assignedToOptions = state.driver.drivers.map(({ user = {} }) => {
-    const { name = '', _id = '' } = user || '';
+  const {assignees = [] } = state.driver || {};
+  const assignedToOptions = assignees.map((item) => {
+    const { _id, firstName, lastName, role, user: {name = '', role: assigneeRole, _id: assigneeId} ={} } = item || {};
     return {
-      name, _id
+      name, _id: assigneeId || _id, firstName, lastName, role: getRoleNameString(assigneeRole || role)
     }
-  }).filter((driver) => !!driver?._id) || [];
+  }) || [];
 
   useEffect(() => {
     setupDrivers();
     setForm({
       status,
-      assignedTo: user,
+      assignedTo: user._id,
       accessorials,
       trailorNumber,
       pickup,
@@ -312,13 +313,13 @@ const LoadDetailModal = ({
                         input={<SelectElement size='small' label="" notched={false} sx={{}} />}
                         MenuProps={MenuProps}
                       >
-                        {assignedToOptions.map((name) => (
+                        {assignedToOptions.map((assignee) => (
                           <MenuItem
-                            key={name.name}
-                            value={name._id}
+                            key={assignee._id}
+                            value={assignee._id}
                           // style={getStyles(name, personName, theme)}
                           >
-                            {name.name}
+                            {`${assignee.firstName} ${assignee.lastName} (${assignee.role || '--'})`}
                           </MenuItem>
                         ))}
                       </Select>

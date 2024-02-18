@@ -1,5 +1,5 @@
 import {Route, Switch} from "react-router-dom";
-import React, {useEffect} from "react";
+import React, {useLayoutEffect} from "react";
 import {ENHANCED_DASHBOARD, ERROR_404_LINK} from "../components/client/routes";
 import {getRoutesByPermission} from "../utils/utils";
 import useRoutes from "../hooks/useRoutes";
@@ -19,7 +19,7 @@ const Dashboard = ({match = {}, history, location}) => {
     const dashboardRoutes = getRoutesByPermission(routes);
     const {links, firstLink} = useRoutes(routes, path);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         store.dispatch(loadUser());
         if (!firstLink) {
             return history.push(ERROR_404_LINK);

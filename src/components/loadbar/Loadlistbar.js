@@ -149,9 +149,8 @@ const Loadlistbar = ({
                 id: 'assignedTo',
                 label: 'Assigned To',
                 renderer: ({row}) => {
-                    const {user} = row || {},
-                        {user: {name = ''} = {}} = drivers.find(driver => driver.user && driver.user._id === user) || {};
-                    return name;
+                    const {user} = row || {}
+                    return (user.firstName + ' ' + user.lastName) || user.name || '--';
                 }
             },
         ]

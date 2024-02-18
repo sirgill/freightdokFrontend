@@ -138,6 +138,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             page,
             count,
             limit,
+            onPageSizeChange,
             size = 'medium',
             emptyMessage = '',
             onRowClickDataCallback,
@@ -251,7 +252,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
                 </Table>}
         </TableContainer>
         {!loading && data.length > 0 &&
-            <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit}/>}
+            <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit} onPageSizeChange={onPageSizeChange}/>}
         <Dialog className='enhancedTable_dialog' open={dialog.open} config={dialog.config} onClose={onDialogClose}/>
     </Box>;
 };

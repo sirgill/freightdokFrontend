@@ -1,14 +1,15 @@
 import React, {Fragment, useEffect} from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, selectUserToEdit } from "../../actions/users";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchUsers, selectUserToEdit} from "../../actions/users";
 import EnhancedTable from "../Atoms/table/Table";
 import {Box, Button} from "@mui/material";
 import UserForm from "./UserForm";
 import {ROLES} from "../constants";
 import {showDelete} from "../../actions/component.action";
+import {getRoleNameString} from "../client/constants";
 
 const UsersList = () => {
-    const { list, loading, page = 0, limit = 5, total } = useSelector(
+    const { list, loading, page = 0, limit = 10, total } = useSelector(
         (state) => state.users
     );
     const { user } = useSelector((state) => state.auth);
@@ -30,9 +31,8 @@ const UsersList = () => {
         dispatch(fetchUsers(newPage - 1, +limit));
     };
 
-    const handleChangeRowsPerPage = (event) => {
-        const new_limit = event.target.value;
-        dispatch(fetchUsers(0, new_limit));
+    const onPageSizeChange = ({value}) => {
+        dispatch(fetchUsers(0, value));
     };
 
     const allowedRolesForDispatch = [
@@ -49,6 +49,7 @@ const UsersList = () => {
         onPageChange: handleChangePage,
         rowCellPadding: 'normal',
         showRefresh: true,
+        onPageSizeChange,
         columns: [
             {
                 id: 'name',
@@ -62,7 +63,8 @@ const UsersList = () => {
             },
             {
                 id: 'role',
-                label: 'Role'
+                label: 'Role',
+                valueFormatter: getRoleNameString
             },
             {
                 id: 'actions',

@@ -2,14 +2,14 @@ import {FormControl, FormHelperText, InputLabel, MenuItem, Select as MuiSelect} 
 import PropTypes from "prop-types";
 import {useMemo} from "react";
 
-const Select = ({ options = [], labelKey = 'label', valueKey = 'id', label, value, name, onChange, errors={},
-                    renderValue = null, showNone=false, className='' }) => {
+const Select = ({ options = [], labelKey = 'label', valueKey = 'id', label, menuLabelCb, value, name, onChange, errors={},
+                    renderValue = null, showNone=false, className='',disabled=false }) => {
     const hasError = !!errors[name],
         errorText = errors[name];
     const items = useMemo(() => {
         return (options || []).map(item => {
             return <MenuItem value={item[valueKey]} key={item[valueKey]} disabled={!!item['disabled']}>
-                {item[labelKey]}
+                {menuLabelCb ? menuLabelCb({labelKey, option: item}) : item[labelKey]}
             </MenuItem>
         })
     }, [options])
@@ -21,7 +21,7 @@ const Select = ({ options = [], labelKey = 'label', valueKey = 'id', label, valu
         }
     }
 
-    return  <FormControl error={hasError} fullWidth size='small' className={className}>
+    return  <FormControl error={hasError} fullWidth size='small' className={className} disabled={disabled}>
         <InputLabel id="demo-simple-select-error-label">{label}</InputLabel>
         <MuiSelect
             name={name}
@@ -57,7 +57,9 @@ Select.proptype = {
     errors: PropTypes.object,
     renderValue: PropTypes.node,
     className: PropTypes.string,
-    showNone: PropTypes.bool
+    showNone: PropTypes.bool,
+    disabled: PropTypes.bool,
+    menuLabelCb: PropTypes.func
 }
 
 export default Select;
