@@ -3,7 +3,7 @@ import {requestGet} from "../utils/request";
 import {serialize} from "../utils/utils";
 
 const useFetch = (url, callback = null, options = {}) => {
-    const [data, setData] = useState(null);
+    const [data, setData] = useState(undefined);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null),
         [isRefetching, setIsRefetching] = useState(false);

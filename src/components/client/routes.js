@@ -12,6 +12,6 @@ export const OPEN_BOARD = '/open_board';
 export const MY_BIDS = '/my_bids';
 export const MY_LOADS = '/my_loads';
 export const INVOICES = '/invoices';
-export const WAREHOUSE = '/warehouse';
+export const WAREHOUSE = '/facilities';
 export const USERS = '/users';
 export const OWNER_OPERATOR = '/owner_operator';

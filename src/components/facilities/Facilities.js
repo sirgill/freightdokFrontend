@@ -1,8 +1,6 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Link, useRouteMatch, Switch, Route} from 'react-router-dom';
-import {getWarehouses} from '../../actions/warehouse';
 import {Button} from '@mui/material';
-import {useDispatch, useSelector} from 'react-redux';
 import Form from './Form';
 import Preview from './Preview';
 import {Box} from '@mui/material';
@@ -10,18 +8,19 @@ import EnhancedTable from "../../components/Atoms/table/Table"
 import {ROLES} from "../constants";
 import {showDelete} from "../../actions/component.action";
 import {getUserDetail} from "../../utils/utils";
+import useFetch from "../../hooks/useFetch";
 
 
-const Warehouse = () => {
+const Facilities = () => {
     const {path} = useRouteMatch();
-    const dispatch = useDispatch();
-    const {totalCount, warehouses = [], loading = false} = useSelector(state => state.warehouse)
     const {role = ''} = getUserDetail().user;
-    const hasPermission = [ROLES.admin, ROLES.dispatch, ROLES.support].includes(role)
+    const hasPermission = [ROLES.admin, ROLES.dispatch, ROLES.support].includes(role),
+        { data = {}, loading, refetch, isRefetching } = useFetch('/api/warehouse'),
+        {totalCount, warehouses = []} = data || {};
 
     const afterDelete = ({success}) => {
         if (success) {
-            dispatch(getWarehouses());
+            refetch();
         }
     }
 
@@ -30,6 +29,7 @@ const Warehouse = () => {
         deletePermissions: ['admin', 'superAdmin'],
         onRowClick: ({_id}) => `${path}/preview/${_id}`,
         rowCellPadding: 'normal',
+        showRefresh: true,
         columns: [
             {
                 id: 'name',
@@ -52,8 +52,8 @@ const Warehouse = () => {
                 label: 'Zip Date'
             },
             {
-                id: 'averageLoadTime',
-                label: 'Average Load Time'
+                id: 'serviceHours',
+                label: 'Service Hours',
             },
             {
                 id: 'actions',
@@ -75,24 +75,20 @@ const Warehouse = () => {
         ]
     }
 
-    useEffect(() => {
-        dispatch(getWarehouses())
-    }, []);
-
     return (
         <div>
             <Box>
-                <EnhancedTable config={config} data={warehouses.warehouses} loading={loading}/>
+                <EnhancedTable config={config} data={warehouses} loading={loading} onRefetch={refetch} isRefetching={isRefetching} />
             </Box>
             {hasPermission && <Button variant='contained' component={Link} to={path + '/add'}
                                       sx={{position: 'absolute', right: 10}}>Add Facility</Button>}
             <Switch>
-                <Route component={Form} path={path + '/add'}/>
-                <Route component={Form} path={path + '/edit/:id'}/>
+                <Route render={(props) => <Form {...props} refetch={refetch} />} path={path + '/add'}/>
+                <Route render={(props) => <Form {...props} refetch={refetch} />} path={path + '/edit/:id'} refetch={refetch} />
                 <Route render={(props) => <Preview {...props} closeUrl={path}/>} path={path + '/preview/:id'}/>
             </Switch>
         </div>
     )
 }
 
-export default Warehouse;
+export default Facilities;

@@ -3,10 +3,8 @@ import _ from "lodash";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
 import {Button, Grid, Typography} from '@mui/material'
 import {
-    addWarehouse,
     getGeoLocation,
     getWarehouseById,
-    getWarehouses,
 } from "../../actions/warehouse";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router";
@@ -15,9 +13,10 @@ import Modal from "../Atoms/Modal";
 import Input from "../Atoms/form/Input";
 import {LoadingButton} from "../Atoms";
 import Select from "../Atoms/form/Select";
+import useMutation from "../../hooks/useMutation";
 
 
-const PageTwoForm = ({setData2, setPage, data, getLocation}) => {
+const PageTwoForm = ({setData2, setPage, data, getLocation, loading}) => {
     const handleChange = ({name, value}) => {
         setData2((prevState) => ({...prevState, [name]: value}));
     };
@@ -81,7 +80,7 @@ const PageTwoForm = ({setData2, setPage, data, getLocation}) => {
                 />
             </Grid>
             <Input
-                label="Warehouse Hours of Service"
+                label="Facilities Hours of Service"
                 name="serviceHours"
                 fullWidth
                 onChange={handleChange}
@@ -143,16 +142,17 @@ const PageTwoForm = ({setData2, setPage, data, getLocation}) => {
                 <LoadingButton
                     type="submit"
                     color="primary"
-                    isLoading={false}
+                    isLoading={loading}
+                    loadingText='Saving...'
                 >
-                    Submit
+                    Save
                 </LoadingButton>
             </Grid>
         </Grid>
     );
 };
 
-const FormBody = ({id = null}) => {
+const FormBody = ({id = null, mutation, loading, refetch}) => {
     const [data, setData] = useState({
             name: "",
             address: "",
@@ -190,12 +190,14 @@ const FormBody = ({id = null}) => {
             form2.appointment = !!form2.appointment
             form2.parking = !!form2.parking
             form2.restroom = !!form2.restroom
-            dispatch(addWarehouse(_.extend(data, form2, {_id: id}), afterSubmit));
-        } else dispatch(addWarehouse(_.extend(data, data2), afterSubmit));
+            mutation(_.extend(data, form2, {_id: id}), null, afterSubmit);
+        } else {
+            mutation(_.extend(data, data2), null, afterSubmit);
+        }
     };
 
     const afterSubmit = () => {
-        dispatch(getWarehouses());
+        refetch();
         history.push(FACILITIES_LINK);
     };
 
@@ -314,6 +316,7 @@ const FormBody = ({id = null}) => {
                     setData2={setData2}
                     setPage={setPage}
                     data={data2}
+                    loading={loading}
                 />
             )}
         </Grid>
@@ -321,7 +324,8 @@ const FormBody = ({id = null}) => {
 };
 
 const Form = (props = {}) => {
-    const {match: {params: {id = null} = {}} = {}} = props;
+    const {match: {params: {id = null} = {}} = {}, refetch} = props;
+    const {mutation, loading} = useMutation('/api/warehouse')
 
     const config = {
         title: (id ? "Edit" : "Add") + ' Facility',
@@ -331,7 +335,7 @@ const Form = (props = {}) => {
 
     return (
         <Modal config={config}>
-            <FormBody id={id}/>
+            <FormBody id={id} mutation={mutation} loading={loading} refetch={refetch} />
         </Modal>
     )
 };

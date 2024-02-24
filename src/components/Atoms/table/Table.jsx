@@ -89,7 +89,7 @@ const getTableCell = ({
         </Cell>;
 
     const cell = columns.map((column, i) => {
-        const {id = '', renderer, emptyState = '', valueFormatter, visible = true} = column || {};
+        const {id = '', renderer, emptyState = '--', valueFormatter, visible = true} = column || {};
         const isVisible = _.isFunction(visible) ? visible({column, role}) : visible;
         if (!isVisible) {
             return null;
@@ -100,7 +100,8 @@ const getTableCell = ({
         } else if (_.isFunction(renderer)) {
             cell = renderer({row, role}, rowIndex) || emptyState;
         } else {
-            cell = _.isObject(row) ? _.get(row, id, emptyState) : (row[id] || emptyState);
+            console.log(id, row, _.isObject(row[id]), _.get(row, id))
+            cell = _.get(row, id, emptyState) || emptyState;
         }
         return <Cell key={id + i} padding={rowCellPadding || 'normal'} component="th" scope="row">
             {cell}

@@ -19,7 +19,7 @@ const InvoicesList = LoadModuleAsync(() => import("../components/invoices/Invoic
 const Driverlistbar = LoadModuleAsync(() => import("../components/driverbar/Driverlistbar.js"));
 const Loadlistbar = LoadModuleAsync(() => import("../components/loadbar/Loadlistbar.js"));
 const LoadsStatus = LoadModuleAsync(() => import("../components/loads/LoadsStatus"));
-const Facilities = LoadModuleAsync(() => import("../components/warehouse/Warehouse"));
+const Facilities = LoadModuleAsync(() => import("../components/facilities/Facilities"));
 
 export const routes = [
     {
