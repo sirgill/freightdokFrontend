@@ -99,7 +99,8 @@ const LoadDetailModal = ({
     SelectElement = edit ? OutlinedInput : FilledInput;
   const {assignees = [] } = state.driver || {};
   const assignedToOptions = assignees.map((item) => {
-    const { _id, firstName, lastName, role, user: {name = '', role: assigneeRole, _id: assigneeId} ={} } = item || {};
+    const { _id, firstName, lastName, role, user = {} } = item || {},
+        {name = '', role: assigneeRole, _id: assigneeId} = user || {};
     return {
       name, _id: assigneeId || _id, firstName, lastName, role: getRoleNameString(assigneeRole || role)
     }
@@ -109,7 +110,7 @@ const LoadDetailModal = ({
     setupDrivers();
     setForm({
       status,
-      assignedTo: user._id,
+      assignedTo: user?._id,
       accessorials,
       trailorNumber,
       pickup,

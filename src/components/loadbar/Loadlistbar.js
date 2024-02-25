@@ -149,8 +149,8 @@ const Loadlistbar = ({
                 id: 'assignedTo',
                 label: 'Assigned To',
                 renderer: ({row}) => {
-                    const {user = ''} = row || {},
-                        {firstName, lastName, name} =  user;
+                    const {user = '', assignedTo} = row || {},
+                        {firstName, lastName, name} =  assignedTo || user || {};
                     if(lastName){
                         return `${firstName} ${lastName}`
                     } else {

@@ -100,7 +100,6 @@ const getTableCell = ({
         } else if (_.isFunction(renderer)) {
             cell = renderer({row, role}, rowIndex) || emptyState;
         } else {
-            console.log(id, row, _.isObject(row[id]), _.get(row, id))
             cell = _.get(row, id, emptyState) || emptyState;
         }
         return <Cell key={id + i} padding={rowCellPadding || 'normal'} component="th" scope="row">
