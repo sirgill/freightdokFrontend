@@ -34,5 +34,12 @@ export const UserSettings = {
         const o = obj.openBoard || {}
         o[key] = value;
         setUserSettings({...obj, openBoard: o});
+    },
+    getUserPermissions() {
+        const userPermissions = JSON.parse(localStorage.getItem('userPermissions') || '{}');
+        return userPermissions || {};
+    },
+    setUserPermissions(permissions) {
+        localStorage.setItem('userPermissions', JSON.stringify(permissions));
     }
 }

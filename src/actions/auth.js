@@ -16,9 +16,8 @@ import {
 
 import setAuthToken from '../utils/setAuthToken';
 import { requestPost } from "../utils/request";
-import { notification } from "./alert";
 import {AUTH_USER} from "../config/requestEndpoints";
-import {ENHANCED_DASHBOARD} from "../components/client/routes";
+import {UserSettings} from "../components/Atoms/client";
 
 //Load user
 export const loadUser = () => async dispatch => {
@@ -77,6 +76,8 @@ export const login = ({data}) => async dispatch => {
 
     try {
         setAuthToken(data.token)
+        UserSettings.setUserPermissions(data.userPermissions)
+        localStorage.setItem('supportsNewPermission', data?.supportsNewPermission || false)
 
         dispatch({
             type: LOGIN_SUCCESS,

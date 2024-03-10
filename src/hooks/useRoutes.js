@@ -17,7 +17,7 @@ const useRoutes = (routes, path) => {
     }, [dashboardRoutes]);
 
     return {
-        links, firstLink
+        links, firstLink, dashboardRoutes
     }
 }
 
