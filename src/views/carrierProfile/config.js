@@ -3,8 +3,11 @@ import {Button} from "@mui/material";
 import {Link} from "react-router-dom";
 import {UPDATE_INTEGRATIONS_LINK} from "../../components/constants";
 import React from "react";
+import {UserSettings} from "../../components/Atoms/client";
 
 export const integrationNameMap = {chRobinson: 'C.H. Robinson', newtrul: 'New Trul'};
+
+const {edit} = UserSettings.getUserPermissionsByDashboardId('carrierProfile');
 
 export const integrationCredentialConfig = ({path, _dbData, list, refetch}) => ({
     rowCellPadding: 'normal',
@@ -33,6 +36,7 @@ export const integrationCredentialConfig = ({path, _dbData, list, refetch}) => (
         {
             renderer: ({row}, rowIndex) => {
                 return <Button
+                    disabled={!edit}
                     component={Link}
                     to={{pathname: path + UPDATE_INTEGRATIONS_LINK, state: {row, rowIndex, _dbData, list, refetch}}}
                     variant='contained'

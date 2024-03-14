@@ -13,15 +13,15 @@ import {
 } from "../../actions/driver";
 import EditDriver from "../driver-forms/AddDriver";
 import AddDriverForm from "../driver-forms/AddDriver";
-import {showDelete} from "../../actions/component.action";
-import {ROLES} from "../constants";
+import {UserSettings} from "../Atoms/client";
+
+const {add, edit: canEdit, delete: canDelete } = UserSettings.getUserPermissionsByDashboardId('drivers')
 
 const Driverlistbar = (props = {}) => {
     const {deleteDriver} = props;
     const {drivers = [], loading = false, timestamp} = useSelector((state) => state.driver, shallowEqual);
     const [edit, setEdit] = useState({open: false, data: {}});
-    const classes = useStyles(),
-        dispatch = useDispatch();
+    const dispatch = useDispatch();
 
     const handleDeleteDriver = (driver = {}, onDialogClose, {row}) => {
         const _id = typeof row.user !== "string" ? row.user._id : row.user;
@@ -53,7 +53,7 @@ const Driverlistbar = (props = {}) => {
         emptyMessage: 'No drivers found',
         // onRowClick: (row) => setEdit({open: true, data: row}),
         hasDelete: true,
-        deletePermissions: [ROLES.superadmin, ROLES.admin, ROLES.dispatch],
+        deletePermissions: !!canDelete,
         deleteMessage: ({row}) => 'Are you sure you want to delete ' + row.firstName + " " + (row.lastName || '') + '?',
         onDelete: handleDeleteDriver,
         columns: [
@@ -73,7 +73,7 @@ const Driverlistbar = (props = {}) => {
                 id: 'delete',
                 renderer: ({row}) => {
                     return <Fragment>
-                        <Button variant={'contained'} sx={{mr: 2}} onClick={handleUpdate.bind(this, row)}
+                        <Button disabled={!canEdit} variant={'contained'} sx={{mr: 2}} onClick={handleUpdate.bind(this, row)}
                                 color='primary'>
                             Update
                         </Button>
@@ -87,13 +87,14 @@ const Driverlistbar = (props = {}) => {
         setEdit({open: false, data: {}});
     }
 
+    const Actions = <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
+        <AddDriverForm/>
+    </Box>
+
     return (
-        <div className={classes.table}>
-            <EnhancedTable config={tableConfig} data={drivers} loading={loading}/>
+        <div>
+            <EnhancedTable config={tableConfig} data={drivers} loading={loading} actions={Actions}/>
             {edit.open && <EditDriver closeEditForm={closeEditForm} data={edit.data} isEdit={true} onRefresh={fetchDrivers} />}
-            <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
-                <AddDriverForm/>
-            </Box>
         </div>
     );
 };

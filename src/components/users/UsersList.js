@@ -7,8 +7,10 @@ import UserForm from "./UserForm";
 import {ROLES} from "../constants";
 import {showDelete} from "../../actions/component.action";
 import {getRoleNameString} from "../client/constants";
+import {UserSettings} from "../Atoms/client";
 
 const UsersList = () => {
+    const {delete: hasDeletePermission, edit} = UserSettings.getUserPermissionsByDashboardId('users')
     const { list, loading, page = 0, limit = 10, total } = useSelector(
         (state) => state.users
     );
@@ -69,12 +71,12 @@ const UsersList = () => {
             {
                 id: 'actions',
                 label: 'Actions',
-                renderer: ({ row: { _id, email, role } = {}, role: userRole }) => {
+                renderer: ({ row: { _id, email, role, rolePermissionId } = {}, role: userRole }) => {
                     // onDelete.bind(this, _id)
                     return <Fragment>
                         {allowedRolesForDispatch.includes(userRole) && (
-                                <Button variant='contained' sx={{mr: 1}} onClick={() => {
-                                    dispatch(selectUserToEdit({ _id, email, role }))
+                                <Button variant='contained' sx={{mr: 1}} disabled={!edit} onClick={() => {
+                                    dispatch(selectUserToEdit({ _id, email, role, rolePermissionId }))
                                 }}>
                                     Update
                                 </Button>
@@ -82,7 +84,7 @@ const UsersList = () => {
                         }
                         {user &&
                             [ROLES.admin, ROLES.superadmin].includes(user.role) &&
-                            <Button variant='contained' color='error' onClick={showDelete({
+                            <Button variant='contained' disabled={!hasDeletePermission} color='error' onClick={showDelete({
                                 message: 'Are you sure you want to delete '+ email + '?',
                                 uri: `/api/users/${_id}`,
                                 afterSuccessCb: afterDelete

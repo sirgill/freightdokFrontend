@@ -7,10 +7,12 @@ import {getBaseUrl} from "../../config";
 import FormModal from "./FormModal";
 import {addEvent, removeEvent} from "../../utils/utils";
 import {showDelete} from "../../actions/component.action";
+import {UserSettings} from "../../components/Atoms/client";
 
 
 const OwnerOperator = () => {
   const { path } = useRouteMatch(),
+      {edit, delete: canDelete} = UserSettings.getUserPermissionsByDashboardId('ownerOperator'),
       [row, setRow] = useState([]),
       [loading, setLoading] = useState(false),
     history = useHistory();
@@ -69,7 +71,7 @@ const OwnerOperator = () => {
         },
       {
         id: "update",
-        renderer: ({ row, role }) => {
+        renderer: ({ row }) => {
           return (
             <Fragment>
               <Button
@@ -79,6 +81,7 @@ const OwnerOperator = () => {
                   history.push(path + `/edit/${row._id}`);
                 }}
                 sx={{mr: 1}}
+                disabled={!edit}
               >
                 Update
               </Button>
@@ -90,7 +93,7 @@ const OwnerOperator = () => {
                       message: 'Are you sure you want to delete this Owner Operator?',
                       afterSuccessCb: afterDelete
                   })}
-                  disabled={['ownerOperator', 'dispatch',].includes(role)}
+                  disabled={!canDelete}
               >
                 Delete
               </Button>

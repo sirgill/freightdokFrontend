@@ -19,15 +19,14 @@ import useMutation from "../../hooks/useMutation";
 import {notification} from "../../actions/alert";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {getDrivers} from "../../actions/driver";
-import {ROLES} from "../constants";
-import {getUserDetail} from "../../utils/utils";
+import {UserSettings} from "../Atoms/client";
 
-const ADD_DRIVERS_ROLES_PERMITTED = [ROLES.superadmin, ROLES.admin, ROLES.afterhours];
+// const ADD_DRIVERS_ROLES_PERMITTED = [ROLES.superadmin, ROLES.admin, ROLES.afterhours];
+
+const {add} = UserSettings.getUserPermissionsByDashboardId('drivers')
 
 const AddDriverForm = (props) => {
     const {
-            user,
-            addDriver,
             all_drivers,
             getLoads,
             isEdit = false,
@@ -43,9 +42,7 @@ const AddDriverForm = (props) => {
         loads: [],
         user: "",
     },
-        dispatch = useDispatch(),
-        {role} = getUserDetail().user,
-        hasAddPermission = ADD_DRIVERS_ROLES_PERMITTED.includes(role);
+        dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
     const [count, setCount] = useState(1);
@@ -106,8 +103,9 @@ const AddDriverForm = (props) => {
 
     return (
         <>
-            {(hasAddPermission && !isEdit &&
+            {(!isEdit &&
                 <Button
+                    disabled={!add}
                     color="primary"
                     onClick={handleClickOpen}
                     style={{marginBottom: "20%"}}

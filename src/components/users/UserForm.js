@@ -10,13 +10,13 @@ import {
     fetchUsers,
     openModal,
 } from "../../actions/users";
-import {capitalizeFirstLetter} from "../../utils/helper";
 import {PRIMARY_BLUE} from "../layout/ui/Theme";
 import useMutation from "../../hooks/useMutation";
 import {notification} from "../../actions/alert";
 import {isEmailValid} from "../../utils/utils";
 import {ROLES} from "../constants";
 import {Input, LoadingButton, Password, Select} from "../Atoms";
+import {UserSettings} from "../Atoms/client";
 
 const initialState = {
     email: "",
@@ -24,7 +24,7 @@ const initialState = {
     role: "dispatch",
 };
 
-const ADD_USERS_ROLES_PERMITTED = [ROLES.superadmin, ROLES.admin, ROLES.dispatch];
+// const ADD_USERS_ROLES_PERMITTED = [ROLES.superadmin, ROLES.admin, ROLES.dispatch];
 
 const UserForm = () => {
     const {mutation, loading: isSaving} = useMutation('/api/users')
@@ -33,11 +33,11 @@ const UserForm = () => {
         (state) => state.users
     );
     const {mutation: updateUser, loading: isSavingUpdate} = useMutation(`/api/users/${user?._id}`)
-    const {user: auth = {}} = useSelector((state) => state.auth);
+    const {user: auth = {}, allRoles} = useSelector((state) => state.auth);
     const {roles = []} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
-    const [userRoles, setUserRoles] = useState(),
-        hasAddPermission = ADD_USERS_ROLES_PERMITTED.includes(auth?.role);
+    const [userRoles, setUserRoles] = useState();
+    const {add = false} = UserSettings.getUserPermissionsByDashboardId('users');
 
     useEffect(() => {
         if(auth?.role.equalsIgnoreCase(ROLES.superadmin)) {
@@ -69,8 +69,8 @@ const UserForm = () => {
 
     useEffect(() => {
         if (user) {
-            const {email, role} = user;
-            setForm((f) => ({...f, email, role}));
+            const {email, rolePermissionId} = user;
+            setForm((f) => ({...f, email, role: rolePermissionId}));
             dispatch(openModal());
         }
     }, [user]);
@@ -110,9 +110,10 @@ const UserForm = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
+        const {email, password, role} = form;
+        const {_id, roleName} = allRoles.find(_role => _role._id === role) || {};
         if (!loading) {
             if (!user) {
-                const {email, password, role} = form;
                 if (!email || !password || !role)
                     return alert("All fields are required");
                 else if (!isEmailValid(email)) {
@@ -120,23 +121,25 @@ const UserForm = () => {
                 } else if (password.length < 6) {
                     return alert('Please enter password with 6 or more characters');
                 }
-                await mutation(form, '', afterSubmit);
+
+                await mutation({...form, rolePermissionId: _id, role: roleName}, '', afterSubmit);
             } else {
                 const dataToUpdate = getDiff(form, user);
-                await updateUser(dataToUpdate, 'put', afterSubmit);
+                await updateUser({...dataToUpdate, rolePermissionId: role, role: roleName}, 'put', afterSubmit);
             }
         }
     };
 
     return (
         <>
-            {hasAddPermission && <Button
+            <Button
                 color="primary"
                 variant={'contained'}
                 onClick={handleClickOpen}
+                disabled={!add}
             >
                 Add User
-            </Button>}
+            </Button>
             <Dialog
                 fullWidth={false}
                 maxWidth={"md"}
@@ -182,8 +185,9 @@ const UserForm = () => {
                                         label={"Role"}
                                         name="role"
                                         value={form.role}
-                                        options={userRoles &&
-                                            userRoles.map((role) => ({id: role, label: capitalizeFirstLetter(role)}))}
+                                        options={allRoles}
+                                        labelKey='roleName'
+                                        valueKey='_id'
                                     />
                                 </Grid>
                                 <Grid item xs={12} justifyContent='center' display={'flex'}>

@@ -149,7 +149,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             containerHeight='',
         } = config,
         {role = ''} = getUserDetail().user,
-        hasDeletePermission = deletePermissions.indexOf(role) > -1 || false,
+        hasDeletePermission = typeof deletePermissions === 'boolean' ? deletePermissions : deletePermissions.indexOf(role) > -1 || false,
         ref = React.useRef([]);
     const length = Array.isArray(data) && data.length,
         Actions = useMemo(() => {

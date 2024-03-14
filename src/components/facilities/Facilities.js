@@ -9,12 +9,14 @@ import {ROLES} from "../constants";
 import {showDelete} from "../../actions/component.action";
 import {getUserDetail} from "../../utils/utils";
 import useFetch from "../../hooks/useFetch";
+import {UserSettings} from "../Atoms/client";
 
 
 const Facilities = () => {
     const {path} = useRouteMatch();
     const {role = ''} = getUserDetail().user;
-    const hasPermission = [ROLES.admin, ROLES.dispatch, ROLES.support].includes(role),
+    const {add, delete: canDelete} = UserSettings.getUserPermissionsByDashboardId('facilities')
+    const /*hasPermission = [ROLES.admin, ROLES.dispatch, ROLES.support].includes(role),*/
         { data = {}, loading, refetch, isRefetching } = useFetch('/api/warehouse'),
         {totalCount, warehouses = []} = data || {};
 
@@ -62,6 +64,7 @@ const Facilities = () => {
                     return <Button
                         variant='contained'
                         color='error'
+                        disabled={!canDelete}
                         onClick={showDelete({
                             message: 'Are you sure you want to delete Facility ' + name + '?',
                             uri: '/api/warehouse/' + _id,
@@ -80,7 +83,7 @@ const Facilities = () => {
             <Box>
                 <EnhancedTable config={config} data={warehouses} loading={loading} onRefetch={refetch} isRefetching={isRefetching} />
             </Box>
-            {hasPermission && <Button variant='contained' component={Link} to={path + '/add'}
+            {!!add && <Button variant='contained' component={Link} to={path + '/add'}
                                       sx={{position: 'absolute', right: 10}}>Add Facility</Button>}
             <Switch>
                 <Route render={(props) => <Form {...props} refetch={refetch} />} path={path + '/add'}/>

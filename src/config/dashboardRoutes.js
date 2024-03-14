@@ -93,12 +93,12 @@ export const newRoutes = [
         icon: OpenBoardIcon,
         view: false
     }, {
-        id: 'myBids',
+        id: 'bids',
         title: 'My Bids',
         component: MyBids,
         icon: MybidsIcon,
     }, {
-        id: 'myLoads',
+        id: 'loads',
         title: 'My Loads',
         component: Loadlistbar,
         icon: MyLoadsIcon,
@@ -123,7 +123,7 @@ export const newRoutes = [
         component: OwnerOperator,
         icon: OwnerOperatorIcon,
     }, {
-        id: 'loadHistory',
+        id: 'history',
         title: 'Load History',
         component: LoadsStatus,
         icon: LoadHistoryIcon,

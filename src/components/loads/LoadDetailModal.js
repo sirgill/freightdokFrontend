@@ -69,7 +69,7 @@ const LoadDetailModal = ({
   open,
   handleClose,
   listBarType,
-  load,
+  load, canUpdate
 }) => {
   let {
     _id,
@@ -386,7 +386,7 @@ const LoadDetailModal = ({
                       }}
                     />}
                   </Box>
-                    : <IconButton onClick={() => setEdit(true)} title='Edit' disabled={isProcessingAsyncRequest}>
+                    : <IconButton onClick={() => setEdit(true)} title='Edit' disabled={isProcessingAsyncRequest || !canUpdate}>
                       <EditIcon
                         fontSize="large"
                         color={isProcessingAsyncRequest ? "disabled" : 'primary'}
@@ -397,7 +397,7 @@ const LoadDetailModal = ({
                       fontSize="large"
                       color={isProcessingAsyncRequest ? "disabled" : 'primary'}
                     />
-                  </IconButton> : <IconButton onClick={createCopy} title='Create Copy' disabled={isProcessingAsyncRequest}>
+                  </IconButton> : <IconButton onClick={createCopy} title='Create Copy' disabled={isProcessingAsyncRequest || !canUpdate}>
                     <FileCopyOutlined
                       fontSize="large"
                       color={isProcessingAsyncRequest ? "disabled" : 'primary'}

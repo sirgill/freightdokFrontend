@@ -8,6 +8,7 @@ import LoadDetailModal from "../loads/LoadDetailModal";
 import AddLoadForm from "../load-forms/AddLoad";
 import {Box} from "@mui/material";
 import {ROLES} from "../constants";
+import {UserSettings} from "../Atoms/client";
 
 const Loadlistbar = ({
                          getLoads,
@@ -16,7 +17,8 @@ const Loadlistbar = ({
                          resetSearchField, searchText
                      }) => {
     const dispatch = useDispatch(),
-        classes = useStyles();
+        classes = useStyles(),
+        {add, delete: hasDeletePermission, edit} = UserSettings.getUserPermissionsByDashboardId('loads');
     // const { query, loads: sLoads, page: sPage, limit, total: sTotal } = search;
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState({open: false, data: {}});
@@ -94,7 +96,7 @@ const Loadlistbar = ({
         onPageChange: handleChangePage,
         hasDelete: true,
         onDelete,
-        deletePermissions: [ROLES.admin, ROLES.ownerOperator, ROLES.superadmin, ROLES.dispatch],
+        deletePermissions: !!hasDeletePermission,
         columns: [
             {
                 id: 'loadNumber',
@@ -165,7 +167,7 @@ const Loadlistbar = ({
         <div className={classes.table}>
             <EnhancedTable config={tableConfig} data={rawLoades} loading={loading}/>
             {user?.role && <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                {['admin', 'superAdmin', 'dispatch', 'support'].includes(user.role) && <AddLoadForm/>}
+                {add && <AddLoadForm/>}
             </Box>}
             {open.open && <LoadDetailModal
                 modalEdit={false}
@@ -176,6 +178,7 @@ const Loadlistbar = ({
                     dispatch(selectLoad());
                 }}
                 deleteLoad={(_id) => dispatch(deleteLoad(_id))}
+                canUpdate={!!edit}
             />}
         </div>
     );
