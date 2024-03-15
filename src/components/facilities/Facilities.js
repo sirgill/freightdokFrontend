@@ -7,15 +7,13 @@ import {Box} from '@mui/material';
 import EnhancedTable from "../../components/Atoms/table/Table"
 import {ROLES} from "../constants";
 import {showDelete} from "../../actions/component.action";
-import {getUserDetail} from "../../utils/utils";
 import useFetch from "../../hooks/useFetch";
 import {UserSettings} from "../Atoms/client";
 
 
 const Facilities = () => {
     const {path} = useRouteMatch();
-    const {role = ''} = getUserDetail().user;
-    const {add, delete: canDelete} = UserSettings.getUserPermissionsByDashboardId('facilities')
+    const {add, delete: canDelete, edit} = UserSettings.getUserPermissionsByDashboardId('facilities')
     const /*hasPermission = [ROLES.admin, ROLES.dispatch, ROLES.support].includes(role),*/
         { data = {}, loading, refetch, isRefetching } = useFetch('/api/warehouse'),
         {totalCount, warehouses = []} = data || {};
@@ -88,7 +86,7 @@ const Facilities = () => {
             <Switch>
                 <Route render={(props) => <Form {...props} refetch={refetch} />} path={path + '/add'}/>
                 <Route render={(props) => <Form {...props} refetch={refetch} />} path={path + '/edit/:id'} refetch={refetch} />
-                <Route render={(props) => <Preview {...props} closeUrl={path}/>} path={path + '/preview/:id'}/>
+                <Route render={(props) => <Preview {...props} canEdit={!!edit} closeUrl={path}/>} path={path + '/preview/:id'}/>
             </Switch>
         </div>
     )
