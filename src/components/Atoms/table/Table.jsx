@@ -1,4 +1,5 @@
 import {
+    Backdrop,
     Box,
     DialogContentText,
     Grid,
@@ -243,13 +244,19 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         <TableContainer
             component={Paper}
             className={''}
-            sx={{boxShadow: '0px 0px 32px #8898AA26', mb: 2, height: length && !loading ? 'calc(100% - 80px)' : 'auto'}}
+            sx={{boxShadow: '0px 0px 32px #8898AA26', mb: 2, height: length && !loading ? 'calc(100% - 80px)' : 'auto', position: 'relative'}}
         >
             {loading
                 ? getLoader()
                 : <Table ref={el => ref.current['table'] = el} aria-label="caption table" size={size} stickyHeader>
                     {getTableContent}
                 </Table>}
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1, position: 'absolute' }}
+                open={isRefetching}
+            >
+                <Spinner sx={{color: 'inherit'}} />
+            </Backdrop>
         </TableContainer>
         {!loading && data.length > 0 &&
             <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit} onPageSizeChange={onPageSizeChange}/>}

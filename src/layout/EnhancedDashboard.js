@@ -16,7 +16,7 @@ import usePermissions from "../hooks/usePermissions";
 const Dashboard = ({match = {}, history, location}) => {
     const {pathname} = location,
         {path} = match,
-        supportsNewPermission = JSON.parse(localStorage.getItem('supportsNewPermission'));
+        supportsNewPermission = JSON.parse(localStorage.getItem('supportsNewPermission') || '{}');
     const {links, firstLink, dashboardRoutes} = useRoutes(routes, path),
         {links: newLinks, firstLink: newFirstLink, dashboardRoutes: newDashboardRoutes} = usePermissions(newRoutes, path);
 

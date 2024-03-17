@@ -1,37 +1,26 @@
-import React, {Fragment, useEffect, useState} from "react";
+import React, {Fragment, useEffect} from "react";
 import {Button} from "@mui/material";
 import {Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
-import axios from "axios";
-import {getBaseUrl} from "../../config";
 import FormModal from "./FormModal";
 import {addEvent, removeEvent} from "../../utils/utils";
 import {showDelete} from "../../actions/component.action";
 import {UserSettings} from "../../components/Atoms/client";
+import useFetch from "../../hooks/useFetch";
 
 
 const OwnerOperator = () => {
   const { path } = useRouteMatch(),
       {edit, delete: canDelete} = UserSettings.getUserPermissionsByDashboardId('ownerOperator'),
-      [row, setRow] = useState([]),
-      [loading, setLoading] = useState(false),
+      {data: queryData = {}, isRefetching, loading, refetch} = useFetch('/api/ownerOperator'),
+      {data, totalCount} = queryData || {},
     history = useHistory();
 
   function fetchOwnerOp() {
-      setLoading(true);
-      axios.get(getBaseUrl() + '/api/ownerOperator').then(r => {
-          const {data: {data = []} = {}} = r;
-          setRow(data);
-          setLoading(false);
-      })
-          .catch(err => {
-              console.log(err.message)
-              setLoading(false);
-          })
+      refetch();
   }
 
   useEffect(() => {
-      fetchOwnerOp();
       addEvent(window, 'refreshOwnerOp', fetchOwnerOp)
 
       return () => removeEvent(window, 'refreshOwnerOp', fetchOwnerOp)
@@ -46,7 +35,9 @@ const OwnerOperator = () => {
 
   const tableConfig = {
     rowCellPadding: "inherit",
+    showRefresh: true,
     emptyMessage: "No Owner Operator Found",
+    count: totalCount,
     columns: [
       {
         id: "firstName",
@@ -108,8 +99,10 @@ const OwnerOperator = () => {
     <div>
       <EnhancedTable
         config={tableConfig}
-        data={row}
+        data={data}
         loading={loading}
+        isRefetching={isRefetching}
+        onRefetch={refetch}
       />
         {/*<Button*/}
         {/*    variant='contained'*/}
