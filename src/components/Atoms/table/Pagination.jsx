@@ -37,7 +37,7 @@ const TablePagination = ({data = [], onPageChange, page = 0, count = 0, limit = 
 
     const onChange = (e, pgNum) => {
         if (onPageChange) {
-            onPageChange(e, pgNum)
+            onPageChange(e, +pgNum)
         }
     }
 
@@ -47,13 +47,12 @@ const TablePagination = ({data = [], onPageChange, page = 0, count = 0, limit = 
         }
     }
 
-    if (length < 10 && count < 10) {
+    if (count <= 5) {
         return null;
     }
     return (
         <StyledStack direction='row' alignItems={'center'}>
-            {count > 10 &&
-                <Typography sx={{color: '#525F7F'}} fontSize={12}>Showing {data.length} of {count} entries</Typography>}
+            <Typography sx={{color: '#525F7F'}} fontSize={12}>Showing {length} of {count} entries</Typography>
             <Stack direction='row' alignItems='center'>
                 <Select
                     name='pageSize'
@@ -73,7 +72,7 @@ const TablePagination = ({data = [], onPageChange, page = 0, count = 0, limit = 
                     count={Math.ceil(count / limit)}
                     color="primary"
                     variant="contained"
-                    page={page + 1}
+                    page={page}
                     size="medium"
                     onChange={onChange}
                 />

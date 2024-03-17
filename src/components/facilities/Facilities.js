@@ -7,15 +7,17 @@ import {Box} from '@mui/material';
 import EnhancedTable from "../../components/Atoms/table/Table"
 import {ROLES} from "../constants";
 import {showDelete} from "../../actions/component.action";
-import useFetch from "../../hooks/useFetch";
 import {UserSettings} from "../Atoms/client";
+import useEnhancedFetch from "../../hooks/useEnhancedFetch";
 
 
 const Facilities = () => {
     const {path} = useRouteMatch();
     const {add, delete: canDelete, edit} = UserSettings.getUserPermissionsByDashboardId('facilities')
-    const /*hasPermission = [ROLES.admin, ROLES.dispatch, ROLES.support].includes(role),*/
-        { data = {}, loading, refetch, isRefetching } = useFetch('/api/warehouse'),
+    const { data = {}, loading, refetch, isRefetching, page, limit, onLimitChange, onPageChange } = useEnhancedFetch('/api/warehouse', {
+            page: 1,
+            limit: 5,
+        }),
         {totalCount, warehouses = []} = data || {};
 
     const afterDelete = ({success}) => {
@@ -26,10 +28,14 @@ const Facilities = () => {
 
     const config = {
         count: totalCount,
+        page,
+        limit,
         deletePermissions: ['admin', 'superAdmin'],
         onRowClick: ({_id}) => `${path}/preview/${_id}`,
         rowCellPadding: 'normal',
         showRefresh: true,
+        onPageChange: onPageChange,
+        onPageSizeChange: onLimitChange,
         columns: [
             {
                 id: 'name',
@@ -76,13 +82,15 @@ const Facilities = () => {
         ]
     }
 
+    const Actions = <Button variant='contained' component={Link} to={path + '/add'} disabled={!add}>
+        Add Facility
+    </Button>
+
     return (
         <div>
             <Box>
-                <EnhancedTable config={config} data={warehouses} loading={loading} onRefetch={refetch} isRefetching={isRefetching} />
+                <EnhancedTable config={config} data={warehouses} loading={loading} onRefetch={refetch} isRefetching={isRefetching} actions={Actions} />
             </Box>
-            {!!add && <Button variant='contained' component={Link} to={path + '/add'}
-                                      sx={{position: 'absolute', right: 10}}>Add Facility</Button>}
             <Switch>
                 <Route render={(props) => <Form {...props} refetch={refetch} />} path={path + '/add'}/>
                 <Route render={(props) => <Form {...props} refetch={refetch} />} path={path + '/edit/:id'} refetch={refetch} />

@@ -253,7 +253,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
                 </Table>}
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1, position: 'absolute' }}
-                open={isRefetching}
+                open={isRefetching || false}
             >
                 <Spinner sx={{color: 'inherit'}} />
             </Backdrop>

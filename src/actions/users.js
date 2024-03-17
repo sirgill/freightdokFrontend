@@ -21,10 +21,10 @@ export const callApi = () => ({
     type: FETCH_USERS
 });
 
-export const fetchUsers = (page = 0, limit = 5) => async dispatch => {
+export const fetchUsers = (page = 1, limit = 5) => async dispatch => {
     try {
         dispatch({type: FETCH_USERS});
-        const {success, data} = await requestGet({uri: `/api/users?page=${page + 1}&limit=${limit}`});
+        const {success, data} = await requestGet({uri: `/api/users?page=${page}&limit=${limit}`});
         if(!success){
             notification(data.message, 'error');
         }

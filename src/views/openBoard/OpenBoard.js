@@ -70,8 +70,8 @@ const OpenBoard = () => {
 
     const onPageChange = (e, pgNum) => {
         setFilters((prev) => {
-            getBidListWithFilter({ ...prev, pageIndex: pgNum - 1 }, params);
-            return { ...prev, pageIndex: pgNum - 1 }
+            getBidListWithFilter({ ...prev, pageIndex: pgNum }, params);
+            return { ...prev, pageIndex: pgNum }
         });
     };
 

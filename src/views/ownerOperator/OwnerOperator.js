@@ -7,12 +7,15 @@ import {addEvent, removeEvent} from "../../utils/utils";
 import {showDelete} from "../../actions/component.action";
 import {UserSettings} from "../../components/Atoms/client";
 import useFetch from "../../hooks/useFetch";
+import useEnhancedFetch from "../../hooks/useEnhancedFetch";
 
 
 const OwnerOperator = () => {
   const { path } = useRouteMatch(),
       {edit, delete: canDelete} = UserSettings.getUserPermissionsByDashboardId('ownerOperator'),
-      {data: queryData = {}, isRefetching, loading, refetch} = useFetch('/api/ownerOperator'),
+          {data: queryData = {}, isRefetching, loading, refetch, page, limit, onLimitChange, onPageChange} = useEnhancedFetch('/api/ownerOperator', {
+          page: 1, limit: 10
+      }),
       {data, totalCount} = queryData || {},
     history = useHistory();
 
@@ -38,6 +41,10 @@ const OwnerOperator = () => {
     showRefresh: true,
     emptyMessage: "No Owner Operator Found",
     count: totalCount,
+      page,
+      limit,
+      onPageSizeChange: onLimitChange,
+      onPageChange,
     columns: [
       {
         id: "firstName",

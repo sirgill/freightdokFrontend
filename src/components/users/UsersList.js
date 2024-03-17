@@ -11,7 +11,7 @@ import {UserSettings} from "../Atoms/client";
 const {delete: hasDeletePermission, edit} = UserSettings.getUserPermissionsByDashboardId('users');
 
 const UsersList = () => {
-    const { list, loading, page = 0, limit = 10, total } = useSelector(
+    const { list, loading, page = 1, limit = 10, total } = useSelector(
         (state) => state.users
     );
     const dispatch = useDispatch();
@@ -29,11 +29,11 @@ const UsersList = () => {
     }, [dispatch]);
 
     const handleChangePage = (event, newPage) => {
-        dispatch(fetchUsers(newPage - 1, +limit));
+        dispatch(fetchUsers(newPage, +limit));
     };
 
     const onPageSizeChange = ({value}) => {
-        dispatch(fetchUsers(0, value));
+        dispatch(fetchUsers(1, value));
     };
 
     const config = {

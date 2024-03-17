@@ -17,18 +17,6 @@ const getWarehouses = () => async (dispatch) => {
     }
 }
 
-const addWarehouse = (data, callback) => async () => {
-    try {
-        const response = await axios.post('/api/warehouse', data)
-        if (response.status === 200) {
-            notification(response.data.message || data._id ? 'Facility Updated' : 'Facility Added')
-            if (callback) callback(response);
-        }
-    } catch (error) {
-        console.log(error)
-    }
-}
-
 const getWarehouseById = (id, cb) => async (dispatch) => {
     try {
         const response = await axios.get('/api/warehouse/' + id);
@@ -38,22 +26,6 @@ const getWarehouseById = (id, cb) => async (dispatch) => {
         }
     } catch (error) {
         console.log(error);
-    }
-}
-
-const deleteWarehouse = (id) => async (dispatch) => {
-    try {
-        const { status, data } = await axios.delete('/api/warehouse/' + id);
-        if (status === 200) {
-            notification(data.message || 'Deleted');
-            dispatch(getWarehouses());
-        }
-        else {
-            notification(data.message, 'error');
-        }
-    } catch (error) {
-        console.log(error.message)
-        notification(error.message, 'error');
     }
 }
 
@@ -79,8 +51,6 @@ export const getGeoLocation = (obj) => async (dispatch) => {
 }
 
 export {
-    addWarehouse,
     getWarehouses,
-    deleteWarehouse,
     getWarehouseById,
 }
