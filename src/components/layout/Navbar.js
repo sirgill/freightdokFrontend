@@ -9,11 +9,11 @@ import Tab from "@material-ui/core/Tab";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { theme } from "./ui/Theme";
+import { themeNew } from "./ui/Theme";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { logout } from "../../actions/auth";
@@ -35,7 +35,7 @@ function ElevationScroll(props) {
 const Navbar = ({ auth: { isAuthenticated, loading } }) => {
   const classes = useStyles();
   const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
-  const matches = useMediaQuery(theme.breakpoints.down("md"));
+  const matches = useMediaQuery(themeNew.breakpoints.down("md"));
 
   const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -170,7 +170,6 @@ const Navbar = ({ auth: { isAuthenticated, loading } }) => {
       <ElevationScroll>
         <AppBar
           position="fixed"
-          color="secondary"
           className={classes.appbarNavbar}
         >
           <Toolbar disablegutter>

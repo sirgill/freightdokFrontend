@@ -10,6 +10,7 @@ import {
   USER_UPDATED,
   AUTH_UPDATE_FAIL
 } from '../actions/types';
+import {clearUserSettings} from "../components/Atoms/client";
 
 const initialState = {
   token: localStorage.getItem('token'),
@@ -20,8 +21,9 @@ const initialState = {
   error: '',
 };
 
-export default function(state = initialState, action) {
-  const { type, payload } = action;
+export default function auth(state = initialState, action) {
+  const { type, payload } = action,
+    hasToken = localStorage.getItem('token');
 
   switch(type) {
     case USER_LOADED:
@@ -38,7 +40,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         ...payload,
-        isAuthenticated: true,
+        isAuthenticated: !!hasToken ?? true,
         loading: false
       };
     case REGISTER_FAIL:
@@ -66,6 +68,7 @@ export default function(state = initialState, action) {
     case LOGIN_FAIL:
     case LOGOUT:
       localStorage.removeItem('token');
+      clearUserSettings();
       return {
         ...state,
         token: null,

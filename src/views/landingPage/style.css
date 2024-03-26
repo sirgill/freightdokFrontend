@@ -1,0 +1,22 @@
+.landingPageOval {
+    background-image: url("../../assets/images/Oval.png");
+    height: 500px;
+    width: 600px;
+    position: absolute;
+    bottom: -70px;
+    right: 0;
+    background-size: cover;
+    opacity: 0.7;
+}
+
+.landingPageContainer {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.landingPageMidSection {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translate(10%, -50%);
+}

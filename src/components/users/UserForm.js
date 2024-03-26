@@ -3,59 +3,62 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
-import Button from "@material-ui/core/Button";
-import MenuItem from "@material-ui/core/MenuItem";
+import Button from "@mui/material/Button";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    registerUser,
     resetUserSelected,
-    updateUser,
     fetchUsers,
     openModal,
 } from "../../actions/users";
 import {capitalizeFirstLetter} from "../../utils/helper";
-import {useStyles} from "../HelperCells";
-import InputField from "../Atoms/form/InputField";
-import {blue} from "../layout/ui/Theme";
+import {PRIMARY_BLUE} from "../layout/ui/Theme";
+import useMutation from "../../hooks/useMutation";
+import {notification} from "../../actions/alert";
+import {isEmailValid} from "../../utils/utils";
+import {ROLES} from "../constants";
+import {Input, LoadingButton, Password, Select} from "../Atoms";
 
 const initialState = {
     email: "",
     password: "",
-    role: "",
+    role: "dispatch",
 };
 
 const UserForm = () => {
-    const classes = useStyles();
+    const {mutation, loading: isSaving} = useMutation('/api/users')
     const [form, setForm] = useState({...initialState});
     const {loading, open, error, user, page, limit} = useSelector(
         (state) => state.users
     );
-    const {user: auth} = useSelector((state) => state.auth);
-    const {roles} = useSelector((state) => state.auth);
+    const {mutation: updateUser, loading: isSavingUpdate} = useMutation(`/api/users/${user?._id}`)
+    const {user: auth = {}} = useSelector((state) => state.auth);
+    const {roles = []} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const [userRoles, setUserRoles] = useState();
 
     useEffect(() => {
-        setUserRoles(roles);
-
-        if (auth.role === "dispatch") {
+        if(auth?.role.equalsIgnoreCase(ROLES.superadmin)) {
+            setUserRoles(roles)
+        } else {
             const newRoles = roles.filter(
                 (item) =>
                     item === "driver" ||
                     item === "afterhours" ||
                     item === "load planner" ||
-                    item === "support"
+                    item === "support" ||
+                    item === 'dispatch' ||
+                    item === 'ownerOperator'
             );
             setUserRoles(newRoles);
         }
-    }, []);
+    }, [roles]);
 
     useEffect(() => {
         if (!open) handleClose();
     }, [open]);
 
     useEffect(() => {
-        if (+page === 0) {
+        if (+page === 0 && open) {
             handleClose();
             dispatch(fetchUsers(+page, +limit));
         }
@@ -69,8 +72,7 @@ const UserForm = () => {
         }
     }, [user]);
 
-    const handleChange = ({target}) => {
-        const {name, value} = target;
+    const handleChange = ({name, value}) => {
         setForm((f) => ({...f, [name]: value}));
     };
     const handleClose = () => {
@@ -93,92 +95,104 @@ const UserForm = () => {
         return diffWithVal;
     };
 
-    const onSubmit = (e) => {
+    function afterSubmit({success, data}) {
+        if (success) {
+            handleClose();
+            dispatch(fetchUsers(+page, +limit));
+            notification((user._id ? 'Updated ' : 'Saved ') + 'Successfully');
+        } else {
+            notification(data.message, 'error')
+        }
+    }
+
+    const onSubmit = async (e) => {
         e.preventDefault();
         if (!loading) {
             if (!user) {
                 const {email, password, role} = form;
                 if (!email || !password || !role)
                     return alert("All fields are required");
-                dispatch(registerUser(form));
+                else if (!isEmailValid(email)) {
+                    return alert('Email is not valid');
+                } else if (password.length < 6) {
+                    return alert('Please enter password with 6 or more characters');
+                }
+                await mutation(form, '', afterSubmit);
             } else {
-                const {_id} = user;
                 const dataToUpdate = getDiff(form, user);
-                dispatch(updateUser(dataToUpdate, _id));
+                await updateUser(dataToUpdate, 'put', afterSubmit);
             }
         }
     };
 
     return (
         <>
-            {(auth && ["user"].indexOf(auth.role) > -1) || (
-                <Button
-                    color="primary"
-                    variant={'contained'}
-                    onClick={handleClickOpen}
-                    style={{marginBottom: "20%"}}
-                >
-                    Add User
-                </Button>
-            )}
+            <Button
+                color="primary"
+                variant={'contained'}
+                onClick={handleClickOpen}
+            >
+                Add User
+            </Button>
             <Dialog
-                fullWidth={true}
-                maxWidth={"xs"}
+                fullWidth={false}
+                maxWidth={"md"}
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="form-dialog-title"
+                PaperProps={{
+                    sx: {
+                        width: 400
+                    }
+                }}
             >
-                <DialogTitle id="form-dialog-title" sx={{textAlign: 'center', color: blue}}>
+                <DialogTitle id="form-dialog-title" sx={{textAlign: 'center', color: PRIMARY_BLUE}}>
                     {user ? "Update" : "Add"} User
                 </DialogTitle>
                 {error ? <p style={{textAlign: "center"}}>{error}</p> : ""}
-                <DialogContent>
+                <DialogContent sx={{p: 0, overflow: 'hidden'}}>
                     <div className="">
                         <form noValidate onSubmit={onSubmit}>
-                            <Grid container spacing={1} direction={'column'} sx={{p: 3}}>
+                            <Grid container spacing={2} direction={'column'} sx={{p: 3}}>
                                 <Grid item>
-                                    <InputField
+                                    <Input
                                         name={"email"}
                                         label={"Email"}
-                                        autoComplete={"off"}
                                         onChange={handleChange}
                                         value={form.email}
-                                        labelStyle={{fontWeight: 600}}
                                         autoFocus
+                                        fullWidth
                                     />
                                 </Grid>
                                 <Grid item>
-                                    <InputField
+                                    <Password
                                         name={"password"}
                                         label={"Password"}
-                                        autoComplete={"off"}
                                         onChange={handleChange}
                                         value={form.password}
-                                        labelStyle={{fontWeight: 600}}
+                                        fullWidth
                                     />
                                 </Grid>
                                 <Grid item>
-                                    <InputField
-                                        value={form.role}
-                                        name="role"
+                                    <Select
                                         onChange={handleChange}
                                         label={"Role"}
-                                        autoComplete={"off"}
-                                        type='select'
+                                        name="role"
+                                        value={form.role}
                                         options={userRoles &&
-                                        userRoles.map((role) => ({id: role, label: capitalizeFirstLetter(role)}))}
-                                        labelStyle={{fontWeight: 600}}
+                                            userRoles.map((role) => ({id: role, label: capitalizeFirstLetter(role)}))}
                                     />
                                 </Grid>
                                 <Grid item xs={12} justifyContent='center' display={'flex'}>
-                                    <Button
+                                    <LoadingButton
+                                        isLoading={isSaving || isSavingUpdate}
                                         className=""
                                         type="submit"
                                         variant="contained"
                                         color="primary"
                                     >
                                         Submit
-                                    </Button>
+                                    </LoadingButton>
                                 </Grid>
                             </Grid>
                         </form>

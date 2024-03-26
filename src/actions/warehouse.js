@@ -11,8 +11,6 @@ const getWarehouses = () => async (dispatch) => {
         // console.log(status, data);
         if (status === 200) {
             dispatch({ type: FETCH_WAREHOUSES, payload: { warehouses: data, loading: false } })
-        } else {
-            throw new Error(response)
         }
     } catch (err) {
         console.log(err)
@@ -23,7 +21,7 @@ const addWarehouse = (data, callback) => async () => {
     try {
         const response = await axios.post('/api/warehouse', data)
         if (response.status === 200) {
-            notification(data.message || data._id ? 'Warehouse Updated' : 'Warehouse Added')
+            notification(response.data.message || data._id ? 'Facility Updated' : 'Facility Added')
             if (callback) callback(response);
         }
     } catch (error) {
@@ -59,8 +57,12 @@ const deleteWarehouse = (id) => async (dispatch) => {
     }
 }
 
+export const geoLocationService = async (obj) =>  {
+    return await axios.post('/api/warehouse/getLocation', obj)
+}
+
 export const getGeoLocation = (obj) => async (dispatch) => {
-    const { status, data } = await axios.post('/api/warehouse/getLocation', obj);
+    const { status, data } = await geoLocationService(obj);
     dispatch({ type: WAREHOUSE_LOCATION, payload: { loading: true } })
     try {
         if (status === 200 && data.success) {

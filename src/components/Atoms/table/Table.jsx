@@ -1,142 +1,198 @@
-import {Delete} from '@material-ui/icons';
 import {
-    createTheme,
+    Box,
+    DialogContentText,
     Grid,
     IconButton,
     Paper,
+    Stack,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TableRow,
-    ThemeProvider
+    TableRow, Typography
 } from '@mui/material';
 import _ from 'lodash';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import React, {Fragment, memo, useEffect, useMemo, useState} from 'react';
 import {withRouter} from 'react-router-dom';
 import TablePagination from './Pagination';
 import Spinner from "../../layout/Spinner";
-import load from "../../../reducers/load";
+import {Delete, Refresh} from "@mui/icons-material";
+import Dialog from "../Dialog";
+import {styled} from "@mui/material/styles";
+import {getUserDetail} from "../../../utils/utils";
 
-const theme = createTheme({
-    typography: {
-        fontFamily: ['Myriad-Pro Light', 'Myriad-Pro Regular',  "Myriad-Pro Bold"].join(','),
-        button: {
-            textTransform: 'none'
-        }
-    },
-    components: {
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    fontSize: 10,
-                    minWidth: 80,
-                    height: 25
-                }
-            }
-        },
-        MuiTableCell: {
-            styleOverrides: {
-                root: {
-                    fontSize: '11px',
-                    fontWeight: 400,
-                    borderBottom: '1px solid #0000000D',
-                    paddingLeft: '1rem',
-                    align: 'left',
-                    color: '#525F7F'
-                }
-            }
-        }
+const Cell = styled(TableCell)(({theme}) => ({
+    [theme.breakpoints.down('xs')]: {
+        fontSize: 12,
+        padding: '0 8px',
     }
-})
+}))
+const DeleteIcon = styled(Delete)(({theme}) => ({
+    [theme.breakpoints.down('xs')]: {
+        fontSize: 14,
+    }
+}))
 
-function Headers({columns = [], config = {}}) {
+function Headers({columns = [], config = {}, role}) {
     const {headerCellSx = {}, hasDelete} = config;
     const headers = useMemo(() => {
-        return columns.map(column => {
+        return columns.map((column, index) => {
             const {label = '', id = '', visible = true} = column || {};
-            if (!visible) return;
+            // eslint-disable-next-line array-callback-return
+            const isVisible = _.isFunction(visible) ? visible({column, role}) : visible;
+            if (!isVisible) {
+                return null;
+            }
             return (
-                <TableCell padding={'none'} sx={{color: '#8898AA', ...headerCellSx}} key={id}>{label}</TableCell>
+                <Cell padding={'normal'} sx={{color: '#000', bgcolor: '#fafafa', fontWeight: 800, ...headerCellSx}}
+                      key={id || index}>{label}</Cell>
             )
         })
-    }, [columns])
+    }, [columns, headerCellSx])
     return <TableRow>
         {headers}
-        {hasDelete && <TableCell padding={'none'} sx={{headerCellSx}}/>}
+        {hasDelete && <Cell padding={'none'} sx={{...headerCellSx}}/>}
     </TableRow>;
 }
 
-const getTableCell = ({row = [], columns = {}, config = {}, handleRowClick}) => {
-    const {hasDelete = false, onDelete, hover = false, rowCellPadding = 'none', onRowClick = undefined} = config;
-    const handleDelete = (id, e) => {
-            e.stopPropagation();
-            return onDelete(id, row);
-        },
-        rowClickHandler = (e) => {
+const getTableCell = ({
+                          row = [],
+                          columns = {},
+                          config = {},
+                          handleRowClick,
+                          rowIndex,
+                          handleDelete,
+                          hasDeletePermission,
+                          ...rest
+                      }) => {
+    const {
+        hasDelete = false,
+        rowCellPadding = 'none',
+        onRowClick = undefined,
+        rowStyleCb
+    } = config;
+    const {role} = rest;
+    let rowStyle = {}
+    if (rowStyleCb) {
+        rowStyle = rowStyleCb({row}) || {};
+    }
+    const rowClickHandler = (e) => {
             e.preventDefault();
             if (_.isFunction(handleRowClick)) handleRowClick(row)
         },
-        deleteCell = <TableCell sx={{}} padding={'none'} component="th" scope="row">
-            <IconButton onClick={handleDelete.bind(this, row._id)}>
-                <Delete style={{color: "rgb(220, 0, 78)"}}/>
+        deleteCell = <Cell sx={{}} padding={'none'} component="th" scope="row">
+            <IconButton onClick={handleDelete.bind(this, row._id, row)} disabled={!hasDeletePermission}>
+                <DeleteIcon color={'error'}/>
             </IconButton>
-        </TableCell>;
+        </Cell>;
 
     const cell = columns.map((column, i) => {
-        const {id = '', renderer} = column || {};
-        let cell;
-        if (_.isFunction(renderer)) {
-            cell = renderer({row});
-        } else {
-            cell = row[id]
+        const {id = '', renderer, emptyState = '', valueFormatter, visible = true} = column || {};
+        const isVisible = _.isFunction(visible) ? visible({column, role}) : visible;
+        if (!isVisible) {
+            return null;
         }
-        return <TableCell key={id+ i} padding={rowCellPadding} component="th" scope="row">
+        let cell;
+        if (valueFormatter && _.isFunction(valueFormatter)) {
+            cell = valueFormatter(row[id]);
+        } else if (_.isFunction(renderer)) {
+            cell = renderer({row, role}, rowIndex) || emptyState;
+        } else {
+            cell = _.isObject(row) ? _.get(row, id, emptyState) : (row[id] || emptyState);
+        }
+        return <Cell key={id + i} padding={rowCellPadding || 'normal'} component="th" scope="row">
             {cell}
-        </TableCell>
+        </Cell>
     });
 
-    return <TableRow hover={!!onRowClick} onClick={rowClickHandler} sx={!!onRowClick ? {cursor: 'pointer'} : {}}>
+    return <TableRow key={rowIndex} hover={!!onRowClick} onClick={rowClickHandler}
+                     sx={!!onRowClick ? {cursor: 'pointer', ...rowStyle} : {...rowStyle}}>
         {cell}
         {hasDelete && deleteCell}
     </TableRow>;
 }
 
-const TableData = ({columns, data = [], config = {}, handleRowClick}) => {
+const TableData = ({columns, data = [], config = {}, handleRowClick, handleDelete, ...rest}) => {
 
-    const rows = data.map(row => {
-        return getTableCell({row, columns, config, handleRowClick})
-    });
-
-    return rows
+    return (data || []).map((row, index) => {
+        const {dataKey = ''} = config;
+        if (dataKey) {
+            row = row[dataKey];
+        }
+        return getTableCell({row, columns, config, handleRowClick, rowIndex: index, handleDelete, ...rest})
+    })
 }
 
 
-const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
+const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch, isRefetching}) => {
+    data = data || [];
     const [tableState, setTableState] = useState({}),
-        {columns = [], onRowClick, hasOnClickUrl = true, onPageChange, page, count, limit, emptyMessage = ''} = config,
+        [dialog, setDialog] = useState({open: false, config: {}}),
+        {
+            columns = [],
+            onRowClick,
+            hasOnClickUrl = true,
+            onPageChange,
+            page,
+            count,
+            limit,
+            size = 'medium',
+            emptyMessage = '',
+            onRowClickDataCallback,
+            showRefresh = false,
+            onDelete,
+            deleteMessage,
+            deletePermissions = [],
+            containerHeight='',
+        } = config,
+        {role = ''} = getUserDetail().user,
+        hasDeletePermission = deletePermissions.indexOf(role) > -1 || false,
         ref = React.useRef([]);
+    const length = Array.isArray(data) && data.length;
 
     const handleRowClick = (row) => {
         if (hasOnClickUrl && onRowClick) {
             const url = onRowClick(row);
-            history.push(url);
+            if (onRowClickDataCallback) {
+                row = onRowClickDataCallback(row)
+            }
+            history.push(url, row);
         } else if (onRowClick) {
             onRowClick(row)
         }
     }
 
+    const handleDelete = (id, row, e) => {
+        e.stopPropagation();
+        const config = {
+            title: () => <Grid container alignItems='center' sx={{p: '16px 24px'}} gap={1}>
+                <ErrorOutlineIcon color='error'/>
+                <Typography sx={{fontSize: '1.25rem', fontWeight: 550}} color='error'>Delete</Typography>
+            </Grid>,
+            okText: 'Delete',
+            onOk: () => onDelete(id, onDialogClose),
+            content: () => <DialogContentText
+                sx={{color: '#000'}}>{deleteMessage || 'Are you sure you want to delete the record?'}</DialogContentText>
+        }
+        setDialog({...dialog, open: true, config});
+    }
+
+    function onDialogClose() {
+        setDialog({...dialog, open: false})
+    }
+
     const getLoader = () => {
-        return <Grid container alignItem={'center'} justifyContent='center'
-                     sx={{height: tableState.height || window.innerHeight - 180}}>
+        const innerHeight = window.innerHeight - 180,
+            height = (tableState.height ? tableState.height > innerHeight ? innerHeight : tableState.height : innerHeight) || innerHeight;
+        return <Grid container alignItems={'center'} justifyContent='center' sx={{height}}>
             <Grid item alignItems='center' sx={{position: 'relative'}}>
                 <Spinner/>
             </Grid>
         </Grid>
     }
     const getTableContent = useMemo(() => {
-        const length = Array.isArray(data) && data.length;
         if (!length) {
             return (<tbody style={{height: 300}}>
             <tr>
@@ -145,16 +201,19 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
             </tbody>)
         }
         return <Fragment>
-            <TableHead className={''} sx={{backgroundColor: '#F6F9FC ', borderTop: '1px solid rgba(224, 224, 224, 1)'}}>
-                <Headers columns={columns} config={config}/>
+            <TableHead className={''} sx={{backgroundColor: '#fafafa', borderTop: '1px solid rgba(224, 224, 224, 1)'}}>
+                <Headers columns={columns} config={config} role={role} />
             </TableHead>
             <TableBody>
                 <TableData
+                    role={role}
                     key={Date.now()}
                     columns={columns}
                     data={data}
                     config={config}
                     handleRowClick={handleRowClick}
+                    handleDelete={handleDelete}
+                    hasDeletePermission={hasDeletePermission}
                 />
             </TableBody>
         </Fragment>
@@ -167,23 +226,27 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false}) => {
         }
     }, [])
 
-    return <div>
-        <ThemeProvider theme={theme}>
-            <TableContainer
-                component={Paper}
-                className={''}
-                sx={{boxShadow: '0px 0px 32px #8898AA26', mb: 2}}
-            >
-                {loading
-                    ? getLoader()
-                    : <Table ref={el => ref.current['table'] = el} borderBottom="none" aria-label="caption table">
-                        {getTableContent}
-                    </Table>}
-                {!loading && data.length > 0 &&
-                <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit}/>}
-            </TableContainer>
-        </ThemeProvider>
-    </div>;
+    return <Box className='enhanced-table' sx={{height: length && !loading ? (containerHeight || '95%') : 'auto'}}>
+        {showRefresh && <Stack alignItems='flex-end'>
+            <IconButton title='Refresh' onClick={onRefetch}>
+                <Refresh className={(isRefetching) ? 'rotateIcon' : undefined}/>
+            </IconButton>
+        </Stack>}
+        <TableContainer
+            component={Paper}
+            className={''}
+            sx={{boxShadow: '0px 0px 32px #8898AA26', mb: 2, height: length && !loading ? 'calc(100% - 64px)' : 'auto'}}
+        >
+            {loading
+                ? getLoader()
+                : <Table ref={el => ref.current['table'] = el} aria-label="caption table" size={size} stickyHeader>
+                    {getTableContent}
+                </Table>}
+        </TableContainer>
+        {!loading && data.length > 0 &&
+            <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit}/>}
+        <Dialog className='enhancedTable_dialog' open={dialog.open} config={dialog.config} onClose={onDialogClose}/>
+    </Box>;
 };
 
-export default memo(withRouter(EnhancedTable));
+export default withRouter(memo(EnhancedTable));

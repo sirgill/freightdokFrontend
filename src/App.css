@@ -1,4 +1,4 @@
-:root{
+:root {
   --PRIMARY_BLUE: #4691FF;
 }
 
@@ -28,12 +28,14 @@ body {
   margin: 0;
   box-sizing: border-box;
   background-color: #fff !important;
+  height: 100dvh;
 }
 
 .accountDashboardLink {
   color: #000;
 }
-.accountDashboardLink:hover{
+
+.accountDashboardLink:hover {
   color: #000;
   text-decoration: none;
 }
@@ -42,26 +44,12 @@ body {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
 }
 
 .App-link {
@@ -90,4 +78,126 @@ body {
 
 .display-none {
   display: none !important;
+}
+
+.form_bidding .form-group {
+  margin-bottom: 0;
+}
+
+.dollarInput {
+  position: relative;
+}
+
+.dollarInput input {
+  text-align: center;
+}
+
+.dollarSign {
+  position: absolute;
+  content: '$';
+  left: 36%;
+  z-index: 1;
+  display: block;
+  padding: 0 8px;
+}
+
+@-webkit-keyframes rotating
+
+/* Safari and Chrome */
+  {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotating {
+  from {
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  to {
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.rotateIcon {
+  -webkit-animation: rotating 0.5s linear infinite;
+  -moz-animation: rotating 0.5s linear infinite;
+  -o-animation: rotating 0.5s linear infinite;
+  animation: rotating 0.5s linear infinite;
+}
+
+.invoiceServiceWrapperGridToPrint {
+  display: none;
+}
+
+.alertbase {
+  font-weight: 600;
+}
+
+@media print {
+
+  .addServicesInvoice,
+  .printInvoice,
+  /* .invoiceServiceWrapperGrid, */
+  .stack_Uploaders {
+    display: none !important;
+  }
+
+  .serviceInputField {
+    border: none;
+  }
+
+  .invoiceServiceWrapperGridToPrint {
+    display: inline !important;
+  }
+}
+
+
+label {
+  margin-bottom: 0 !important;
+}
+
+@page {
+  size: 21cm 29.7cm;
+  margin: 2cm
+}
+
+
+@media print {
+
+  .printArea h1 {
+    page-break-after: always;
+    page-break-before: always;
+  }
+
+  .bucketImageContainer {
+    float: none!important;
+  }
+
+  .bucketImageContainer > div {
+    display: block;
+    page-break-after: always!important;
+    page-break-before: always!important;
+  }
+
+  .printThisFull {
+    width: 96%;
+    height: 96%;
+    object-fit: contain;
+  }
 }

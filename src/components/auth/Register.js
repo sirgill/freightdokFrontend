@@ -32,11 +32,18 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
 
   if (isAuthenticated) {
     return <Redirect to="/dashboard" />;
-  }
+  };
+
+  const verticalAlignStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  };
 
   return (
     <section className="login">
-      <div className="auth-wrapper">
+      <div className="auth-wrapper" style={verticalAlignStyle}>
         <form className="auth-inner" onSubmit={(e) => onSubmit(e)}>
           <h3>Sign Up</h3>
 

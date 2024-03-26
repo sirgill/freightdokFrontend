@@ -8,7 +8,7 @@ const initialState = {
   error: {},
 };
 
-export default function (state = initialState, action) {
+export default function driver (state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
@@ -18,6 +18,7 @@ export default function (state = initialState, action) {
         drivers: payload.drivers,
         all_drivers: payload.users,
         loading: false,
+        timestamp: payload.timestamp
       };
     case GET_DRIVER:
       return {

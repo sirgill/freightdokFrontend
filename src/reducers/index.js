@@ -6,7 +6,10 @@ import load from './load';
 import driver from './driver';
 import users from './users';
 import warehouse from '../reducers/warehouse.reducer';
+import openBoard from '../reducers/openBoard.reducer';
+import carrierProfile from '../reducers/carrierProfile.reducer';
 import {app} from "./app.reducer";
+import {LOGOUT} from "../actions/types";
 
 const appReducer = combineReducers({
   alert,
@@ -16,11 +19,14 @@ const appReducer = combineReducers({
   driver,
   users,
   warehouse,
-  app
+  app,
+  openBoard,
+  carrierProfile
 })
 
 const rootReducer = (state, action) => {
-  if (action.type === 'LOGOUT') {
+  if (action.type === LOGOUT) {
+    localStorage.clear();
     return appReducer(undefined, action)
   }
 

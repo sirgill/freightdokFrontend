@@ -1,15 +1,15 @@
-import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import TextField from "@mui/material/TextField";
-import Background from "./dashboard/ProfileBackground.svg";
+import Background from "./dashboard/ProfileBackground.png";
 import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import ListItemText from "@mui/material/ListItemText";
 import { StyleSheet } from "@react-pdf/renderer";
 import { KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
+import {Box} from "@mui/material";
 
-export const RegisterInput = ({ label, name, value, onChange, type }) => {
+export const RegisterInput = ({ label, name, value, onChange, type, placeholder, formGroupSx={}, onBlur }) => {
   return (
-    <div className="form-group">
+    <Box sx={{...formGroupSx}} className="form-group">
       <label>{label}</label>
       <input
         type={type ? type : "text"}
@@ -17,9 +17,10 @@ export const RegisterInput = ({ label, name, value, onChange, type }) => {
         name={name}
         value={value}
         onChange={onChange}
-        placeholder={label}
+        placeholder={placeholder}
+        onBlur={onBlur}
       />
-    </div>
+    </Box>
   );
 };
 
@@ -98,13 +99,14 @@ export const CSSTimePicker = withStyles({
   },
 })(KeyboardTimePicker);
 
-const drawerWidth = 275;
+export const drawerWidth = 275;
 export const useStyles = makeStyles((theme) => ({
   form: {
     display: "flex",
     flexDirection: "column",
     margin: "auto",
     width: "fit-content",
+    padding: theme.spacing(2)
   },
   formControl: {
     minWidth: 120,
@@ -123,10 +125,11 @@ export const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   profile: {
-    height: "19.82em",
+    height: "33%",
     backgroundImage: `url(${Background})`,
     backgroundRepeat: "no-repeat",
     // backgroundSize: '275px 275px'
+    padding: 15,
   },
   drawer: {
     [theme.breakpoints.up("sm")]: {
@@ -137,6 +140,7 @@ export const useStyles = makeStyles((theme) => ({
     height: 500,
   },
   appBar: {
+    background: '#fff',
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
@@ -276,11 +280,13 @@ export const useStyles = makeStyles((theme) => ({
 
   tab: {
     minWidth: 10,
-    marginLeft: "15px",
     fontSize: 20,
     color: '#32325D',
     width: '100%',
-    fontWeight: 700
+    fontWeight: 700,
+    '@media and (max-width: 695px)': {
+      fontSize: 16
+    }
   },
 
   drawerIconContainer: {
@@ -306,6 +312,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   appbarNavbar: {
     zIndex: theme.zIndex.modal + 1,
+    background: '#fff'
   },
   outside: {
     position: "relative",
@@ -365,13 +372,13 @@ export const TextFieldHelper = ({
   );
 };
 
-export const ListItemHelper = ({ onClick, icon, primary, to, component, listBarType='', customStyles={}, className }) => {
-  const selectStyle = listBarType.replace(/\s/g, "").toLowerCase() === primary.replace(/\s/g, "").toLowerCase() ? {background: '#F6F9FC'}: {},
-      commonStyles = {borderTopRightRadius: 8, borderBottomRightRadius: 8, cursor: 'pointer', background: '#fff', transition: 'all 0.3s ease'}
+export const ListItemHelper = ({ onClick, icon, primary, to, component, title, listBarType='', customStyles={}, className }) => {
+  const selectStyle = listBarType.replace(/\s/g, "").toLowerCase() === primary.replace(/\s/g, "").toLowerCase() ? {background: 'rgba(218, 218, 218, 0.33)'}: {},
+      commonStyles = {borderRadius: '8px', cursor: 'pointer', background: '#fff', transition: 'all 0.3s ease', gap: '10px'}
   return (
-    <ListItem onClick={onClick} to={to} component={component} className={className} sx={{...commonStyles, ...selectStyle, ...customStyles,'&:hover': {background: '#f8fbfd'}}}>
-      <ListItemIcon>{icon}</ListItemIcon>
-      <ListItemText primary={primary} />
+    <ListItem onClick={onClick} to={to} component={component} className={className} sx={{ ...commonStyles, ...selectStyle, ...customStyles }}>
+      {icon && <img src={icon} alt={primary}/>}
+      <ListItemText primary={title || primary} className='listItemTextMenu' />
     </ListItem>
   );
 };

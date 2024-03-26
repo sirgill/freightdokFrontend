@@ -1,26 +1,24 @@
 import React, { Fragment, useState } from 'react';
-import { Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { login } from '../../actions/auth';
-import './authcss/LoginRegister.css';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import EmailIcon from '@material-ui/icons/Email';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
+import {Link, useHistory} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
+import _ from 'lodash';
+import {Key, MailOutline} from "@mui/icons-material";
 import { makeStyles } from '@material-ui/core/styles';
-// import Button from '@material-ui/core/Button';
-import { Divider, Typography } from '@material-ui/core';
-import { styles } from '@material-ui/pickers/views/Calendar/Calendar';
-import { Button, Form, FormGroup, Input, InputGroup, InputGroupText, InputGroupAddon } from 'reactstrap';
+import {Divider, Grid,  InputAdornment, Typography} from '@mui/material';
+import PropTypes from 'prop-types';
+import {login} from '../../actions/auth';
+import './authcss/LoginRegister.css';
+import Input from '../../components/Atoms/form/Input'
+import {FEDERAL_SIGNUP_LINK, FORGOT_PASSWORD} from "../constants";
+import Password from "../Atoms/form/Password";
+import {isEmailValid} from "../../utils/utils";
+import useMutation from "../../hooks/useMutation";
+import {ENHANCED_DASHBOARD} from "../client/routes";
+import {Alert, LoadingButton} from "../Atoms";
 
-const Login = ({ login, isAuthenticated }) => {
-
-  const verticalAlignStyle = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
-  const useStyles = makeStyles((theme) => ({
+  const useStyles = makeStyles(() => ({
     root: {
       textAlign: "center",
-      width: '445px',
       margin: 'auto',
       background: '#F7FAFC 0% 0% no-repeat padding-box',
       boxShadow: '0px 14px 80px rgba(34, 35, 58, 0.2)',
@@ -41,30 +39,71 @@ const Login = ({ login, isAuthenticated }) => {
     },
     gridBottom: {
       padding: '5rem 2rem',
+      width: 445
     }
   }));
+  const verticalAlignStyle = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
 
+const Login = (props) => {
+  const {state: {from = {}} = {}} = props.location || {},
+      {pathname: redirectLink = ''} = from || {};
+  const dispatch = useDispatch(),
+    history = useHistory();
   const classes = useStyles();
-
+  const [errors, setErrors] = useState({email: '', password: ''});
   const [formData, setFormData] = useState({
     email: '',
     password: ''
-  });
+  }),
+      [alert, setAlert] = useState({open: false, message: '', severity: 'error'}),
+      {mutation, loading } = useMutation('/api/auth');
 
   const { email, password } = formData;
 
-  const onChange = e =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const onChange = ({name, value}) => {
+    setFormData({ ...formData, [name]: value });
+    setErrors({...errors, [name]: ''})
+  }
+
+  const closeAlert = () => {
+    setAlert({...alert, open: false});
+  }
+
+  function afterSubmit({data, success}) {
+    if(success) {
+      dispatch(login({success, data}));
+      history.push(redirectLink || ENHANCED_DASHBOARD);
+    } else {
+      const { message } = data || {}
+      setAlert({...alert, open: true, message: message})
+    }
+  }
 
   const onSubmit = async e => {
+    closeAlert();
     e.preventDefault();
-    login({ email, password });
+    const err = {};
+    if(!formData.email) {
+      Object.assign(err, { email: 'Email is required' })
+    }
+    if(!formData.password) {
+      Object.assign(err, { password: 'Password is required' })
+    }
+    if(!isEmailValid(formData.email)) {
+      Object.assign(err, { email: 'Invalid Email' })
+    }
+
+    if(_.isEmpty(err)){
+      mutation({email, password}, null, afterSubmit);
+    } else {
+      setErrors(err);
+    }
   };
 
   //Redirect if logged in
-  if (isAuthenticated) {
-    return <Redirect to='/dashboard' />;
-  }
+  // if (isAuthenticated) {
+  //   return <Redirect to='/dashboard' />;
+  // }
 
   return (
     <Fragment>
@@ -92,49 +131,56 @@ const Login = ({ login, isAuthenticated }) => {
               <Divider />
             </Grid>
             <Grid item xs={12} className={classes.gridBottom} style={{ textAlign: 'center' }}>
-              <Form role='form' className="" onSubmit={onSubmit}>
-                <FormGroup>
-                  <InputGroup className="input-group-merge inputGroup">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <EmailIcon className="ni ni-email-83" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
+              <Grid container component='form' onSubmit={onSubmit} spacing={2} noValidate px={3}>
+                {redirectLink && <Typography variant='subtitle2' color='error' align='center' sx={{width: '100%', textTransform: 'capitalize'}}>
+                  Invalid session. Please Login again.
+                </Typography>}
+                <Grid item xs={12} sx={{
+                  '.MuiAlert-message' : {
+                    textAlign: 'left'
+                  }
+                }}>
+                  <Alert config={alert} />
+                </Grid>
+                <Grid item xs={12}>
+                  <Input
                       placeholder="Email"
                       type="email"
                       onChange={onChange}
                       value={email}
                       name='email'
-                      autoFocus
-                    />
-                  </InputGroup>
-                </FormGroup>
-
-                <FormGroup>
-                  <InputGroup className="input-group-merge inputGroup">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <LockOpenIcon className="ni ni-lock-circle-open" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
+                      autoFocus={true}
+                      fullWidth={true}
+                      errors={errors}
+                      InputProps={{
+                        startAdornment: <InputAdornment position="start">
+                          <MailOutline />
+                        </InputAdornment>,
+                      }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Password
+                      label={null}
                       placeholder="Password"
-                      type="password"
                       onChange={onChange}
                       name="password"
                       value={password}
-                    />
-                  </InputGroup>
-                </FormGroup>
-
-                {/* <Button type="submit" variant="contained" color="primary" style={{ marginTop: '5%' }} >Sign in</Button> */}
-                <Button className="primary-bg font-14 mt-5" type="submit">
-                  Sign in
-                </Button>
-                <p className="forgot-password text-right"> Forgot <a href="#">password?</a></p>
-
-              </Form>
+                      errors={errors}
+                      startAdornment={<InputAdornment position="start">
+                        <Key />
+                      </InputAdornment>}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <LoadingButton type="submit" isLoading={loading} loadingText='Signing In...'>
+                    Sign in
+                  </LoadingButton>
+                </Grid>
+              </Grid>
+              <br/>
+              <Typography component={Link} to={FEDERAL_SIGNUP_LINK} sx={{display: 'block', }} align='center'>Register</Typography>
+              <Typography component={Link} to={FORGOT_PASSWORD} sx={{display: 'block', }} align='center'>Forgot Password?</Typography>
             </Grid>
           </Grid>
         </div>
@@ -145,13 +191,7 @@ const Login = ({ login, isAuthenticated }) => {
 };
 
 Login.propTypes = {
-  login: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool
 
 };
-
-const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
-});
-
-export default connect(mapStateToProps, { login })(Login);
+export default (Login);

@@ -1,8 +1,8 @@
 // *https://www.registers.service.gov.uk/registers/country/use-the-api*
 import React, { useEffect, useState } from 'react';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 
 export default function Asynchronous({ label = '', placeholder = '', handleChange, name = '', value: defaultValue = '', getOptionLabelKey = '' }) {
@@ -29,6 +29,13 @@ export default function Asynchronous({ label = '', placeholder = '', handleChang
             fetchWarehouses(value)
         }
     }, [value]);
+
+    useEffect(() => {
+        if (defaultValue) {
+            fetchWarehouses(defaultValue)
+        }
+    }, [defaultValue]);
+
 
     const fetchWarehouses = async (value) => {
         const { data, status } = await axios.get('/api/warehouse/search?text=' + value);

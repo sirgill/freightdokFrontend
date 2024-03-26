@@ -1,45 +1,45 @@
 import React, {useEffect, useState} from "react";
 // Redux
 import PropTypes from "prop-types";
-import {connect} from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import {addDriver} from "../../actions/driver.js";
 import {getLoads} from "../../actions/load";
 //Material
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import {TextFieldHelper, useStyles} from "../HelperCells.js";
 import InputField from "../Atoms/form/InputField";
-import {Button} from "@material-ui/core";
+import Button from "@mui/material/Button";
 import {blue} from "../layout/ui/Theme";
-import SubmitButton from "../Atoms/form/SubmitButton";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import {Box} from "@mui/material";
+import useMutation from "../../hooks/useMutation";
+import {notification} from "../../actions/alert";
+import LoadingButton from "@mui/lab/LoadingButton";
+import {getDrivers} from "../../actions/driver";
 
-const AddDriverForm = ({
-                           user,
-                           addDriver,
-                           all_drivers,
-                           getLoads,
-                           isEdit = false,
-                           data = {},
-                           closeEditForm,
-                           load: {loads, allLoads, loading},
-                       }) => {
-    const classes = useStyles();
-
+const AddDriverForm = (props) => {
+    const {
+            user,
+            addDriver,
+            all_drivers,
+            getLoads,
+            isEdit = false,
+            data = {},
+            closeEditForm,
+            load: {loads, allLoads, loading},
+        } = props;
+    const {loading: isSaving, mutation} = useMutation("/api/drivers")
     const formTemplate = {
         firstName: "",
         lastName: "",
         phoneNumber: "",
         loads: [],
         user: "",
-    };
+    },
+        dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
     const [count, setCount] = useState(1);
@@ -80,8 +80,15 @@ const AddDriverForm = ({
     const onSubmit = (e) => {
         e.preventDefault();
 
-        addDriver(form, isEdit);
-        handleClose();
+        mutation(form, null, ({success, data}) => {
+            if(success) {
+                dispatch(getDrivers());
+                handleClose();
+            }
+            else {
+                notification(data.message, 'error')
+            }
+        })
     };
 
     const updateForm = (e) => {
@@ -105,73 +112,91 @@ const AddDriverForm = ({
             )}
 
             <Dialog
-                fullWidth={true}
-                maxWidth={"sm"}
+                maxWidth={"md"}
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="form-dialog-title"
+                PaperProps={{
+                    sx: {
+                        width: 400
+                    }
+                }}
             >
                 <DialogTitle id="form-dialog-title" sx={{
                     color: blue,
                     textAlign: 'center',
                     fontWeight: 400,
                     letterSpacing: 1
-                }}>{isEdit ? 'Edit' : 'Add'} Driver</DialogTitle>
+                }}>
+
+                        <IconButton
+                            aria-label="close"
+                            onClick={handleClose}
+                            sx={{
+                                position: "absolute",
+                                left: 8,
+                                top: 8,
+                                color: (theme) => theme.palette.grey[500],
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+
+                    {isEdit ? 'Edit' : 'Add'} Driver
+                </DialogTitle>
                 <DialogContent>
                     <div className="">
-                        <form className={classes.form}>
+                        <Box component={'form'} sx={{px: 4, pb: 3}} onSubmit={onSubmit}>
                             {count === 1 ? (
                                 <div>
 
-                                    <div>
-                                        <InputField
-                                            name={"firstName"}
-                                            label={"First Name"}
-                                            onChange={updateForm}
-                                            value={form.firstName}
-                                        />
-                                        <InputField
-                                            name={"lastName"}
-                                            label={"Last Name"}
-                                            onChange={updateForm}
-                                            value={form.lastName}
-                                        />
-                                        <InputField
-                                            name={"phoneNumber"}
-                                            label={"Phone Number"}
-                                            onChange={updateForm}
-                                            value={form.phoneNumber}
-                                        />
-                                        {!isEdit && <InputField
-                                            value={form.user}
-                                            name="user"
-                                            onChange={updateForm}
-                                            className={classes.select}
-                                            label='Select Driver'
-                                            type={'select'}
-                                            showFirstBlank={true}
-                                            options={all_drivers.map(driver => ({id: driver._id, label: driver.email}))}
-                                        />}
-                                    </div>
+                            <div>
+                                <InputField
+                                    name={"firstName"}
+                                    label={"First Name"}
+                                    onChange={updateForm}
+                                    value={form.firstName}
+                                />
+                                <InputField
+                                    name={"lastName"}
+                                    label={"Last Name"}
+                                    onChange={updateForm}
+                                    value={form.lastName}
+                                />
+                                <InputField
+                                    name={"phoneNumber"}
+                                    label={"Phone Number"}
+                                    onChange={updateForm}
+                                    value={form.phoneNumber}
+                                />
+                                {!isEdit && <InputField
+                                    value={form.user}
+                                    name="user"
+                                    onChange={updateForm}
+                                    label='Select Driver'
+                                    type={'select'}
+                                    showFirstBlank={true}
+                                    options={all_drivers.map(driver => ({id: driver._id, label: driver.email}))}
+                                />}
+                            </div>
 
-                                    <Grid container spacing={1} style={{marginTop: "20px"}}>
-                                        <Grid item xs={3}></Grid>
-                                        <Grid item xs={6}>
-                                            <SubmitButton
+                                    <Grid container spacing={1} style={{marginTop: "20px"}} justifyContent={'center'}>
+                                        <Grid item xs={12}>
+                                            <LoadingButton
+                                                loading={isSaving}
                                                 className=""
                                                 type="submit"
+                                                variant="contained"
                                                 color="primary"
-                                                onClick={onSubmit}
-                                                style={{width: '100%'}}
+                                                sx={{width: '100%'}}
                                             >
-                                                Submit
-                                            </SubmitButton>
+                                                {(isEdit ? 'Update ' : 'Add ') + 'Driver'}
+                                            </LoadingButton>
                                         </Grid>
-                                        <Grid item xs={3}></Grid>
                                     </Grid>
                                 </div>
                             ) : null}
-                        </form>
+                        </Box>
                     </div>
                 </DialogContent>
             </Dialog>

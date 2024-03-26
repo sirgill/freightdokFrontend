@@ -4,20 +4,18 @@ import {
     FETCH_USERS_FAILED,
     FETCH_USERS,
     ADMIN_REG_USER,
-    ADMIN_REG_USER_SUCCEED,
     ADMIN_REG_USER_FAILED,
     SELECT_USER_TO_EDIT,
     RESET_SELECTED_USER,
     INIT_ADMIN_UPDATE_USER,
     ADMIN_UPDATE_USER_SUCCEED,
     ADMIN_UPDATE_USER_FAILED,
-    INIT_ADMIN_DELETE_USER,
-    ADMIN_DELETE_USER_SUCCEED,
     ADMIN_DELETE_USER_FAILED,
     OPEN_USER_MODAL,
     CLOSE_USER_MODAL
 } from './types';
 import {notification} from "./alert";
+import {requestDelete, requestGet} from "../utils/request";
 
 export const callApi = () => ({
     type: FETCH_USERS
@@ -26,10 +24,13 @@ export const callApi = () => ({
 export const fetchUsers = (page = 0, limit = 5) => async dispatch => {
     try {
         dispatch({type: FETCH_USERS});
-        const res = await axios.get(`/api/users?page=${page + 1}&limit=${limit}`);
+        const {success, data} = await requestGet({uri: `/api/users?page=${page + 1}&limit=${limit}`});
+        if(!success){
+            notification(data.message, 'error');
+        }
         dispatch({
             type: FETCH_USERS_SUCCEED,
-            payload: res.data
+            payload: data || []
         });
     } catch (err) {
         dispatch({
@@ -89,12 +90,18 @@ export const updateUser = (user, id) => async dispatch => {
     }
 };
 
-export const deleteUser = (id) => async (dispatch, getState) => {
+export const deleteUser = (id, callback) => async (dispatch, getState) => {
     try {
-        dispatch({type: INIT_ADMIN_DELETE_USER});
-        await axios.delete(`/api/users/${id}`);
-        const {page, limit} = getState().users;
-        dispatch(fetchUsers(+page, +limit));
+        const {data: data = '', success} = await requestDelete({uri: `/api/users/${id}`});
+        if(success) {
+            const {page, limit} = getState().users;
+            notification(data);
+            dispatch(fetchUsers(+page, +limit));
+        }
+        else {
+            notification(data.message, 'error')
+        }
+        if(callback) callback({success, data});
     } catch (e) {
         dispatch({
             type: ADMIN_DELETE_USER_FAILED,

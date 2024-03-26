@@ -15,15 +15,13 @@ import TableRow from '@material-ui/core/TableRow';
 // import Paper from '@material-ui/core/Paper';
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Collapse from '@material-ui/core/Collapse';
 import Box from '@material-ui/core/Box';
 import { Typography } from '@material-ui/core';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
-import FindInPageIcon from '@material-ui/icons/FindInPage';
-import EditIcon from "@material-ui/icons/Edit";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import FindInPageIcon from '@mui/icons-material/FindInPage';
+import EditIcon from "@mui/icons-material/Edit";
 import LoadDetailModal from './LoadDetailModal';
 
 const StyledBadge = withStyles((theme) => ({
@@ -35,7 +33,7 @@ const StyledBadge = withStyles((theme) => ({
   },
 }))(Badge);
 const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads, loads, page, rowsPerPage, user, listBarType }) => {
-  const {_id, brokerage, loadNumber, pickup, drop, status, proofDelivery, rateConfirmation, accessorials } = load;
+  const { _id, brokerage, loadNumber, pickup, drop, status, proofDelivery, rateConfirmation, accessorials } = load;
   const [modalEdit, enableEdit] = useState(false);
   const pickupState = pickup.map((pickup) => pickup.pickupState);
   const pickupCity = pickup.map((pickup) => pickup.pickupCity);
@@ -53,7 +51,7 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
   const dropCityFirst = dropCity[0];
   const dropDateFirst = dropDate[0];
 
-  const [open,setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const formatDate = (date) => {
     const d = new Date(date);
@@ -61,18 +59,18 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
     const minutes = d.getMinutes();
     let time = '';
 
-    if(hours > 0 && hours <= 12){
+    if (hours > 0 && hours <= 12) {
       time = "" + hours;
-    }else if (hours > 12){
+    } else if (hours > 12) {
       time = "" + (hours - 12);
-    }else if (hours === 0){
+    } else if (hours === 0) {
       time = "12";
     }
 
-    time += (minutes < 10 ) ? ":0" + minutes : ":" + minutes;
+    time += (minutes < 10) ? ":0" + minutes : ":" + minutes;
     time += (hours >= 12) ? " P.M." : " A.M.";
 
-    return [d.getMonth()+1,d.getDate(),d.getFullYear()].join('/')+ ' ' + time;
+    return [d.getMonth() + 1, d.getDate(), d.getFullYear()].join('/') + ' ' + time;
   }
 
   const handleDeleteLoad = async (load_id, e) => {
@@ -95,23 +93,23 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
   return (
     <>
       <TableBody>
-        <TableRow 
-        hover={true} 
-        onClick={()=>{
-          // setOpen(true);
-          // selectLoad({});
-        }}>
-          
+        <TableRow
+          hover={true}
+          onClick={() => {
+            // setOpen(true);
+            // selectLoad({});
+          }}>
+
           {/* <TableCell align="center"> */}
-            {/* <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+          {/* <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton> */}
           {/* </TableCell> */}
-          
+
           <TableCell align="center">{loadNumber}</TableCell>
-          
+
           {/* Made this 0 thought it would be nice to see if there is a pickup and drop on the load at all times */}
-          
+
           {/* {pickup.length <= 0 ? (
             <Fragment>
               <TableCell align="center">{pickupCityFirst}, {pickupStateFirst}</TableCell>
@@ -123,38 +121,38 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
               </StyledBadge>
             </TableCell>
           )} */}
-          
+
           <TableCell align="center">
             {status || '-'}
             {/* <Moment format='MM/DD'>{pickDateFirst}</Moment> */}
           </TableCell>
           <TableCell align="center">
-            { pickupCityFirst ? pickupCityFirst : '-' },
-            { pickupStateFirst ? pickupStateFirst : '-' }
+            {pickupCityFirst ? pickupCityFirst : '-'},
+            {pickupStateFirst ? pickupStateFirst : '-'}
           </TableCell>
           <TableCell align="center">
-            { dropCityFirst ? dropCityFirst : '-' },
-            { dropStateFirst ? dropStateFirst : '-' }
+            {dropCityFirst ? dropCityFirst : '-'},
+            {dropStateFirst ? dropStateFirst : '-'}
           </TableCell>
-          
+
           <TableCell align="center">
-            { Array.isArray(rateConfirmation) && rateConfirmation.length > 0 && typeof rateConfirmation[0] !== 'string'  ? 
-              <CheckCircleIcon style={{color: 'green'}} />
-              : <CancelIcon style={{color: 'red'}} /> }
+            {Array.isArray(rateConfirmation) && rateConfirmation.length > 0 && typeof rateConfirmation[0] !== 'string' ?
+              <CheckCircleIcon style={{ color: 'green' }} />
+              : <CancelIcon style={{ color: 'red' }} />}
             {/* <Moment format='MM/DD'>{dropDateFirst}</Moment> */}
           </TableCell>
           <TableCell align="center">
-            { Array.isArray(proofDelivery) && proofDelivery.length > 0 && typeof proofDelivery[0] !== 'string' ? 
-              <CheckCircleIcon style={{color: 'green'}} /> 
-              : <CancelIcon style={{color: 'red'}} /> }
+            {Array.isArray(proofDelivery) && proofDelivery.length > 0 && typeof proofDelivery[0] !== 'string' ?
+              <CheckCircleIcon style={{ color: 'green' }} />
+              : <CancelIcon style={{ color: 'red' }} />}
           </TableCell>
           <TableCell align="center">
-            { accessorials.length ? accessorials.join(', ') : '-' }
+            {accessorials.length ? accessorials.join(', ') : '-'}
           </TableCell>
 
           {listBarType === 'history' && <TableCell>
             <IconButton>
-              <EditIcon color="primary" onClick={() => handleEditLoad()}/>
+              <EditIcon color="primary" onClick={() => handleEditLoad()} />
             </IconButton>
           </TableCell>}
 
@@ -168,67 +166,67 @@ const LoadItem = ({ load, search, selectLoad, deleteLoad, getLoads, searchLoads,
           </TableCell> */}
 
           {/* <TableCell></TableCell> */}
-        </TableRow> 
+        </TableRow>
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
-              { Array.isArray(rateConfirmation) && rateConfirmation.length > 0 && typeof rateConfirmation[0] !== 'string' ?
-              <Box margin={1}>
-                <Typography variant="h6" gutterBottom component="div">
-                  Rate Confirmation Documents
-                </Typography>
-                <Table size="small" aria-label="purchases">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Upload Date</TableCell>
-                      <TableCell>Download</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                      { rateConfirmation.map(({ date, name }, key) => ( <TableRow key={key}>
+              {Array.isArray(rateConfirmation) && rateConfirmation.length > 0 && typeof rateConfirmation[0] !== 'string' ?
+                <Box margin={1}>
+                  <Typography variant="h6" gutterBottom component="div">
+                    Rate Confirmation Documents
+                  </Typography>
+                  <Table size="small" aria-label="purchases">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Upload Date</TableCell>
+                        <TableCell>Download</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rateConfirmation.map(({ date, name }, key) => (<TableRow key={key}>
                         <TableCell>{date ? <Moment format="DD/MM/YYYY">{date}</Moment> : '--'}</TableCell>
                         <TableCell>
-                          { name ? <FindInPageIcon onClick={() => downloadDocuments(name)} /> : 'Invalid Link' }
+                          {name ? <FindInPageIcon onClick={() => downloadDocuments(name)} /> : 'Invalid Link'}
                         </TableCell>
-                      </TableRow>)) }
-                  </TableBody>
-                </Table>
-              </Box> : '' }
-              { Array.isArray(proofDelivery) && proofDelivery.length > 0 && typeof proofDelivery[0] !== 'string' ?
-              <Box margin={1}>
-                <Typography variant="h6" gutterBottom component="div">
-                  Proof of Delivery Documents
-                </Typography>
-                <Table size="small" aria-label="purchases">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Upload Date</TableCell>
-                      <TableCell>Download</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                      { proofDelivery.map(({ date, name }, key) => ( <TableRow key={key}>
+                      </TableRow>))}
+                    </TableBody>
+                  </Table>
+                </Box> : ''}
+              {Array.isArray(proofDelivery) && proofDelivery.length > 0 && typeof proofDelivery[0] !== 'string' ?
+                <Box margin={1}>
+                  <Typography variant="h6" gutterBottom component="div">
+                    Proof of Delivery Documents
+                  </Typography>
+                  <Table size="small" aria-label="purchases">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Upload Date</TableCell>
+                        <TableCell>Download</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {proofDelivery.map(({ date, name }, key) => (<TableRow key={key}>
                         <TableCell>{date ? <Moment format="DD/MM/YYYY">{date}</Moment> : '--'}</TableCell>
                         <TableCell>
-                          { name ? <FindInPageIcon onClick={() => downloadDocuments(name)} /> : 'Invalid Link' }
+                          {name ? <FindInPageIcon onClick={() => downloadDocuments(name)} /> : 'Invalid Link'}
                         </TableCell>
-                      </TableRow>)) }
-                  </TableBody>
-                </Table>
-              </Box> : '' }
+                      </TableRow>))}
+                    </TableBody>
+                  </Table>
+                </Box> : ''}
             </Collapse>
           </TableCell>
-        </TableRow>       
+        </TableRow>
       </TableBody>
-      <LoadDetailModal 
+      <LoadDetailModal
         listBarType={listBarType}
         modalEdit={modalEdit}
         open={open}
-        load={load} 
-        handleClose={()=>{
-            setOpen(false);
-            enableEdit(false);
-            selectLoad();
+        load={load}
+        handleClose={() => {
+          setOpen(false);
+          enableEdit(false);
+          selectLoad();
         }}
       />
     </>

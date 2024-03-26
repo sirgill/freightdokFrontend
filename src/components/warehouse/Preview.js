@@ -1,17 +1,17 @@
 import { Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material'
-import { Edit } from '@material-ui/icons';
-import {makeStyles} from '@material-ui/core';
+import { Edit } from '@mui/icons-material';
+import { makeStyles } from '@material-ui/core';
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getWarehouseById } from '../../actions/warehouse';
+import {FACILITIES_LINK} from "../client/routes";
 
 const useStyles = makeStyles((theme) => ({
     formTitle: {
         textAlign: 'center',
         fontSize: '2.5rem',
-        fontWeight: 700,
-        fontFamily: 'Myriad-Pro Regular'
+        fontWeight: 700
     },
     editIcon: {
         color: '#1891FC',
@@ -69,7 +69,7 @@ const InfoComponent = ({ data = {}, hasPermission }) => {
                 </Grid>
             </Grid>
             <Grid item xs={12} style={{ marginTop: '3rem' }}>
-                <Link to={'/dashboard/warehouse/edit/' + _id}>
+                <Link to={FACILITIES_LINK + '/edit/' + _id}>
                     <IconButton disabled={!hasPermission}>
                         <Edit className={classes.editIcon} />
                     </IconButton></Link>
@@ -82,12 +82,12 @@ const InfoComponent = ({ data = {}, hasPermission }) => {
 function Preview(props) {
     const classes = useStyles();
     const dispatch = useDispatch()
-    const { history, match: { params: { id = '' } } } = props;
+    const { history, match: { params: { id = '' } }, closeUrl } = props;
     const { warehouse: { warehouseById: { data = {} } = {} } = {}, auth: { user: { role = '' } = {} } = {} } = useSelector(store => store) || {};
     const hasPermission = role === 'admin' || role === 'dispatch' || role === 'support';
 
     const closeModal = () => {
-        history.push('/dashboard');
+        history.push(closeUrl);
     }
 
     useEffect(() => {
@@ -96,10 +96,10 @@ function Preview(props) {
 
     return (
         <div>
-            <Dialog maxWidth='xl' onClose={closeModal} aria-labelledby="customized-dialog-title" open>
+            <Dialog maxWidth='xl' onClose={closeModal} aria-labelledby="customized-dialog-title" open={true}>
                 <DialogContent dividers>
                     <DialogTitle className={classes.formTitle} id="customized-dialog-title" onClose={() => null}>
-                        <Typography sx={{fontWeight: 600}}>{data.name || 'Warehouse'}</Typography>
+                        <Typography sx={{ fontWeight: 600 }}>{data.name || 'Warehouse'}</Typography>
                     </DialogTitle>
                     <InfoComponent data={data} hasPermission={hasPermission} />
                 </DialogContent>
