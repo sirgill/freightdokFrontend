@@ -29,6 +29,7 @@ export default function auth(state = initialState, action) {
     case USER_LOADED:
       return {
         ...state,
+        ...payload,
         isAuthenticated: true,
         loading: false,
         user: payload.user,

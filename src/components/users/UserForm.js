@@ -10,37 +10,40 @@ import {
     fetchUsers,
     openModal,
 } from "../../actions/users";
-import {capitalizeFirstLetter} from "../../utils/helper";
 import {PRIMARY_BLUE} from "../layout/ui/Theme";
 import useMutation from "../../hooks/useMutation";
 import {notification} from "../../actions/alert";
 import {isEmailValid} from "../../utils/utils";
 import {ROLES} from "../constants";
-import {Input, LoadingButton, Password, Select} from "../Atoms";
+import {Alert, Input, LoadingButton, Password, Select} from "../Atoms";
+import {UserSettings} from "../Atoms/client";
 
 const initialState = {
     email: "",
     password: "",
     role: "dispatch",
+    firstName: '',
+    lastName: ''
 };
 
-const ADD_USERS_ROLES_PERMITTED = [ROLES.superadmin, ROLES.admin, ROLES.dispatch];
+// const ADD_USERS_ROLES_PERMITTED = [ROLES.superadmin, ROLES.admin, ROLES.dispatch];
 
 const UserForm = () => {
     const {mutation, loading: isSaving} = useMutation('/api/users')
-    const [form, setForm] = useState({...initialState});
+    const [form, setForm] = useState({...initialState}),
+        [alertConfig, setAlertConfig] = useState({open: false, severity: 'error', message: ''});
     const {loading, open, error, user, page, limit} = useSelector(
         (state) => state.users
     );
     const {mutation: updateUser, loading: isSavingUpdate} = useMutation(`/api/users/${user?._id}`)
-    const {user: auth = {}} = useSelector((state) => state.auth);
+    const {user: auth = {}, allRoles = []} = useSelector((state) => state.auth);
     const {roles = []} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
-    const [userRoles, setUserRoles] = useState(),
-        hasAddPermission = ADD_USERS_ROLES_PERMITTED.includes(auth?.role);
+    const [userRoles, setUserRoles] = useState();
+    const {add = false} = UserSettings.getUserPermissionsByDashboardId('users');
 
     useEffect(() => {
-        if(auth?.role.equalsIgnoreCase(ROLES.superadmin)) {
+        if (auth?.role.equalsIgnoreCase(ROLES.superadmin)) {
             setUserRoles(roles)
         } else {
             const newRoles = roles.filter(
@@ -54,7 +57,8 @@ const UserForm = () => {
             );
             setUserRoles(newRoles);
         }
-    }, [roles]);
+        setForm((prev) => ({...prev, role: (allRoles.length) ? allRoles[0]?._id : ''}))
+    }, [roles, allRoles.length]);
 
     useEffect(() => {
         if (!open) handleClose();
@@ -69,8 +73,8 @@ const UserForm = () => {
 
     useEffect(() => {
         if (user) {
-            const {email, role} = user;
-            setForm((f) => ({...f, email, role}));
+            const {email, rolePermissionId, firstName, lastName} = user;
+            setForm((f) => ({...f, email, firstName, lastName, role: rolePermissionId}));
             dispatch(openModal());
         }
     }, [user]);
@@ -104,39 +108,45 @@ const UserForm = () => {
             dispatch(fetchUsers(+page, +limit));
             notification((user._id ? 'Updated ' : 'Saved ') + 'Successfully');
         } else {
-            notification(data.message, 'error')
+            setAlertConfig({open: true, message: data.message, severity: 'error'});
         }
     }
 
+    const closeAlert = () => setAlertConfig({...alertConfig, open: false})
+
     const onSubmit = async (e) => {
         e.preventDefault();
+        closeAlert();
+        const {email, password, role, firstName} = form;
+        const {_id, roleName} = allRoles.find(_role => _role._id === role) || {};
         if (!loading) {
             if (!user) {
-                const {email, password, role} = form;
-                if (!email || !password || !role)
-                    return alert("All fields are required");
+                if (!email || !password || !role || !firstName)
+                    return alert("All required fields should be provided");
                 else if (!isEmailValid(email)) {
                     return alert('Email is not valid');
                 } else if (password.length < 6) {
                     return alert('Please enter password with 6 or more characters');
                 }
-                await mutation(form, '', afterSubmit);
+
+                await mutation({...form, rolePermissionId: _id, role: roleName}, '', afterSubmit);
             } else {
                 const dataToUpdate = getDiff(form, user);
-                await updateUser(dataToUpdate, 'put', afterSubmit);
+                await updateUser({...dataToUpdate, rolePermissionId: role, role: roleName}, 'put', afterSubmit);
             }
         }
     };
 
     return (
         <>
-            {hasAddPermission && <Button
+            <Button
                 color="primary"
                 variant={'contained'}
                 onClick={handleClickOpen}
+                disabled={!add}
             >
                 Add User
-            </Button>}
+            </Button>
             <Dialog
                 fullWidth={false}
                 maxWidth={"md"}
@@ -157,14 +167,34 @@ const UserForm = () => {
                     <div className="">
                         <form noValidate onSubmit={onSubmit}>
                             <Grid container spacing={2} direction={'column'} sx={{p: 3}}>
+                                <Alert config={alertConfig} onClose={closeAlert} inStyles={{pl: 2}} />
+                                <Grid item>
+                                    <Input
+                                        name={'firstName'}
+                                        value={form.firstName || ''}
+                                        onChange={handleChange}
+                                        autoFocus
+                                        trimValue
+                                        label='First Name'
+                                        required
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <Input
+                                        name={'lastName'}
+                                        value={form.lastName || ''}
+                                        onChange={handleChange}
+                                        label='Last Name'
+                                    />
+                                </Grid>
                                 <Grid item>
                                     <Input
                                         name={"email"}
                                         label={"Email"}
                                         onChange={handleChange}
                                         value={form.email}
-                                        autoFocus
                                         fullWidth
+                                        required
                                     />
                                 </Grid>
                                 <Grid item>
@@ -174,6 +204,7 @@ const UserForm = () => {
                                         onChange={handleChange}
                                         value={form.password}
                                         fullWidth
+                                        required
                                     />
                                 </Grid>
                                 <Grid item>
@@ -182,8 +213,10 @@ const UserForm = () => {
                                         label={"Role"}
                                         name="role"
                                         value={form.role}
-                                        options={userRoles &&
-                                            userRoles.map((role) => ({id: role, label: capitalizeFirstLetter(role)}))}
+                                        options={allRoles}
+                                        labelKey='roleName'
+                                        valueKey='_id'
+                                        required
                                     />
                                 </Grid>
                                 <Grid item xs={12} justifyContent='center' display={'flex'}>

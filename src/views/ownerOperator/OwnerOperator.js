@@ -1,39 +1,32 @@
-import React, {Fragment, useEffect, useState} from "react";
+import React, {Fragment, useCallback, useEffect} from "react";
 import {Button} from "@mui/material";
 import {Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
-import axios from "axios";
-import {getBaseUrl} from "../../config";
 import FormModal from "./FormModal";
 import {addEvent, removeEvent} from "../../utils/utils";
 import {showDelete} from "../../actions/component.action";
+import {UserSettings} from "../../components/Atoms/client";
+import useEnhancedFetch from "../../hooks/useEnhancedFetch";
 
 
 const OwnerOperator = () => {
   const { path } = useRouteMatch(),
-      [row, setRow] = useState([]),
-      [loading, setLoading] = useState(false),
+      {edit, delete: canDelete} = UserSettings.getUserPermissionsByDashboardId('ownerOperator'),
+          {data: queryData = {}, isRefetching, loading, refetch, page, limit, onLimitChange, onPageChange, isPaginationLoading} = useEnhancedFetch('/api/ownerOperator', {
+          page: 1, limit: 10
+      }),
+      {data, totalCount} = queryData || {},
     history = useHistory();
 
-  function fetchOwnerOp() {
-      setLoading(true);
-      axios.get(getBaseUrl() + '/api/ownerOperator').then(r => {
-          const {data: {data = []} = {}} = r;
-          setRow(data);
-          setLoading(false);
-      })
-          .catch(err => {
-              console.log(err.message)
-              setLoading(false);
-          })
-  }
+  const fetchOwnerOp = useCallback(() => {
+        refetch();
+    }, [refetch]);
 
   useEffect(() => {
-      fetchOwnerOp();
       addEvent(window, 'refreshOwnerOp', fetchOwnerOp)
 
       return () => removeEvent(window, 'refreshOwnerOp', fetchOwnerOp)
-  }, [])
+  }, [fetchOwnerOp])
 
     const afterDelete = ({success}) => {
         if(success) {
@@ -44,7 +37,13 @@ const OwnerOperator = () => {
 
   const tableConfig = {
     rowCellPadding: "inherit",
+    showRefresh: true,
     emptyMessage: "No Owner Operator Found",
+    count: totalCount,
+      page,
+      limit,
+      onPageSizeChange: onLimitChange,
+      onPageChange,
     columns: [
       {
         id: "firstName",
@@ -69,7 +68,7 @@ const OwnerOperator = () => {
         },
       {
         id: "update",
-        renderer: ({ row, role }) => {
+        renderer: ({ row }) => {
           return (
             <Fragment>
               <Button
@@ -79,6 +78,7 @@ const OwnerOperator = () => {
                   history.push(path + `/edit/${row._id}`);
                 }}
                 sx={{mr: 1}}
+                disabled={!edit}
               >
                 Update
               </Button>
@@ -90,7 +90,7 @@ const OwnerOperator = () => {
                       message: 'Are you sure you want to delete this Owner Operator?',
                       afterSuccessCb: afterDelete
                   })}
-                  disabled={['ownerOperator', 'dispatch',].includes(role)}
+                  disabled={!canDelete}
               >
                 Delete
               </Button>
@@ -105,8 +105,11 @@ const OwnerOperator = () => {
     <div>
       <EnhancedTable
         config={tableConfig}
-        data={row}
+        data={data}
         loading={loading}
+        isRefetching={isRefetching}
+        onRefetch={refetch}
+        isPaginationLoading={isPaginationLoading}
       />
         {/*<Button*/}
         {/*    variant='contained'*/}

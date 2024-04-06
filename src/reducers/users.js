@@ -24,9 +24,9 @@ const initialState = {
     user: null,
     error: '',
     total: 0,
-    page: 0,
+    page: 1,
     totalPages: 0,
-    limit: 5
+    limit: 10
 };
 
 export default function users(state = initialState, action) {

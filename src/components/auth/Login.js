@@ -75,7 +75,7 @@ const Login = (props) => {
       history.push(redirectLink || ENHANCED_DASHBOARD);
     } else {
       const { message } = data || {}
-      setAlert({...alert, open: true, message: message})
+      setAlert({...alert, open: true, message: message || 'NETWORK ERROR'})
     }
   }
 

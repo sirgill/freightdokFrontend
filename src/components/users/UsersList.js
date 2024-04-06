@@ -4,15 +4,16 @@ import {fetchUsers, selectUserToEdit} from "../../actions/users";
 import EnhancedTable from "../Atoms/table/Table";
 import {Box, Button} from "@mui/material";
 import UserForm from "./UserForm";
-import {ROLES} from "../constants";
 import {showDelete} from "../../actions/component.action";
 import {getRoleNameString} from "../client/constants";
+import {UserSettings} from "../Atoms/client";
+
+const {delete: hasDeletePermission, edit} = UserSettings.getUserPermissionsByDashboardId('users');
 
 const UsersList = () => {
-    const { list, loading, page = 0, limit = 10, total } = useSelector(
+    const { list, loading, page = 1, limit = 10, total } = useSelector(
         (state) => state.users
     );
-    const { user } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
 
@@ -28,18 +29,12 @@ const UsersList = () => {
     }, [dispatch]);
 
     const handleChangePage = (event, newPage) => {
-        dispatch(fetchUsers(newPage - 1, +limit));
+        dispatch(fetchUsers(newPage, +limit));
     };
 
     const onPageSizeChange = ({value}) => {
-        dispatch(fetchUsers(0, value));
+        dispatch(fetchUsers(1, value));
     };
-
-    const allowedRolesForDispatch = [
-        ROLES.dispatch,
-        ROLES.admin,
-        ROLES.superadmin,
-    ];
 
     const config = {
         emptyMessage: 'No Users found',
@@ -69,26 +64,22 @@ const UsersList = () => {
             {
                 id: 'actions',
                 label: 'Actions',
-                renderer: ({ row: { _id, email, role } = {}, role: userRole }) => {
+                renderer: ({ row = {} }) => {
+                    const { _id, email, role, rolePermissionId, firstName, lastName } = row;
                     // onDelete.bind(this, _id)
                     return <Fragment>
-                        {allowedRolesForDispatch.includes(userRole) && (
-                                <Button variant='contained' sx={{mr: 1}} onClick={() => {
-                                    dispatch(selectUserToEdit({ _id, email, role }))
-                                }}>
-                                    Update
-                                </Button>
-                            )
-                        }
-                        {user &&
-                            [ROLES.admin, ROLES.superadmin].includes(user.role) &&
-                            <Button variant='contained' color='error' onClick={showDelete({
-                                message: 'Are you sure you want to delete '+ email + '?',
-                                uri: `/api/users/${_id}`,
-                                afterSuccessCb: afterDelete
-                            })}>
-                                Delete
-                            </Button>}
+                        <Button variant='contained' sx={{mr: 1}} disabled={!edit} onClick={() => {
+                            dispatch(selectUserToEdit({ _id, email, role, rolePermissionId, firstName, lastName }))
+                        }}>
+                            Update
+                        </Button>
+                        <Button variant='contained' disabled={!hasDeletePermission} color='error' onClick={showDelete({
+                            message: 'Are you sure you want to delete '+ email + '?',
+                            uri: `/api/users/${_id}`,
+                            afterSuccessCb: afterDelete
+                        })}>
+                            Delete
+                        </Button>
                     </Fragment>
                 }
             },

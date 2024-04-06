@@ -3,7 +3,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import {Box} from "@mui/material";
 
 
-export default function CircularIndeterminate() {
+export default function CircularIndeterminate(props) {
   return (
     <Box sx={{
       height: '100%',
@@ -14,7 +14,7 @@ export default function CircularIndeterminate() {
         marginLeft: 2,
       },
     }}>
-      <CircularProgress />
+      <CircularProgress {...props}/>
     </Box>
   );
 }

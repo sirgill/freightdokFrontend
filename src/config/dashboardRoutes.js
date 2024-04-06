@@ -84,3 +84,58 @@ export const routes = [
         permissions: ['admin', 'superAdmin', 'support']
     },
 ]
+
+export const newRoutes = [
+    {
+        id: 'openBoard',
+        title: 'Open Board',
+        component: OpenBoard,
+        icon: OpenBoardIcon,
+        view: false
+    }, {
+        id: 'bids',
+        title: 'My Bids',
+        component: MyBids,
+        icon: MybidsIcon,
+    }, {
+        id: 'loads',
+        title: 'My Loads',
+        component: Loadlistbar,
+        icon: MyLoadsIcon,
+    }, {
+        id: 'invoices',
+        title: 'Invoices',
+        component: InvoicesList,
+        icon: InvoiceIcon,
+    }, {
+        id: 'users',
+        title: 'Users',
+        component: UsersList,
+        icon: UsersIcon,
+    }, {
+        id: 'drivers',
+        title: 'Drivers',
+        component: Driverlistbar,
+        icon: DriverIcon,
+    }, {
+        id: 'ownerOperator',
+        title: 'Owner Operator',
+        component: OwnerOperator,
+        icon: OwnerOperatorIcon,
+    }, {
+        id: 'history',
+        title: 'Load History',
+        component: LoadsStatus,
+        icon: LoadHistoryIcon,
+    }, {
+        id: 'carrierProfile',
+        title: 'Carrier Profile',
+        component: CarrierProfile,
+        icon: CarrierProfileIcon,
+    }, {
+        id: 'facilities',
+        title: 'Facilities',
+        component: Facilities,
+        icon: FacilitiesIcon,
+    },
+]

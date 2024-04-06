@@ -5,7 +5,7 @@ import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {TimePicker} from '@mui/x-date-pickers/TimePicker';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterMoment} from '@mui/x-date-pickers/AdapterMoment';
-import {bookChRobinsonLoad, bidChRobinsonLoad, saveCHLoadToDb} from "../../actions/openBoard.action";
+import {bookChRobinsonLoad, saveCHLoadToDb} from "../../actions/openBoard.action";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {notification} from "../../actions/alert";
 import {getUserDetail, triggerCustomEvent} from "../../utils/utils";
