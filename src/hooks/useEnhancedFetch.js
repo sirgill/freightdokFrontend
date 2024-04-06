@@ -8,7 +8,8 @@ const useEnhancedFetch = (url, options = {}, callback = null) => {
     const [pageOptions, setPageOptions] = useState({page: (page || 1), limit: (limit || 10)});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null),
-        [isRefetching, setIsRefetching] = useState(false)
+        [isRefetching, setIsRefetching] = useState(false),
+        [isPaginationLoading, setIsPaginationLoading] = useState(false)
 
     function requestCall(object) {
         const {page, limit} = object || {};
@@ -29,16 +30,19 @@ const useEnhancedFetch = (url, options = {}, callback = null) => {
             .finally(() => {
                 setLoading(false);
                 setIsRefetching(false);
+                setIsPaginationLoading(false);
             })
     }
 
     const onLimitChange = ({value}) => {
         // setPageOptions({...pageOptions, limit: value});
+        setIsPaginationLoading(true);
         requestCall({limit: value, page: pageOptions.page})
     }
 
     const onPageChange = (e, pgNum) => {
         // setPageOptions({...pageOptions, page: pgNum});
+        setIsPaginationLoading(true);
         requestCall({page: pgNum, limit: pageOptions.limit})
     }
 
@@ -55,7 +59,7 @@ const useEnhancedFetch = (url, options = {}, callback = null) => {
     }, [url])
 
     return {data, loading, error, refetch: onRefetch, isRefetching,
-        onLimitChange, onPageChange, ...pageOptions
+        onLimitChange, onPageChange, isPaginationLoading, ...pageOptions
     }
 }
 

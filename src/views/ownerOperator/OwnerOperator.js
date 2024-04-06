@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from "react";
+import React, {Fragment, useCallback, useEffect} from "react";
 import {Button} from "@mui/material";
 import {Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
@@ -6,28 +6,27 @@ import FormModal from "./FormModal";
 import {addEvent, removeEvent} from "../../utils/utils";
 import {showDelete} from "../../actions/component.action";
 import {UserSettings} from "../../components/Atoms/client";
-import useFetch from "../../hooks/useFetch";
 import useEnhancedFetch from "../../hooks/useEnhancedFetch";
 
 
 const OwnerOperator = () => {
   const { path } = useRouteMatch(),
       {edit, delete: canDelete} = UserSettings.getUserPermissionsByDashboardId('ownerOperator'),
-          {data: queryData = {}, isRefetching, loading, refetch, page, limit, onLimitChange, onPageChange} = useEnhancedFetch('/api/ownerOperator', {
+          {data: queryData = {}, isRefetching, loading, refetch, page, limit, onLimitChange, onPageChange, isPaginationLoading} = useEnhancedFetch('/api/ownerOperator', {
           page: 1, limit: 10
       }),
       {data, totalCount} = queryData || {},
     history = useHistory();
 
-  function fetchOwnerOp() {
-      refetch();
-  }
+  const fetchOwnerOp = useCallback(() => {
+        refetch();
+    }, [refetch]);
 
   useEffect(() => {
       addEvent(window, 'refreshOwnerOp', fetchOwnerOp)
 
       return () => removeEvent(window, 'refreshOwnerOp', fetchOwnerOp)
-  }, [])
+  }, [fetchOwnerOp])
 
     const afterDelete = ({success}) => {
         if(success) {
@@ -110,6 +109,7 @@ const OwnerOperator = () => {
         loading={loading}
         isRefetching={isRefetching}
         onRefetch={refetch}
+        isPaginationLoading={isPaginationLoading}
       />
         {/*<Button*/}
         {/*    variant='contained'*/}

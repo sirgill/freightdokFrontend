@@ -26,7 +26,7 @@ const StyledStack = styled(Stack)(({theme}) => ({
         }
 }))
 
-const TablePagination = ({data = [], onPageChange, page = 0, count = 0, limit = 1, onPageSizeChange}) => {
+const TablePagination = ({data = [], onPageChange, page = 1, count = 0, limit = 1, onPageSizeChange}) => {
     const [length, setLength] = useState(0);
 
     useEffect(() => {
@@ -36,7 +36,7 @@ const TablePagination = ({data = [], onPageChange, page = 0, count = 0, limit = 
     }, [data]);
 
     const onChange = (e, pgNum) => {
-        if (onPageChange) {
+        if (+page !== +pgNum && typeof onPageChange === 'function') {
             onPageChange(e, +pgNum)
         }
     }

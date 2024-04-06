@@ -14,7 +14,7 @@ import useEnhancedFetch from "../../hooks/useEnhancedFetch";
 const Facilities = () => {
     const {path} = useRouteMatch();
     const {add, delete: canDelete, edit} = UserSettings.getUserPermissionsByDashboardId('facilities')
-    const { data = {}, loading, refetch, isRefetching, page, limit, onLimitChange, onPageChange } = useEnhancedFetch('/api/warehouse', {
+    const { data = {}, loading, refetch, isRefetching, page, limit, onLimitChange, onPageChange, isPaginationLoading } = useEnhancedFetch('/api/warehouse', {
             page: 1,
             limit: 5,
         }),
@@ -89,7 +89,9 @@ const Facilities = () => {
     return (
         <div>
             <Box>
-                <EnhancedTable config={config} data={warehouses} loading={loading} onRefetch={refetch} isRefetching={isRefetching} actions={Actions} />
+                <EnhancedTable config={config} data={warehouses} loading={loading} onRefetch={refetch} isRefetching={isRefetching} actions={Actions}
+                               isPaginationLoading={isPaginationLoading}
+                />
             </Box>
             <Switch>
                 <Route render={(props) => <Form {...props} refetch={refetch} />} path={path + '/add'}/>

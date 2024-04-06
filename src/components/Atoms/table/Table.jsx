@@ -127,7 +127,7 @@ const TableData = ({columns, data = [], config = {}, handleRowClick, handleDelet
 }
 
 
-const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch, isRefetching, actions}) => {
+const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch, isRefetching, actions, isPaginationLoading=false}) => {
     data = data || [];
     const [tableState, setTableState] = useState({}),
         [dialog, setDialog] = useState({open: false, config: {}}),
@@ -253,7 +253,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
                 </Table>}
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1, position: 'absolute' }}
-                open={isRefetching || false}
+                open={isPaginationLoading || isRefetching || false}
             >
                 <Spinner sx={{color: 'inherit'}} />
             </Backdrop>

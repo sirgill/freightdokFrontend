@@ -64,11 +64,12 @@ const UsersList = () => {
             {
                 id: 'actions',
                 label: 'Actions',
-                renderer: ({ row: { _id, email, role, rolePermissionId } = {} }) => {
+                renderer: ({ row = {} }) => {
+                    const { _id, email, role, rolePermissionId, firstName, lastName } = row;
                     // onDelete.bind(this, _id)
                     return <Fragment>
                         <Button variant='contained' sx={{mr: 1}} disabled={!edit} onClick={() => {
-                            dispatch(selectUserToEdit({ _id, email, role, rolePermissionId }))
+                            dispatch(selectUserToEdit({ _id, email, role, rolePermissionId, firstName, lastName }))
                         }}>
                             Update
                         </Button>
