@@ -43,7 +43,10 @@ export const UserSettings = {
         localStorage.setItem('userPermissions', JSON.stringify(permissions));
     },
     getUserPermissionsByDashboardId(id){
-        const {permissions} = this.getUserPermissions() || {};
-        return permissions[id];
+        const {permissions = {}} = this.getUserPermissions() || {};
+        if(String(permissions).equalsIgnoreCase('undefined')){
+            return {};
+        }
+        return permissions[id] || {};
     }
 }

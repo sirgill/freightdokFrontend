@@ -6,12 +6,12 @@ import DialogContent from "@mui/material/DialogContent";
 import Dialog from "@mui/material/Dialog";
 import React, {useEffect, useState} from "react";
 import {notification} from "../../actions/alert";
-import {triggerCustomEvent} from "../../utils/utils";
+import {isEmailValid, triggerCustomEvent} from "../../utils/utils";
 import useMutation from "../../hooks/useMutation";
 import useFetch from "../../hooks/useFetch";
 import {Input, LoadingButton} from "../../components/Atoms";
 
-const validateForm = ({firstName, lastName, phone}) => {
+const validateForm = ({firstName, lastName, phone, email}) => {
     let errors = {}
     if (!firstName) {
         errors.firstName = 'Please provide the First Name'
@@ -22,6 +22,12 @@ const validateForm = ({firstName, lastName, phone}) => {
     }
     if (!phone) {
         errors.phone = 'Please provide the Phone Number'
+    }
+    if(!email) {
+        errors.email = 'Please provide the Email'
+    }
+    if(!isEmailValid(email)){
+        errors.email = 'Invalid Email'
     }
     return errors
 }
@@ -125,6 +131,19 @@ const FormModal = (props) => {
                             label={"Last Name"}
                             onChange={updateForm}
                             value={form.lastName || ''}
+                            errors={errors}
+                            onBlur={onBlur}
+                            fullWidth
+                            disabled={isFetching || loading}
+                            required
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Input
+                            name={"email"}
+                            label={"Email"}
+                            onChange={updateForm}
+                            value={form.email || ''}
                             errors={errors}
                             onBlur={onBlur}
                             fullWidth

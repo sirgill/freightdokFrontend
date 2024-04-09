@@ -5,7 +5,6 @@ import {
   Grid,
   Stack,
   Typography,
-  TextField,
   Box,
   MenuItem,
   IconButton,
@@ -27,10 +26,14 @@ import { FileCopyOutlined } from "@mui/icons-material";
 import { changeObjectKey } from "../../utils/helper";
 import { useStyles } from "./styles";
 import InputField from "../Atoms/form/InputField";
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import TimePicker from '@mui/lab/TimePicker';
-import DatePicker from '@mui/lab/DatePicker';
+// import AdapterDateFns from '@mui/lab/AdapterDateFns';
+// import LocalizationProvider from '@mui/lab/LocalizationProvider';
+// import TimePicker from '@mui/lab/TimePicker';
+// import DatePicker from '@mui/lab/DatePicker';
+import {TimePicker} from '@mui/x-date-pickers/TimePicker';
+import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker'
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {AdapterMoment} from '@mui/x-date-pickers/AdapterMoment';
 import { blue } from "../layout/ui/Theme";
 import { LOAD_STATUSES } from "../constants";
 import { green } from "@mui/material/colors";
@@ -61,6 +64,19 @@ const MenuProps = {
     },
   },
 };
+const DATE_PICKER_SLOT_PROPS = {
+  textField: {
+    helperText: 'DD/MM/YYYY hh:mm AM/PM',
+    size: 'small',
+    fullWidth: true
+  },
+},
+    TIME_PICKET_SLOT_PROPS = {
+      textField: {
+        size: 'small',
+        fullWidth: true
+      }
+    }
 
 const TextPlaceHolder = ({ value }) => (value ? value : "--");
 
@@ -245,8 +261,8 @@ const LoadDetailModal = ({
   const { rateConfirmation = [], proofDelivery = [], accessorialsFiles = [] } = bucketFiles || {};
 
   const StaticDataShow = ({ heading, values = [], spacing = 2, sxObject = {} }) => {
-    return <Stack spacing={spacing} sx={{ ...sxObject }}>
-      <Stack><Typography sx={{ fontWeight: 600, fontSize: 18, textAlign: 'center' }}>{heading}</Typography></Stack>
+    return <Stack spacing={spacing} sx={{ ...sxObject }} className='staticInfo'>
+      <Stack><Typography sx={{ fontWeight: 600, fontSize: 18, textAlign: 'center', pt: 3 }}>{heading}</Typography></Stack>
       {values.map(value => <Stack>
         <TextPlaceHolder value={value} />
       </Stack>)}
@@ -260,7 +276,8 @@ const LoadDetailModal = ({
         aria-labelledby="server-modal-title"
 
       >
-        <div style={{ width: '90%' }} className={classes.paper}>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <div style={{ width: '90%' }} className={classes.paper}>
           <Stack direction={'row'} justifyContent={'space-between'} sx={{ mb: 2 }}>
             {/*<DeleteIcon*/}
             {/*    onClick={(e) => deleteLoad(_id, e)}*/}
@@ -517,57 +534,66 @@ const LoadDetailModal = ({
                               <Grid item xs={12}>
                                 <Typography sx={{ fontWeight: 600, fontSize: 18, textAlign: 'center' }}>Pickup Time</Typography>
                               </Grid>
-                              <Grid item xs={6}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                  <DatePicker
-                                    value={
-                                      form.pickup[0] ? form.pickup[0].pickupDate : ""
-                                    }
-                                    onChange={(date) =>
-                                      handleDateChange(date, "pickup")
-                                    }
-                                    renderInput={(params) => <TextField {...params} variant='standard' />}
+                              <Grid item xs={12}>
+                                <LocalizationProvider dateAdapter={AdapterMoment}>
+                                  <DateTimePicker
+                                      value={moment(form.pickup[0] ? form.pickup[0].pickupDate : "") || new Date()}
+                                      onChange={(date) => handleDateChange(date, "pickup")}
+                                      slotProps={DATE_PICKER_SLOT_PROPS}
+                                      label='Pickup Date'
                                   />
                                 </LocalizationProvider>
+                                {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                                {/*  <DatePicker*/}
+                                {/*    value={*/}
+                                {/*      form.pickup[0] ? form.pickup[0].pickupDate : ""*/}
+                                {/*    }*/}
+                                {/*    onChange={(date) =>*/}
+                                {/*      handleDateChange(date, "pickup")*/}
+                                {/*    }*/}
+                                {/*    renderInput={(params) => <TextField {...params} variant='standard' />}*/}
+                                {/*  />*/}
+                                {/*</LocalizationProvider>*/}
                               </Grid>
+                              {/*<Grid item xs={6}>*/}
+                              {/*    <TimePicker*/}
+                              {/*      value={moment(form.pickup[0] ? form.pickup[0].pickupDate : "")}*/}
+                              {/*      onChange={(date) =>*/}
+                              {/*        handleDateChange(date, "pickup")*/}
+                              {/*      }*/}
+                              {/*      label='Pickup Time'*/}
+                              {/*      slotProps={TIME_PICKET_SLOT_PROPS}*/}
+                              {/*    />*/}
+                              {/*</Grid>*/}
                               <Grid item xs={6}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                  <TimePicker
-                                    value={
-                                      form.pickup[0] ? form.pickup[0].pickupDate : ""
-                                    }
-                                    onChange={(date) =>
-                                      handleDateChange(date, "pickup")
-                                    }
-                                    renderInput={(params) => <TextField {...params} variant='standard' />}
-                                  />
-                                </LocalizationProvider>
-                              </Grid>
-                              <Grid item xs={6}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                  <TimePicker
+                                {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                                {/*  <TimePicker*/}
+                                {/*    label='In Time'*/}
+                                {/*    value={form.pickup[0] ? form.pickup[0].in_time : ""}*/}
+                                {/*    onChange={(date) =>*/}
+                                {/*      handleInOutTime(date, "pickup", "in_time")*/}
+                                {/*    }*/}
+                                {/*    renderInput={(params) => <TextField {...params} variant='standard' />}*/}
+                                {/*  />*/}
+                                {/*</LocalizationProvider>*/}
+                                <TimePicker
                                     label='In Time'
-                                    value={form.pickup[0] ? form.pickup[0].in_time : ""}
+                                    value={moment( form.pickup[0] ? form.pickup[0].in_time : "")}
                                     onChange={(date) =>
-                                      handleInOutTime(date, "pickup", "in_time")
+                                        handleInOutTime(date, "pickup", "in_time")
                                     }
-                                    renderInput={(params) => <TextField {...params} variant='standard' />}
-                                  />
-                                </LocalizationProvider>
+                                    slotProps={TIME_PICKET_SLOT_PROPS}
+                                />
                               </Grid>
                               <Grid item xs={6}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
                                   <TimePicker
                                     label='Out Time'
-                                    value={
-                                      form.pickup[0] ? form.pickup[0].out_time : ""
-                                    }
+                                    value={moment(form.pickup[0] ? form.pickup[0].out_time : "")}
                                     onChange={(date) =>
                                       handleInOutTime(date, "pickup", "out_time")
                                     }
-                                    renderInput={(params) => <TextField {...params} variant='standard' />}
+                                    slotProps={TIME_PICKET_SLOT_PROPS}
                                   />
-                                </LocalizationProvider>
                               </Grid>
                             </Grid>
                               : <Fragment>
@@ -587,7 +613,7 @@ const LoadDetailModal = ({
                                   <Stack>
                                     {pickup && pickup[0] && pickup[0].in_time ? (
                                       <Stack sx={{ textAlign: 'left' }}>
-                                        <Typography variant='inherit' sx={{ color: '#8898AA', fontSize: 10 }}>In Time: </Typography>
+                                        <Typography variant='subtitle2' sx={{ color: '#595959' }}>In Time: </Typography>
                                         <Box>{moment(pickup[0].in_time).format("h:mm A")}</Box>
                                       </Stack>
                                     ) : (
@@ -597,7 +623,7 @@ const LoadDetailModal = ({
                                   <Stack>
                                     {pickup && pickup[0] && pickup[0].out_time ? (
                                       <Stack sx={{ textAlign: 'left' }}>
-                                        <Typography variant='inherit' sx={{ color: '#8898AA', fontSize: 10 }}>Out Time:</Typography>
+                                        <Typography variant='subtitle2' sx={{ color: '#595959' }}>Out Time:</Typography>
                                         <Box>{moment(pickup[0].out_time).format("h:mm A")}</Box>
                                       </Stack>
                                     ) : (
@@ -738,47 +764,66 @@ const LoadDetailModal = ({
                             <Grid item xs={12}>
                               <Typography sx={{ fontWeight: 600, fontSize: 18, textAlign: 'center' }}>Drop Time</Typography>
                             </Grid>
-                            <Grid item xs={6}>
-                              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                  value={form.drop[0] ? form.drop[0].dropDate : ""}
+                            <Grid item xs={12}>
+                              <DateTimePicker
+                                  value={moment(form.drop[0] ? form.drop[0].dropDate : "") || new Date()}
                                   onChange={(date) => handleDateChange(date, "drop")}
-                                  renderInput={(params) => <TextField {...params} variant='standard' />}
-                                />
-                              </LocalizationProvider>
+                                  slotProps={DATE_PICKER_SLOT_PROPS}
+                                  label='Drop Date'
+                              />
+                              {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                              {/*  <DatePicker*/}
+                              {/*    value={form.drop[0] ? form.drop[0].dropDate : ""}*/}
+                              {/*    onChange={(date) => handleDateChange(date, "drop")}*/}
+                              {/*    renderInput={(params) => <TextField {...params} variant='standard' />}*/}
+                              {/*  />*/}
+                              {/*</LocalizationProvider>*/}
                             </Grid>
+                            {/*<Grid item xs={6}>*/}
+                            {/*    <TimePicker*/}
+                            {/*        label='Drop Time'*/}
+                            {/*      value={moment(form.drop[0] ? form.drop[0].dropDate : "")}*/}
+                            {/*      onChange={(date) => handleDateChange(date, "drop")}*/}
+                            {/*      slotProps={TIME_PICKET_SLOT_PROPS}*/}
+                            {/*    />*/}
+                            {/*</Grid>*/}
                             <Grid item xs={6}>
-                              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker
-                                  value={form.drop[0] ? form.drop[0].dropDate : ""}
-                                  onChange={(date) => handleDateChange(date, "drop")}
-                                  renderInput={(params) => <TextField {...params} variant='standard' />}
-                                />
-                              </LocalizationProvider>
-                            </Grid>
-                            <Grid item xs={6}>
-                              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker
+                              <TimePicker
                                   label='In Time'
-                                  value={form.drop[0] ? form.drop[0].in_time : ""}
-                                  onChange={(date) =>
-                                    handleInOutTime(date, "drop", "in_time")
-                                  }
-                                  renderInput={(params) => <TextField {...params} variant='standard' />}
-                                />
-                              </LocalizationProvider>
+                                  value={moment(form.drop[0] ? form.drop[0].in_time : "") || new Date()}
+                                  onChange={(date) => handleInOutTime(date, "drop", "in_time")}
+                                  slotProps={TIME_PICKET_SLOT_PROPS}
+                              />
+                              {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                              {/*  <TimePicker*/}
+                              {/*    label='In Time'*/}
+                              {/*    value={form.drop[0] ? form.drop[0].in_time : ""}*/}
+                              {/*    onChange={(date) =>*/}
+                              {/*      handleInOutTime(date, "drop", "in_time")*/}
+                              {/*    }*/}
+                              {/*    renderInput={(params) => <TextField {...params} variant='standard' />}*/}
+                              {/*  />*/}
+                              {/*</LocalizationProvider>*/}
                             </Grid>
                             <Grid item xs={6}>
-                              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker
+                              <TimePicker
                                   label='Out Time'
-                                  value={form.drop[0] ? form.drop[0].out_time : ""}
+                                  value={moment(form.drop[0] ? form.drop[0].out_time : "")}
                                   onChange={(date) =>
-                                    handleInOutTime(date, "drop", "out_time")
+                                      handleInOutTime(date, "drop", "out_time")
                                   }
-                                  renderInput={(params) => <TextField {...params} variant='standard' />}
-                                />
-                              </LocalizationProvider>
+                                  slotProps={TIME_PICKET_SLOT_PROPS}
+                              />
+                              {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                              {/*  <TimePicker*/}
+                              {/*    label='Out Time'*/}
+                              {/*    value={form.drop[0] ? form.drop[0].out_time : ""}*/}
+                              {/*    onChange={(date) =>*/}
+                              {/*      handleInOutTime(date, "drop", "out_time")*/}
+                              {/*    }*/}
+                              {/*    renderInput={(params) => <TextField {...params} variant='standard' />}*/}
+                              {/*  />*/}
+                              {/*</LocalizationProvider>*/}
                             </Grid>
                           </Grid> :
                             <Fragment>
@@ -798,7 +843,7 @@ const LoadDetailModal = ({
                                 <Stack>
                                   {drop && drop[0] && drop[0].in_time ? (
                                     <Stack sx={{ textAlign: 'left' }}>
-                                      <Typography variant='inherit' sx={{ color: '#8898AA', fontSize: 10 }}>In Time: </Typography>
+                                      <Typography variant='subtitle2' sx={{ color: '#595959' }}>In Time: </Typography>
                                       <Box>{moment(drop[0].in_time).format("h:mm A")}</Box>
                                     </Stack>
                                   ) : (
@@ -808,7 +853,7 @@ const LoadDetailModal = ({
                                 <Stack>
                                   {drop && drop[0] && drop[0].out_time ? (
                                     <Stack sx={{ textAlign: 'left' }}>
-                                      <Typography variant='inherit' sx={{ color: '#8898AA', fontSize: 10 }}>Out Time: </Typography>
+                                      <Typography variant='subtitle2' sx={{ color: '#595959' }}>Out Time: </Typography>
                                       <Box>{moment(drop[0].out_time).format("h:mm A")}</Box>
                                     </Stack>
                                   ) : (
@@ -923,6 +968,7 @@ const LoadDetailModal = ({
             </Grid>
           </form>
         </div>
+        </LocalizationProvider>
       </Modal>
     </>
   );
