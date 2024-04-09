@@ -8,7 +8,7 @@ import {
     Typography,
     Zoom,
 } from "@mui/material";
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { blue } from "../layout/ui/Theme";
@@ -18,6 +18,10 @@ import "../../App.css";
 import "./styles.css";
 import InvoiceServiceWrapper from "./InvoiceService";
 import { getCheckStatusIcon } from "../../utils/utils";
+import axios from "axios";
+import { height, width } from "@mui/system";
+
+
 
 const Title = ({ name, sx = {}, variant = "body1", children }) => {
     return (
@@ -78,15 +82,119 @@ const DialogComponent = ({
         [{ pickupAddress, pickupCity, pickupState, pickupZip }] = pickup;
     console.log(bucketFiles)
 
+
+
+
+    const PdfViewer = ({ pdfUrl, pdfFileName }) => {
+        const [pages, setPages] = useState([]);
+        console.log(pdfFileName)
+        useEffect(() => {
+
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js';
+            script.async = true;
+            script.onload = async () => {
+                // Once PDF.js script is loaded, fetch and render PDF
+
+
+                const blob = await fetch(`${pdfUrl}`)
+                    .then(response => {
+                        const contentType = response.headers.get('content-type');
+                        console.log(contentType)
+                        if (contentType == 'application/pdf')
+                            return response.blob();
+                        else
+                            return null;
+                    })
+
+                if (blob) {
+                    {
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            const arrayBuffer = reader.result;
+                            const pdf = arrayBuffer;
+                            // Initialize PDF.js library
+                            const pdfjsLib = window['pdfjs-dist/build/pdf'];
+                            pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`;
+
+                            // Load PDF document
+                            pdfjsLib.getDocument({ data: pdf }).promise.then(pdfDocument => {
+                                const numPages = pdfDocument.numPages;
+                                const promises = [];
+                                for (let i = 1; i <= numPages; i++) {
+                                    promises.push(pdfDocument.getPage(i));
+                                }
+                                Promise.all(promises).then(pages => {
+                                    const pagePromises = pages.map(page => {
+                                        const viewport = page.getViewport({ scale: 2 });
+                                        const canvas = document.createElement('canvas');
+                                        const context = canvas.getContext('2d');
+                                        canvas.height = viewport.height;
+                                        canvas.width = viewport.width;
+
+                                        const renderContext = {
+                                            canvasContext: context,
+                                            viewport: viewport
+                                        };
+                                        return page.render(renderContext).promise.then(() => {
+                                            return canvas.toDataURL();
+                                        });
+                                    });
+                                    Promise.all(pagePromises).then(pageImages => {
+                                        setPages(pageImages);
+                                    });
+                                });
+                            });
+                        };
+                        reader.readAsArrayBuffer(blob);
+                    }
+                }
+                else {
+                    setPages(false)
+                }
+
+
+
+            };
+            document.body.appendChild(script);
+
+
+        }, [pdfUrl]);
+
+        if (pages) {
+            return (
+                <div style={{ position: 'relative', minHeight: '100vh' }}>
+                    {pages.map((page, index) => (
+                        <img
+                            key={index}
+                            src={page}
+                            alt={`Page ${index + 1}`}
+                            style={{ position: 'absolute', top: `${index * 100}%`, left: 0, width: '100%' }}
+                        />
+                    ))}
+                </div>
+            );
+        }
+        else {
+            return (<img className="printThisFull" src={pdfUrl} alt={pdfFileName} />)
+        }
+    };
+
+
     const docFileViewer = React.useMemo(() => {
         return bucketFiles && bucketFiles.map(doc => {
             return (<div className="bucketImageContainer">
                 <div>
-                    <img className="printThisFull" src={doc.fileLocation} alt={doc.fileName} />
+                    <PdfViewer pdfUrl={doc.fileLocation} pdfFileName={doc.fileName} />
+                    {/* <img className="printThisFull" src={doc.fileLocation} alt={doc.fileName} /> */}
                 </div>
             </div>)
         })
     }, [bucketFiles])
+
+
+
+
 
 
 
