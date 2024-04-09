@@ -158,7 +158,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             return actions;
         }
         return <></>
-    }, []);
+    }, [actions]);
 
     const handleRowClick = (row) => {
         if (hasOnClickUrl && onRowClick) {

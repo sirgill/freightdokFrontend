@@ -1,6 +1,7 @@
 import React, {Fragment, useCallback, useEffect} from "react";
 import {Button} from "@mui/material";
-import {Route, useHistory, useRouteMatch} from "react-router-dom";
+import AddIcon from '@mui/icons-material/Add';
+import {Link, Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import FormModal from "./FormModal";
 import {addEvent, removeEvent} from "../../utils/utils";
@@ -11,7 +12,7 @@ import useEnhancedFetch from "../../hooks/useEnhancedFetch";
 
 const OwnerOperator = () => {
   const { path } = useRouteMatch(),
-      {edit, delete: canDelete} = UserSettings.getUserPermissionsByDashboardId('ownerOperator'),
+      {edit, delete: canDelete, add} = UserSettings.getUserPermissionsByDashboardId('ownerOperator'),
           {data: queryData = {}, isRefetching, loading, refetch, page, limit, onLimitChange, onPageChange, isPaginationLoading} = useEnhancedFetch('/api/ownerOperator', {
           page: 1, limit: 10
       }),
@@ -36,7 +37,7 @@ const OwnerOperator = () => {
 
 
   const tableConfig = {
-    rowCellPadding: "inherit",
+    rowCellPadding: "normal",
     showRefresh: true,
     emptyMessage: "No Owner Operator Found",
     count: totalCount,
@@ -100,6 +101,15 @@ const OwnerOperator = () => {
       },
     ],
   };
+  const Actions = <Button
+      variant='contained'
+      component={Link}
+      to={path + '/add'}
+      disabled={!add}
+      startIcon={<AddIcon />}
+  >
+      Add
+  </Button>
 
   return (
     <div>
@@ -110,16 +120,9 @@ const OwnerOperator = () => {
         isRefetching={isRefetching}
         onRefetch={refetch}
         isPaginationLoading={isPaginationLoading}
+        actions={Actions}
       />
-        {/*<Button*/}
-        {/*    variant='contained'*/}
-        {/*    component={Link}*/}
-        {/*    to={path + '/add'}*/}
-        {/*    className={'addNewOwnerOp'}*/}
-        {/*    sx={{position: 'absolute', right: 10}}*/}
-        {/*>*/}
-        {/*    Add Owner Operator*/}
-        {/*</Button>*/}
+
       <Route path={path + "/add"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
       <Route path={path + "/edit/:id"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
     </div>
