@@ -97,7 +97,7 @@ const DialogComponent = ({
                 // Once PDF.js script is loaded, fetch and render PDF
 
 
-                const blob = await fetch(`${pdfUrl}`)
+                const blob = await fetch(`https://cors.freightdok.io/${pdfUrl}`)
                     .then(response => {
                         const contentType = response.headers.get('content-type');
                         console.log(contentType)
