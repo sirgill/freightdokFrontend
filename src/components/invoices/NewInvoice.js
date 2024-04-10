@@ -1,14 +1,5 @@
-import {
-    Button,
-    Dialog,
-    DialogContent,
-    Divider,
-    Grid,
-    Stack,
-    Typography,
-    Zoom,
-} from "@mui/material";
-import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { Button, Dialog, DialogContent, Divider, Grid, Stack, Typography, Zoom, } from "@mui/material";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { blue } from "../layout/ui/Theme";
@@ -18,9 +9,6 @@ import "../../App.css";
 import "./styles.css";
 import InvoiceServiceWrapper from "./InvoiceService";
 import { getCheckStatusIcon } from "../../utils/utils";
-import axios from "axios";
-import { height, width } from "@mui/system";
-
 
 
 const Title = ({ name, sx = {}, variant = "body1", children }) => {
@@ -80,14 +68,10 @@ const DialogComponent = ({
     } = data || {},
         [{ receiverName = "" }] = drop || [],
         [{ pickupAddress, pickupCity, pickupState, pickupZip }] = pickup;
-    console.log(bucketFiles)
-
-
 
 
     const PdfViewer = ({ pdfUrl, pdfFileName }) => {
         const [pages, setPages] = useState([]);
-        console.log(pdfFileName)
         useEffect(() => {
 
             const script = document.createElement('script');
@@ -100,8 +84,7 @@ const DialogComponent = ({
                 const blob = await fetch(`https://cors.freightdok.io/${pdfUrl}`)
                     .then(response => {
                         const contentType = response.headers.get('content-type');
-                        console.log(contentType)
-                        if (contentType == 'application/pdf')
+                        if (contentType.equalsIgnoreCase('application/pdf'))
                             return response.blob();
                         else
                             return null;
@@ -111,8 +94,7 @@ const DialogComponent = ({
                     {
                         const reader = new FileReader();
                         reader.onload = () => {
-                            const arrayBuffer = reader.result;
-                            const pdf = arrayBuffer;
+                            const pdf = reader.result;
                             // Initialize PDF.js library
                             const pdfjsLib = window['pdfjs-dist/build/pdf'];
                             pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`;
@@ -152,13 +134,8 @@ const DialogComponent = ({
                 else {
                     setPages(false)
                 }
-
-
-
             };
             document.body.appendChild(script);
-
-
         }, [pdfUrl]);
 
         if (pages) {
@@ -191,12 +168,6 @@ const DialogComponent = ({
             </div>)
         })
     }, [bucketFiles])
-
-
-
-
-
-
 
     const reactToPrintContent = React.useCallback(() => {
         return ref.current;
