@@ -3,7 +3,7 @@ import {Link, useHistory} from 'react-router-dom';
 import {useDispatch} from 'react-redux';
 import _ from 'lodash';
 import {Key, MailOutline} from "@mui/icons-material";
-import { makeStyles } from '@material-ui/core/styles';
+import {styled} from "@mui/material/styles";
 import {Divider, Grid,  InputAdornment, Typography} from '@mui/material';
 import PropTypes from 'prop-types';
 import {login} from '../../actions/auth';
@@ -15,41 +15,25 @@ import {isEmailValid} from "../../utils/utils";
 import useMutation from "../../hooks/useMutation";
 import {ENHANCED_DASHBOARD} from "../client/routes";
 import {Alert, LoadingButton} from "../Atoms";
+import CompanyText from "../Atoms/CompanyText";
 
-  const useStyles = makeStyles(() => ({
-    root: {
-      textAlign: "center",
-      margin: 'auto',
-      background: '#F7FAFC 0% 0% no-repeat padding-box',
-      boxShadow: '0px 14px 80px rgba(34, 35, 58, 0.2)',
-      borderRadius: '6px',
-      transition: 'all 0.3s',
-    },
-    typography: {
-      color: '#0091FF',
-      fontSize: '35px',
-      font: 'normal normal bold 35px/49px Myriad Pro',
-      position: 'absolute',
-      left: '50%',
-      transform: 'translate(-50%, 35px)',
-    },
-    gridTop: {
-      position: 'relative',
-      height: '100px'
-    },
-    gridBottom: {
-      padding: '5rem 2rem',
-      width: 445
-    }
-  }));
-  const verticalAlignStyle = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
+const ContainerGrid = styled(Grid)`
+  text-align: center;
+  margin: auto;
+  background: #F7FAFC 0% 0% no-repeat padding-box;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  border-radius: 6px;
+  transition: all 0.3s;
+  max-width: 445px;
+`
+
+const verticalAlignStyle = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
 
 const Login = (props) => {
   const {state: {from = {}} = {}} = props.location || {},
       {pathname: redirectLink = ''} = from || {};
   const dispatch = useDispatch(),
     history = useHistory();
-  const classes = useStyles();
   const [errors, setErrors] = useState({email: '', password: ''});
   const [formData, setFormData] = useState({
     email: '',
@@ -123,14 +107,14 @@ const Login = (props) => {
           </div>
         </div>
         <div className="auth-wrapper" style={verticalAlignStyle}>
-          <Grid container className={classes.root} direction='row'>
-            <Grid item xs={12} className={classes.gridTop}>
-              <Typography className={classes.typography}>freightdok</Typography>
+          <ContainerGrid container direction='row'>
+            <Grid item xs={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: 100}}>
+              <CompanyText style={{fontSize: 35}} />
             </Grid>
-            <Grid item xs={12} style={{ height: 'fit-content' }}>
+            <Grid item xs={12} sx={{ height: 'fit-content' }}>
               <Divider />
             </Grid>
-            <Grid item xs={12} className={classes.gridBottom} style={{ textAlign: 'center' }}>
+            <Grid item xs={12} sx={{ textAlign: 'center', px: 4, py: 10 }}>
               <Grid container component='form' onSubmit={onSubmit} spacing={2} noValidate px={3}>
                 {redirectLink && <Typography variant='subtitle2' color='error' align='center' sx={{width: '100%', textTransform: 'capitalize'}}>
                   Invalid session. Please Login again.
@@ -182,7 +166,7 @@ const Login = (props) => {
               <Typography component={Link} to={FEDERAL_SIGNUP_LINK} sx={{display: 'block', }} align='center'>Register</Typography>
               <Typography component={Link} to={FORGOT_PASSWORD} sx={{display: 'block', }} align='center'>Forgot Password?</Typography>
             </Grid>
-          </Grid>
+          </ContainerGrid>
         </div>
       </section>
     </Fragment>

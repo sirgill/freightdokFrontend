@@ -1,9 +1,7 @@
 import React, {Fragment, useEffect, useState} from "react";
 import {connect, shallowEqual, useDispatch, useSelector} from "react-redux";
 import {Box, Button} from "@mui/material";
-import moment from "moment";
 
-import {useStyles} from "../HelperCells.js";
 import EnhancedTable from "../Atoms/table/Table";
 import {getDrivers} from "../../actions/driver";
 import {
@@ -15,11 +13,11 @@ import EditDriver from "../driver-forms/AddDriver";
 import AddDriverForm from "../driver-forms/AddDriver";
 import {UserSettings} from "../Atoms/client";
 
-const {add, edit: canEdit, delete: canDelete } = UserSettings.getUserPermissionsByDashboardId('drivers')
+const {edit: canEdit, delete: canDelete } = UserSettings.getUserPermissionsByDashboardId('drivers')
 
 const Driverlistbar = (props = {}) => {
     const {deleteDriver} = props;
-    const {drivers = [], loading = false, timestamp} = useSelector((state) => state.driver, shallowEqual);
+    const {drivers = [], loading = false} = useSelector((state) => state.driver, shallowEqual);
     const [edit, setEdit] = useState({open: false, data: {}});
     const dispatch = useDispatch();
 
@@ -38,18 +36,13 @@ const Driverlistbar = (props = {}) => {
     }
 
     useEffect(() => {
-        const now = moment(new Date());
-        const end = moment(timestamp);
-        const duration = moment.duration(now.diff(end));
-        // if(duration.asMinutes() > 5 || typeof timestamp === 'undefined'){
-        // }
         fetchDrivers()
 
     }, [])
 
 
     const tableConfig = {
-        rowCellPadding: 'inherit',
+        rowCellPadding: 'normal',
         emptyMessage: 'No drivers found',
         // onRowClick: (row) => setEdit({open: true, data: row}),
         hasDelete: true,
