@@ -27,6 +27,7 @@ const initialState = {
 };
 
 // const ADD_USERS_ROLES_PERMITTED = [ROLES.superadmin, ROLES.admin, ROLES.dispatch];
+const {add = false} = UserSettings.getUserPermissionsByDashboardId('users');
 
 const UserForm = () => {
     const {mutation, loading: isSaving} = useMutation('/api/users')
@@ -40,7 +41,6 @@ const UserForm = () => {
     const {roles = []} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const [userRoles, setUserRoles] = useState();
-    const {add = false} = UserSettings.getUserPermissionsByDashboardId('users');
 
     useEffect(() => {
         if (auth?.role.equalsIgnoreCase(ROLES.superadmin)) {

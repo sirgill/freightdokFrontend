@@ -24,7 +24,7 @@ import TimePicker from "@mui/lab/TimePicker";
 import TextField from "@mui/material/TextField";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
-const AddLoadForm = ({ addLoad, user }) => {
+const AddLoadForm = ({ addLoad, user, hasAddPermission }) => {
     const [open, setOpen] = React.useState(false);
 
     const classes = useStyles();
@@ -171,12 +171,11 @@ const AddLoadForm = ({ addLoad, user }) => {
 
     return (
         <div>
-            {(user && user.role === "afterhours") || (
+            {(hasAddPermission) && (
                 <Button
                     variant='contained'
                     color="primary"
                     onClick={handleClickOpen}
-                    style={{ marginBottom: "20%" }}
                 >
                     Add Load
                 </Button>

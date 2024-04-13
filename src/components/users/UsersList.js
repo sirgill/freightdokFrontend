@@ -10,6 +10,12 @@ import {UserSettings} from "../Atoms/client";
 
 const {delete: hasDeletePermission, edit} = UserSettings.getUserPermissionsByDashboardId('users');
 
+const Actions = () => {
+    return <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
+        <UserForm />
+    </Box>
+}
+
 const UsersList = () => {
     const { list, loading, page = 1, limit = 10, total } = useSelector(
         (state) => state.users
@@ -84,12 +90,6 @@ const UsersList = () => {
                 }
             },
         ]
-    }
-
-    const Actions = () => {
-        return <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
-            <UserForm />
-        </Box>
     }
 
     return (

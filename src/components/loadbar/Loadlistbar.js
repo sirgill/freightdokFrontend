@@ -6,9 +6,11 @@ import {useStyles} from "../HelperCells.js";
 import EnhancedTable from "../Atoms/table/Table";
 import LoadDetailModal from "../loads/LoadDetailModal";
 import AddLoadForm from "../load-forms/AddLoad";
-import {Box} from "@mui/material";
-import {ROLES} from "../constants";
 import {UserSettings} from "../Atoms/client";
+
+const {add, delete: hasDeletePermission, edit} = UserSettings.getUserPermissionsByDashboardId('loads');
+
+const actions = <AddLoadForm hasAddPermission={!!add} />;
 
 const Loadlistbar = ({
                          getLoads,
@@ -17,8 +19,7 @@ const Loadlistbar = ({
                          resetSearchField, searchText
                      }) => {
     const dispatch = useDispatch(),
-        classes = useStyles(),
-        {add, delete: hasDeletePermission, edit} = UserSettings.getUserPermissionsByDashboardId('loads');
+        classes = useStyles();
     // const { query, loads: sLoads, page: sPage, limit, total: sTotal } = search;
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState({open: false, data: {}});
@@ -145,7 +146,8 @@ const Loadlistbar = ({
             {
                 id: 'rate',
                 label: 'Rate',
-                emptyState: '--'
+                emptyState: '--',
+                valueFormatter: (value) => value ? '$'+value : ''
             },
             {
                 id: 'assignedTo',
@@ -165,10 +167,7 @@ const Loadlistbar = ({
 
     return (
         <div className={classes.table}>
-            <EnhancedTable config={tableConfig} data={rawLoades} loading={loading}/>
-            {user?.role && <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                {add && <AddLoadForm/>}
-            </Box>}
+            <EnhancedTable config={tableConfig} data={rawLoades} loading={loading} actions={actions}/>
             {open.open && <LoadDetailModal
                 modalEdit={false}
                 open={open.open}

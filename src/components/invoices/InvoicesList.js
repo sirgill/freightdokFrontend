@@ -125,7 +125,8 @@ export default function InvoicesList({ listBarType }) {
             {
                 id: 'rate',
                 label: 'Rate',
-                emptyState: '--'
+                emptyState: '--',
+                valueFormatter: (value) => value ? '$'+value : ''
             },
             {
                 id: '',
