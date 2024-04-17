@@ -24,17 +24,17 @@ import {Input, LoadingButton, Select} from "../Atoms";
 
 const {add} = UserSettings.getUserPermissionsByDashboardId('drivers')
 
-const validateForm  = ({firstName, phoneNumber, user}) => {
+const validateForm = ({firstName, phoneNumber, user}) => {
     let valid = true, errors = {}
-    if(!firstName){
+    if (!firstName) {
         valid = false;
         errors.firstName = 'First Name is required'
     }
-    if(!phoneNumber){
+    if (!phoneNumber) {
         valid = false;
         errors.phoneNumber = 'Phone Number is required'
     }
-    if(!user){
+    if (!user) {
         valid = false;
         errors.user = 'Please select a Driver'
     }
@@ -43,20 +43,20 @@ const validateForm  = ({firstName, phoneNumber, user}) => {
 
 const AddDriverForm = (props) => {
     const {
-            all_drivers,
-            getLoads,
-            isEdit = false,
-            data = {},
-            closeEditForm,
-        } = props;
+        all_drivers,
+        getLoads,
+        isEdit = false,
+        data = {},
+        closeEditForm,
+    } = props;
     const {loading: isSaving, mutation} = useMutation("/api/drivers")
     const formTemplate = {
-        firstName: "",
-        lastName: "",
-        phoneNumber: "",
-        loads: [],
-        user: "",
-    },
+            firstName: "",
+            lastName: "",
+            phoneNumber: "",
+            loads: [],
+            user: "",
+        },
         dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
@@ -93,21 +93,20 @@ const AddDriverForm = (props) => {
         setOpen(false);
         // setForm(formTemplate);
         setCount(1);
-        if(closeEditForm) closeEditForm()
+        if (closeEditForm) closeEditForm()
     };
 
     const onSubmit = (e) => {
         e.preventDefault();
         const {valid, errors} = validateForm(form);
-        if(!valid){
-            return setErrors({...errors })
+        if (!valid) {
+            return setErrors({...errors})
         }
         mutation(form, null, ({success, data}) => {
-            if(success) {
+            if (success) {
                 dispatch(getDrivers());
                 handleClose();
-            }
-            else {
+            } else {
                 notification(data.message, 'error')
             }
         })
@@ -153,68 +152,69 @@ const AddDriverForm = (props) => {
                     letterSpacing: 1
                 }}>
 
-                        <IconButton
-                            aria-label="close"
-                            onClick={handleClose}
-                            sx={{
-                                position: "absolute",
-                                left: 8,
-                                top: 8,
-                                color: (theme) => theme.palette.grey[500],
-                            }}
-                        >
-                            <CloseIcon />
-                        </IconButton>
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleClose}
+                        sx={{
+                            position: "absolute",
+                            left: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <CloseIcon/>
+                    </IconButton>
 
                     {isEdit ? 'Edit' : 'Add'} Driver
                 </DialogTitle>
                 <DialogContent>
                     <div className="">
-                        <Box component={'form'} sx={{px: 4, pb: 3}} onSubmit={onSubmit}>
-                            <>
-                                <Grid container sx={{'& .MuiFormControl-fullWidth': {mb: 2}}}>
-                                    <Input
-                                        name={"firstName"}
-                                        label={"First Name"}
-                                        onChange={updateForm}
-                                        value={form.firstName}
-                                        errors={errors}
-                                        formControlSx={{mt: .8}}
-                                    />
-                                    <Input
-                                        name={"lastName"}
-                                        label={"Last Name"}
-                                        onChange={updateForm}
-                                        value={form.lastName}
-                                    />
-                                    <Input
-                                        name={"phoneNumber"}
-                                        label={"Phone Number"}
-                                        onChange={updateForm}
-                                        value={form.phoneNumber}
-                                        errors={errors}
-                                    />
-                                    {!isEdit && <Select
-                                        value={form.user}
-                                        name="user"
-                                        onChange={updateForm}
-                                        label='Select Driver'
-                                        showNone={true}
-                                        options={all_drivers.map(driver => ({id: driver._id, label: driver.email}))}
-                                        errors={errors}
-                                        />}
-                                </Grid>
-                                <LoadingButton
-                                    sx={{mt: 2}}
-                                    type="submit"
-                                    variant="contained"
-                                    loadingText={isEdit ? 'Updating...' : 'Saving...'}
-                                    fullWidth
-                                    isLoading={isSaving}
-                                >
-                                    {(isEdit ? 'Update ' : 'Add ') + 'Driver'}
-                                </LoadingButton>
-                            </>
+                        <Box component={'form'} sx={{px: 4, pb: 3}} onSubmit={onSubmit} noValidate>
+                            <Grid container sx={{'& .MuiFormControl-fullWidth': {mb: 2}}}>
+                                <Input
+                                    name={"firstName"}
+                                    label={"First Name"}
+                                    onChange={updateForm}
+                                    value={form.firstName}
+                                    errors={errors}
+                                    formControlSx={{mt: .8}}
+                                    required
+                                />
+                                <Input
+                                    name={"lastName"}
+                                    label={"Last Name"}
+                                    onChange={updateForm}
+                                    value={form.lastName}
+                                />
+                                <Input
+                                    name={"phoneNumber"}
+                                    label={"Phone Number"}
+                                    onChange={updateForm}
+                                    value={form.phoneNumber}
+                                    errors={errors}
+                                    required
+                                />
+                                {!isEdit && <Select
+                                    value={form.user}
+                                    name="user"
+                                    onChange={updateForm}
+                                    label='Select Driver'
+                                    showNone={true}
+                                    options={all_drivers.map(driver => ({id: driver._id, label: driver.email}))}
+                                    errors={errors}
+                                    required
+                                />}
+                            </Grid>
+                            <LoadingButton
+                                sx={{mt: 2}}
+                                type="submit"
+                                variant="contained"
+                                loadingText={isEdit ? 'Updating...' : 'Saving...'}
+                                fullWidth
+                                isLoading={isSaving}
+                            >
+                                {(isEdit ? 'Update ' : 'Add ') + 'Driver'}
+                            </LoadingButton>
                         </Box>
                     </div>
                 </DialogContent>

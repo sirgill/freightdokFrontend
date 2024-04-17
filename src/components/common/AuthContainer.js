@@ -1,6 +1,7 @@
 import {styled} from "@mui/material/styles";
 import {Grid} from "@mui/material";
 import {Alert} from "../Atoms";
+import CompanyText from "../Atoms/CompanyText";
 
 const Container = styled(Grid)(({}) => ({
     backgroundColor: '#F7FAFC',
@@ -9,6 +10,9 @@ const Container = styled(Grid)(({}) => ({
 
 const AuthContainer = ({children, alertConfig ={}, ...rest}) => {
     return <Container {...rest}>
+        <Grid item sx={{mb: 3}}>
+            <CompanyText style={{pointer: 'default'}}/>
+        </Grid>
         <Grid item xs={12}>
             <Alert config={alertConfig}/>
         </Grid>
