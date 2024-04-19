@@ -1,22 +1,24 @@
-import React, { useEffect, Fragment } from 'react';
+import React, {useEffect, Fragment} from 'react';
 import {Box, Button} from "@mui/material";
-import { resetLoadsSearch } from '../../actions/load.js';
-import { useDispatch, useSelector } from 'react-redux';
-import { getInvoiceLoads } from "../../actions/load";
-import EnhancedTable from "../Atoms/table/Table";
-import { Link, Route, useRouteMatch } from "react-router-dom";
+import {resetLoadsSearch} from '../../actions/load.js';
+import {useDispatch, useSelector} from 'react-redux';
+import {getInvoiceLoads} from "../../actions/load";
+import {Link, Route, useRouteMatch} from "react-router-dom";
+import DescriptionIcon from '@mui/icons-material/Description';
 import Invoice from "./NewInvoice";
 import moment from "moment";
-import { getParsedLoadEquipment } from "../../views/openBoard/constants";
-import MoveToMyLoads from "./MoveToMyLoads";
+import EnhancedTable from "../Atoms/table/Table";
 import ReplayIcon from '@mui/icons-material/Replay';
-import DescriptionIcon from '@mui/icons-material/Description';
+import {getParsedLoadEquipment} from "../../views/openBoard/constants";
+import MoveToMyLoads from "./MoveToMyLoads";
+import {UserSettings} from "../Atoms/client";
 
 
-export default function InvoicesList({ listBarType }) {
+export default function InvoicesList({listBarType}) {
+    const {edit = false} = UserSettings.getUserPermissionsByDashboardId('invoices') || {};
     const dispatch = useDispatch();
     const {path} = useRouteMatch();
-    const { role } = useSelector(state => state.auth?.user) || {};
+    const {role} = useSelector(state => state.auth?.user) || {};
     const {data = [], page, limit, loading} = useSelector(state => state.load.invoices);
     const loads = useSelector(state => state.load.loads);
 
@@ -39,9 +41,9 @@ export default function InvoicesList({ listBarType }) {
 
     const config = {
         rowCellPadding: "normal",
-        headerCellSx: { pt: 1, pb: 1 },
+        headerCellSx: {pt: 1, pb: 1},
         emptyMessage: 'No Invoices found',
-        showRefresh:true,
+        showRefresh: true,
         page,
         limit,
         columns: [
@@ -52,7 +54,7 @@ export default function InvoicesList({ listBarType }) {
             {
                 id: "country",
                 label: "Pickup City/State",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     return (
                         <Fragment>
                             {row.pickup[0].pickupCity}, {row.pickup[0].pickupState}
@@ -63,7 +65,7 @@ export default function InvoicesList({ listBarType }) {
             {
                 id: "pickupDate",
                 label: "Pickup Date",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     let date = "";
                     if (moment(row.pickUpByDate).isValid()) {
                         date = moment(row.pickUpByDate).format("M/DD/YYYY");
@@ -74,7 +76,7 @@ export default function InvoicesList({ listBarType }) {
             {
                 id: "deliveryCountry",
                 label: "Delivery City/State",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     return (
                         <Fragment>
                             {row.drop[0].dropCity}, {row.drop[0].dropState}
@@ -85,7 +87,7 @@ export default function InvoicesList({ listBarType }) {
             {
                 id: "deliveryDate",
                 label: "Delivery Date",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     let date = "";
                     if (moment(row.deliverBy).isValid()) {
                         date = moment(row.deliverBy).format("M/DD/YYYY");
@@ -96,8 +98,8 @@ export default function InvoicesList({ listBarType }) {
             {
                 id: "equipment",
                 label: "Equipment",
-                renderer: ({ row }) => {
-                    const { modesString = '', standard = '' } = getParsedLoadEquipment(row) || {}
+                renderer: ({row}) => {
+                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row) || {}
                     return (
                         <Fragment>
                             {modesString} {standard}
@@ -108,8 +110,8 @@ export default function InvoicesList({ listBarType }) {
             {
                 id: "weight",
                 label: "Weight",
-                renderer: ({ row }) => {
-                    let { weight: { pounds = "" } = {} } = row || {};
+                renderer: ({row}) => {
+                    let {weight: {pounds = ""} = {}} = row || {};
                     if (pounds) pounds = pounds + " lbs";
                     return <Fragment>{pounds}</Fragment>;
                 },
@@ -117,7 +119,7 @@ export default function InvoicesList({ listBarType }) {
             {
                 id: "company",
                 label: "Company",
-                renderer: ({ row }) => {
+                renderer: ({row}) => {
                     return row?.brokerage
                 },
                 emptyState: '--'
@@ -126,19 +128,19 @@ export default function InvoicesList({ listBarType }) {
                 id: 'rate',
                 label: 'Rate',
                 emptyState: '--',
-                valueFormatter: (value) => value ? '$'+value : ''
+                valueFormatter: (value) => value ? '$' + value : ''
             },
             {
                 id: '',
                 label: 'Invoice',
-                visible: ['driver', 'admin', 'superAdmin', 'ownerOperator'].includes(role),
-                renderer: ({ row }) => {
+                visible: !!edit,
+                renderer: ({row}) => {
                     return <Button
                         component={Link}
                         to={path + '/' + row._id}
                         variant="outlined"
                         color="primary"
-                        startIcon={<DescriptionIcon />}
+                        startIcon={<DescriptionIcon/>}
                     >
                         Create Invoice
                     </Button>
@@ -147,14 +149,14 @@ export default function InvoicesList({ listBarType }) {
             {
                 id: '',
                 label: 'Move',
-                visible: ['driver', 'admin', 'superAdmin', 'ownerOperator'].includes(role),
-                renderer: ({ row }) => {
+                visible: !!edit,
+                renderer: ({row}) => {
                     return <Button
                         component={Link}
                         to={path + '/moveToMyLoads/' + row._id}
                         variant="outlined"
                         color="primary"
-                        startIcon={<ReplayIcon />}
+                        startIcon={<ReplayIcon/>}
                     >
                         My loads
                     </Button>
@@ -166,9 +168,11 @@ export default function InvoicesList({ listBarType }) {
     return (
         <Box sx={{mt: 3}}>
             <Fragment>
-                <EnhancedTable config={config} data={data} loading={loading} onRefetch={getInvoices} />
-                <Route path={path + '/moveToMyLoads/:id'} render={(props) => <MoveToMyLoads onCloseUrl={path} getInvoices={getInvoices} {...props} />} />
-                <Route path={path + '/:id'} exact component={Invoice} onCloseUrl={path} />
+                <EnhancedTable config={config} data={data} loading={loading} onRefetch={getInvoices}/>
+                {edit && <Route path={path + '/moveToMyLoads/:id'}
+                                render={(props) => <MoveToMyLoads onCloseUrl={path}
+                                                                  getInvoices={getInvoices} {...props} />}/>}
+                {edit && <Route path={path + '/:id'} exact component={Invoice} onCloseUrl={path}/>}
             </Fragment>
         </Box>
     )

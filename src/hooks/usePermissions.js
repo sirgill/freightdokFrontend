@@ -15,7 +15,7 @@ const usePermissions = (routes, path) => {
                 dashboardRoutes.push(route);
                 const _route = <Route path={`${path}/${id}`} component={route.component} key={route.id}/>
                 links.push(_route);
-                if (i === 0) {
+                if (!firstLink) {
                     firstLink = `${path}/${id}`;
                 }
             }
