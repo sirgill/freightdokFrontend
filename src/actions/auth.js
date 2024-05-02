@@ -15,7 +15,7 @@ import {
 } from './types';
 
 import setAuthToken from '../utils/setAuthToken';
-import { requestPost } from "../utils/request";
+import {requestGet, requestPost} from "../utils/request";
 import {AUTH_USER} from "../config/requestEndpoints";
 import {UserSettings} from "../components/Atoms/client";
 
@@ -26,10 +26,10 @@ export const loadUser = () => async dispatch => {
     }
 
     try {
-        const res = await axios.get(AUTH_USER);
+        const {data} = await requestGet({uri: AUTH_USER, showTriggers: true})
         dispatch({
             type: USER_LOADED,
-            payload: res.data
+            payload: data
         });
     } catch (err) {
         dispatch({

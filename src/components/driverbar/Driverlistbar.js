@@ -1,6 +1,7 @@
-import React, {Fragment, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {connect, shallowEqual, useDispatch, useSelector} from "react-redux";
-import {Box, Button} from "@mui/material";
+import {Box, IconButton} from "@mui/material";
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 
 import EnhancedTable from "../Atoms/table/Table";
 import {getDrivers} from "../../actions/driver";
@@ -12,6 +13,7 @@ import {
 import EditDriver from "../driver-forms/AddDriver";
 import AddDriverForm from "../driver-forms/AddDriver";
 import {UserSettings} from "../Atoms/client";
+import {Tooltip} from "../Atoms";
 
 const {edit: canEdit, delete: canDelete } = UserSettings.getUserPermissionsByDashboardId('drivers')
 
@@ -65,12 +67,11 @@ const Driverlistbar = (props = {}) => {
             {
                 id: 'delete',
                 renderer: ({row}) => {
-                    return <Fragment>
-                        <Button disabled={!canEdit} variant={'contained'} sx={{mr: 2}} onClick={handleUpdate.bind(this, row)}
-                                color='primary'>
-                            Update
-                        </Button>
-                    </Fragment>
+                    return <Tooltip title='Edit' placement='top'>
+                        <IconButton disabled={!canEdit} variant={'contained'} sx={{mr: 2}} onClick={handleUpdate.bind(this, row)} color='primary'>
+                            <EditOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
                 }
             }
         ]

@@ -23,6 +23,7 @@ import {Delete, Refresh} from "@mui/icons-material";
 import Dialog from "../Dialog";
 import {styled} from "@mui/material/styles";
 import {getUserDetail} from "../../../utils/utils";
+import Tooltip from "../Tooltip";
 
 const Cell = styled(TableCell)(({theme}) => ({
     [theme.breakpoints.down('xs')]: {
@@ -54,7 +55,7 @@ function Headers({columns = [], config = {}, role}) {
     }, [columns, headerCellSx])
     return <TableRow>
         {headers}
-        {hasDelete && <Cell padding={'none'} sx={{...headerCellSx}}/>}
+        {hasDelete && <Cell padding={'none'} sx={{color: '#000', bgcolor: '#fafafa', fontWeight: 800, ...headerCellSx}}/>}
     </TableRow>;
 }
 
@@ -84,9 +85,11 @@ const getTableCell = ({
             if (_.isFunction(handleRowClick)) handleRowClick(row)
         },
         deleteCell = <Cell sx={{}} padding={'none'} component="th" scope="row">
-            <IconButton onClick={handleDelete.bind(this, row._id, row)} disabled={!hasDeletePermission}>
-                <DeleteIcon color={'error'}/>
-            </IconButton>
+            <Tooltip title='Delete' placement='top'>
+                <IconButton onClick={handleDelete.bind(this, row._id, row)} disabled={!hasDeletePermission}>
+                    <DeleteIcon color={'error'}/>
+                </IconButton>
+            </Tooltip>
         </Cell>;
 
     const cell = columns.map((column, i) => {
@@ -215,7 +218,6 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             <TableBody>
                 <TableData
                     role={role}
-                    key={Date.now()}
                     columns={columns}
                     data={data}
                     config={config}

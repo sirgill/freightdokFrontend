@@ -24,11 +24,15 @@ import {Input, LoadingButton, Select} from "../Atoms";
 
 const {add} = UserSettings.getUserPermissionsByDashboardId('drivers')
 
-const validateForm = ({firstName, phoneNumber, user}) => {
+const validateForm = ({firstName, phoneNumber, user, lastName}) => {
     let valid = true, errors = {}
     if (!firstName) {
         valid = false;
         errors.firstName = 'First Name is required'
+    }
+    if (!lastName) {
+        valid = false;
+        errors.lastName = 'Last Name is required'
     }
     if (!phoneNumber) {
         valid = false;
@@ -54,7 +58,6 @@ const AddDriverForm = (props) => {
             firstName: "",
             lastName: "",
             phoneNumber: "",
-            loads: [],
             user: "",
         },
         dispatch = useDispatch();
@@ -81,13 +84,10 @@ const AddDriverForm = (props) => {
             handleClickOpen()
             setForm(data)
         }
-    }, [isEdit])
-
-    useEffect(() => {
         return () => {
-            setForm(formTemplate);
+            setForm(() => formTemplate);
         }
-    }, [])
+    }, [isEdit])
 
     const handleClose = () => {
         setOpen(false);
@@ -106,6 +106,8 @@ const AddDriverForm = (props) => {
             if (success) {
                 dispatch(getDrivers());
                 handleClose();
+                setForm(() => formTemplate);
+                notification(data.message);
             } else {
                 notification(data.message, 'error')
             }
@@ -185,6 +187,8 @@ const AddDriverForm = (props) => {
                                     label={"Last Name"}
                                     onChange={updateForm}
                                     value={form.lastName}
+                                    errors={errors}
+                                    required
                                 />
                                 <Input
                                     name={"phoneNumber"}
