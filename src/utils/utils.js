@@ -143,6 +143,17 @@ export const serialize = (obj = {}) => {
     return str.join("&");
 }
 
+export const getDiff = (local, actual) => {
+    const diffWithVal = {};
+    const localKeys = Object.keys(local);
+    for (let key of localKeys) {
+        if (key !== "password" && actual[key] !== local[key])
+            diffWithVal[key] = local[key];
+        if (key === "password" && local[key]) diffWithVal[key] = local[key];
+    }
+    return diffWithVal;
+};
+
 export {
     addEvent,
     removeEvent,

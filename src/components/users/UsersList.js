@@ -1,23 +1,19 @@
 import React, {Fragment, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchUsers, selectUserToEdit} from "../../actions/users";
+import {fetchUsers} from "../../actions/users";
 import EnhancedTable from "../Atoms/table/Table";
-import {Box, Button} from "@mui/material";
-import UserForm from "./UserForm";
+import {Button} from "@mui/material";
 import {showDelete} from "../../actions/component.action";
 import {getRoleNameString} from "../client/constants";
 import {UserSettings} from "../Atoms/client";
+import {Route} from "react-router-dom";
+import Form from "./Form";
+import AddIcon from "@mui/icons-material/Add";
 
-const {delete: hasDeletePermission, edit} = UserSettings.getUserPermissionsByDashboardId('users');
-
-const Actions = () => {
-    return <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
-        <UserForm />
-    </Box>
-}
-
-const UsersList = () => {
-    const { list, loading, page = 1, limit = 10, total } = useSelector(
+const UsersList = (props) => {
+    const {delete: hasDeletePermission, edit, add} = UserSettings.getUserPermissionsByDashboardId('users') || {};
+    const {match: {path} = {}, history} = props,
+        { list, loading, page = 1, limit = 10, total } = useSelector(
         (state) => state.users
     );
     const dispatch = useDispatch();
@@ -71,12 +67,12 @@ const UsersList = () => {
                 id: 'actions',
                 label: 'Actions',
                 renderer: ({ row = {} }) => {
-                    const { _id, email, role, rolePermissionId, firstName, lastName } = row;
+                    const { _id, email, role, firstName, lastName } = row;
                     // onDelete.bind(this, _id)
                     return <Fragment>
-                        <Button variant='contained' sx={{mr: 1}} disabled={!edit} onClick={() => {
-                            dispatch(selectUserToEdit({ _id, email, role, rolePermissionId, firstName, lastName }))
-                        }}>
+                        <Button variant='contained' sx={{mr: 1}} disabled={!edit}
+                            onClick={() => history.push(path + '/' + _id)}
+                        >
                             Update
                         </Button>
                         <Button variant='contained' disabled={!hasDeletePermission} color='error' onClick={showDelete({
@@ -92,9 +88,12 @@ const UsersList = () => {
         ]
     }
 
+    const Actions = () => <Button disabled={!add} variant={'contained'} startIcon={<AddIcon />} onClick={() => history.push(path + '/add')}>Add</Button>
+
     return (
         <Fragment>
             <EnhancedTable loading={loading} data={list} config={config} onRefetch={() => dispatch(fetchUsers(+page, +limit))} actions={<Actions />}/>
+            <Route path={path + '/:id'} render={(props) => <Form onCloseUrl={path} {...props} onRefetch={() => dispatch(fetchUsers(+page, +limit))} />} />
         </Fragment>
     );
 };

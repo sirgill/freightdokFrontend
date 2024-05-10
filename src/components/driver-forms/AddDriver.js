@@ -19,6 +19,7 @@ import {notification} from "../../actions/alert";
 import {getDrivers} from "../../actions/driver";
 import {UserSettings} from "../Atoms/client";
 import {Input, LoadingButton, Select} from "../Atoms";
+import AddIcon from "@mui/icons-material/Add";
 
 // const ADD_DRIVERS_ROLES_PERMITTED = [ROLES.superadmin, ROLES.admin, ROLES.afterhours];
 
@@ -131,8 +132,9 @@ const AddDriverForm = (props) => {
                     onClick={handleClickOpen}
                     style={{marginBottom: "20%"}}
                     variant={'contained'}
+                    startIcon={<AddIcon />}
                 >
-                    Add Driver
+                    Add
                 </Button>
             )}
 

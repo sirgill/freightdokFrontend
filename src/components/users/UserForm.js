@@ -21,7 +21,7 @@ import {UserSettings} from "../Atoms/client";
 const initialState = {
     email: "",
     password: "",
-    role: "dispatch",
+    role: "",
     firstName: '',
     lastName: ''
 };
@@ -43,22 +43,8 @@ const UserForm = () => {
     const [userRoles, setUserRoles] = useState();
 
     useEffect(() => {
-        if (auth?.role.equalsIgnoreCase(ROLES.superadmin)) {
-            setUserRoles(roles)
-        } else {
-            const newRoles = roles.filter(
-                (item) =>
-                    item === "driver" ||
-                    item === "afterhours" ||
-                    item === "load planner" ||
-                    item === "support" ||
-                    item === 'dispatch' ||
-                    item === 'ownerOperator'
-            );
-            setUserRoles(newRoles);
-        }
         setForm((prev) => ({...prev, role: (allRoles.length) ? allRoles[0]?._id : ''}))
-    }, [roles, allRoles.length]);
+    }, [roles, allRoles]);
 
     useEffect(() => {
         if (!open) handleClose();
