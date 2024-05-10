@@ -204,7 +204,7 @@ const UserForm = () => {
                                         onChange={handleChange}
                                         value={form.password}
                                         fullWidth
-                                        required
+                                        required={!user}
                                     />
                                 </Grid>
                                 <Grid item>

@@ -30,7 +30,7 @@ import { requestDelete, requestGet, requestPatch } from "../utils/request";
 export const SERVER_ADDRESS = "https://api.freightdok.io";
 // Get current users loads
 export const getLoads =
-  (page = 0, limit = 15, module = "") =>
+  (page = 0, limit = 10, module = "") =>
     async (dispatch) => {
       try {
         const { success, data } = await requestGet({

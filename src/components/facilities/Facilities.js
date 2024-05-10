@@ -16,7 +16,7 @@ const Facilities = () => {
     const {add, delete: canDelete, edit} = UserSettings.getUserPermissionsByDashboardId('facilities')
     const { data = {}, loading, refetch, isRefetching, page, limit, onLimitChange, onPageChange, isPaginationLoading } = useEnhancedFetch('/api/warehouse', {
             page: 1,
-            limit: 5,
+            limit: 10,
         }),
         {totalCount, warehouses = []} = data || {};
 
@@ -87,18 +87,16 @@ const Facilities = () => {
     </Button>
 
     return (
-        <div>
-            <Box>
-                <EnhancedTable config={config} data={warehouses} loading={loading} onRefetch={refetch} isRefetching={isRefetching} actions={Actions}
-                               isPaginationLoading={isPaginationLoading}
-                />
-            </Box>
+        <Box sx={{height: 'inherit'}}>
+            <EnhancedTable config={config} data={warehouses} loading={loading} onRefetch={refetch} isRefetching={isRefetching} actions={Actions}
+                           isPaginationLoading={isPaginationLoading}
+            />
             <Switch>
                 <Route render={(props) => <Form {...props} refetch={refetch} />} path={path + '/add'}/>
                 <Route render={(props) => <Form {...props} refetch={refetch} />} path={path + '/edit/:id'} refetch={refetch} />
                 <Route render={(props) => <Preview {...props} canEdit={!!edit} closeUrl={path}/>} path={path + '/preview/:id'}/>
             </Switch>
-        </div>
+        </Box>
     )
 }
 

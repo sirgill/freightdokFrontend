@@ -2,16 +2,17 @@ import {Route, Switch} from "react-router-dom";
 import React, {useLayoutEffect} from "react";
 import {ENHANCED_DASHBOARD, ERROR_404_LINK} from "../components/client/routes";
 import useRoutes from "../hooks/useRoutes";
-import Error401 from "./Error401";
-import DeleteComponent from "../components/Atoms/DeleteComponent";
 import {newRoutes, routes} from "../config/dashboardRoutes";
 import MiniDrawer from "./Sidebar";
 import store from "../store";
 import {loadUser} from "../actions/auth";
-import ChangePasswordModal from "../views/auth/ChangePasswordModal";
 import Error404 from "./404";
 import usePermissions from "../hooks/usePermissions";
+import loadModuleAsync from "../components/Atoms/LoadModuleAsync";
 
+const Error401 = loadModuleAsync(() => import("./Error401"))
+const ChangePasswordModal = loadModuleAsync(() => import("../views/auth/ChangePasswordModal"));
+const DeleteComponent = loadModuleAsync(() => import("../components/Atoms/DeleteComponent"));
 
 const Dashboard = ({match = {}, history, location}) => {
     const {pathname} = location,

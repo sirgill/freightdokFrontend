@@ -7,10 +7,11 @@ import EnhancedTable from "../Atoms/table/Table";
 import LoadDetailModal from "../loads/LoadDetailModal";
 import AddLoadForm from "../load-forms/AddLoad";
 import {UserSettings} from "../Atoms/client";
+import {Box} from "@mui/material";
 
 const {add, delete: hasDeletePermission, edit} = UserSettings.getUserPermissionsByDashboardId('loads');
 
-const actions = <AddLoadForm hasAddPermission={!!add} />;
+const actions = <AddLoadForm hasAddPermission={!!add}/>;
 
 const Loadlistbar = ({
                          getLoads,
@@ -58,13 +59,13 @@ const Loadlistbar = ({
         }
 
         //Polling for Loads
-        const interval = setInterval(() => {
-            getLoads(page);
-        }, 3000)
-
-        return () => {
-            clearInterval(interval);
-        }
+        // const interval = setInterval(() => {
+        //     getLoads(page);
+        // }, 3000)
+        //
+        // return () => {
+        //     clearInterval(interval);
+        // }
     }, [loads, sLoads, page]);
 
     const handleChangePage = (event, newPage) => {
@@ -73,15 +74,14 @@ const Loadlistbar = ({
         else getLoads(newPage, rowsPerPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
-        const limit = event.target.value;
-        if (query) searchLoads(0, limit, query);
-        else getLoads(0, limit);
+    const handleChangeRowsPerPage = ({value}) => {
+        if (query) searchLoads(0, value, query);
+        else getLoads(0, value);
     };
 
     const onDelete = (id, onDialogClose) => {
         dispatch(deleteLoad(id, (success) => {
-            if(success){
+            if (success) {
                 setTimeout(() => getLoads(page), 500)
                 onDialogClose();
             }
@@ -89,12 +89,14 @@ const Loadlistbar = ({
     }
 
     const tableConfig = useMemo(() => ({
+        showRefresh: true,
         onRowClick: (row) => setOpen({open: true, data: row}),
         rowCellPadding: 'normal',
         count: query ? sTotal : total,
-        page: page,
+        page: page + 1,
         limit: query ? sPage : rowsPerPage,
         onPageChange: handleChangePage,
+        onPageSizeChange: handleChangeRowsPerPage,
         hasDelete: true,
         onDelete,
         deletePermissions: !!hasDeletePermission,
@@ -147,15 +149,15 @@ const Loadlistbar = ({
                 id: 'rate',
                 label: 'Rate',
                 emptyState: '--',
-                valueFormatter: (value) => value ? '$'+value : ''
+                valueFormatter: (value) => value ? '$' + value : ''
             },
             {
                 id: 'assignedTo',
                 label: 'Assigned To',
                 renderer: ({row}) => {
                     const {user = '', assignedTo} = row || {},
-                        {firstName, lastName, name} =  assignedTo || user || {};
-                    if(lastName){
+                        {firstName, lastName, name} = assignedTo || user || {};
+                    if (lastName) {
                         return `${firstName} ${lastName}`
                     } else {
                         return name || '--'
@@ -166,8 +168,14 @@ const Loadlistbar = ({
     }), [rawLoades])
 
     return (
-        <div className={classes.table}>
-            <EnhancedTable config={tableConfig} data={rawLoades} loading={loading} actions={actions}/>
+        <Box sx={{height: 'inherit'}}>
+            <EnhancedTable
+                config={tableConfig}
+                data={rawLoades}
+                loading={loading}
+                actions={actions}
+                onRefetch={() => getLoads(page, rowsPerPage)}
+            />
             {open.open && <LoadDetailModal
                 modalEdit={false}
                 open={open.open}
@@ -179,7 +187,7 @@ const Loadlistbar = ({
                 deleteLoad={(_id) => dispatch(deleteLoad(_id))}
                 canUpdate={!!edit}
             />}
-        </div>
+        </Box>
     );
 };
 
