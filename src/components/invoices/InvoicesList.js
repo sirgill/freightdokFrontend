@@ -18,7 +18,6 @@ export default function InvoicesList({listBarType}) {
     const {edit = false} = UserSettings.getUserPermissionsByDashboardId('invoices') || {};
     const dispatch = useDispatch();
     const {path} = useRouteMatch();
-    const {role} = useSelector(state => state.auth?.user) || {};
     const {data = [], page, limit, loading} = useSelector(state => state.load.invoices);
     const loads = useSelector(state => state.load.loads);
 
@@ -65,13 +64,10 @@ export default function InvoicesList({listBarType}) {
             {
                 id: "pickupDate",
                 label: "Pickup Date",
-                renderer: ({row}) => {
-                    let date = "";
-                    if (moment(row.pickUpByDate).isValid()) {
-                        date = moment(row.pickUpByDate).format("M/DD/YYYY");
-                    }
-                    return <Fragment>{date}</Fragment>;
-                },
+                renderer: ({row: {pickup = []} = {}}) => {
+                    const [{pickupDate = ''}] = pickup;
+                    return moment(pickupDate).format('MM/DD/YYYY')
+                }
             },
             {
                 id: "deliveryCountry",
@@ -87,13 +83,10 @@ export default function InvoicesList({listBarType}) {
             {
                 id: "deliveryDate",
                 label: "Delivery Date",
-                renderer: ({row}) => {
-                    let date = "";
-                    if (moment(row.deliverBy).isValid()) {
-                        date = moment(row.deliverBy).format("M/DD/YYYY");
-                    }
-                    return <Fragment>{date}</Fragment>;
-                },
+                renderer: ({row: {drop = []} = {}}) => {
+                    const [{dropDate = ''}] = drop;
+                    return moment(dropDate).format('MM/DD/YYYY')
+                }
             },
             {
                 id: "equipment",

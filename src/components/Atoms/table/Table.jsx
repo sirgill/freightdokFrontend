@@ -261,7 +261,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             </Backdrop>
         </TableContainer>
         {!loading && data.length > 0 &&
-            <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit} onPageSizeChange={onPageSizeChange}/>}
+            <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit} onPageSizeChange={onPageSizeChange} isLoading={isRefetching || isPaginationLoading} />}
         <Dialog className='enhancedTable_dialog' open={dialog.open} config={dialog.config} onClose={onDialogClose}/>
     </Box>;
 };

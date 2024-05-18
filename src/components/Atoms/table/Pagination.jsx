@@ -26,7 +26,7 @@ const StyledStack = styled(Stack)(({theme}) => ({
         }
 }))
 
-const TablePagination = ({data = [], onPageChange, page = 1, count = 0, limit = 1, onPageSizeChange}) => {
+const TablePagination = ({data = [], onPageChange, page = 1, count = 0, limit = 1, onPageSizeChange, isLoading}) => {
     const [length, setLength] = useState(0);
 
     useEffect(() => {
@@ -55,6 +55,7 @@ const TablePagination = ({data = [], onPageChange, page = 1, count = 0, limit = 
             <Typography sx={{color: '#525F7F'}} fontSize={12}>Showing {length} of {count} entries</Typography>
             <Stack direction='row' alignItems='center'>
                 <Select
+                    disabled={isLoading}
                     name='pageSize'
                     label=''
                     value={limit}
@@ -69,6 +70,7 @@ const TablePagination = ({data = [], onPageChange, page = 1, count = 0, limit = 
                     onChange={handlePageSize}
                 />
                 <StyledPagination
+                    disabled={isLoading}
                     count={Math.ceil(count / limit)}
                     color="primary"
                     variant="contained"
