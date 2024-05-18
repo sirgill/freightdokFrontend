@@ -27,8 +27,8 @@ const InvoiceService = ({ serviceName, amount, price, quantity, description, ind
     }
 
     const onBlur = (e) => {
-        const value = parseInt(e.target.value)
-        const name = e.target.name
+        const value = parseInt(e.target?.value || 0)
+        const name = e.target?.name
         if (value < 1) {
             if (onChangeService) {
                 onChangeService(index, { name, value: 1 })
@@ -60,18 +60,6 @@ const InvoiceService = ({ serviceName, amount, price, quantity, description, ind
     )
 }
 
-
-const InvoiceDataTableRows = ({ price = 99 }) => {
-    return (<Fragment>
-        <tr className='InvoiceDataTableRows'>
-            <td>9</td>
-            <td>a</td>
-            <td>b</td>
-            <td>c</td>
-            <td>{price ? `$${parseFloat(price).toFixed(2)}` : '$0.00'}</td>
-        </tr>
-    </Fragment>)
-}
 
 const LookUp = ({ handleClose, anchorEl, onAddNewService }) => {
     const [list, setList] = useState(LOOKUP_DATA)

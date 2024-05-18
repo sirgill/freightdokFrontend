@@ -1,8 +1,10 @@
+// import jsPDF from "jspdf";
+// import  'jspdf-autotable'
 import { Button, Dialog, DialogContent, Divider, Grid, Stack, Typography, Zoom, } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { blue } from "../layout/ui/Theme";
+import {blue, PRIMARY_BLUE} from "../layout/ui/Theme";
 import InputField from "../Atoms/form/InputField";
 import ReactToPrint from "react-to-print";
 import "../../App.css";
@@ -52,7 +54,9 @@ const DialogComponent = ({
     services,
     addService,
     onChangeService,
-    deleteService
+    deleteService,
+    notes,
+    setNotes
 }) => {
     const ref = React.useRef(null);
     const {
@@ -65,9 +69,7 @@ const DialogComponent = ({
         proofDelivery = [],
         rateConfirmation = [],
         bucketFiles
-    } = data || {},
-        [{ receiverName = "" }] = drop || [],
-        [{ pickupAddress, pickupCity, pickupState, pickupZip }] = pickup;
+    } = data || {};
 
 
     const PdfViewer = ({ pdfUrl, pdfFileName }) => {
@@ -153,7 +155,7 @@ const DialogComponent = ({
             );
         }
         else {
-            return (<img className="printThisFull" src={pdfUrl} alt={pdfFileName} />)
+            return (<img className="printThisFull" src={pdfUrl} alt={pdfFileName} style={{width: '100%'}} />)
         }
     };
 
@@ -208,7 +210,7 @@ const DialogComponent = ({
                         sx={{ display: pdf ? "inline-flex" : "inline-flex" }}
                     >
                         <style type="text/css" media="print">{"\
-               @page {\ size: landscape;\ }\
+               @page {\ size: portrait;\ }\
           "}</style>
                         <Grid item xs={12} sx={{ p: 3 }}>
                             <Grid container justifyContent={"space-between"}>
@@ -228,8 +230,8 @@ const DialogComponent = ({
                                                 Invoice
                                             </Typography>
                                         </Stack>
-                                        <Stack>
-                                            <InputField label="Notes" type="textarea" />
+                                        <Stack className='notesStack'>
+                                            <InputField label="Notes" type="textarea" onChange={(e) => setNotes(e.target.value)} />
                                         </Stack>
                                     </Stack>
                                 </Grid>
@@ -272,10 +274,7 @@ const DialogComponent = ({
                                     />
                                 </Grid>
                                 <Grid xs={3} item>
-                                    {/* <Button variant={"contained"} size={"small"} className={'addServicesInvoice'}
-                                  onClick={addService}>
-                                  Add Services
-                              </Button> */}
+                                    <Typography className='notesPrintBlock'>Notes: {notes}</Typography>
                                 </Grid>
                                 <Grid xs={6} item>
                                     <Stack justifyContent={"center"} gap={"10px"} className='stack_Uploaders'>
@@ -338,8 +337,9 @@ const DialogComponent = ({
                                         // onBeforePrint={handleBeforePrint}
                                         removeAfterPrint
                                         trigger={reactToPrintTrigger}
+                                        pageStyle={'portrait'}
                                     />
-
+                                    {/*<Button variant='contained' onClick={createPdf}>Print Invoice</Button>*/}
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -356,6 +356,7 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {}, history }) => {
     const [pdf, setPdf] = useState(false);
     const invoices = useSelector((state) => state.load.invoices.data) || [],
         [services, setServices] = useState([]),
+        [notes, setNotes] = useState(''),
         data = invoices.find((invoice) => invoice._id === id);
     const handleClickOpen = () => {
         setOpen(true);
@@ -407,7 +408,11 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {}, history }) => {
 
     const getTotal = useCallback(() => {
         const total = services.reduce((acc, service) => parseFloat(service.price) + acc, 0)
-        return "$" + total.toFixed(2)
+        let USDollar = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        });
+        return USDollar.format(total.toFixed(2))
     }, [services])
 
     const deleteService = (index) => {
@@ -443,6 +448,8 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {}, history }) => {
                 onChangeService={onChangeService}
                 getTotal={getTotal}
                 deleteService={deleteService}
+                notes={notes}
+                setNotes={setNotes}
             />
         </div>
     );
