@@ -192,7 +192,7 @@ label {
     float: none!important;
   }
 
-  .notesStack, .addNewItem{
+  .notesStack, .addNewItem, .deleteService{
     display: none;
   }
 

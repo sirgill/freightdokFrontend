@@ -52,7 +52,7 @@ const InvoiceService = ({ serviceName, amount, price, quantity, description, ind
                 <td><InputField name={'quantity'} onChange={handleQuantity} onBlur={onBlur} className='serviceInputField' type='number' value={quantity} /></td>
                 <td><InputField name={'price'} onChange={handleChange} value={price} className='serviceInputField' /></td>
                 <td>{price ? `$${parseFloat(price).toFixed(2)}` : '$0.00'}</td>
-                <td><IconButton onClick={deleteService.bind(null, index)}>
+                <td><IconButton onClick={deleteService.bind(null, index)} className='deleteService'>
                     <DeleteOutlineIcon color={'error'} />
                 </IconButton></td>
             </tr>
