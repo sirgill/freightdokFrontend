@@ -329,7 +329,7 @@ const DialogComponent = ({
                                     </Stack>
                                 </Grid>
                                 <Grid xs={3} item display={"flex"} justifyContent={"end"}>
-                                    <ReactToPrint
+                                    {ref.current && <ReactToPrint
                                         content={reactToPrintContent}
                                         documentTitle="Invoice"
                                         // onBeforeGetContent={handleOnBeforeGetContent}
@@ -337,7 +337,7 @@ const DialogComponent = ({
                                         removeAfterPrint
                                         trigger={reactToPrintTrigger}
                                         pageStyle={'portrait'}
-                                    />
+                                    />}
                                     {/*<Button variant='contained' onClick={createPdf}>Print Invoice</Button>*/}
                                 </Grid>
                             </Grid>
