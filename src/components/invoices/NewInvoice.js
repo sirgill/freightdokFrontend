@@ -4,7 +4,7 @@ import { Button, Dialog, DialogContent, Divider, Grid, Stack, Typography, Zoom, 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import {blue, PRIMARY_BLUE} from "../layout/ui/Theme";
+import {blue} from "../layout/ui/Theme";
 import InputField from "../Atoms/form/InputField";
 import ReactToPrint from "react-to-print";
 import "../../App.css";
@@ -49,7 +49,6 @@ const DialogComponent = ({
     open,
     data,
     pdf,
-    setPdf,
     getTotal,
     services,
     addService,
@@ -274,7 +273,7 @@ const DialogComponent = ({
                                     />
                                 </Grid>
                                 <Grid xs={3} item>
-                                    <Typography className='notesPrintBlock'>Notes: {notes}</Typography>
+                                    <Typography className='notesPrintBlock'>Notes: {notes || 'N.A'}</Typography>
                                 </Grid>
                                 <Grid xs={6} item>
                                     <Stack justifyContent={"center"} gap={"10px"} className='stack_Uploaders'>
@@ -442,7 +441,6 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {}, history }) => {
                 transition={Transition}
                 data={data}
                 pdf={pdf}
-                setPdf={setPdf}
                 services={services}
                 addService={addService}
                 onChangeService={onChangeService}

@@ -12,6 +12,7 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import {getParsedLoadEquipment} from "../../views/openBoard/constants";
 import MoveToMyLoads from "./MoveToMyLoads";
 import {UserSettings} from "../Atoms/client";
+import {getDollarPrefixedPrice} from "../../utils/utils";
 
 
 export default function InvoicesList({listBarType}) {
@@ -121,7 +122,7 @@ export default function InvoicesList({listBarType}) {
                 id: 'rate',
                 label: 'Rate',
                 emptyState: '--',
-                valueFormatter: (value) => value ? '$' + value : ''
+                valueFormatter: (value) => value ? getDollarPrefixedPrice(value) : ''
             },
             {
                 id: '',

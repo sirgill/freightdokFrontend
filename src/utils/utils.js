@@ -153,6 +153,15 @@ export const getDiff = (local, actual) => {
     }
     return diffWithVal;
 };
+
+export const getDollarPrefixedPrice = (price) => {
+    let USDollar = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    });
+    return USDollar.format(price)
+}
+
 // Just for reference
 /*
 * const createPdf = () => {
