@@ -198,9 +198,9 @@ const Temporray = React.forwardRef((props, ref) => {
                             onPrintError={(e) => console.log("React to print error", e)}
                             onBeforePrint={() => new Promise(resolve => {
                                 setTimeout(() => {
-                                    console.log('set timeout')
-                                    resolve("testtest")
-                                }, 2000)
+                                    console.log('waiting for print')
+                                    resolve("")
+                                }, 1000)
                             })}
                             fonts={[{family: "Open Sans", source:""}]}
                             onBeforeGetContent={(data) => console.log('on Before get content', data)}
