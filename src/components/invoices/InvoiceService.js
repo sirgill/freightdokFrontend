@@ -122,7 +122,7 @@ const InvoiceServiceWrapper = ({ services, onAddNewService, onChangeService, del
     const [anchorEl, setAnchorEl] = React.useState(null);
     const servicesComp = useMemo(() => {
         return services.map((s, index) => {
-            return <InvoiceService {...s} index={index} onChangeService={onChangeService}
+            return <InvoiceService key={index} {...s} index={index} onChangeService={onChangeService}
                 deleteService={deleteService} />
         })
     }, [services])

@@ -337,6 +337,9 @@ const DialogComponent = ({
                                         removeAfterPrint
                                         trigger={reactToPrintTrigger}
                                         pageStyle={'portrait'}
+                                        onPrintError={(e) => console.log("React to print error", e)}
+                                        onBeforePrint={(data) => console.log('on Before', data)}
+                                        onBeforeGetContent={(data) => console.log('on Before get content', data)}
                                     />}
                                     {/*<Button variant='contained' onClick={createPdf}>Print Invoice</Button>*/}
                                 </Grid>
