@@ -187,7 +187,7 @@ const Temporray = React.forwardRef((props, ref) => {
                         </Stack>
                     </Grid>
                     <Grid xs={3} item display={"flex"} justifyContent={"end"}>
-                        {ref.current && <ReactToPrint
+                        <ReactToPrint
                             content={reactToPrintContent}
                             documentTitle="Invoice"
                             removeAfterPrint
@@ -201,7 +201,7 @@ const Temporray = React.forwardRef((props, ref) => {
                                 }, 1000)
                             })}
                             fonts={[{family: "Open Sans", source:""}]}
-                        />}
+                        />
                         {/*<Button variant='contained' onClick={createPdf}>Print Invoice</Button>*/}
                     </Grid>
                 </Grid>
@@ -464,7 +464,7 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {}, history }) => {
         setServices([...data])
     }
 
-    const createInvoice = async () => {
+    // const createInvoice = async () => {
         // const blob = await pdf(
         //     <Document>
         //         <Page size="A4">
@@ -475,7 +475,7 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {}, history }) => {
         //     </Document>
         // ).toBlob()
         // console.log(blob)
-    };
+    // };
 
     return (
         <div>
