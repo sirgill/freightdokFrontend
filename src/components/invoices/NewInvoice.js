@@ -196,7 +196,13 @@ const Temporray = React.forwardRef((props, ref) => {
                             trigger={reactToPrintTrigger}
                             pageStyle={'portrait'}
                             onPrintError={(e) => console.log("React to print error", e)}
-                            onBeforePrint={(data) => console.log('on Before', data)}
+                            onBeforePrint={() => new Promise(resolve => {
+                                setTimeout(() => {
+                                    console.log('set timeout')
+                                    resolve("testtest")
+                                }, 2000)
+                            })}
+                            fonts={[{family: "Open Sans", source:""}]}
                             onBeforeGetContent={(data) => console.log('on Before get content', data)}
                         />}
                         {/*<Button variant='contained' onClick={createPdf}>Print Invoice</Button>*/}
