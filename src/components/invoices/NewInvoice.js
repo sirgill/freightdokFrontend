@@ -1,6 +1,6 @@
 // import jsPDF from "jspdf";
 // import  'jspdf-autotable'
-import { Button, Dialog, DialogContent, Divider, Grid, Stack, Typography, Zoom, } from "@mui/material";
+import {Box, Button, Dialog, DialogContent, Divider, Grid, Stack, Typography, Zoom,} from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -309,20 +309,26 @@ const DialogComponent = ({
 
         if (pages) {
             return (
-                <div style={{ position: 'relative', minHeight: '100vh' }}>
-                    {pages.map((page, index) => (
-                        <img
-                            key={index}
-                            src={page}
-                            alt={`Page ${index + 1}`}
-                            style={{ position: 'absolute', top: `${index * 100}%`, left: 0, width: '100%' }}
-                        />
-                    ))}
-                </div>
+                <>
+                    <div style={{ position: 'relative', minHeight: '100vh' }}>
+                        {pages.map((page, index) => (
+                            <img
+                                key={index}
+                                src={page}
+                                alt={`Page ${index + 1}`}
+                                style={{ width: '100%', /* position: 'absolute', top: `${index * 100}%`, left: 0,*/ }}
+                            />
+                        ))}
+                    </div>
+                </>
             );
         }
         else {
-            return (<img className="printThisFull" src={pdfUrl} alt={pdfFileName} style={{width: '100%'}} />)
+            return (<>
+                <Box sx={{ position: 'relative', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
+                    <img className="printThisFull" src={pdfUrl} alt={pdfFileName} style={{width: '1100px', height: '1200px', objectFit: 'contain'}} />
+                </Box>
+            </>)
         }
     };
 
