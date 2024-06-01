@@ -56,8 +56,9 @@ const ChangePasswordModal = () => {
     }
 
     const onClose = () => {
-        setErrors({})
-        setForm(formDefaults)
+        setErrors({});
+        setForm(formDefaults);
+        setAlert({open: false, message: '', severity: 'error'});
         changePasswordModal(false);
     }
 

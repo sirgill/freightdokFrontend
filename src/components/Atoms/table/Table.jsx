@@ -236,6 +236,12 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         }
     }, [])
 
+    useEffect(() => {
+        if((isPaginationLoading || isRefetching) && ref.current?.tableContainer){
+            ref.current.tableContainer.scrollTo(0, 0)
+        }
+    }, [isPaginationLoading, isRefetching])
+
     return <Box className='enhanced-table' sx={{height: length && !loading ? (containerHeight || '95%') : 'auto'}}>
         <Stack alignItems='flex-end' justifyContent='flex-end' direction='row' py={1} gap={.5}>
             {Actions}
@@ -246,6 +252,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         <TableContainer
             component={Paper}
             className={''}
+            ref={el => ref.current['tableContainer'] = el}
             sx={{boxShadow: '0px 0px 32px #8898AA26', mb: 2, height: length && !loading ? 'calc(100% - 80px)' : 'auto', position: 'relative'}}
         >
             {loading

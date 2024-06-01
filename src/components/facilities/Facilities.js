@@ -16,9 +16,9 @@ const Facilities = () => {
     const {add, delete: canDelete, edit} = UserSettings.getUserPermissionsByDashboardId('facilities')
     const { data = {}, loading, refetch, isRefetching, page, limit, onLimitChange, onPageChange, isPaginationLoading } = useEnhancedFetch('/api/warehouse', {
             page: 1,
-            limit: 10,
+            limit: 100,
         }),
-        {totalCount, warehouses = []} = data || {};
+        {totalCount, facilities = []} = data || {};
 
     const afterDelete = ({success}) => {
         if (success) {
@@ -88,7 +88,7 @@ const Facilities = () => {
 
     return (
         <Box sx={{height: 'inherit'}}>
-            <EnhancedTable config={config} data={warehouses} loading={loading} onRefetch={refetch} isRefetching={isRefetching} actions={Actions}
+            <EnhancedTable config={config} data={facilities} loading={loading} onRefetch={refetch} isRefetching={isRefetching} actions={Actions}
                            isPaginationLoading={isPaginationLoading}
             />
             <Switch>

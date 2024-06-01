@@ -4,7 +4,7 @@ import {useDispatch} from 'react-redux';
 import _ from 'lodash';
 import {Key, MailOutline} from "@mui/icons-material";
 import {styled} from "@mui/material/styles";
-import {Divider, Grid,  InputAdornment, Typography} from '@mui/material';
+import {Box, Divider, Grid, InputAdornment, Typography} from '@mui/material';
 import PropTypes from 'prop-types';
 import {login} from '../../actions/auth';
 import './authcss/LoginRegister.css';
@@ -21,7 +21,7 @@ const ContainerGrid = styled(Grid)`
   text-align: center;
   margin: auto;
   background: #F7FAFC 0% 0% no-repeat padding-box;
-  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  box-shadow: 0 14px 80px rgba(34, 35, 58, 0.2);
   border-radius: 6px;
   transition: all 0.3s;
   max-width: 445px;
@@ -106,7 +106,7 @@ const Login = (props) => {
             </svg>
           </div>
         </div>
-        <div className="auth-wrapper" style={verticalAlignStyle}>
+        <Box sx={{width: '100%'}} className="auth-wrapper" style={verticalAlignStyle}>
           <ContainerGrid container direction='row'>
             <Grid item xs={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: 100}}>
               <CompanyText style={{fontSize: 35}} />
@@ -167,7 +167,7 @@ const Login = (props) => {
               <Typography component={Link} to={FORGOT_PASSWORD} sx={{display: 'block', }} align='center'>Forgot Password?</Typography>
             </Grid>
           </ContainerGrid>
-        </div>
+        </Box>
       </section>
     </Fragment>
   );
