@@ -9,7 +9,6 @@ import Invoice from "./NewInvoice";
 import moment from "moment";
 import EnhancedTable from "../Atoms/table/Table";
 import ReplayIcon from '@mui/icons-material/Replay';
-import {getParsedLoadEquipment} from "../../views/openBoard/constants";
 import MoveToMyLoads from "./MoveToMyLoads";
 import {UserSettings} from "../Atoms/client";
 import {getDollarPrefixedPrice} from "../../utils/utils";
@@ -90,25 +89,14 @@ export default function InvoicesList({listBarType}) {
                 }
             },
             {
-                id: "equipment",
-                label: "Equipment",
-                renderer: ({row}) => {
-                    const {modesString = '', standard = ''} = getParsedLoadEquipment(row) || {}
-                    return (
-                        <Fragment>
-                            {modesString} {standard}
-                        </Fragment>
-                    );
-                },
+                id: "assigned",
+                label: "Assigned To",
+                renderer: ({ row: { user: { name = '', firstName, lastName} = {} } ={} }) => name || `${firstName || '--'} ${lastName || ''}`
             },
             {
-                id: "weight",
-                label: "Weight",
-                renderer: ({row}) => {
-                    let {weight: {pounds = ""} = {}} = row || {};
-                    if (pounds) pounds = pounds + " lbs";
-                    return <Fragment>{pounds}</Fragment>;
-                },
+                id: "accessorials",
+                label: "Accessorials",
+                valueFormatter: (value) => (value || []).join(',')
             },
             {
                 id: "company",
