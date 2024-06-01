@@ -1,23 +1,24 @@
 import React from 'react';
 import {Link, useRouteMatch, Switch, Route} from 'react-router-dom';
-import {Button} from '@mui/material';
+import {Button, IconButton, Stack} from '@mui/material';
+import AddIcon from "@mui/icons-material/Add";
+import {Box} from '@mui/material';
 import Form from './Form';
 import Preview from './Preview';
-import {Box} from '@mui/material';
-import EnhancedTable from "../../components/Atoms/table/Table"
+import {Input} from "../Atoms";
 import {ROLES} from "../constants";
-import {showDelete} from "../../actions/component.action";
 import {UserSettings} from "../Atoms/client";
-import useEnhancedFetch from "../../hooks/useEnhancedFetch";
+import EnhancedTable from "../../components/Atoms/table/Table"
+import {showDelete} from "../../actions/component.action";
+import useFetchWithSearchPagination from "../../hooks/useFetchWithSearchPagination";
+import {Close} from "@mui/icons-material";
 
 
 const Facilities = () => {
     const {path} = useRouteMatch();
-    const {add, delete: canDelete, edit} = UserSettings.getUserPermissionsByDashboardId('facilities')
-    const { data = {}, loading, refetch, isRefetching, page, limit, onLimitChange, onPageChange, isPaginationLoading } = useEnhancedFetch('/api/warehouse', {
-            page: 1,
-            limit: 100,
-        }),
+    const {add, delete: canDelete, edit} = UserSettings.getUserPermissionsByDashboardId('facilities');
+    const {data, loading, page, isPaginationLoading, limit, onLimitChange, onPageChange, handleSearch, refetch,
+            searchQuery, isSearching, isRefetching} = useFetchWithSearchPagination('/api/warehouse'),
         {totalCount, facilities = []} = data || {};
 
     const afterDelete = ({success}) => {
@@ -82,14 +83,33 @@ const Facilities = () => {
         ]
     }
 
-    const Actions = <Button variant='contained' component={Link} to={path + '/add'} disabled={!add}>
-        Add Facility
-    </Button>
+    const Actions = <Stack direction='row' gap={1}>
+        <Input
+            placeholder='Search by Facility, Address, City, State'
+            name='text'
+            autoFocus
+            onChange={handleSearch}
+            value={searchQuery}
+            sx={{
+                '& .MuiOutlinedInput-root': {
+                    pr: 0
+                }
+            }}
+            InputProps={{
+                endAdornment: <IconButton onClick={() => handleSearch({value: ''})}>
+                    <Close fontSize='small' />
+                </IconButton>
+            }}
+        />
+        <Button variant='contained' component={Link} to={path + '/add'} disabled={!add} startIcon={<AddIcon />}>
+            Add
+        </Button>
+    </Stack>
 
     return (
         <Box sx={{height: 'inherit'}}>
             <EnhancedTable config={config} data={facilities} loading={loading} onRefetch={refetch} isRefetching={isRefetching} actions={Actions}
-                           isPaginationLoading={isPaginationLoading}
+                           isPaginationLoading={isPaginationLoading || isSearching}
             />
             <Switch>
                 <Route render={(props) => <Form {...props} refetch={refetch} />} path={path + '/add'}/>

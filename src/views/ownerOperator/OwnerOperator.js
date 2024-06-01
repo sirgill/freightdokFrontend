@@ -7,17 +7,15 @@ import FormModal from "./FormModal";
 import {addEvent, removeEvent} from "../../utils/utils";
 import {showDelete} from "../../actions/component.action";
 import {UserSettings} from "../../components/Atoms/client";
-import useEnhancedFetch from "../../hooks/useEnhancedFetch";
+import useFetchWithSearchPagination from "../../hooks/useFetchWithSearchPagination";
 
 
 const OwnerOperator = () => {
   const { path } = useRouteMatch(),
-      {edit, delete: canDelete, add} = UserSettings.getUserPermissionsByDashboardId('ownerOperator'),
-          {data: queryData = {}, isRefetching, loading, refetch, page, limit, onLimitChange, onPageChange, isPaginationLoading} = useEnhancedFetch('/api/ownerOperator', {
-          page: 1, limit: 10
-      }),
-      {data, totalCount} = queryData || {},
-    history = useHistory();
+        {edit, delete: canDelete, add} = UserSettings.getUserPermissionsByDashboardId('ownerOperator'),
+        {data: queryData, loading, page, isPaginationLoading, limit, onLimitChange, onPageChange, refetch, isRefetching} = useFetchWithSearchPagination('/api/ownerOperator'),
+        { data, totalCount} = queryData || {},
+        history = useHistory();
 
   const fetchOwnerOp = useCallback(() => {
         refetch();
