@@ -27,7 +27,7 @@ const initialState = {
   loading: true,
   loads_pagination: {},
   page: 0,
-  rowsPerPage: 15,
+  rowsPerPage: 100,
   error: {},
   search: {
     query: '',

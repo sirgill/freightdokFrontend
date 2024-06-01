@@ -1,32 +1,33 @@
 import React, {useEffect, useMemo, useState} from "react";
 import moment from 'moment';
+import {Box, IconButton, Stack} from "@mui/material";
 import {connect, useDispatch, useSelector} from "react-redux";
 import {deleteLoad, getLoads, searchLoads, selectLoad} from "../../actions/load";
-import {useStyles} from "../HelperCells.js";
+import _ from "lodash";
 import EnhancedTable from "../Atoms/table/Table";
 import LoadDetailModal from "../loads/LoadDetailModal";
 import AddLoadForm from "../load-forms/AddLoad";
 import {UserSettings} from "../Atoms/client";
-import {Box} from "@mui/material";
+import {Input} from "../Atoms";
+import {Close} from "@mui/icons-material";
 
 const {add, delete: hasDeletePermission, edit} = UserSettings.getUserPermissionsByDashboardId('loads');
 
-const actions = <AddLoadForm hasAddPermission={!!add}/>;
 
 const Loadlistbar = ({
                          getLoads,
                          searchLoads,
-                         load: {loads, loads_pagination, page, rowsPerPage, search},
+                         load: {loads, loads_pagination, page, rowsPerPage = 100},
                          resetSearchField, searchText
                      }) => {
     const dispatch = useDispatch(),
-        classes = useStyles();
+        [search, setSearch] = useState('');
     // const { query, loads: sLoads, page: sPage, limit, total: sTotal } = search;
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState({open: false, data: {}});
     const {total, currPage} = loads_pagination;
     const [rawLoades, setRawLoads] = useState([]);
-    const {auth: {user = {}, roles = []} = {}, driver: {drivers = []} = {}} = useSelector((state) => state),
+    const {auth: {user = {}} = {}} = useSelector((state) => state),
         {query, loads: sLoads, page: sPage, limit, total: sTotal} = useSelector(state => state.load.search);
 
     useEffect(() => {
@@ -34,14 +35,7 @@ const Loadlistbar = ({
             setLoading(false);
         }, 1000);
         resetSearchField && resetSearchField();
-        if (searchText) {
-            searchLoads(+page, +limit, search, 'loads');
-        } else {
-            getLoads(page);
-        }
-        return () => {
-            resetSearchField && resetSearchField();
-        };
+        getLoads(page, rowsPerPage, '', search);
     }, []);
 
     useEffect(() => {
@@ -68,21 +62,29 @@ const Loadlistbar = ({
         // }
     }, [loads, sLoads, page]);
 
+    useEffect(() => {
+        const debouncedSearch = _.debounce(() => {
+            getLoads(page, rowsPerPage, '', search)
+        }, 500);
+
+        debouncedSearch();
+
+        return debouncedSearch.cancel;
+    }, [search])
+
     const handleChangePage = (event, newPage) => {
         newPage = newPage - 1
-        if (query) searchLoads(newPage, limit, query);
-        else getLoads(newPage, rowsPerPage);
+        getLoads(newPage, rowsPerPage, '', search);
     };
 
     const handleChangeRowsPerPage = ({value}) => {
-        if (query) searchLoads(0, value, query);
-        else getLoads(0, value);
+        getLoads(0, value, '', search);
     };
 
     const onDelete = (id, onDialogClose) => {
         dispatch(deleteLoad(id, (success) => {
             if (success) {
-                setTimeout(() => getLoads(page), 500)
+                setTimeout(() => getLoads(page, rowsPerPage, '', search), 500)
                 onDialogClose();
             }
         }))
@@ -167,6 +169,30 @@ const Loadlistbar = ({
         ]
     }), [rawLoades])
 
+    const onSearch = ({value}) => {
+        setSearch(value)
+    }
+
+    const actions = <Box sx={{display: 'flex', alignItems: 'center', gap:2}}>
+        <Stack component='form' direction='row' gap={1}>
+            <Input onChange={onSearch} placeholder='Search'
+                   sx={{
+                       '& .MuiOutlinedInput-root': {
+                           pr: 0
+                       }
+                   }}
+                   autoFocus
+                   value={search}
+                   InputProps={{
+                       endAdornment: <IconButton onClick={() => setSearch('')} sx={{visibility: search ? 'visible' : 'hidden'}}>
+                           <Close fontSize='small' />
+                       </IconButton>
+                   }}
+            />
+        </Stack>
+        <AddLoadForm hasAddPermission={!!add}/>
+    </Box>;
+
     return (
         <Box sx={{height: 'inherit'}}>
             <EnhancedTable
@@ -174,7 +200,7 @@ const Loadlistbar = ({
                 data={rawLoades}
                 loading={loading}
                 actions={actions}
-                onRefetch={() => getLoads(page, rowsPerPage)}
+                onRefetch={() => getLoads(page, rowsPerPage, '', search)}
             />
             {open.open && <LoadDetailModal
                 modalEdit={false}

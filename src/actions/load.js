@@ -29,13 +29,10 @@ import {requestDelete, requestGet, requestPatch, requestPost} from "../utils/req
 
 export const SERVER_ADDRESS = "https://api.freightdok.io";
 // Get current users loads
-export const getLoads =
-  (page = 0, limit = 100, module = "") =>
-    async (dispatch) => {
+export const getLoads = (page = 0, limit = 100, module = "", search='') => async (dispatch) => {
       try {
         const { success, data } = await requestGet({
-          uri: `/api/load/me?page=${page + 1
-            }&limit=${limit}&module=${module}`
+          uri: `/api/load/me?page=${page + 1}&limit=${limit}&module=${module}&search=${search}`
         });
         if (success) {
           dispatch({
