@@ -362,6 +362,7 @@ const LoadDetailModal = ({
                           { id: 'Lumper-by-Broker', label: 'Lumper by Broker' },
                           { id: 'Lumper-by-Carrier', label: 'Lumper by Carrier' },
                           { id: 'Layover', label: 'Layover' },
+                          { id: 'scale-ticket', label: 'Scale Ticket' },
                         ].map((name) => (
                           <MenuItem
                             key={name.id}

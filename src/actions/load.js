@@ -23,14 +23,14 @@ import {
   MERGE_LOAD_DOCS,
   RESET_INVOICE_GENERATED,
 } from "./types";
-import { requestDelete, requestGet, requestPatch } from "../utils/request";
+import {requestDelete, requestGet, requestPatch, requestPost} from "../utils/request";
 
 // import { proxy } from "../../package.json";
 
 export const SERVER_ADDRESS = "https://api.freightdok.io";
 // Get current users loads
 export const getLoads =
-  (page = 0, limit = 10, module = "") =>
+  (page = 0, limit = 100, module = "") =>
     async (dispatch) => {
       try {
         const { success, data } = await requestGet({
@@ -169,19 +169,23 @@ export const addLoad = (formData, callback) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     };
-    const res = await axios.post("/api/load", formData, config);
+    const {data, success} = await requestPost({uri: '/api/load', body: formData})
+    if(success){
+      dispatch({
+        type: ADD_LOAD,
+        payload: data,
+      });
 
-    dispatch({
-      type: ADD_LOAD,
-      payload: res.data,
-    });
-
-    notification("Load Created")
-    if (callback) {
-      callback(res.status === 200, res.data)
+      notification("Load Created")
+      if (callback) {
+        callback(success, data)
+      }
+    } else {
+      notification(data.message, 'error')
     }
   } catch (err) {
     dispatch(setAlert(err.message, "error"));
+    console.log(err)
   }
 };
 
