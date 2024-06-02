@@ -8,7 +8,6 @@ import React, { useEffect, useState } from "react";
 import { notification } from "../../actions/alert";
 import { isEmailValid, triggerCustomEvent } from "../../utils/utils";
 import useMutation from "../../hooks/useMutation";
-import useFetch from "../../hooks/useFetch";
 import { Input, LoadingButton } from "../../components/Atoms";
 import useLazyFetch from "../../hooks/useLazyFetch";
 

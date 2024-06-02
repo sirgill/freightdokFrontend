@@ -1,16 +1,17 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import _ from 'lodash'
 import {requestGet} from "../utils/request";
 
 const useFetchWithSearchPagination = (url, debounceTime = 500) => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(100);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [isPaginationLoading, setIsPaginationLoading] = useState(false);
-    const [isSearching, setIsSearching] = useState(false);
-    const [isRefetching, setIsRefetching] = useState(false);
+    const [data, setData] = useState([]),
+        [loading, setLoading] = useState(false),
+        [page, setPage] = useState(1),
+        [limit, setLimit] = useState(100),
+        [searchQuery, setSearchQuery] = useState(''),
+        [isPaginationLoading, setIsPaginationLoading] = useState(false),
+        [isSearching, setIsSearching] = useState(false),
+        [isRefetching, setIsRefetching] = useState(false),
+        isInitialLoad = useRef(true);
 
     useEffect(() => {
         fetchData();
@@ -22,8 +23,10 @@ const useFetchWithSearchPagination = (url, debounceTime = 500) => {
 
     useEffect(() => {
         const debouncedSearch = _.debounce(() => {
-            fetchData();
-            setIsSearching(true);
+            if (!isInitialLoad.current) {
+                setIsSearching(true);
+                fetchData();
+            }
         }, debounceTime);
 
         debouncedSearch();
@@ -45,6 +48,9 @@ const useFetchWithSearchPagination = (url, debounceTime = 500) => {
                 setIsPaginationLoading(false);
                 setIsSearching(false);
                 setIsRefetching(false);
+                if (isInitialLoad.current) {
+                    isInitialLoad.current = false;
+                }
             })
     }, [url, page, limit, searchQuery, isRefetching]);
 
@@ -60,10 +66,12 @@ const useFetchWithSearchPagination = (url, debounceTime = 500) => {
 
     const onLimitChange = ({value}) => {
         setIsPaginationLoading(true);
+        setPage(1);
         setLimit(value);
     }
 
     const refetch = () => {
+        setPage(1);
         setIsRefetching(true);
         fetchData();
     };

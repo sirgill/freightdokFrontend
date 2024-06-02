@@ -12,17 +12,11 @@ export default function Asynchronous({ label = '', placeholder = '', handleChang
     const [value, setValue] = useState();
     const [selectedopts, setSelectedOpts] = useState();
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (handleChange) {
             handleChange({ name, value: selectedopts ? selectedopts : value })
         }
     }, [value, selectedopts]);
-
-
-    const onChange = async (e) => {
-        const val = e.target.value
-        setValue(val);
-    }
 
     useEffect(() => {
         if (value) {
@@ -68,7 +62,6 @@ export default function Asynchronous({ label = '', placeholder = '', handleChang
             options={options}
             inputValue={defaultValue || value}
             onChange={(event, newValue) => {
-                console.log('newValuenewValue', newValue);
                 setSelectedOpts(newValue)
             }}
             onInputChange={(event, newInputValue) => {

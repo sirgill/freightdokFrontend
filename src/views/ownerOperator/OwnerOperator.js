@@ -110,7 +110,7 @@ const OwnerOperator = () => {
   </Button>
 
   return (
-    <div>
+    <>
       <EnhancedTable
         config={tableConfig}
         data={data}
@@ -123,7 +123,7 @@ const OwnerOperator = () => {
 
       <Route path={path + "/add"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
       <Route path={path + "/edit/:id"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
-    </div>
+    </>
   );
 };
 

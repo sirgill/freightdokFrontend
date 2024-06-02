@@ -9,6 +9,7 @@ import {loadUser} from "../actions/auth";
 import Error404 from "./404";
 import usePermissions from "../hooks/usePermissions";
 import loadModuleAsync from "../components/Atoms/LoadModuleAsync";
+import {CacheProvider} from "../provider/CacheProvider";
 
 const Error401 = loadModuleAsync(() => import("./Error401"))
 const ChangePasswordModal = loadModuleAsync(() => import("../views/auth/ChangePasswordModal"));
@@ -37,15 +38,17 @@ const Dashboard = ({match = {}, history, location}) => {
     }, [])
 
     return <>
-        <MiniDrawer routes={supportsNewPermission ? newDashboardRoutes : dashboardRoutes} basePath={path}>
-            <Switch>
-                {supportsNewPermission ? newLinks : links}
-                <Route path={ERROR_404_LINK} component={Error404} />
-                <Route path="*" component={Error401} />
-            </Switch>
-            <DeleteComponent />
-            <ChangePasswordModal />
-        </MiniDrawer>
+        <CacheProvider>
+            <MiniDrawer routes={supportsNewPermission ? newDashboardRoutes : dashboardRoutes} basePath={path}>
+                <Switch>
+                    {supportsNewPermission ? newLinks : links}
+                    <Route path={ERROR_404_LINK} component={Error404} />
+                    <Route path="*" component={Error401} />
+                </Switch>
+                <DeleteComponent />
+                <ChangePasswordModal />
+            </MiniDrawer>
+        </CacheProvider>
     </>
 }
 
