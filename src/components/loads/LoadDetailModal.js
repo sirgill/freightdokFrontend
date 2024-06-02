@@ -539,7 +539,7 @@ const LoadDetailModal = ({
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
                                   <DateTimePicker
                                       value={moment(form.pickup[0] ? form.pickup[0].pickupDate : "") || new Date()}
-                                      onChange={(date) => handleDateChange(date, "pickup")}
+                                      onChange={(date) => handleDateChange(date.toISOString(), "pickup")}
                                       slotProps={DATE_PICKER_SLOT_PROPS}
                                       label='Pickup Date'
                                   />
@@ -768,7 +768,7 @@ const LoadDetailModal = ({
                             <Grid item xs={12}>
                               <DateTimePicker
                                   value={moment(form.drop[0] ? form.drop[0].dropDate : "") || new Date()}
-                                  onChange={(date) => handleDateChange(date, "drop")}
+                                  onChange={(date) => handleDateChange(date.toISOString(), "drop")}
                                   slotProps={DATE_PICKER_SLOT_PROPS}
                                   label='Drop Date'
                               />

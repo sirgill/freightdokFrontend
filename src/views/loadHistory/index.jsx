@@ -77,6 +77,11 @@ const LoadHistory = (props) => {
                 renderer: ({ row: { user: { name = '', firstName, lastName} = {} } ={} }) => name || `${firstName || '--'} ${lastName || ''}`
             },
             {
+                id: "accessorials",
+                label: "Accessorials",
+                valueFormatter: (value) => (value || []).join(', ')
+            },
+            {
                 id: 'rate',
                 label: 'Rate',
                 emptyState: '--',
