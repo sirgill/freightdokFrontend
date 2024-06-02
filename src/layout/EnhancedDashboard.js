@@ -2,7 +2,7 @@ import {Route, Switch} from "react-router-dom";
 import React, {useLayoutEffect} from "react";
 import {ENHANCED_DASHBOARD, ERROR_404_LINK} from "../components/client/routes";
 import useRoutes from "../hooks/useRoutes";
-import {newRoutes, routes} from "../config/dashboardRoutes";
+import {dashboardConfig, routes} from "../config/dashboardRoutes";
 import MiniDrawer from "./Sidebar";
 import store from "../store";
 import {loadUser} from "../actions/auth";
@@ -19,7 +19,7 @@ const Dashboard = ({match = {}, history, location}) => {
         {path} = match,
         supportsNewPermission = JSON.parse(localStorage.getItem('supportsNewPermission') || '{}');
     const {links, firstLink, dashboardRoutes} = useRoutes(routes, path),
-        {links: newLinks, firstLink: newFirstLink, dashboardRoutes: newDashboardRoutes} = usePermissions(newRoutes, path);
+        {links: newLinks, firstLink: newFirstLink, dashboardRoutes: newDashboardRoutes} = usePermissions(dashboardConfig, path);
 
 
     useLayoutEffect(() => {

@@ -29,7 +29,7 @@ const CarrierProfile = ({ match = {} }) => {
         addEvent(window, 'fetchCarrierProfile', refetch)
 
         return () => removeEvent(window, 'fetchCarrierProfile', refetch)
-    }, [])
+    }, [dispatch, getCarrierProfile])
 
 
     return (

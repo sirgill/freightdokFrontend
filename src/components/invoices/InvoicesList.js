@@ -96,7 +96,7 @@ export default function InvoicesList({listBarType}) {
             {
                 id: "accessorials",
                 label: "Accessorials",
-                valueFormatter: (value) => (value || []).join(',')
+                valueFormatter: (value) => (value || []).join(', ')
             },
             {
                 id: "company",

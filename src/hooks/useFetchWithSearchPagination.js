@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import _ from 'lodash'
 import {requestGet} from "../utils/request";
 
-const useFetchWithSearchPagination = (url) => {
+const useFetchWithSearchPagination = (url, debounceTime = 500) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
@@ -14,7 +14,7 @@ const useFetchWithSearchPagination = (url) => {
 
     useEffect(() => {
         fetchData();
-    }, [url, page, limit]);
+    }, [url, page, limit, ]);
 
     useEffect(() => {
         setLoading(true);
@@ -24,14 +24,14 @@ const useFetchWithSearchPagination = (url) => {
         const debouncedSearch = _.debounce(() => {
             fetchData();
             setIsSearching(true);
-        }, 500);
+        }, debounceTime);
 
         debouncedSearch();
 
         return debouncedSearch.cancel;
     }, [searchQuery]);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         requestGet({uri: `${url}?page=${page}&search=${searchQuery}&limit=${limit}`})
             .then(res => {
                 const {data} = res;
@@ -46,7 +46,7 @@ const useFetchWithSearchPagination = (url) => {
                 setIsSearching(false);
                 setIsRefetching(false);
             })
-    };
+    }, [url, page, limit, searchQuery, isRefetching]);
 
     const onPageChange = (e, pgNum) => {
         setIsPaginationLoading(true);

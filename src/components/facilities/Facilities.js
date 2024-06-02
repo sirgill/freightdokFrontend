@@ -96,7 +96,7 @@ const Facilities = () => {
                 }
             }}
             InputProps={{
-                endAdornment: <IconButton onClick={() => handleSearch({value: ''})}>
+                endAdornment: <IconButton onClick={() => handleSearch({value: ''})} sx={{visibility: searchQuery ? 'visible' : 'hidden'}}>
                     <Close fontSize='small' />
                 </IconButton>
             }}

@@ -13,6 +13,7 @@ import LoadModuleAsync from "../components/Atoms/LoadModuleAsync";
 const OpenBoard = LoadModuleAsync(() => import("../views/openBoard/OpenBoard.js"));
 const MyBids = LoadModuleAsync(() => import("../views/mybids/Mybids"));
 const CarrierProfile = LoadModuleAsync(() => import("../views/carrierProfile/CarrierProfile"));
+const LoadHistory = LoadModuleAsync(() => import("../views/loadHistory"));
 const OwnerOperator = LoadModuleAsync(() => import("../views/ownerOperator/OwnerOperator"));
 const UsersList = LoadModuleAsync(() => import("../components/users/UsersList"));
 const InvoicesList = LoadModuleAsync(() => import("../components/invoices/InvoicesList"));
@@ -85,7 +86,7 @@ export const routes = [
     },
 ]
 
-export const newRoutes = [
+export const dashboardConfig = [
     {
         id: 'openBoard',
         title: 'Open Board',
@@ -125,7 +126,7 @@ export const newRoutes = [
     }, {
         id: 'history',
         title: 'Load History',
-        component: LoadsStatus,
+        component: LoadHistory,
         icon: LoadHistoryIcon,
     }, {
         id: 'carrierProfile',

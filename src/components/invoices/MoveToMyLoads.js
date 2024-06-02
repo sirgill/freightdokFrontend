@@ -22,10 +22,10 @@ const Container = styled(Grid)(({theme}) => ({
 }))
 
 const MoveToMyLoads = (props) => {
-    const {onCloseUrl, getInvoices, match: {params: {id} = {}} = {}, history} = props,
+    const {onCloseUrl, getInvoices, refetch, getLoadStatuses = undefined, modalConfig, match: {params: {id} = {}} = {}, history} = props,
         [value, setValue] = useState(),
         {mutation, loading} = useMutation('/api/invoice/moveToMyLoads'),
-        statuses = LOAD_STATUSES.map(status => {
+        statuses = getLoadStatuses ? getLoadStatuses(LOAD_STATUSES) : LOAD_STATUSES.map(status => {
             if(status.id.equalsIgnoreCase('delivered')){
                 return {...status, disabled: true}
             }
@@ -39,12 +39,13 @@ const MoveToMyLoads = (props) => {
     const onSubmit = (e) => {
         e.preventDefault();
         mutation({id, status: value}, null, () => {
-            getInvoices();
+            getInvoices && getInvoices();
+            refetch && refetch();
             history.replace(onCloseUrl);
         });
     }
 
-    return <Modal config={config}>
+    return <Modal config={modalConfig || config}>
         <Container container component='form' spacing={2} onSubmit={onSubmit}>
             <Grid item>
                 <Typography>Select a load status</Typography>
