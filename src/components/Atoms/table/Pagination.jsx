@@ -26,7 +26,7 @@ const StyledStack = styled(Stack)(({theme}) => ({
         }
 }))
 
-const TablePagination = ({data = [], onPageChange, page = 1, count = 0, limit = 1, onPageSizeChange, isLoading}) => {
+const TablePagination = ({data = [], onPageChange, page = 1, count = 0, limit = 1, onLimitChange, isLoading}) => {
     const [length, setLength] = useState(0);
 
     useEffect(() => {
@@ -42,8 +42,8 @@ const TablePagination = ({data = [], onPageChange, page = 1, count = 0, limit = 
     }
 
     const handlePageSize = ({value}) => {
-        if(typeof onPageSizeChange === 'function'){
-            onPageSizeChange({value});
+        if(typeof onLimitChange === 'function'){
+            onLimitChange({value});
         }
     }
 

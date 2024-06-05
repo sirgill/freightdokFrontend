@@ -33,7 +33,7 @@ export default function InvoicesList() {
         limit,
         count: total,
         onPageChange,
-        onPageSizeChange: onLimitChange,
+        onLimitChange,
         columns: [
             {
                 id: 'loadNumber',

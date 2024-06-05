@@ -26,6 +26,7 @@ const LoadHistory = (props) => {
         limit,
         onPageChange,
         onPageSizeChange: onLimitChange,
+        onLimitChange,
         columns: [
             {
                 id: 'loadNumber',

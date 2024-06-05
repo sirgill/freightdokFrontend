@@ -15,7 +15,7 @@ const useFetchWithSearchPagination = (url, debounceTime = 500) => {
 
     useEffect(() => {
         fetchData();
-    }, [url, page, limit, ]);
+    }, [url, page, limit]);
 
     useEffect(() => {
         setLoading(true);
@@ -32,7 +32,7 @@ const useFetchWithSearchPagination = (url, debounceTime = 500) => {
         debouncedSearch();
 
         return debouncedSearch.cancel;
-    }, [searchQuery]);
+    }, [searchQuery, debounceTime]);
 
     const fetchData = useCallback(async () => {
         requestGet({uri: `${url}?page=${page}&search=${searchQuery}&limit=${limit}`})
@@ -52,23 +52,23 @@ const useFetchWithSearchPagination = (url, debounceTime = 500) => {
                     isInitialLoad.current = false;
                 }
             })
-    }, [url, page, limit, searchQuery, isRefetching]);
+    }, [url, page, limit, searchQuery]);
 
-    const onPageChange = (e, pgNum) => {
+    const onPageChange = useCallback((e, pgNum) => {
         setIsPaginationLoading(true);
         setPage(pgNum);
-    }
+    }, [])
 
-    const handleSearch = ({value}) => {
+    const handleSearch = useCallback(({value}) => {
         setSearchQuery(value);
         setPage(1);
-    };
+    }, []);
 
-    const onLimitChange = ({value}) => {
+    const onLimitChange = useCallback(({value}) => {
         setIsPaginationLoading(true);
         setPage(1);
         setLimit(value);
-    }
+    }, [])
 
     const refetch = () => {
         setPage(1);

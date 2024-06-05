@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { requestGet } from '../utils/request';
 import { serialize } from '../utils/utils';
 
@@ -7,8 +7,7 @@ const useLazyFetch = (url, options = {}, callback = null) => {
         [data, setData] = useState(undefined);
     const [pageOptions, setPageOptions] = useState({ page: (page || 1), limit: (limit || 10) });
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null),
-        [isRefetching, setIsRefetching] = useState(false),
+    const [isRefetching, setIsRefetching] = useState(false),
         [isPaginationLoading, setIsPaginationLoading] = useState(false)
 
     function requestCall(object) {
@@ -65,7 +64,7 @@ const useLazyFetch = (url, options = {}, callback = null) => {
     }, [])
 
     return {
-        lazyFetch, data, loading, error, refetch: onRefetch, isRefetching,
+        lazyFetch, data, loading, refetch: onRefetch, isRefetching,
         onLimitChange, onPageChange, isPaginationLoading, ...pageOptions
     }
 }
