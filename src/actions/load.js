@@ -46,29 +46,6 @@ export const getLoads = (page = 0, limit = 100, module = "", search='') => async
         dispatch(setAlert(err.message, "error"));
       }
     };
-
-export const getInvoiceLoads =
-  (page = 0, limit = 5, search = "") =>
-    async (dispatch) => {
-      dispatch({
-        type: INVOICE_LOAD_FETCHED,
-        payload: { data: [], loading: true },
-      });
-
-      try {
-        const url = `/api/load/invoice_loads?page=${page + 1
-          }&limit=${limit}&search=${search}`;
-        const response = await axios.get(url);
-        const { loads, total, totalPages } = response.data;
-        dispatch({
-          type: INVOICE_LOAD_FETCHED,
-          payload: { data: loads, page, limit, search, total, totalPages, loading: false },
-        });
-      } catch (err) {
-        dispatch(setAlert(err.message, "error"));
-      }
-    };
-
 export const deleteLoadDocument =
   (load_id, doc_type, doc_name) => async (dispatch) => {
     try {

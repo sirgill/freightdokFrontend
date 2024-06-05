@@ -1,8 +1,5 @@
-import React, {useEffect, Fragment} from 'react';
-import {Box, Button} from "@mui/material";
-import {resetLoadsSearch} from '../../actions/load.js';
-import {useDispatch, useSelector} from 'react-redux';
-import {getInvoiceLoads} from "../../actions/load";
+import React, {Fragment} from 'react';
+import {Box, Button, IconButton} from "@mui/material";
 import {Link, Route, useRouteMatch} from "react-router-dom";
 import DescriptionIcon from '@mui/icons-material/Description';
 import Invoice from "./NewInvoice";
@@ -12,31 +9,20 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import MoveToMyLoads from "./MoveToMyLoads";
 import {UserSettings} from "../Atoms/client";
 import {getDollarPrefixedPrice} from "../../utils/utils";
+import useFetchWithSearchPagination from "../../hooks/useFetchWithSearchPagination";
 
-
-export default function InvoicesList({listBarType}) {
+const modalConfig = {
+    title: 'Move invoice'
+}
+export default function InvoicesList() {
     const {edit = false} = UserSettings.getUserPermissionsByDashboardId('invoices') || {};
-    const dispatch = useDispatch();
     const {path} = useRouteMatch();
-    const {data = [], page, limit, loading} = useSelector(state => state.load.invoices);
-    const loads = useSelector(state => state.load.loads);
+    const {
+            data: _data, loading, page, limit, onPageChange, onLimitChange, refetch,
+            isPaginationLoading, isRefetching
+        } = useFetchWithSearchPagination('/api/load/invoice_loads'),
+        {loads, total} = _data || {};
 
-    useEffect(() => {
-        dispatch(resetLoadsSearch(listBarType));
-        getInvoices();
-        // dispatch(getCHLoads(true));
-        return () => {
-            dispatch(resetLoadsSearch(listBarType));
-        }
-    }, []);
-
-    const getInvoices = () => {
-        dispatch(getInvoiceLoads());
-    }
-
-    useEffect(() => {
-        getInvoices();
-    }, [loads]);
 
     const config = {
         rowCellPadding: "normal",
@@ -45,6 +31,9 @@ export default function InvoicesList({listBarType}) {
         showRefresh: true,
         page,
         limit,
+        count: total,
+        onPageChange,
+        onPageSizeChange: onLimitChange,
         columns: [
             {
                 id: 'loadNumber',
@@ -91,7 +80,11 @@ export default function InvoicesList({listBarType}) {
             {
                 id: "assigned",
                 label: "Assigned To",
-                renderer: ({ row: { user: { name = '', firstName, lastName} = {} } ={} }) => name || `${firstName || '--'} ${lastName || ''}`
+                renderer: ({row}) => {
+                    const {user = {}} = {} = row || {},
+                        {name = '', firstName, lastName} = user || {};
+                    return name || `${firstName || '--'} ${lastName || ''}`
+                }
             },
             {
                 id: "accessorials",
@@ -133,27 +126,30 @@ export default function InvoicesList({listBarType}) {
                 label: 'Move',
                 visible: !!edit,
                 renderer: ({row}) => {
-                    return <Button
+                    return <IconButton
                         component={Link}
                         to={path + '/moveToMyLoads/' + row._id}
                         variant="outlined"
                         color="primary"
-                        startIcon={<ReplayIcon/>}
                     >
-                        My loads
-                    </Button>
+                        <ReplayIcon/>
+                    </IconButton>
                 }
             },
         ]
     }
 
     return (
-        <Box sx={{mt: 3}}>
+        <Box sx={{height: 'inherit'}}>
             <Fragment>
-                <EnhancedTable config={config} data={data} loading={loading} onRefetch={getInvoices}/>
+                <EnhancedTable config={config} data={loads} loading={loading} onRefetch={refetch}
+                               isRefetching={isRefetching}
+                               isPaginationLoading={isPaginationLoading}
+                />
                 {edit && <Route path={path + '/moveToMyLoads/:id'}
                                 render={(props) => <MoveToMyLoads onCloseUrl={path}
-                                                                  getInvoices={getInvoices} {...props} />}/>}
+                                                                  getInvoices={refetch}
+                                                                  modalConfig={modalConfig} {...props} />}/>}
                 {edit && <Route path={path + '/:id'} exact component={Invoice} onCloseUrl={path}/>}
             </Fragment>
         </Box>
