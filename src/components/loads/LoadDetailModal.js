@@ -15,30 +15,27 @@ import {
 import { ArrowForwardIos as ArrowForwardIosIcon, Close as CloseIcon, Edit as EditIcon, Done as DoneIcon } from '@mui/icons-material'
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@mui/material/InputLabel";
+import {useHistory} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addLoad, updateLoad } from "../../actions/load";
 import moment from "moment";
-import { getDrivers } from "../../actions/driver";
-import FilledInput from '@mui/material/FilledInput';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import "./style.css";
-import { FileCopyOutlined } from "@mui/icons-material";
-import { changeObjectKey } from "../../utils/helper";
-import { useStyles } from "./styles";
-import InputField from "../Atoms/form/InputField";
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
-// import LocalizationProvider from '@mui/lab/LocalizationProvider';
-// import TimePicker from '@mui/lab/TimePicker';
-// import DatePicker from '@mui/lab/DatePicker';
 import {TimePicker} from '@mui/x-date-pickers/TimePicker';
 import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker'
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {AdapterMoment} from '@mui/x-date-pickers/AdapterMoment';
-import { blue } from "../layout/ui/Theme";
-import { LOAD_STATUSES } from "../constants";
+import FilledInput from '@mui/material/FilledInput';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import { green } from "@mui/material/colors";
+import { FileCopyOutlined } from "@mui/icons-material";
+import {AdapterMoment} from '@mui/x-date-pickers/AdapterMoment';
+import { getDrivers } from "../../actions/driver";
+import { changeObjectKey } from "../../utils/helper";
+import { addLoad, updateLoad } from "../../actions/load";
+import InputField from "../Atoms/form/InputField";
+import useFetch from "../../hooks/useFetch";
+import { blue } from "../layout/ui/Theme";
 import LoadDetailsUploadComponent from "./components/LoadDetailsUploadComponent";
 import {getRoleNameString} from "../client/constants";
+import { useStyles } from "./styles";
+import "./style.css";
 
 
 const formInitialState = {
@@ -83,7 +80,7 @@ const TextPlaceHolder = ({ value }) => (value ? value : "--");
 const LoadDetailModal = ({
   modalEdit,
   open,
-  handleClose,
+  handleClose: onModalClose,
   listBarType,
   load, canUpdate
 }) => {
@@ -108,10 +105,12 @@ const LoadDetailModal = ({
   const state = useSelector((state) => state);
   const [edit, setEdit] = React.useState(true);
   const [form, setForm] = React.useState({ ...formInitialState });
+  const {data: {data: LoadStatuses = []} = {}} = useFetch('/api/loadStatuses')
   const [isProcessingAsyncRequest, setIsProcessingAsyncRequest] = useState(false);
   const rateConfirmationRef = useRef();
   const proofDeliveryRef = useRef();
   const accessorialsRef = useRef(),
+      history = useHistory(),
     SelectElement = edit ? OutlinedInput : FilledInput;
   const {assignees = [] } = state.driver || {};
   const assignedToOptions = assignees.map((item) => {
@@ -137,22 +136,7 @@ const LoadDetailModal = ({
     });
     resetFileInputs();
   }, []);
-  useEffect(() => {
-    const drivers = state.driver.drivers;
-    if (drivers.length > 0) {
-      // console.log(user._id, state.driver.drivers);
-      // setForm({ ...form, assignedTo: user });
-      // for (let driver of drivers) {
-      //     if (driver.loads.length > 0) {
-      //         for (let load of driver.loads) {
-      //             if (load._id === _id) {
-      //                 setForm({ ...form, assignedTo: user._id });
-      //             }
-      //         }
-      //     }
-      // }
-    }
-  }, [state.driver.drivers]);
+
   useEffect(() => {
     const error = state.load.error;
     if (!error.msg) {
@@ -171,6 +155,10 @@ const LoadDetailModal = ({
   const setupDrivers = () => {
     dispatch(getDrivers());
   };
+
+  const handleClose = () => {
+    onModalClose({history});
+  }
 
   const afterSubmit = (isSuccess) => {
     setIsProcessingAsyncRequest(false);
@@ -307,7 +295,7 @@ const LoadDetailModal = ({
                         MenuProps={MenuProps}
                         disabled={!edit || state.auth.user.role === "driver"}
                       >
-                        {LOAD_STATUSES.map((name) => (
+                        {(LoadStatuses || []).map((name) => (
                           <MenuItem
                             key={name.id}
                             value={name.id}

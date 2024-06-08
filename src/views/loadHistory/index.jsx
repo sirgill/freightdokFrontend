@@ -3,13 +3,14 @@ import EnhancedTable from "../../components/Atoms/table/Table";
 import useFetchWithSearchPagination from "../../hooks/useFetchWithSearchPagination";
 import {Close} from "@mui/icons-material";
 import moment from "moment";
-import {Box, IconButton, Stack} from "@mui/material";
+import {Box, IconButton, Stack, Typography} from "@mui/material";
 import {getDollarPrefixedPrice} from "../../utils/utils";
 import {Input} from "../../components/Atoms";
 import {Link, Route} from "react-router-dom";
 import ReplayIcon from "@mui/icons-material/Replay";
 import MoveToMyLoads from "../../components/invoices/MoveToMyLoads";
 import {UserSettings} from "../../components/Atoms/client";
+import LoadHistoryDetail from "./LoadHistoryDetail";
 
 const LoadHistory = (props) => {
     const {edit} = UserSettings.getUserPermissionsByDashboardId('history');
@@ -30,7 +31,8 @@ const LoadHistory = (props) => {
         columns: [
             {
                 id: 'loadNumber',
-                label: 'Load Number'
+                label: 'Load Number',
+                renderer: ({row}) => <Typography sx={{textDecoration: 'underline'}} component={Link} to={`${path}/${row._id}`}>{row.loadNumber}</Typography>
             },
             {
                 id: 'pickup',
@@ -103,7 +105,6 @@ const LoadHistory = (props) => {
                         to={path + '/move/' + row._id}
                         variant="outlined"
                         color="primary"
-                        startIcon={<ReplayIcon/>}
                     >
                         <ReplayIcon/>
                     </IconButton>
@@ -157,6 +158,7 @@ const LoadHistory = (props) => {
         <Route
             path={path + '/move/:id'}
             render={(props) => <MoveToMyLoads onCloseUrl={path} refetch={refetch} getLoadStatuses={getLoadStatuses} modalConfig={modalConfig} {...props} />}/>
+        <Route path={path + '/:id'} component={LoadHistoryDetail} />
     </Box>
 }
 

@@ -30,7 +30,6 @@ const useFetch = (url, callback = null, options = {}) => {
 
     useEffect(() => {
         setLoading(true)
-        setData(null);
         setError(null);
         requestCall();
     }, [url])
