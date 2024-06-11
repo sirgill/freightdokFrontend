@@ -158,7 +158,7 @@ const LoadHistory = (props) => {
         <Route
             path={path + '/move/:id'}
             render={(props) => <MoveToMyLoads onCloseUrl={path} refetch={refetch} getLoadStatuses={getLoadStatuses} modalConfig={modalConfig} {...props} />}/>
-        <Route path={path + '/:id'} component={LoadHistoryDetail} />
+        <Route exact path={path + '/:id'} component={LoadHistoryDetail} />
     </Box>
 }
 
