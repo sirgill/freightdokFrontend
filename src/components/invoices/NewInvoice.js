@@ -2,7 +2,6 @@
 // import  'jspdf-autotable'
 import {Box, Button, Dialog, DialogContent, Divider, Grid, Stack, Typography, Zoom,} from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import {blue} from "../layout/ui/Theme";
 import InputField from "../Atoms/form/InputField";
@@ -11,6 +10,8 @@ import "../../App.css";
 import "./styles.css";
 import InvoiceServiceWrapper from "./InvoiceService";
 import { getCheckStatusIcon } from "../../utils/utils";
+import useFetch from "../../hooks/useFetch";
+import {GET_LOAD_HISTORY} from "../../config/requestEndpoints";
 
 
 const Title = ({ name, sx = {}, variant = "body1", children }) => {
@@ -400,13 +401,13 @@ const DialogComponent = ({
     );
 };
 
-const Invoice = ({ match: { params: { id = "" } = {} } = {}, history }) => {
+const Invoice = ({ match: { params: { id = "" } = {} } = {} }) => {
     const [open, setOpen] = useState(false);
     const [pdf, setPdf] = useState(false);
-    const invoices = useSelector((state) => state.load.invoices.data) || [],
-        [services, setServices] = useState([]),
+    const [services, setServices] = useState([]),
         [notes, setNotes] = useState(''),
-        data = invoices.find((invoice) => invoice._id === id);
+        {data: {data = {}} = {}} = useFetch(GET_LOAD_HISTORY + `/${id}`);
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -484,7 +485,7 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {}, history }) => {
     // };
 
     return (
-        <div>
+        <>
             <DialogComponent
                 open={open}
                 handleClose={handleClose}
@@ -499,7 +500,7 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {}, history }) => {
                 notes={notes}
                 setNotes={setNotes}
             />
-        </div>
+        </>
     );
 };
 
