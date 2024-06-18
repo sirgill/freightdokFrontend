@@ -166,6 +166,11 @@ const Loadlistbar = ({
                     }
                 }
             },
+            {
+                id: 'createdAt',
+                label: 'Created On',
+                valueFormatter: (value) => new Date(value).toLocaleString()
+            },
         ]
     }), [rawLoades])
 

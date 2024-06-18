@@ -184,14 +184,13 @@ export const updateLoad = (formData, module = "", bucketFiles = {}, callback) =>
     const { success, data } = await requestPatch({ uri: "/api/load/modify", body: form })
     if (success) {
       notification('Load Updated')
+      const {
+        load: {
+          rowsPerPage, page
+        },
+      } = getState();
+      dispatch(getLoads(page, rowsPerPage, module));
     }
-    const {
-      load: {
-        search: { page, limit, query },
-      },
-    } = getState();
-    if (!query) dispatch(getLoads(0, 5, module));
-    else dispatch(searchLoads(page, limit, query));
     callback(success, data)
   } catch (err) {
     notification(err.message, "error");

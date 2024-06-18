@@ -106,6 +106,11 @@ export default function InvoicesList() {
                 valueFormatter: (value) => value ? getDollarPrefixedPrice(value) : ''
             },
             {
+                id: 'updatedAt',
+                label: 'Updated On',
+                valueFormatter: (value) => new Date(value).toLocaleString()
+            },
+            {
                 id: '',
                 label: 'Invoice',
                 visible: !!edit,
