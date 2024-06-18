@@ -2,7 +2,8 @@ import React, {useState, useEffect, useCallback, useRef} from 'react';
 import _ from 'lodash'
 import {requestGet} from "../utils/request";
 
-const useFetchWithSearchPagination = (url, debounceTime = 500) => {
+const useFetchWithSearchPagination = (url, options) => {
+    const {order = 'asc', orderBy, debounceTime = 500 } = options || {};
     const [data, setData] = useState([]),
         [loading, setLoading] = useState(false),
         [page, setPage] = useState(1),
@@ -11,11 +12,13 @@ const useFetchWithSearchPagination = (url, debounceTime = 500) => {
         [isPaginationLoading, setIsPaginationLoading] = useState(false),
         [isSearching, setIsSearching] = useState(false),
         [isRefetching, setIsRefetching] = useState(false),
+        [sortField, setSortField] = useState(orderBy),
+        [sortOrder, setSortOrder] = useState(order),
         isInitialLoad = useRef(true);
 
     useEffect(() => {
         fetchData();
-    }, [url, page, limit]);
+    }, [url, page, limit, sortField, sortOrder]);
 
     useEffect(() => {
         setLoading(true);
@@ -35,7 +38,7 @@ const useFetchWithSearchPagination = (url, debounceTime = 500) => {
     }, [searchQuery, debounceTime]);
 
     const fetchData = useCallback(async () => {
-        requestGet({uri: `${url}?page=${page}&search=${searchQuery}&limit=${limit}`})
+        requestGet({uri: `${url}?page=${page}&search=${searchQuery}&limit=${limit}&sortField=${sortField}&sortOrder=${sortOrder}`})
             .then(res => {
                 const {data} = res;
                 setData(data);
@@ -52,7 +55,7 @@ const useFetchWithSearchPagination = (url, debounceTime = 500) => {
                     isInitialLoad.current = false;
                 }
             })
-    }, [url, page, limit, searchQuery]);
+    }, [url, page, limit, searchQuery, sortField, sortOrder]);
 
     const onPageChange = useCallback((e, pgNum) => {
         setIsPaginationLoading(true);
@@ -69,6 +72,13 @@ const useFetchWithSearchPagination = (url, debounceTime = 500) => {
         setPage(1);
         setLimit(value);
     }, [])
+
+    const handleSortChange = useCallback(({ field, order }) => {
+        setSortField(field);
+        setSortOrder(order);
+        setIsPaginationLoading(true);
+        setPage(1);
+    }, []);
 
     const refetch = () => {
         setPage(1);
@@ -88,7 +98,10 @@ const useFetchWithSearchPagination = (url, debounceTime = 500) => {
         searchQuery,
         isPaginationLoading,
         isSearching,
-        isRefetching
+        isRefetching,
+        sortField,
+        sortOrder,
+        handleSortChange,
     };
 };
 

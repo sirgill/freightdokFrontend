@@ -67,6 +67,14 @@ export const themeNew = muiCreateTheme({
         },
     },
     components: {
+        MuiTableSortLabel: {
+            styleOverrides: {
+                root: {
+                    fontFamily: 'inherit',
+                    fontWeight: '800',
+                }
+            }
+        },
         MuiInputLabel: {
             styleOverrides: {
                 asterisk: {

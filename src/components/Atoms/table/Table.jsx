@@ -11,7 +11,7 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow, Typography
+    TableRow, TableSortLabel, Typography
 } from '@mui/material';
 import _ from 'lodash';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -37,11 +37,11 @@ const DeleteIcon = styled(Delete)(({theme}) => ({
     }
 }))
 
-function Headers({columns = [], config = {}, role}) {
-    const {headerCellSx = {}, hasDelete} = config;
+function Headers({columns = [], config = {}, role, handleRequestSort, hasSort}) {
+    const {headerCellSx = {}, hasDelete, sortField, sortOrder} = config;
     const headers = useMemo(() => {
         return columns.map((column, index) => {
-            const {label = '', id = '', visible = true} = column || {};
+            const {label = '', id = '', visible = true, sort = false} = column || {};
             // eslint-disable-next-line array-callback-return
             const isVisible = _.isFunction(visible) ? visible({column, role}) : visible;
             if (!isVisible) {
@@ -49,7 +49,15 @@ function Headers({columns = [], config = {}, role}) {
             }
             return (
                 <Cell padding={'normal'} sx={{color: '#000', bgcolor: '#fafafa', fontWeight: 800, ...headerCellSx}}
-                      key={id || index}>{label}</Cell>
+                      key={id || index}>
+                    {(hasSort && sort)
+                        ? <TableSortLabel onClick={(e) => handleRequestSort(e, id)} active={id === sortField}
+                                     direction={sortOrder}
+                                     sx={{ ...headerCellSx}}>
+                        {label}
+                    </TableSortLabel>
+                        : label}
+                </Cell>
             )
         })
     }, [columns, headerCellSx])
@@ -152,6 +160,10 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             deleteMessage,
             deletePermissions = [],
             containerHeight='',
+            sortField,
+            sortOrder = 'asc',
+            handleSortChange,
+            hasSort = false
         } = config,
         {role = ''} = getUserDetail().user,
         hasDeletePermission = typeof deletePermissions === 'boolean' ? deletePermissions : deletePermissions.indexOf(role) > -1 || false,
@@ -175,6 +187,13 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             onRowClick(row)
         }
     }
+
+    const handleRequestSort = (event, property) => {
+        const isAsc = sortField === property && sortOrder === 'asc';
+        // setOrder(isAsc ? 'desc' : 'asc');
+        // setOrderBy(property);
+        handleSortChange && handleSortChange({field: property, order: isAsc ? 'desc' : 'asc'})
+    };
 
     const handleDelete = (id, row, e) => {
         e.stopPropagation();
@@ -214,7 +233,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         }
         return <Fragment>
             <TableHead className={''} sx={{backgroundColor: '#fafafa', borderTop: '1px solid rgba(224, 224, 224, 1)'}}>
-                <Headers columns={columns} config={config} role={role} />
+                <Headers columns={columns} config={config} role={role} handleRequestSort={handleRequestSort} hasSort={hasSort}/>
             </TableHead>
             <TableBody>
                 <TableData

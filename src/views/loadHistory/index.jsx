@@ -16,22 +16,29 @@ const LoadHistory = (props) => {
     const {edit} = UserSettings.getUserPermissionsByDashboardId('history');
     const {match: {path} = {}} = props
     const {data, loading, limit, page, isPaginationLoading, refetch, isRefetching, onPageChange,
-        onLimitChange, isSearching, searchQuery, handleSearch} = useFetchWithSearchPagination('/api/loadHistory')
-    const {totalCount, data: loads} = data;
+        onLimitChange, isSearching, searchQuery, handleSearch, sortField, sortOrder, handleSortChange} = useFetchWithSearchPagination('/api/loadHistory', {
+        orderBy: 'updatedAt',
+        order: 'asc'
+    })
+    const {totalCount, data: loads} = data || {};
 
     const config = {
         showRefresh: true,
         rowCellPadding: 'normal',
         count: totalCount,
+        sortField,
+        sortOrder,
+        hasSort: false,
         page,
         limit,
         onPageChange,
-        onPageSizeChange: onLimitChange,
+        handleSortChange,
         onLimitChange,
         columns: [
             {
                 id: 'loadNumber',
                 label: 'Load Number',
+                sort: true,
                 renderer: ({row}) => <Typography sx={{textDecoration: 'underline'}} component={Link} to={`${path}/${row._id}`}>{row.loadNumber}</Typography>
             },
             {
@@ -92,7 +99,8 @@ const LoadHistory = (props) => {
             },
             {
                 id: 'updatedAt',
-                label: 'Updated At',
+                label: 'Updated On',
+                sort: true,
                 valueFormatter: (value) => new Date(value).toLocaleString()
             },
             {
