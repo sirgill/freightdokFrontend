@@ -1,6 +1,6 @@
 // import jsPDF from "jspdf";
 // import  'jspdf-autotable'
-import {Box, Button, Dialog, DialogContent, Divider, Grid, Stack, Typography, Zoom,} from "@mui/material";
+import {Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, Typography, Zoom,} from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import {blue} from "../layout/ui/Theme";
@@ -12,6 +12,8 @@ import InvoiceServiceWrapper from "./InvoiceService";
 import { getCheckStatusIcon } from "../../utils/utils";
 import useFetch from "../../hooks/useFetch";
 import {GET_LOAD_HISTORY} from "../../config/requestEndpoints";
+import {PictureAsPdf} from "@mui/icons-material";
+import {Tooltip} from "../Atoms";
 
 
 const Title = ({ name, sx = {}, variant = "body1", children }) => {
@@ -134,7 +136,7 @@ const Temporray = React.forwardRef((props, ref) => {
                     <Grid xs={3} item>
                         <Typography className='notesPrintBlock'>Notes: {notes || 'N.A'}</Typography>
                     </Grid>
-                    <Grid xs={6} item>
+                    <Grid xs={5} item>
                         <Stack justifyContent={"center"} gap={"10px"} className='stack_Uploaders'>
                             <Stack direction={"row"} justifyContent={'center'} gap={'10px'}>
                                 <label htmlFor={'rateCon'}>
@@ -204,6 +206,13 @@ const Temporray = React.forwardRef((props, ref) => {
                             fonts={[{family: "Open Sans", source:""}]}
                         />
                         {/*<Button variant='contained' onClick={createPdf}>Print Invoice</Button>*/}
+                    </Grid>
+                    <Grid xs={1} sm={1} sx={{display: 'flex', justifyContent: 'end'}}>
+                        <Tooltip title='<Description>' placement='top'>
+                            <IconButton>
+                                <PictureAsPdf sx={{color: 'red'}} />
+                            </IconButton>
+                        </Tooltip>
                     </Grid>
                 </Grid>
             </Grid>

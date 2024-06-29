@@ -18,7 +18,7 @@ const LoadHistory = (props) => {
     const {data, loading, limit, page, isPaginationLoading, refetch, isRefetching, onPageChange,
         onLimitChange, isSearching, searchQuery, handleSearch, sortField, sortOrder, handleSortChange} = useFetchWithSearchPagination('/api/loadHistory', {
         orderBy: 'updatedAt',
-        order: 'asc'
+        order: 'desc'
     })
     const {totalCount, data: loads} = data || {};
 
