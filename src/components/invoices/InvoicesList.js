@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import {Box, Button, IconButton} from "@mui/material";
+import {Box, Stack, IconButton} from "@mui/material";
 import {Link, Route, useRouteMatch} from "react-router-dom";
 import DescriptionIcon from '@mui/icons-material/Description';
 import Invoice from "./NewInvoice";
@@ -10,6 +10,8 @@ import MoveToMyLoads from "./MoveToMyLoads";
 import {UserSettings} from "../Atoms/client";
 import {getDollarPrefixedPrice} from "../../utils/utils";
 import useFetchWithSearchPagination from "../../hooks/useFetchWithSearchPagination";
+import Tooltip from "../Atoms/Tooltip";
+import {PictureAsPdf} from "@mui/icons-material";
 
 const modalConfig = {
     title: 'Move invoice'
@@ -22,7 +24,6 @@ export default function InvoicesList() {
             isPaginationLoading, isRefetching
         } = useFetchWithSearchPagination('/api/load/invoice_loads'),
         {loads, total} = _data || {};
-
 
     const config = {
         rowCellPadding: "normal",
@@ -115,15 +116,30 @@ export default function InvoicesList() {
                 label: 'Invoice',
                 visible: !!edit,
                 renderer: ({row}) => {
-                    return <Button
-                        component={Link}
-                        to={path + '/' + row._id}
-                        variant="outlined"
-                        color="primary"
-                        startIcon={<DescriptionIcon/>}
-                    >
-                        Create Invoice
-                    </Button>
+                    return <Stack direction={'row'}>
+                        <Tooltip title='Create Invoice' placement='top'>
+                            <IconButton
+                                component={Link}
+                                to={path + '/' + row._id}
+                                variant="outlined"
+                                color="primary"
+                            >
+                                <DescriptionIcon/>
+                            </IconButton>
+                        </Tooltip>
+                        {row.invoiceUrl && <Tooltip title='Server Invoice' placement='top'>
+                            <IconButton
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    window.open(row.invoiceUrl, '_blank')
+                                }}
+                                variant="outlined"
+                                color="primary"
+                            >
+                                <PictureAsPdf sx={{color: 'red'}}/>
+                            </IconButton>
+                        </Tooltip>}
+                    </Stack>
                 }
             },
             {

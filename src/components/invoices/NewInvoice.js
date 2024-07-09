@@ -9,11 +9,12 @@ import ReactToPrint from "react-to-print";
 import "../../App.css";
 import "./styles.css";
 import InvoiceServiceWrapper from "./InvoiceService";
-import { getCheckStatusIcon } from "../../utils/utils";
+import {getCheckStatusIcon, getUserDetail} from "../../utils/utils";
 import useFetch from "../../hooks/useFetch";
 import {GET_LOAD_HISTORY} from "../../config/requestEndpoints";
 import {PictureAsPdf} from "@mui/icons-material";
 import {Tooltip} from "../Atoms";
+import useMutation from "../../hooks/useMutation";
 
 
 const Title = ({ name, sx = {}, variant = "body1", children }) => {
@@ -62,7 +63,8 @@ const Temporray = React.forwardRef((props, ref) => {
         accessorials,
         reactToPrintContent,
         reactToPrintTrigger,
-        docFileViewer} = props
+        docFileViewer} = props;
+    const {orgName} = getUserDetail().user;
     return <div ref={ref} className="printArea">
         <Grid
             container
@@ -78,7 +80,7 @@ const Temporray = React.forwardRef((props, ref) => {
                         <Stack spacing={1}>
                             <Stack>
                                 <Typography sx={{ textAlign: "left" }} variant="h5">
-                                    {'Sunny Freight'}
+                                    {orgName}
                                 </Typography>
                             </Stack>
                         </Stack>
@@ -233,7 +235,7 @@ const DialogComponent = ({
     onChangeService,
     deleteService,
     notes,
-    setNotes
+    setNotes, saveServices,
 }) => {
     const ref = React.useRef(null);
     const {
@@ -355,8 +357,11 @@ const DialogComponent = ({
     }, [bucketFiles])
 
     const reactToPrintContent = React.useCallback(() => {
+        if(saveServices){
+            saveServices();
+        }
         return ref.current;
-    }, [ref.current]);
+    }, [ref.current, saveServices]);
 
 
     const reactToPrintTrigger = React.useCallback(() => {
@@ -415,7 +420,9 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {} }) => {
     const [pdf, setPdf] = useState(false);
     const [services, setServices] = useState([]),
         [notes, setNotes] = useState(''),
-        {data: {data = {}} = {}} = useFetch(GET_LOAD_HISTORY + `/${id}`);
+        {mutation, loading} = useMutation('/api/create-invoicev2', null),
+        {data: {data = {}} = {}} = useFetch(GET_LOAD_HISTORY + `/${id}`),
+        {loadNumber = null} = data || {};
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -480,6 +487,15 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {} }) => {
         setServices([...data])
     }
 
+    const saveServices = () => {
+        const data = {
+            services, notes, loadNumber
+        }
+        mutation(data, 'post', ({data, success}) => {
+
+        });
+    }
+
     // const createInvoice = async () => {
         // const blob = await pdf(
         //     <Document>
@@ -508,6 +524,7 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {} }) => {
                 deleteService={deleteService}
                 notes={notes}
                 setNotes={setNotes}
+                saveServices={saveServices}
             />
         </>
     );

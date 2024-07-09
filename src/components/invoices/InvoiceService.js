@@ -149,7 +149,7 @@ const InvoiceServiceWrapper = ({ services, onAddNewService, onChangeService, del
                 {servicesComp}
                 <tr className='addNewItemRow'>
                     <td className='addNewItem' onClick={handleClick}>
-                        <Button sx={{ width: 135 }} startIcon={<AddCircleOutlineIcon />} aria-describedby={'jugal'}>
+                        <Button sx={{ width: 135 }} startIcon={<AddCircleOutlineIcon />}>
                             Add new item
                         </Button>
                     </td>
