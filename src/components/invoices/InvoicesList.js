@@ -1,6 +1,7 @@
 import React, {Fragment, useState} from 'react';
-import {Box, Stack, IconButton, Button} from "@mui/material";
+import {Box, Stack, IconButton} from "@mui/material";
 import {Link, Route, useRouteMatch} from "react-router-dom";
+import {PictureAsPdf} from "@mui/icons-material";
 import DescriptionIcon from '@mui/icons-material/Description';
 import Invoice from "./NewInvoice";
 import moment from "moment";
@@ -11,7 +12,9 @@ import {UserSettings} from "../Atoms/client";
 import {getDollarPrefixedPrice} from "../../utils/utils";
 import useFetchWithSearchPagination from "../../hooks/useFetchWithSearchPagination";
 import Tooltip from "../Atoms/Tooltip";
-import {PictureAsPdf} from "@mui/icons-material";
+import useMutation from "../../hooks/useMutation";
+import {LoadingButton} from "../Atoms";
+import {notification} from "../../actions/alert";
 
 const modalConfig = {
     title: 'Move invoice'
@@ -19,6 +22,7 @@ const modalConfig = {
 export default function InvoicesList() {
     const {edit = false} = UserSettings.getUserPermissionsByDashboardId('invoices') || {};
     const {path} = useRouteMatch();
+    const {mutation, loading: isLoadingPdf} = useMutation('/create-be-invoice-pdf', null, true)
     const {
             data: _data, loading, page, limit, onPageChange, onLimitChange, refetch,
             isPaginationLoading, isRefetching
@@ -188,13 +192,23 @@ export default function InvoicesList() {
 
     const resetCheckboxes = () => setCheckboxes([])
 
+    const onSendToTriumph = () => {
+        mutation({loadIds: checkboxes}, null, ({success, data}) => {
+            notification(data.message, success  ? 'success' : 'error')
+            if(success) resetCheckboxes()
+        })
+    }
+
     const actions = <Box>
-        <Button
+        <LoadingButton
             variant='contained'
             disabled={!checkboxes.length}
+            isLoading={isLoadingPdf}
+            loadingText='Please Wait...'
+            onClick={onSendToTriumph}
         >
             Send to Triumph
-        </Button>
+        </LoadingButton>
     </Box>
 
     return (
