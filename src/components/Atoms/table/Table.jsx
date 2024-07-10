@@ -1,6 +1,7 @@
 import {
     Backdrop,
     Box,
+    Checkbox,
     DialogContentText,
     Grid,
     IconButton,
@@ -38,7 +39,7 @@ const DeleteIcon = styled(Delete)(({theme}) => ({
 }))
 
 function Headers({columns = [], config = {}, role, handleRequestSort, hasSort}) {
-    const {headerCellSx = {}, hasDelete, sortField, sortOrder} = config;
+    const {headerCellSx = {}, hasDelete, sortField, sortOrder, showCheckbox} = config;
     const headers = useMemo(() => {
         return columns.map((column, index) => {
             const {label = '', id = '', visible = true, sort = false} = column || {};
@@ -61,6 +62,10 @@ function Headers({columns = [], config = {}, role, handleRequestSort, hasSort}) 
             )
         })
     }, [columns, headerCellSx])
+
+    if(showCheckbox){
+        headers.unshift(<Cell padding={'normal'} sx={{color: '#000', bgcolor: '#fafafa', fontWeight: 800, ...headerCellSx}} />)
+    }
     return <TableRow>
         {headers}
         {hasDelete && <Cell padding={'none'} sx={{color: '#000', bgcolor: '#fafafa', fontWeight: 800, ...headerCellSx}}/>}
@@ -75,15 +80,17 @@ const getTableCell = ({
                           rowIndex,
                           handleDelete,
                           hasDeletePermission,
+                          checkboxKey,
                           ...rest
                       }) => {
     const {
         hasDelete = false,
         rowCellPadding = 'none',
         onRowClick = undefined,
-        rowStyleCb
+        rowStyleCb,
+        showCheckbox = false
     } = config;
-    const {role} = rest;
+    const {role, onCheckboxChange, checkboxes} = rest;
     let rowStyle = {}
     if (rowStyleCb) {
         rowStyle = rowStyleCb({row}) || {};
@@ -101,7 +108,7 @@ const getTableCell = ({
         </Cell>;
 
     const cell = columns.map((column, i) => {
-        const {id = '', renderer, emptyState = '--', valueFormatter, visible = true} = column || {};
+        const {id = '', renderer, emptyState = '--', valueFormatter, visible = true, cellPadding} = column || {};
         const isVisible = _.isFunction(visible) ? visible({column, role}) : visible;
         if (!isVisible) {
             return null;
@@ -114,10 +121,20 @@ const getTableCell = ({
         } else {
             cell = _.get(row, id, emptyState) || emptyState;
         }
-        return <Cell key={id + i} padding={rowCellPadding || 'normal'} component="th" scope="row">
+        return <Cell key={id + i} padding={cellPadding || rowCellPadding || 'normal'} component="th" scope="row">
             {cell}
         </Cell>
     });
+
+    if(showCheckbox){
+        if(!checkboxKey){
+            throw new Error('Checkbox key not provided');
+        }
+        const checked = checkboxes.indexOf(row[checkboxKey]) > -1;
+        cell.unshift(<Cell onClick={onCheckboxChange.bind(this, row)}>
+            <Checkbox checked={checked} />
+        </Cell>)
+    }
 
     return <TableRow key={rowIndex} hover={!!onRowClick} onClick={rowClickHandler}
                      sx={!!onRowClick ? {cursor: 'pointer', ...rowStyle} : {...rowStyle}}>
@@ -138,8 +155,9 @@ const TableData = ({columns, data = [], config = {}, handleRowClick, handleDelet
 }
 
 
-const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch, isRefetching, actions, isPaginationLoading=false}) => {
+const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch, isRefetching, actions, isPaginationLoading=false, ...rest}) => {
     data = data || [];
+    const {onCheckboxChange, checkboxes, checkboxKey} = rest;
     const [tableState, setTableState] = useState({}),
         [dialog, setDialog] = useState({open: false, config: {}}),
         {
@@ -241,13 +259,16 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
                     columns={columns}
                     data={data}
                     config={config}
+                    checkboxes={checkboxes}
+                    checkboxKey={checkboxKey}
                     handleRowClick={handleRowClick}
                     handleDelete={handleDelete}
+                    onCheckboxChange={onCheckboxChange}
                     hasDeletePermission={hasDeletePermission}
                 />
             </TableBody>
         </Fragment>
-    }, [data, config])
+    }, [data, config, checkboxes])
 
     useEffect(() => {
         if (ref?.current?.table) {

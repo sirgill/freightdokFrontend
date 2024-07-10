@@ -1,5 +1,5 @@
-import React, {Fragment} from 'react';
-import {Box, Stack, IconButton} from "@mui/material";
+import React, {Fragment, useState} from 'react';
+import {Box, Stack, IconButton, Button} from "@mui/material";
 import {Link, Route, useRouteMatch} from "react-router-dom";
 import DescriptionIcon from '@mui/icons-material/Description';
 import Invoice from "./NewInvoice";
@@ -23,6 +23,7 @@ export default function InvoicesList() {
             data: _data, loading, page, limit, onPageChange, onLimitChange, refetch,
             isPaginationLoading, isRefetching
         } = useFetchWithSearchPagination('/api/load/invoice_loads'),
+        [checkboxes, setCheckboxes] = useState([]),
         {loads, total} = _data || {};
 
     const config = {
@@ -33,8 +34,15 @@ export default function InvoicesList() {
         page,
         limit,
         count: total,
-        onPageChange,
-        onLimitChange,
+        onPageChange: (...args) => {
+            onPageChange(...args);
+            resetCheckboxes();
+        },
+        onLimitChange: (...args) => {
+            onLimitChange(...args);
+            resetCheckboxes();
+        },
+        showCheckbox: true,
         columns: [
             {
                 id: 'loadNumber',
@@ -160,12 +168,49 @@ export default function InvoicesList() {
         ]
     }
 
+    const onCheckboxChange = (row, e) => {
+        e.preventDefault();
+        const key = row['loadNumber'];
+        const index = checkboxes.indexOf(key);
+        let newCheckboxes = [...checkboxes]
+        if(index > -1) {
+            newCheckboxes = newCheckboxes.toSpliced(index, 1)
+        } else {
+            newCheckboxes.push(key);
+        }
+        setCheckboxes(newCheckboxes);
+    }
+
+    const onRefresh = () => {
+        refetch();
+        resetCheckboxes();
+    }
+
+    const resetCheckboxes = () => setCheckboxes([])
+
+    const actions = <Box>
+        <Button
+            variant='contained'
+            disabled={!checkboxes.length}
+        >
+            Send to Triumph
+        </Button>
+    </Box>
+
     return (
         <Box sx={{height: 'inherit'}}>
             <Fragment>
-                <EnhancedTable config={config} data={loads} loading={loading} onRefetch={refetch}
-                               isRefetching={isRefetching}
-                               isPaginationLoading={isPaginationLoading}
+                <EnhancedTable
+                    config={config}
+                    data={loads}
+                    loading={loading}
+                    onRefetch={onRefresh}
+                    isRefetching={isRefetching}
+                    isPaginationLoading={isPaginationLoading}
+                    onCheckboxChange={onCheckboxChange}
+                    checkboxes={checkboxes}
+                    checkboxKey={'loadNumber'}
+                    actions={actions}
                 />
                 {edit && <Route path={path + '/moveToMyLoads/:id'}
                                 render={(props) => <MoveToMyLoads onCloseUrl={path}
