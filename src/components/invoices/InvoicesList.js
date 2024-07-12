@@ -194,7 +194,13 @@ export default function InvoicesList() {
 
     const onSendToTriumph = () => {
         mutation({loadIds: checkboxes}, null, ({success, data}) => {
-            notification(data.message, success  ? 'success' : 'error')
+              if(data.data.length){
+                data.data.forEach((invoice, index) => {
+                    setTimeout(() => {
+                        notification(invoice.message, invoice.invoiceCreated ? 'success' : 'error');
+                    }, index * 2000); 
+                });
+              }  
             if(success) resetCheckboxes()
         })
     }
