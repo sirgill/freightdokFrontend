@@ -207,7 +207,7 @@ export default function InvoicesList() {
             loadingText='Please Wait...'
             onClick={onSendToTriumph}
         >
-            Send to Triumph
+            Upload on Triumph
         </LoadingButton>
     </Box>
 

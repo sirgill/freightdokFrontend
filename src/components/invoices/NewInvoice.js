@@ -12,8 +12,6 @@ import InvoiceServiceWrapper from "./InvoiceService";
 import {getCheckStatusIcon, getUserDetail} from "../../utils/utils";
 import useFetch from "../../hooks/useFetch";
 import {GET_LOAD_HISTORY} from "../../config/requestEndpoints";
-import {PictureAsPdf} from "@mui/icons-material";
-import {Tooltip} from "../Atoms";
 import useMutation from "../../hooks/useMutation";
 
 
@@ -24,28 +22,6 @@ const Title = ({ name, sx = {}, variant = "body1", children }) => {
         </Typography>
     );
 };
-
-const config = {
-    rowCellPadding: "inherit",
-    columns: [
-        {
-            id: 'serviceName',
-            label: 'Service'
-        },
-        {
-            id: 'quantity',
-            label: 'Quanity'
-        },
-        {
-            id: 'price',
-            label: 'Price'
-        },
-        {
-            id: 'amount',
-            label: 'Amount'
-        },
-    ]
-}
 
 const Temporray = React.forwardRef((props, ref) => {
     const {pdf,
@@ -209,13 +185,6 @@ const Temporray = React.forwardRef((props, ref) => {
                         />
                         {/*<Button variant='contained' onClick={createPdf}>Print Invoice</Button>*/}
                     </Grid>
-                    <Grid xs={1} sm={1} sx={{display: 'flex', justifyContent: 'end'}}>
-                        <Tooltip title='<Description>' placement='top'>
-                            <IconButton>
-                                <PictureAsPdf sx={{color: 'red'}} />
-                            </IconButton>
-                        </Tooltip>
-                    </Grid>
                 </Grid>
             </Grid>
         </Grid>
@@ -373,11 +342,11 @@ const DialogComponent = ({
 
         // Good
         return (
-            <Button className='printInvoice' variant={'contained'}>
+            <Button className='printInvoice' variant={'contained'} disabled={!services.length}>
                 Create Invoice
             </Button>
         );
-    }, []);
+    }, [services]);
 
     return (
         <Dialog
