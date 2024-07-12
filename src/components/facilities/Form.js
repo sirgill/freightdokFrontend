@@ -7,7 +7,7 @@ import {
     getWarehouseById,
 } from "../../actions/warehouse";
 import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router";
+import {useHistory} from "react-router-dom";
 import {FACILITIES_LINK} from "../client/routes";
 import Modal from "../Atoms/Modal";
 import Input from "../Atoms/form/Input";
