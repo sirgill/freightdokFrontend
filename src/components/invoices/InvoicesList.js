@@ -201,7 +201,10 @@ export default function InvoicesList() {
                     }, index * 2000); 
                 });
               }  
-            if(success) resetCheckboxes()
+            if(success) {
+                resetCheckboxes();
+                refetch();
+            }
         })
     }
 
