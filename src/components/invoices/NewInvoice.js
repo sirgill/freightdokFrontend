@@ -442,13 +442,13 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {} }) => {
     }, []);
 
     const getTotal = useCallback(() => {
-        const total = services.reduce((acc, service) => parseFloat(service.price) + acc, 0)
+        const total = services.reduce((acc, service) => parseFloat(service.amount) + acc, 0)
         let USDollar = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
         });
         return USDollar.format(total.toFixed(2))
-    }, [services])
+    }, [services]);
 
     const deleteService = (index) => {
         const data = services

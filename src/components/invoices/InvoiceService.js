@@ -26,19 +26,17 @@ const InvoiceService = ({ serviceName, amount, price, quantity, description, ind
         onChangeService(index, { name, value })
     }
 
-    const onBlur = (e) => {
-        const value = parseInt(e.target?.value || 0)
-        const name = e.target?.name
-        if (value < 1) {
+    const onBlur = (name, value) => {
+        if (+value < 0) {
             if (onChangeService) {
                 onChangeService(index, { name, value: 1 })
-                onChangeService(index, { name: 'price', value: parseInt(amount) });
+                onChangeService(index, { name: 'amount', value: parseInt(price) });
 
             }
         } else {
             if (onChangeService) {
                 onChangeService(index, { name, value });
-                onChangeService(index, { name: 'price', value: parseInt(amount) * value });
+                onChangeService(index, { name: 'amount', value: parseInt(price) * +value });
             }
         }
     }
@@ -51,7 +49,7 @@ const InvoiceService = ({ serviceName, amount, price, quantity, description, ind
                     placeholder={'Enter item description'} /></td>
                 <td><InputField name={'quantity'} onChange={handleQuantity} onBlur={onBlur} className='serviceInputField' type='number' value={quantity} /></td>
                 <td><InputField name={'price'} onChange={handleChange} value={price} className='serviceInputField' /></td>
-                <td>{price ? `$${parseFloat(price).toFixed(2)}` : '$0.00'}</td>
+                <td>{amount ? `$${parseFloat(amount).toFixed(2)}` : '$0.00'}</td>
                 <td><IconButton onClick={deleteService.bind(null, index)} className='deleteService'>
                     <DeleteOutlineIcon color={'error'} />
                 </IconButton></td>
