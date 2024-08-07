@@ -18,7 +18,7 @@ import {
   INVOICE_CREATED,
   INVOICE_LOAD_FETCHED,
   MERGE_LOAD_DOCS,
-  RESET_INVOICE_GENERATED
+  RESET_INVOICE_GENERATED, LOADS_FETCHING
 } from '../actions/types';
 
 const initialState = {
@@ -47,13 +47,19 @@ const initialState = {
     isRefetching: false,
     loading: false
   },
-  invoiceGenerated: null
+  invoiceGenerated: null,
+  isLoadsFetching: false
 };
 
 export default function(state = initialState, action) {
   const { type, payload } = action;
 
   switch(type) {
+    case LOADS_FETCHING:
+      return {
+        ...state,
+        isLoadsFetching: payload.isLoadsFetching
+      }
     case GET_LOADS:
       return {
         ...state,

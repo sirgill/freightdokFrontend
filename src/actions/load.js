@@ -21,7 +21,7 @@ import {
   SELECT_LOAD,
   INVOICE_LOAD_FETCHED,
   MERGE_LOAD_DOCS,
-  RESET_INVOICE_GENERATED,
+  RESET_INVOICE_GENERATED, LOADS_FETCHING,
 } from "./types";
 import {requestDelete, requestGet, requestPatch, requestPost} from "../utils/request";
 
@@ -29,15 +29,23 @@ import {requestDelete, requestGet, requestPatch, requestPost} from "../utils/req
 
 export const SERVER_ADDRESS = "https://api.freightdok.io";
 // Get current users loads
-export const getLoads = (page = 0, limit = 100, module = "", search='') => async (dispatch) => {
+export const getLoads = (page = 0, limit = 100, module = "", search='') => async (dispatch, getState) => {
+  dispatch({
+    type: LOADS_FETCHING,
+    payload: { isLoadsFetching: true },
+  });
       try {
         const { success, data } = await requestGet({
           uri: `/api/load/me?page=${page + 1}&limit=${limit}&module=${module}&search=${search}`
         });
+        dispatch({
+          type: LOADS_FETCHING,
+          payload: { isLoadsFetching: false },
+        });
         if (success) {
           dispatch({
             type: GET_LOADS,
-            payload: { loads: data, page, limit },
+            payload: { loads: data, page, limit, loading: false },
           });
         } else {
           notification(data.message, 'error');

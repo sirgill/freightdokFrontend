@@ -23,18 +23,14 @@ const Loadlistbar = ({
     const dispatch = useDispatch(),
         [search, setSearch] = useState('');
     // const { query, loads: sLoads, page: sPage, limit, total: sTotal } = search;
-    const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState({open: false, data: {}});
     const {total, currPage} = loads_pagination;
     const [rawLoades, setRawLoads] = useState([]);
     const {auth: {user = {}} = {}} = useSelector((state) => state),
         {query, loads: sLoads, page: sPage, limit, total: sTotal} = useSelector(state => state.load.search);
+    const isLoadsFetching = useSelector(state => state.load.isLoadsFetching);
 
     useEffect(() => {
-        setTimeout(() => {
-            setLoading(false);
-        }, 1000);
-        resetSearchField && resetSearchField();
         getLoads(page, rowsPerPage, '', search);
     }, []);
 
@@ -203,7 +199,7 @@ const Loadlistbar = ({
             <EnhancedTable
                 config={tableConfig}
                 data={rawLoades}
-                loading={loading}
+                loading={isLoadsFetching}
                 actions={actions}
                 onRefetch={() => getLoads(page, rowsPerPage, '', search)}
             />
