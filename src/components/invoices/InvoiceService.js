@@ -14,9 +14,10 @@ const LOOKUP_DATA = [
 const InvoiceService = ({ serviceName, amount, price, quantity, description, index, deleteService, onChangeService }) => {
     const handleChange = (e) => {
         const name = e.target.name
-        const value = e.target.value
+        const value = +e.target.value
         if (onChangeService) {
             onChangeService(index, { name, value })
+            // onChangeService(index, { name: 'amount', value: value * quantity });
         }
     }
 
@@ -41,6 +42,16 @@ const InvoiceService = ({ serviceName, amount, price, quantity, description, ind
         }
     }
 
+    const onBlurPrice = (name, value) => {
+        value = +value;
+        if(value < 0) {
+            value = 1;
+            onChangeService(index, {name: 'amount', value: value * quantity})
+        } else {
+            onChangeService(index, {name: 'amount', value: value * quantity})
+        }
+    }
+
     return (
         <Fragment>
             <tr className='invoiceServiceRow'>
@@ -48,7 +59,7 @@ const InvoiceService = ({ serviceName, amount, price, quantity, description, ind
                 <td><InputField name={'description'} value={description} onChange={handleChange} className='serviceInputField'
                     placeholder={'Enter item description'} /></td>
                 <td><InputField name={'quantity'} onChange={handleQuantity} onBlur={onBlur} className='serviceInputField' type='number' value={quantity} /></td>
-                <td><InputField name={'price'} onChange={handleChange} value={price} className='serviceInputField' /></td>
+                <td><InputField name={'price'} onChange={handleChange} value={price} onBlur={onBlurPrice} className='serviceInputField' type='number' /></td>
                 <td>{amount ? `$${parseFloat(amount).toFixed(2)}` : '$0.00'}</td>
                 <td><IconButton onClick={deleteService.bind(null, index)} className='deleteService'>
                     <DeleteOutlineIcon color={'error'} />

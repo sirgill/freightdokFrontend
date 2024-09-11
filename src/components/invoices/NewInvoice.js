@@ -9,10 +9,11 @@ import ReactToPrint from "react-to-print";
 import "../../App.css";
 import "./styles.css";
 import InvoiceServiceWrapper from "./InvoiceService";
-import {getCheckStatusIcon, getUserDetail} from "../../utils/utils";
+import {getCheckStatusIcon, getDollarPrefixedPrice, getUserDetail} from "../../utils/utils";
 import useFetch from "../../hooks/useFetch";
 import {GET_LOAD_HISTORY} from "../../config/requestEndpoints";
 import useMutation from "../../hooks/useMutation";
+import {notification} from "../../actions/alert";
 
 
 const Title = ({ name, sx = {}, variant = "body1", children }) => {
@@ -443,11 +444,7 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {} }) => {
 
     const getTotal = useCallback(() => {
         const total = services.reduce((acc, service) => parseFloat(service.amount) + acc, 0)
-        let USDollar = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-        });
-        return USDollar.format(total.toFixed(2))
+        return getDollarPrefixedPrice(total.toFixed(2))
     }, [services]);
 
     const deleteService = (index) => {
@@ -461,7 +458,9 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {} }) => {
             services, notes, loadNumber
         }
         mutation(data, 'post', ({data, success}) => {
-
+            if(!success){
+                notification(data.message || 'Error Saving services', 'error')
+            }
         });
     }
 

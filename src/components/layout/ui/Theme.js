@@ -136,7 +136,8 @@ export const themeNew = muiCreateTheme({
                 root: {
                     '&:disabled': {
                         opacity: .6,
-                        cursor: 'default'
+                        cursor: 'default',
+                        pointerEvents: 'auto'
                     }
                 }
             }

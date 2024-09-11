@@ -154,11 +154,11 @@ export const getDiff = (local, actual) => {
     return diffWithVal;
 };
 
+let USDollar = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+});
 export const getDollarPrefixedPrice = (price) => {
-    let USDollar = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    });
     return USDollar.format(price)
 }
 
