@@ -30,7 +30,7 @@ export default function auth(state = initialState, action) {
       return {
         ...state,
         ...payload,
-        isAuthenticated: true,
+        isAuthenticated: !!hasToken,
         loading: false,
         user: payload.user,
         roles: payload.roles

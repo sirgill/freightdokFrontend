@@ -26,7 +26,10 @@ export const loadUser = () => async dispatch => {
     }
 
     try {
-        const {data} = await requestGet({uri: AUTH_USER, showTriggers: true})
+        const {data, success} = await requestGet({uri: AUTH_USER, showTriggers: true})
+        if(success){
+            UserSettings.setUserPermissions(data.userPermissions);
+        }
         dispatch({
             type: USER_LOADED,
             payload: data

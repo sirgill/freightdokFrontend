@@ -64,7 +64,7 @@ function Headers({columns = [], config = {}, role, handleRequestSort, hasSort}) 
     }, [columns, headerCellSx])
 
     if(showCheckbox){
-        headers.unshift(<Cell padding={'normal'} sx={{color: '#000', bgcolor: '#fafafa', fontWeight: 800, ...headerCellSx}} />)
+        headers.unshift(<Cell key='checkbox-header' padding={'normal'} sx={{color: '#000', bgcolor: '#fafafa', fontWeight: 800, ...headerCellSx}} />)
     }
     return <TableRow>
         {headers}
@@ -131,7 +131,7 @@ const getTableCell = ({
             throw new Error('Checkbox key not provided');
         }
         const checked = checkboxes.indexOf(row[checkboxKey]) > -1;
-        cell.unshift(<Cell onClick={onCheckboxChange.bind(this, row)}>
+        cell.unshift(<Cell onClick={onCheckboxChange.bind(this, row)} key={`checkbox-${rowIndex}`}>
             <Checkbox checked={checked} />
         </Cell>)
     }
