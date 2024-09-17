@@ -1,0 +1,2 @@
+(this.webpackJsonpclient=this.webpackJsonpclient||[]).push([[34],{1125:function(e,t,i){"use strict";i.r(t);var n=i(225),a=i(109),c=i(2);t.default=()=>Object(c.jsxs)(n.a,{children:[Object(c.jsx)(a.a,{variant:"h2",align:"center",fontWeight:600,children:"401: Unauthorized"}),Object(c.jsx)(a.a,{align:"center",variant:"h5",children:"You are not authorized to view this page."})]})}}]);
+//# sourceMappingURL=34.f8998baa.chunk.js.map
