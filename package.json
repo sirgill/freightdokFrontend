@@ -62,7 +62,12 @@
     "start": "react-app-rewired --openssl-legacy-provider start",
     "build": "react-app-rewired --openssl-legacy-provider build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "cross-env NODE_ENV=development react-app-rewired --openssl-legacy-provider start",
+    "staging": "cross-env NODE_ENV=staging react-app-rewired --openssl-legacy-provider start",
+    "build:staging": "cross-env NODE_ENV=staging react-app-rewired --openssl-legacy-provider build",
+    "prod": "cross-env NODE_ENV=production react-app-rewired --openssl-legacy-provider start",
+    "build:prod": "cross-env NODE_ENV=production react-app-rewired --openssl-legacy-provider build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -80,6 +85,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "cross-env": "^7.0.3"
   }
 }
