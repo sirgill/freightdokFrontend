@@ -112,7 +112,7 @@ const UserMenu = ({history}) => {
             ))}
             <Divider />
             <Box sx={{px: 2, py: .5, display: 'flex', flexDirection: 'column'}}>
-                <Typography>Version: {process.env.REACT_APP_VERSION}</Typography>
+                <Typography fontSize={12}>Version: {process.env.REACT_APP_VERSION}</Typography>
             </Box>
         </Menu>
     </Box>
