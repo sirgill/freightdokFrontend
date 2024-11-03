@@ -8,10 +8,10 @@ import React, { useEffect, useState } from "react";
 import { notification } from "../../actions/alert";
 import { isEmailValid, triggerCustomEvent } from "../../utils/utils";
 import useMutation from "../../hooks/useMutation";
-import { Input, LoadingButton } from "../../components/Atoms";
+import {Input, LoadingButton, Password} from "../../components/Atoms";
 import useLazyFetch from "../../hooks/useLazyFetch";
 
-const validateForm = ({ firstName, lastName, phone, email }) => {
+const validateForm = ({ firstName, lastName, phone, email, password, confirmPassword }, id) => {
     let errors = {}
     if (!firstName) {
         errors.firstName = 'Please provide the First Name'
@@ -29,12 +29,24 @@ const validateForm = ({ firstName, lastName, phone, email }) => {
     if (!isEmailValid(email)) {
         errors.email = 'Invalid Email'
     }
+    if(!id && !password){
+        errors.password = 'Please enter Password'
+    }
+    if(!id && !confirmPassword){
+        errors.confirmPassword = 'Please enter Confirm Password'
+    }
+    else if(!id && password !== confirmPassword) {
+        errors.confirmPassword = 'Passwords do not match. Try again'
+    }
     return errors
 }
 const formTemplate = {
     firstName: "",
     lastName: "",
     phone: "",
+    email: '',
+    password: '',
+    confirmPassword: ''
 }
 
 
@@ -65,9 +77,13 @@ const FormModal = (props) => {
     const onSubmit = (e) => {
         e.preventDefault();
         const body = { ...form };
-        const errors = validateForm(body);
+        const errors = validateForm(body, id);
         if (_.isEmpty(errors)) {
-            mutation(body, null, afterSubmit);
+            if(id){
+                delete body.confirmPassword;
+                delete body.password
+            }
+            mutation({...body, _id: id}, null, afterSubmit);
         } else {
             setErrors({ ...errors })
         }
@@ -151,6 +167,30 @@ const FormModal = (props) => {
                             required
                         />
                     </Grid>
+                    {!id && <Grid xs={12} item>
+                        <Password
+                            name={'password'}
+                            label={'Password'}
+                            onChange={updateForm}
+                            fullWidth
+                            value={form.password}
+                            errors={errors}
+                            onBlur={onBlur}
+                            disabled={isFetching || loading}
+                        />
+                    </Grid>}
+                    {!id && <Grid xs={12} item>
+                        <Password
+                            name={'confirmPassword'}
+                            label={'Confirm Password'}
+                            onChange={updateForm}
+                            fullWidth
+                            errors={errors}
+                            value={form.confirmPassword}
+                            onBlur={onBlur}
+                            disabled={isFetching || loading}
+                        />
+                    </Grid>}
                     <Grid item xs={12}>
                         <Input
                             name={"phone"}

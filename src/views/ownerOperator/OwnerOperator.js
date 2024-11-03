@@ -65,6 +65,11 @@ const OwnerOperator = () => {
             id: 'email',
             label: 'Email'
         },
+        {
+            id: 'created_by',
+            label: 'Created By',
+            valueFormatter: (row) => row.name
+        },
       {
         id: "update",
         renderer: ({ row }) => {
