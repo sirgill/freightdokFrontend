@@ -4,7 +4,7 @@ import useFetchWithSearchPagination from "../../hooks/useFetchWithSearchPaginati
 import {Close} from "@mui/icons-material";
 import moment from "moment";
 import {Box, IconButton, Stack, Typography} from "@mui/material";
-import {getDollarPrefixedPrice} from "../../utils/utils";
+import {getDollarPrefixedPrice, readableDateTime} from "../../utils/utils";
 import {Input} from "../../components/Atoms";
 import {Link, Route} from "react-router-dom";
 import ReplayIcon from "@mui/icons-material/Replay";
@@ -101,7 +101,7 @@ const LoadHistory = (props) => {
                 id: 'updatedAt',
                 label: 'Updated On',
                 sort: true,
-                valueFormatter: (value) => new Date(value).toLocaleString()
+                valueFormatter: (value) => readableDateTime(value)
             },
             {
                 id: '',

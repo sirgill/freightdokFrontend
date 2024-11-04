@@ -10,6 +10,7 @@ import AddLoadForm from "../load-forms/AddLoad";
 import {UserSettings} from "../Atoms/client";
 import {Input} from "../Atoms";
 import {Close} from "@mui/icons-material";
+import {readableDateTime} from "../../utils/utils";
 
 const {add, delete: hasDeletePermission, edit} = UserSettings.getUserPermissionsByDashboardId('loads');
 
@@ -165,7 +166,7 @@ const Loadlistbar = ({
             {
                 id: 'createdAt',
                 label: 'Created On',
-                valueFormatter: (value) => new Date(value).toLocaleString()
+                valueFormatter: (value) => readableDateTime(value)
             },
         ]
     }), [rawLoades])

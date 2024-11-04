@@ -162,6 +162,19 @@ export const getDollarPrefixedPrice = (price) => {
     return USDollar.format(price)
 }
 
+
+const dateTime = new Intl.DateTimeFormat('en-US', {
+    month: "short",
+    day: 'numeric',
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+})
+export const readableDateTime = (dateObject) => {
+    const dt = new Date(dateObject)
+    return dt ? dateTime.format(dt) : '--';
+}
+
 // Just for reference
 /*
 * const createPdf = () => {
