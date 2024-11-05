@@ -211,6 +211,7 @@ const FormModal = (props) => {
                             onClick={onSubmit}
                             isLoading={loading || isFetching}
                             loadingText={loading ? 'Updating...' : isFetching ? 'Please wait...' : null}
+                            disabled={_.isEqual(ownerOpData, form)}
                         >
                             {id ? 'Update' : 'Add'}
                         </LoadingButton>

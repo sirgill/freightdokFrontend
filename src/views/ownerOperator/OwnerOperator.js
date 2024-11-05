@@ -1,5 +1,7 @@
 import React, {Fragment, useCallback, useEffect} from "react";
-import {Button} from "@mui/material";
+import {Button, IconButton} from "@mui/material";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import {Delete} from "@mui/icons-material";
 import AddIcon from '@mui/icons-material/Add';
 import {Link, Route, useHistory, useRouteMatch} from "react-router-dom";
 import EnhancedTable from "../../components/Atoms/table/Table";
@@ -8,6 +10,7 @@ import {addEvent, removeEvent} from "../../utils/utils";
 import {showDelete} from "../../actions/component.action";
 import {UserSettings} from "../../components/Atoms/client";
 import useFetchWithSearchPagination from "../../hooks/useFetchWithSearchPagination";
+import {Tooltip} from "../../components/Atoms";
 
 
 const OwnerOperator = () => {
@@ -75,29 +78,34 @@ const OwnerOperator = () => {
         renderer: ({ row }) => {
           return (
             <Fragment>
-              <Button
-                variant="contained"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  history.push(path + `/edit/${row._id}`);
-                }}
-                sx={{mr: 1}}
-                disabled={!edit}
-              >
-                Update
-              </Button>
-              <Button
-                  variant="contained"
-                  color={'error'}
-                  onClick={showDelete({
-                      uri: "/api/ownerOperator/"+ row._id,
-                      message: 'Are you sure you want to delete this Owner Operator?',
-                      afterSuccessCb: afterDelete
-                  })}
-                  disabled={!canDelete}
-              >
-                Delete
-              </Button>
+              <Tooltip title='Edit' placement='top'>
+                  <IconButton
+                      onClick={(e) => {
+                          e.stopPropagation();
+                          history.push(path + `/edit/${row._id}`);
+                      }}
+                      sx={{mr: 1}}
+                      disabled={!edit}
+                      variant={'contained'}
+                      color='primary'
+                  >
+                      <EditOutlinedIcon />
+                  </IconButton>
+              </Tooltip>
+              <Tooltip title='Delete' placement='top'>
+                  <IconButton
+                      variant="contained"
+                      color={'error'}
+                      onClick={showDelete({
+                          uri: "/api/ownerOperator/"+ row._id,
+                          message: 'Are you sure you want to delete this Owner Operator?',
+                          afterSuccessCb: afterDelete
+                      })}
+                      disabled={!canDelete}
+                  >
+                      <Delete />
+                  </IconButton>
+              </Tooltip>
             </Fragment>
           );
         },
