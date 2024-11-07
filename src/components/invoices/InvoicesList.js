@@ -20,7 +20,7 @@ const modalConfig = {
     title: 'Move invoice'
 }
 export default function InvoicesList() {
-    const {edit = false, hasElevatedPrivileges = false} = UserSettings.getUserPermissionsByDashboardId('invoices') || {};
+    const {edit = false, canSendToTriumph} = UserSettings.getUserPermissionsByDashboardId('invoices') || {};
     const {path} = useRouteMatch();
     const {mutation, loading: isLoadingPdf} = useMutation('/create-be-invoice-pdf', null, true)
     const {
@@ -46,7 +46,7 @@ export default function InvoicesList() {
             onLimitChange(...args);
             resetCheckboxes();
         },
-        showCheckbox: !!hasElevatedPrivileges,
+        showCheckbox: !!canSendToTriumph,
         columns: [
             {
                 id: 'loadNumber',
@@ -209,7 +209,7 @@ export default function InvoicesList() {
     }
 
     const actions = <Box>
-        {hasElevatedPrivileges && <LoadingButton
+        {canSendToTriumph && <LoadingButton
             variant='contained'
             disabled={!checkboxes.length}
             isLoading={isLoadingPdf}

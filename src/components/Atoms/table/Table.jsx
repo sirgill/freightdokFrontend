@@ -102,7 +102,7 @@ const getTableCell = ({
         deleteCell = <Cell sx={{}} padding={'none'} component="th" scope="row">
             <Tooltip title='Delete' placement='top'>
                 <IconButton onClick={handleDelete.bind(this, row._id, row)} disabled={!hasDeletePermission}>
-                    <DeleteIcon color={'error'}/>
+                    <DeleteIcon color={hasDeletePermission ? 'error' : 'disabled'}/>
                 </IconButton>
             </Tooltip>
         </Cell>;
