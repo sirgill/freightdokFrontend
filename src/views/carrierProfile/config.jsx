@@ -1,9 +1,11 @@
 import {getCheckStatusIcon} from "../../utils/utils";
-import {Button} from "@mui/material";
+import {Button, IconButton} from "@mui/material";
 import {Link} from "react-router-dom";
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import {UPDATE_INTEGRATIONS_LINK} from "../../components/constants";
 import React from "react";
 import {UserSettings} from "../../components/Atoms/client";
+import {FACTORING_PARTNERS} from "../../components/client/routes";
 
 export const integrationNameMap = {chRobinson: 'C.H. Robinson', newtrul: 'New Trul'};
 
@@ -75,6 +77,47 @@ export const tableConfig = {
             }
         },
     ]
+}
+
+export const factoringPartnersTableConfig = ({path}) => {
+    return {
+        rowCellPadding: 'normal',
+        showRefresh: false,
+        columns: [
+            {
+                id: 'name',
+                label: 'Partner Name'
+            },
+            {
+                id: 'host',
+                label: 'Host'
+            },
+            {
+                id: 'email',
+                label: 'Email'
+            },
+            {
+                id: 'port',
+                label: 'Port'
+            },
+            {
+                id: 'notice',
+                label: 'Notice Text'
+            },
+            {
+                id: 'status',
+                label: 'Status'
+            },
+            {
+                id: 'actions',
+                renderer: ({row}) => {
+                    return <IconButton color='primary' component={Link} to={path + FACTORING_PARTNERS + `/${row.id}`}>
+                        <EditOutlinedIcon />
+                    </IconButton>
+                }
+            }
+        ]
+    }
 }
 
 export const modalConfig = {

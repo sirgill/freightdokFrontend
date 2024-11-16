@@ -292,7 +292,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         </Stack>
         <TableContainer
             component={Paper}
-            className={''}
+            className='tableContainer'
             ref={el => ref.current['tableContainer'] = el}
             sx={{boxShadow: '0px 0px 32px #8898AA26', mb: 2, height: length && !loading ? 'calc(100% - 80px)' : 'auto', position: 'relative'}}
         >

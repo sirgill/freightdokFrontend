@@ -15,3 +15,4 @@ export const INVOICES = '/invoices';
 export const WAREHOUSE = '/facilities';
 export const USERS = '/users';
 export const OWNER_OPERATOR = '/owner_operator';
+export const FACTORING_PARTNERS = '/updateFactoring_Partners'
