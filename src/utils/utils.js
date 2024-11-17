@@ -2,6 +2,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { errorIconColor, successIconColor } from "../components/layout/ui/Theme";
 import { Cancel as CancelIcon } from "@mui/icons-material";
 import React from "react";
+import {Chip} from "@mui/material";
 
 const addEvent = (elem, type, eventHandle) => {
     if (elem == null || typeof elem === 'undefined') {
@@ -107,6 +108,20 @@ export const getCheckStatusIcon = (comparator = false) => {
         <CheckCircleIcon style={{ color: successIconColor }} />
     ) : (
         <CancelIcon style={{ color: errorIconColor }} />
+    )
+}
+
+export const getActiveInactiveStatus = (comparator = false) => {
+    let success
+    if (typeof comparator === 'function') {
+        success = comparator();
+    } else {
+        success = comparator
+    }
+    return success ? (
+        <Chip label="Active" color="success" />
+    ) : (
+        <Chip label='Inactive' color='error' />
     )
 }
 

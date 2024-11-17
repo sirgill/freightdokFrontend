@@ -10,8 +10,9 @@ import {factoringPartnersTableConfig, integrationCredentialConfig, tableConfig} 
 import IntegrationsForm from "./IntegrationsForm";
 import {UPDATE_FACTORING_PARTNERS, UPDATE_INTEGRATIONS_LINK} from "../../components/constants";
 import useFetch from "../../hooks/useFetch";
-import {GET_SECRETS_MANAGER} from "../../config/requestEndpoints";
+import {GET_FACTORING_PARTNERS, GET_SECRETS_MANAGER} from "../../config/requestEndpoints";
 import FactoringPartnersForm from "./factoringPartners/FactoringPartnersForm";
+import useEnhancedFetch from "../../hooks/useEnhancedFetch";
 
 const CarrierProfile = ({match = {}}) => {
     const {path} = match,
@@ -23,6 +24,8 @@ const CarrierProfile = ({match = {}}) => {
             orgId: getUserDetail().user.orgId
         },
     });
+    const {loading: loadingFactoringPartners, data: factoringPartnersData,
+        isRefetching: refectingFactoringPartners, refetch: refetchFP} = useEnhancedFetch(GET_FACTORING_PARTNERS, )
     const {data: integrationsList, _dbData} = integrationsData || {};
 
     useEffect(() => {
@@ -62,11 +65,14 @@ const CarrierProfile = ({match = {}}) => {
                 <Typography variant='h6' fontWeight='bold'>Factoring Partners</Typography>
                 <EnhancedTable
                     config={factoringPartnersTableConfig({path})}
-                    data={[]}
+                    data={factoringPartnersData?.data}
+                    loading={loadingFactoringPartners}
+                    isRefetching={refectingFactoringPartners}
+                    onRefetch={refetchFP}
                 />
             </Paper>
             <Route component={IntegrationsForm} path={path + UPDATE_INTEGRATIONS_LINK}/>
-            <Route component={FactoringPartnersForm} path={path + UPDATE_FACTORING_PARTNERS}/>
+            <Route render={(props) => <FactoringPartnersForm {...props} refetch={refetchFP} onCloseUrl={path} />} path={path + UPDATE_FACTORING_PARTNERS}/>
         </Box>
     )
 }

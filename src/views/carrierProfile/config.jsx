@@ -1,4 +1,4 @@
-import {getCheckStatusIcon} from "../../utils/utils";
+import {getCheckStatusIcon, getActiveInactiveStatus} from "../../utils/utils";
 import {Button, IconButton} from "@mui/material";
 import {Link} from "react-router-dom";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
@@ -82,7 +82,7 @@ export const tableConfig = {
 export const factoringPartnersTableConfig = ({path}) => {
     return {
         rowCellPadding: 'normal',
-        showRefresh: false,
+        showRefresh: true,
         columns: [
             {
                 id: 'name',
@@ -106,7 +106,10 @@ export const factoringPartnersTableConfig = ({path}) => {
             },
             {
                 id: 'status',
-                label: 'Status'
+                label: 'Status',
+                renderer: ({row}) => {
+                    return getActiveInactiveStatus(row.status)
+                }
             },
             {
                 id: 'actions',
