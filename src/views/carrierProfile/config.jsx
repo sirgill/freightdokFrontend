@@ -114,7 +114,7 @@ export const factoringPartnersTableConfig = ({path}) => {
             {
                 id: 'actions',
                 renderer: ({row}) => {
-                    return <IconButton color='primary' component={Link} to={path + FACTORING_PARTNERS + `/${row.id}`}>
+                    return <IconButton color='primary' component={Link} to={path + FACTORING_PARTNERS + `/${row._id}`}>
                         <EditOutlinedIcon />
                     </IconButton>
                 }

@@ -41,9 +41,6 @@ const CarrierProfile = ({match = {}}) => {
             <EnhancedTable data={data} loading={loading} config={tableConfig} onRefetch={refetch}
                            isRefetching={isRefetching}/>
             {isMatch && <UpdateCarrierProfile onCloseUrl={path}/>}
-            {/*{role !== 'admin' && <Box sx={{display :'flex', justifyContent: 'flex-end'}}>*/}
-            {/*    <Button variant='contained' component={Link} to={path + '/updateCarrierProfile'}>Update Profile</Button>*/}
-            {/*</Box>}*/}
             <Box sx={{mt: 4}}>
                 <EnhancedTable data={integrationsList} loading={integrationsLoading}
                                config={integrationCredentialConfig({path, data: _dbData, list: integrationsList})}/>
