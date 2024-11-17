@@ -101,7 +101,7 @@ export const factoringPartnersTableConfig = ({path}) => {
                 label: 'Port'
             },
             {
-                id: 'notice',
+                id: 'noticeText',
                 label: 'Notice Text'
             },
             {
