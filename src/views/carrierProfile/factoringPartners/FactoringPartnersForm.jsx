@@ -1,4 +1,5 @@
 import Modal from "../../../components/Atoms/Modal";
+import _ from 'lodash';
 import React, {useState} from "react";
 import {Box, Grid} from "@mui/material";
 import {FullScreenLoader, Input, LoadingButton} from "../../../components/Atoms";
@@ -67,13 +68,17 @@ const Form = ({onCloseUrl, id, refetch, data}) => {
     }
 
     return <GridForm component='form' container onSubmit={onSubmit}>
-        <Input name='name' value={form.name} onChange={onChange} label='Partner Name' errors={errors}/>
-        <Input name='host' value={form.host} onChange={onChange} label='Host' errors={errors}/>
-        <Input name='port' value={form.port} onChange={onChange} label='Port' errors={errors}/>
+        <Input name='name' value={form?.name} onChange={onChange} label='Partner Name' errors={errors}/>
+        <Input name='host' value={form?.host} onChange={onChange} label='Host' errors={errors}/>
+        <Input name='port' value={form?.port} onChange={onChange} label='Port' errors={errors}/>
         <Input multiline
                rows={4}
-               name='noticeText' value={form.noticeText} onChange={onChange} label='Notice Text' errors={errors}/>
-        <LoadingButton fullWidth isLoading={loading} type='submit'
+               name='noticeText' value={form?.noticeText} onChange={onChange} label='Notice Text' errors={errors}/>
+        <LoadingButton
+            fullWidth
+            isLoading={loading}
+            type='submit'
+            disabled={_.isEqual(form, data)}
         >
             Update
         </LoadingButton>

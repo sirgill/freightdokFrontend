@@ -1,6 +1,6 @@
 // import jsPDF from "jspdf";
 // import  'jspdf-autotable'
-import {Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, Typography, Zoom,} from "@mui/material";
+import {Box, Button, Dialog, DialogContent, Divider, Grid, Stack, Typography, Zoom,} from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import {blue} from "../layout/ui/Theme";
@@ -14,6 +14,7 @@ import useFetch from "../../hooks/useFetch";
 import {GET_LOAD_HISTORY} from "../../config/requestEndpoints";
 import useMutation from "../../hooks/useMutation";
 import {notification} from "../../actions/alert";
+import {FullScreenLoader} from "../Atoms";
 
 
 const Title = ({ name, sx = {}, variant = "body1", children }) => {
@@ -24,7 +25,7 @@ const Title = ({ name, sx = {}, variant = "body1", children }) => {
     );
 };
 
-const Temporray = React.forwardRef((props, ref) => {
+const InvoiceLayout = React.forwardRef((props, ref) => {
     const {pdf,
         setNotes,
         brokerage,
@@ -40,7 +41,8 @@ const Temporray = React.forwardRef((props, ref) => {
         accessorials,
         reactToPrintContent,
         reactToPrintTrigger,
-        docFileViewer} = props;
+        docFileViewer,
+        noticeText} = props;
     const {orgName} = getUserDetail().user;
     return <div ref={ref} className="printArea">
         <Grid
@@ -70,7 +72,7 @@ const Temporray = React.forwardRef((props, ref) => {
                                 </Typography>
                             </Stack>
                             <Stack className='notesStack'>
-                                <InputField label="Notes" type="textarea" onChange={(e) => setNotes(e.target.value)} />
+                                <InputField label="Notes" value={noticeText} readOnly rows={4} type="textarea" />
                             </Stack>
                         </Stack>
                     </Grid>
@@ -205,7 +207,7 @@ const DialogComponent = ({
     onChangeService,
     deleteService,
     notes,
-    setNotes, saveServices,
+    setNotes, saveServices, noticeText
 }) => {
     const ref = React.useRef(null);
     const {
@@ -361,7 +363,7 @@ const DialogComponent = ({
             maxWidth={"lg"}
         >
             <DialogContent sx={{ p: 0 }}>
-                <Temporray
+                <InvoiceLayout
                     ref={ref}
                     pdf={pdf}
                     setNotes={setNotes}
@@ -379,6 +381,7 @@ const DialogComponent = ({
                     reactToPrintContent={reactToPrintContent}
                     docFileViewer={docFileViewer}
                     reactToPrintTrigger={reactToPrintTrigger}
+                    noticeText={noticeText}
                 />
             </DialogContent>
         </Dialog >
@@ -391,8 +394,9 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {} }) => {
     const [services, setServices] = useState([]),
         [notes, setNotes] = useState(''),
         {mutation, loading} = useMutation('/api/create-invoicev2', null),
-        {data: {data = {}} = {}} = useFetch(GET_LOAD_HISTORY + `/${id}`),
-        {loadNumber = null} = data || {};
+        {data: {data = {}, fpData = {}} = {}, loading: isLoading} = useFetch(GET_LOAD_HISTORY + `/${id}`),
+        {loadNumber = null} = data || {},
+        {noticeText} = fpData || {};
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -477,6 +481,10 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {} }) => {
         // console.log(blob)
     // };
 
+    if(isLoading){
+        return <FullScreenLoader />
+    }
+
     return (
         <>
             <DialogComponent
@@ -493,6 +501,7 @@ const Invoice = ({ match: { params: { id = "" } = {} } = {} }) => {
                 notes={notes}
                 setNotes={setNotes}
                 saveServices={saveServices}
+                noticeText={noticeText}
             />
         </>
     );
