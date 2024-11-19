@@ -109,6 +109,10 @@ export const factoringPartnersTableConfig = ({path}) => {
                 label: 'Notice Text'
             },
             {
+                id: 'lastUpdatedBy.name',
+                label: 'Last Updated By'
+            },
+            {
                 id: 'status',
                 label: 'Status',
                 renderer: ({row}) => {
