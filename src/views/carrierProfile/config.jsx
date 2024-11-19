@@ -110,7 +110,7 @@ export const factoringPartnersTableConfig = ({path}) => {
             },
             {
                 id: 'lastUpdatedBy.name',
-                label: 'Last Updated By'
+                label: 'Last Updated By',
             },
             {
                 id: 'status',
