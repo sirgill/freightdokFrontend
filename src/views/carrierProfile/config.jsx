@@ -97,12 +97,13 @@ export const factoringPartnersTableConfig = ({path}) => {
                 label: 'Email'
             },
             {
-                id: 'port',
-                label: 'Port'
+                id: 'password',
+                label: 'Password',
+                valueFormatter: () => '******'
             },
             {
-                id: 'orgId.name',
-                label: 'Company Name'
+                id: 'port',
+                label: 'Port'
             },
             {
                 id: 'noticeText',
