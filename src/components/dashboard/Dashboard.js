@@ -18,7 +18,7 @@ import {logout} from "../../actions/auth";
 import {getCurrentProfile} from "../../actions/profile";
 import UserForm from "../users/UserForm";
 import Alert from "../layout/Alert";
-import {Warehouse} from "../warehouse/Warehouse";
+import {Facilities} from "../facilities/Facilities";
 import {getLoads} from "../../actions/load";
 import {useDispatch, useSelector} from "react-redux";
 import {searchLoads, resetLoadsSearch} from "../../actions/load.js";

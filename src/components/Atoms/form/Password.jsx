@@ -4,7 +4,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PropTypes from "prop-types";
 
-const Password = ({onChange, name, label = 'Password', value, errors = {}, startAdornment, ...rest}) => {
+const Password = ({onChange, name, label = 'Password', value, errors = {}, onBlur, startAdornment, ...rest}) => {
     const [showPassword, setShowPassword] = React.useState(false);
     const hasError = !!errors[name],
         errorText = errors[name];
@@ -20,6 +20,13 @@ const Password = ({onChange, name, label = 'Password', value, errors = {}, start
         if (onChange) onChange({name, value});
     }
 
+    const handleBlur = e => {
+        const {name, value} = e.target
+        if(onBlur){
+            onBlur({name, value})
+        }
+    }
+
     return (
         <FormControl variant="outlined" fullWidth>
             <TextField
@@ -32,6 +39,7 @@ const Password = ({onChange, name, label = 'Password', value, errors = {}, start
                 helperText={hasError ? errorText : ''}
                 size='small'
                 onChange={handleChange}
+                onBlur={handleBlur}
                 name={name}
                 InputProps={{
                     startAdornment,

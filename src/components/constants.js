@@ -22,5 +22,6 @@ export const LOAD_STATUSES = [
     { id: 'arrivedAtDelivery', label: 'Arrived at Delivery' },
     { id: 'arrivedAtPickup', label: 'Arrived at Pickup' },
     { id: 'enRoute', label: 'En Route to Delivery' },
+    { id: 'archived', label: 'Archived' },
     { id: 'delivered', label: 'Delivered' },
 ]

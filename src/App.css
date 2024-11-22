@@ -177,6 +177,9 @@ label {
   margin: 2cm
 }
 
+.notesPrintBlock{
+  display: none;
+}
 
 @media print {
 
@@ -187,6 +190,14 @@ label {
 
   .bucketImageContainer {
     float: none!important;
+  }
+
+  .notesStack, .addNewItem, .deleteService{
+    display: none;
+  }
+
+  .notesPrintBlock{
+    display: block;
   }
 
   .bucketImageContainer > div {

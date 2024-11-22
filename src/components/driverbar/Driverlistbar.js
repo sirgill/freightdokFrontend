@@ -1,9 +1,8 @@
-import React, {Fragment, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {connect, shallowEqual, useDispatch, useSelector} from "react-redux";
-import {Box, Button} from "@mui/material";
-import moment from "moment";
+import {Box, IconButton} from "@mui/material";
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 
-import {useStyles} from "../HelperCells.js";
 import EnhancedTable from "../Atoms/table/Table";
 import {getDrivers} from "../../actions/driver";
 import {
@@ -13,18 +12,20 @@ import {
 } from "../../actions/driver";
 import EditDriver from "../driver-forms/AddDriver";
 import AddDriverForm from "../driver-forms/AddDriver";
+import {UserSettings} from "../Atoms/client";
+import {Tooltip} from "../Atoms";
+
+const {edit: canEdit, delete: canDelete } = UserSettings.getUserPermissionsByDashboardId('drivers')
 
 const Driverlistbar = (props = {}) => {
     const {deleteDriver} = props;
-    const {drivers = [], loading = false, timestamp} = useSelector((state) => state.driver, shallowEqual);
+    const {drivers = [], loading = false} = useSelector((state) => state.driver, shallowEqual);
     const [edit, setEdit] = useState({open: false, data: {}});
-    const classes = useStyles(),
-        dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-    const handleDeleteDriver = (driver = {}, e) => {
-        e.stopPropagation();
-        const _id = typeof driver.user !== "string" ? driver.user._id : driver.user;
-        deleteDriver(_id);
+    const handleDeleteDriver = (driver = {}, onDialogClose, {row}) => {
+        const _id = typeof row.user !== "string" ? row.user._id : row.user;
+        deleteDriver(_id, onDialogClose);
     };
 
     const handleUpdate = (row = {}, e) => {
@@ -37,20 +38,19 @@ const Driverlistbar = (props = {}) => {
     }
 
     useEffect(() => {
-        const now = moment(new Date());
-        const end = moment(timestamp);
-        const duration = moment.duration(now.diff(end));
-        // if(duration.asMinutes() > 5 || typeof timestamp === 'undefined'){
-        // }
         fetchDrivers()
 
     }, [])
 
 
     const tableConfig = {
-        rowCellPadding: 'inherit',
+        rowCellPadding: 'normal',
         emptyMessage: 'No drivers found',
         // onRowClick: (row) => setEdit({open: true, data: row}),
+        hasDelete: true,
+        deletePermissions: !!canDelete,
+        deleteMessage: ({row}) => 'Are you sure you want to delete ' + row.firstName + " " + (row.lastName || '') + '?',
+        onDelete: handleDeleteDriver,
         columns: [
             {
                 id: 'firstName',
@@ -67,15 +67,11 @@ const Driverlistbar = (props = {}) => {
             {
                 id: 'delete',
                 renderer: ({row}) => {
-                    return <Fragment>
-                        <Button variant={'contained'} sx={{mr: 2}} onClick={handleUpdate.bind(this, row)}
-                                color='primary'>
-                            Update
-                        </Button>
-                        <Button variant={'contained'} onClick={handleDeleteDriver.bind(this, row)} color='error'>
-                            Delete
-                        </Button>
-                    </Fragment>
+                    return <Tooltip title='Edit' placement='top'>
+                        <IconButton disabled={!canEdit} variant={'contained'} sx={{mr: 2}} onClick={handleUpdate.bind(this, row)} color='primary'>
+                            <EditOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
                 }
             }
         ]
@@ -85,13 +81,14 @@ const Driverlistbar = (props = {}) => {
         setEdit({open: false, data: {}});
     }
 
+    const Actions = <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
+        <AddDriverForm/>
+    </Box>
+
     return (
-        <div className={classes.table}>
-            <EnhancedTable config={tableConfig} data={drivers} loading={loading}/>
+        <div>
+            <EnhancedTable config={tableConfig} data={drivers} loading={loading} actions={Actions}/>
             {edit.open && <EditDriver closeEditForm={closeEditForm} data={edit.data} isEdit={true} onRefresh={fetchDrivers} />}
-            <Box sx={{display :'flex', justifyContent: 'flex-end'}}>
-                <AddDriverForm/>
-            </Box>
         </div>
     );
 };

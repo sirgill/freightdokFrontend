@@ -13,13 +13,14 @@ import LoadModuleAsync from "../components/Atoms/LoadModuleAsync";
 const OpenBoard = LoadModuleAsync(() => import("../views/openBoard/OpenBoard.js"));
 const MyBids = LoadModuleAsync(() => import("../views/mybids/Mybids"));
 const CarrierProfile = LoadModuleAsync(() => import("../views/carrierProfile/CarrierProfile"));
+const LoadHistory = LoadModuleAsync(() => import("../views/loadHistory"));
 const OwnerOperator = LoadModuleAsync(() => import("../views/ownerOperator/OwnerOperator"));
 const UsersList = LoadModuleAsync(() => import("../components/users/UsersList"));
 const InvoicesList = LoadModuleAsync(() => import("../components/invoices/InvoicesList"));
 const Driverlistbar = LoadModuleAsync(() => import("../components/driverbar/Driverlistbar.js"));
 const Loadlistbar = LoadModuleAsync(() => import("../components/loadbar/Loadlistbar.js"));
 const LoadsStatus = LoadModuleAsync(() => import("../components/loads/LoadsStatus"));
-const Facilities = LoadModuleAsync(() => import("../components/warehouse/Warehouse"));
+const Facilities = LoadModuleAsync(() => import("../components/facilities/Facilities"));
 
 export const routes = [
     {
@@ -27,7 +28,7 @@ export const routes = [
         title: 'Open Board',
         component: OpenBoard,
         icon: OpenBoardIcon,
-        permissions: ['superAdmin', 'admin', 'dispatch', 'ownerOperator']
+        permissions: ['superAdmin', 'admin', 'dispatch', 'ownerOperator',]
     }, {
         id: 'my_bids',
         title: 'My Bids',
@@ -39,48 +40,103 @@ export const routes = [
         title: 'My Loads',
         component: Loadlistbar,
         icon: MyLoadsIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch', 'afterhours', 'ownerOperator', 'driver']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'afterhours', 'ownerOperator', 'driver', 'support']
     }, {
         id: 'invoices',
         title: 'Invoices',
         component: InvoicesList,
         icon: InvoiceIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch', 'ownerOperator']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'support']
     }, {
         id: 'users',
         title: 'Users',
         component: UsersList,
         icon: UsersIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'support']
     }, {
         id: 'drivers',
         title: 'Drivers',
         component: Driverlistbar,
         icon: DriverIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'support']
     }, {
         id: 'owner_operator',
         title: 'Owner Operator',
         component: OwnerOperator,
         icon: OwnerOperatorIcon,
-        permissions: ['admin', 'superAdmin', 'ownerOperator', 'dispatch']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'support']
     }, {
         id: 'loadHistory',
         title: 'Load History',
         component: LoadsStatus,
         icon: LoadHistoryIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch', 'afterhours', 'ownerOperator', 'driver']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'afterhours', 'ownerOperator', 'driver', 'support']
     }, {
         id: 'carrier_profile',
         title: 'Carrier Profile',
         component: CarrierProfile,
         icon: CarrierProfileIcon,
-        permissions: ['admin', 'superAdmin', 'dispatch']
+        permissions: ['admin', 'superAdmin', 'dispatch', 'support']
     }, {
         id: 'facilities',
         title: 'Facilities',
         component: Facilities,
         icon: FacilitiesIcon,
-        permissions: ['admin', 'superAdmin']
+        permissions: ['admin', 'superAdmin', 'support']
+    },
+]
+
+export const dashboardConfig = [
+    {
+        id: 'openBoard',
+        title: 'Open Board',
+        component: OpenBoard,
+        icon: OpenBoardIcon,
+        view: false
+    }, {
+        id: 'bids',
+        title: 'My Bids',
+        component: MyBids,
+        icon: MybidsIcon,
+    }, {
+        id: 'loads',
+        title: 'My Loads',
+        component: Loadlistbar,
+        icon: MyLoadsIcon,
+    }, {
+        id: 'invoices',
+        title: 'Invoices',
+        component: InvoicesList,
+        icon: InvoiceIcon,
+    }, {
+        id: 'users',
+        title: 'Users',
+        component: UsersList,
+        icon: UsersIcon,
+    }, {
+        id: 'drivers',
+        title: 'Drivers',
+        component: Driverlistbar,
+        icon: DriverIcon,
+    }, {
+        id: 'ownerOperator',
+        title: 'Owner Operator',
+        component: OwnerOperator,
+        icon: OwnerOperatorIcon,
+    }, {
+        id: 'history',
+        title: 'Load History',
+        component: LoadHistory,
+        icon: LoadHistoryIcon,
+    }, {
+        id: 'carrierProfile',
+        title: 'Carrier Profile',
+        component: CarrierProfile,
+        icon: CarrierProfileIcon,
+    }, {
+        id: 'facilities',
+        title: 'Facilities',
+        component: Facilities,
+        icon: FacilitiesIcon,
     },
 ]

@@ -66,7 +66,7 @@ export const patchDriverLoads = (driver_id, loads) => async (dispatch, getState)
 };
 
 //delete driver
-export const deleteDriver = (driver_id) => async (dispatch, getState) => {
+export const deleteDriver = (driver_id, cb) => async (dispatch, getState) => {
   try {
     let drivers = getState().driver.drivers;
     const res = await axios.delete(`/api/drivers/`, { data: { driver_id: driver_id } });
@@ -75,6 +75,7 @@ export const deleteDriver = (driver_id) => async (dispatch, getState) => {
       drivers.splice(index, 1);
     }
     notification('Deleted Successfully')
+    cb && cb(res);
     dispatch({
       type: DELETE_DRIVER,
       payload: drivers,

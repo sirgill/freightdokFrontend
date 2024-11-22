@@ -4,7 +4,6 @@ import {Input, LoadingButton, Password} from "../../components/Atoms";
 import {isEmailValid, verticalAlignStyle} from "../../utils/utils";
 import {useState} from "react";
 import AuthContainer from "../../components/common/AuthContainer";
-import CompanyText from "../../components/Atoms/CompanyText";
 import useMutation from "../../hooks/useMutation";
 import {Link} from "react-router-dom";
 import {LOGIN_LINK} from "../../components/client/routes";
@@ -59,13 +58,14 @@ const ForgotPassword = ({history}) => {
             }
             mutation({email: form.email}, 'post')
                 .then(({success, data}) => {
-                    notification(data?.message, success ? undefined : 'error');
                     if (success) {
                         setIsOtpSent(true);
+                    } else {
+                        setAlert({...alert, open: true, message: data.message})
                     }
                 })
                 .catch(err => {
-                    notification(err.message, 'error')
+                    setAlert({...alert, open: true, message: err.message})
                 })
         } else {
             const {confirmPass, pass, otp, email} = form;
@@ -86,8 +86,7 @@ const ForgotPassword = ({history}) => {
                         }
                     })
                     .catch(err => {
-                        debugger
-                        notification(err.message, 'error')
+                        setAlert({...alert, open: true, message: err?.message || 'Error'})
                     })
             }
         }
@@ -120,9 +119,6 @@ const ForgotPassword = ({history}) => {
     return <div className='auth-wrapper' style={verticalAlignStyle}>
         <AuthContainer container direction='column' gap={2} px={8} py={4} component={'form'} onSubmit={onSubmit}
                        alertConfig={alert}>
-            <Grid item sx={{mb: 3}}>
-                <CompanyText style={{pointer: 'default'}}/>
-            </Grid>
             {comp}
         </AuthContainer>
     </div>

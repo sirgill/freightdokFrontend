@@ -41,7 +41,7 @@ const regulateService = (config, callback, showTriggers = true) => {
         })
 }
 
-const getConfig = (uri, baseUrl, method, data = {}, headers = {}) => {
+const getConfig = ({uri, baseUrl, method, data = {}, headers = {}}) => {
     return {
         url: uri,
         baseURL: baseUrl,
@@ -56,21 +56,21 @@ const getConfig = (uri, baseUrl, method, data = {}, headers = {}) => {
 }
 
 export function requestGet({ uri, callback, baseUrl = getBaseUrl(), showTriggers }) {
-    return regulateService(getConfig(uri, baseUrl, 'GET'), callback, showTriggers)
+    return regulateService(getConfig({uri, baseUrl, method: 'GET'}), callback, showTriggers)
 }
 
 export function requestPut({ uri, body, callback, showTriggers, baseUrl = getBaseUrl() }) {
-    return regulateService(getConfig(uri, baseUrl, 'PUT', body), callback, showTriggers)
+    return regulateService(getConfig({uri, baseUrl, method: 'PUT', data: body}), callback, showTriggers)
 }
 
 export function requestDelete({ uri, body, callback, showTriggers, baseUrl = getBaseUrl() }) {
-    return regulateService(getConfig(uri, baseUrl, 'DELETE', body), callback, showTriggers)
+    return regulateService(getConfig({uri, baseUrl, method: 'DELETE', data: body}), callback, showTriggers)
 }
 
 export function requestPatch({ uri, body, callback, showTriggers, baseUrl = getBaseUrl() }) {
-    return regulateService(getConfig(uri, baseUrl, 'PATCH', body), callback, showTriggers)
+    return regulateService(getConfig({uri, baseUrl, method: 'PATCH', data: body}), callback, showTriggers)
 }
 
 export function requestPost({ uri, body, callback, showTriggers, baseUrl = getBaseUrl() }) {
-    return regulateService(getConfig(uri, baseUrl, 'POST', body), callback, showTriggers)
+    return regulateService(getConfig({uri, baseUrl, method: 'POST', data: body}), callback, showTriggers)
 }

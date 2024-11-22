@@ -8,3 +8,4 @@ export {default as Alert} from './Alert';
 export {default as Tooltip} from './Tooltip';
 export {default as UserMenu} from './UserMenu';
 export {default as LoadingButton} from './form/LoadingButton';
+export {default as FullScreenLoader} from './FullScreenLoader';

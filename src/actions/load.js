@@ -21,57 +21,39 @@ import {
   SELECT_LOAD,
   INVOICE_LOAD_FETCHED,
   MERGE_LOAD_DOCS,
-  RESET_INVOICE_GENERATED,
+  RESET_INVOICE_GENERATED, LOADS_FETCHING,
 } from "./types";
-import {requestDelete, requestGet, requestPatch} from "../utils/request";
+import {requestDelete, requestGet, requestPatch, requestPost} from "../utils/request";
 
 // import { proxy } from "../../package.json";
 
 export const SERVER_ADDRESS = "https://api.freightdok.io";
 // Get current users loads
-export const getLoads =
-  (page = 0, limit = 15, module = "") =>
-  async (dispatch) => {
-    try {
-      const {success, data} = await requestGet({uri:`/api/load/me?page=${
-            page + 1
-        }&limit=${limit}&module=${module}` });
-      if(success){
-        dispatch({
-          type: GET_LOADS,
-          payload: { loads: data, page, limit },
+export const getLoads = (page = 0, limit = 100, module = "", search='') => async (dispatch, getState) => {
+  dispatch({
+    type: LOADS_FETCHING,
+    payload: { isLoadsFetching: true },
+  });
+      try {
+        const { success, data } = await requestGet({
+          uri: `/api/load/me?page=${page + 1}&limit=${limit}&module=${module}&search=${search}`
         });
-      } else {
+        dispatch({
+          type: LOADS_FETCHING,
+          payload: { isLoadsFetching: false },
+        });
+        if (success) {
+          dispatch({
+            type: GET_LOADS,
+            payload: { loads: data, page, limit, loading: false },
+          });
+        } else {
           notification(data.message, 'error');
+        }
+      } catch (err) {
+        dispatch(setAlert(err.message, "error"));
       }
-    } catch (err) {
-      dispatch(setAlert(err.message, "error"));
-    }
-  };
-
-export const getInvoiceLoads =
-  (page = 0, limit = 5, search = "") =>
-  async (dispatch) => {
-    dispatch({
-      type: INVOICE_LOAD_FETCHED,
-      payload: { data: [], loading: true },
-    });
-
-    try {
-      const url = `/api/load/invoice_loads?page=${
-        page + 1
-      }&limit=${limit}&search=${search}`;
-      const response = await axios.get(url);
-      const { loads, total, totalPages } = response.data;
-      dispatch({
-        type: INVOICE_LOAD_FETCHED,
-        payload: { data: loads, page, limit, search, total, totalPages, loading: false },
-      });
-    } catch (err) {
-      dispatch(setAlert(err.message, "error"));
-    }
-  };
-
+    };
 export const deleteLoadDocument =
   (load_id, doc_type, doc_name) => async (dispatch) => {
     try {
@@ -119,29 +101,28 @@ export const generateInvoice = (load_id, data) => async (dispatch) => {
 };
 
 export const searchLoads = (page = 0, limit = 15, search = "", module = "") => async (dispatch) => {
-    try {
-      const url = `/api/load/me?page=${
-        page + 1
+  try {
+    const url = `/api/load/me?page=${page + 1
       }&limit=15&search=${search}&module=${module}`;
-      const res = await axios.get(url);
-      dispatch({
-        type: RETURNED_SEARCHED_LOADS,
-        payload: { data: res.data, page, limit, search },
-      });
-    } catch (err) {
-      dispatch(setAlert(err.message, "error"));
-    }
-  };
+    const res = await axios.get(url);
+    dispatch({
+      type: RETURNED_SEARCHED_LOADS,
+      payload: { data: res.data, page, limit, search },
+    });
+  } catch (err) {
+    dispatch(setAlert(err.message, "error"));
+  }
+};
 
 export const resetLoadsSearch =
   (listBarType = "") =>
-  async (dispatch, getState) => {
-    dispatch({ type: RESET_SEARCHED_LOADS });
-    const {
-      load: { page, rowsPerPage },
-    } = getState();
-    // dispatch(getLoads(+page, +rowsPerPage, listBarType));
-  };
+    async (dispatch, getState) => {
+      dispatch({ type: RESET_SEARCHED_LOADS });
+      const {
+        load: { page, rowsPerPage },
+      } = getState();
+      // dispatch(getLoads(+page, +rowsPerPage, listBarType));
+    };
 
 export const selectLoad = (input = null) => ({
   type: SELECT_LOAD,
@@ -170,56 +151,59 @@ export const addLoad = (formData, callback) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     };
-    const res = await axios.post("/api/load", formData, config);
+    const {data, success} = await requestPost({uri: '/api/load', body: formData})
+    if(success){
+      dispatch({
+        type: ADD_LOAD,
+        payload: data,
+      });
 
-    dispatch({
-      type: ADD_LOAD,
-      payload: res.data,
-    });
-
-    notification("Load Created")
-    if(callback){
-      callback(res.status === 200, res.data)
+      notification("Load Created")
+      if (callback) {
+        callback(success, data)
+      }
+    } else {
+      notification(data.message, 'error')
     }
   } catch (err) {
     dispatch(setAlert(err.message, "error"));
+    console.log(err)
   }
 };
 
 export const updateLoad = (formData, module = "", bucketFiles = {}, callback) => async (dispatch, getState) => {
-    try {
-      const form = new FormData();
-      for (let key of Object.keys(formData)) {
-        if (["rateConfirmation", "proofDelivery"].indexOf(key) < 0) {
-          const data = formData[key];
-          const isArray = Array.isArray(data);
-          const isNull = data === null;
-          let dataToSend = isArray && !isNull ? JSON.stringify(data) : data;
-          form.append(key, dataToSend);
-        }
+  try {
+    const form = new FormData();
+    for (let key of Object.keys(formData)) {
+      if (["rateConfirmation", "proofDelivery"].indexOf(key) < 0) {
+        const data = formData[key];
+        const isArray = Array.isArray(data);
+        const isNull = data === null;
+        let dataToSend = isArray && !isNull ? JSON.stringify(data) : data;
+        form.append(key, dataToSend);
       }
-      form.append('bucketFiles', JSON.stringify(bucketFiles))
-      for (let key of ["rateConfirmation", "proofDelivery"]) {
-        const files = formData[key];
-        if (files) for (let file of files) form.append(key, file);
-      }
+    }
+    form.append('bucketFiles', JSON.stringify(bucketFiles))
+    for (let key of ["rateConfirmation", "proofDelivery", "accessorialsFiles"]) {
+      const files = formData[key];
+      if (files) for (let file of files) form.append(key, file);
+    }
 
-      const {success, data} = await requestPatch({uri: "/api/load/modify", body: form})
-      if(success){
-        notification('Load Updated')
-      }
+    const { success, data } = await requestPatch({ uri: "/api/load/modify", body: form })
+    if (success) {
+      notification('Load Updated')
       const {
         load: {
-          search: { page, limit, query },
+          rowsPerPage, page
         },
       } = getState();
-      if (!query) dispatch(getLoads(0, 5, module));
-      else dispatch(searchLoads(page, limit, query));
-      callback(success, data)
-    } catch (err) {
-      notification(err.message, "error");
+      dispatch(getLoads(page, rowsPerPage, module));
     }
-  };
+    callback(success, data)
+  } catch (err) {
+    notification(err.message, "error");
+  }
+};
 
 export const downloadDocuments = (file_name) => {
   axios({
@@ -272,9 +256,9 @@ export const patchDrop = (load_id, drop) => async (dispatch) => {
 // Delete a load
 export const deleteLoad = (load_id, callback) => async (dispatch) => {
   try {
-    const {success, data} = await requestDelete({uri: '/api/load', body: { data: { load_id: load_id } }})
+    const { success, data } = await requestDelete({ uri: '/api/load', body: { data: { load_id: load_id } } })
     notification(data.message, success ? 'success' : 'error');
-    if(success){
+    if (success) {
       dispatch({
         type: DELETE_LOAD,
         payload: load_id,

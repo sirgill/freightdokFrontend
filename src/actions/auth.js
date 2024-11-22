@@ -15,10 +15,9 @@ import {
 } from './types';
 
 import setAuthToken from '../utils/setAuthToken';
-import { requestPost } from "../utils/request";
-import { notification } from "./alert";
+import {requestGet, requestPost} from "../utils/request";
 import {AUTH_USER} from "../config/requestEndpoints";
-import {ENHANCED_DASHBOARD} from "../components/client/routes";
+import {UserSettings} from "../components/Atoms/client";
 
 //Load user
 export const loadUser = () => async dispatch => {
@@ -27,10 +26,13 @@ export const loadUser = () => async dispatch => {
     }
 
     try {
-        const res = await axios.get(AUTH_USER);
+        const {data, success} = await requestGet({uri: AUTH_USER, showTriggers: true})
+        if(success){
+            UserSettings.setUserPermissions(data.userPermissions);
+        }
         dispatch({
             type: USER_LOADED,
-            payload: res.data
+            payload: data
         });
     } catch (err) {
         dispatch({
@@ -77,6 +79,8 @@ export const login = ({data}) => async dispatch => {
 
     try {
         setAuthToken(data.token)
+        UserSettings.setUserPermissions(data.userPermissions)
+        localStorage.setItem('supportsNewPermission', data?.supportsNewPermission || false)
 
         dispatch({
             type: LOGIN_SUCCESS,

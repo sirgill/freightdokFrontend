@@ -2,7 +2,8 @@ const development = {
   mailServerUrl: "http://localhost:9999/sendMail",
   goLangServerUrl: "http://localhost:8080",
   nodeServerUrl: "http://localhost:9999",
-  goLangMail: "http://localhost:8080/bookload"
+  goLangMail: "http://localhost:8080/bookload",
+  mainServerUrl: "http://localhost:5000"
 };
 
 const isProduction = () => process.env.NODE_ENV === "production"
@@ -26,14 +27,14 @@ export const getMainNodeServerUrl = () => {
   if (isProduction()) {
     return production.nodeServerUrl;
   }
-  return "http://localhost:5000";
+  return development.mainServerUrl;
 }
 
 const getBaseUrl = () => {
   if (isProduction()) {
     return production.nodeServerUrl;
   }
-  return "http://localhost:5000";
+  return development.mainServerUrl;
 };
 
 const getBabylonianServerUrl = () => {

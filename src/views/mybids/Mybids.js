@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import EnhancedTable from "../../components/Atoms/table/Table"
-import {useHistory, useRouteMatch} from "react-router"
+import {useHistory, useRouteMatch} from "react-router-dom"
 import {Route, Switch} from "react-router-dom";
 import BidDetails from "./bids/BidDetail";
 import NewTrulLoadDetails from "../openBoard/NewTrulLoadDetails";

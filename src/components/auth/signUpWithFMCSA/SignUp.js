@@ -7,6 +7,7 @@ import {FMCSA_VERIFICATION_LINK, LOGIN_LINK} from "../../constants";
 import {notification} from "../../../actions/alert";
 import {getCheckStatusIcon, verticalAlignStyle} from "../../../utils/utils";
 import {LoadingButton} from "../../Atoms";
+import '../authcss/LoginRegister.css';
 
 
 function ErrorComponent () {
@@ -44,7 +45,7 @@ const SignUp = (props) => {
                 notification('Unable to verify, Please try later.', 'error')
             }
         } catch (e) {
-            console.log(e.message)
+            console.error(e.message)
             notification(e.message, 'error')
         } finally {
             setLoading(false)
@@ -84,9 +85,7 @@ const SignUp = (props) => {
             {!isAllowedToOperate && <Typography className="forgot-password text-center">
                 <Link to={'/signup/support'}>Contact Support</Link>
             </Typography>}
-                <p className="forgot-password text-center">
-                   <Link to={LOGIN_LINK}>Sign In</Link>
-                </p>
+            <Typography component={Link} to={LOGIN_LINK} sx={{display: 'inline' }} align='center'>Sign In</Typography>
         </div>
     </section>
 

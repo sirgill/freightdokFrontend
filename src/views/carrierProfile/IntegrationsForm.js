@@ -6,7 +6,7 @@ import Modal from "../../components/Atoms/Modal";
 import {integrationNameMap, modalConfig} from "./config";
 import {getUserDetail, isEmailValid, triggerCustomEvent} from "../../utils/utils";
 import useMutation from "../../hooks/useMutation";
-import {AUTH_USER} from "../../config/requestEndpoints";
+import {AUTH_USER, GET_SECRETS_MANAGER} from "../../config/requestEndpoints";
 import {PRIMARY_BLUE} from "../../components/layout/ui/Theme";
 import {Alert, Input, Password} from "../../components/Atoms";
 import {notification} from "../../actions/alert";
@@ -46,7 +46,7 @@ const IntegrationsForm = (props) => {
     const [authForm, setAuthForm] = useState({email: getUserDetail().user.email, password: ''});
     const [errors, setErrors] = useState({});
     const {loading: loadingSignIn, mutation: verifyUserAsync} = useMutation(AUTH_USER, null, true)
-    const {loading: isSaving, mutation: updateMutation} = useMutation('/api/carrierProfile/secret-manager?update=true', null, true)
+    const {loading: isSaving, mutation: updateMutation} = useMutation(GET_SECRETS_MANAGER, null, true, {queryParams: {update: true}})
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -101,7 +101,7 @@ const IntegrationsForm = (props) => {
         if (isEmailValid(email)) {
             verifyUserAsync(authForm, null)
                 .then(res => {
-                    if (res.token) {
+                    if (res.success) {
                         setIsAuthorised(true);
                         setForm(row)
                     }

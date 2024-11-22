@@ -1,14 +1,12 @@
-import React, {Fragment, useEffect, useRef, useState} from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import _ from 'lodash'
 import {
   Divider,
   Grid,
   Stack,
   Typography,
-  TextField,
   Box,
   MenuItem,
-  Button,
   IconButton,
   Select,
   Modal,
@@ -17,25 +15,27 @@ import {
 import { ArrowForwardIos as ArrowForwardIosIcon, Close as CloseIcon, Edit as EditIcon, Done as DoneIcon } from '@mui/icons-material'
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@mui/material/InputLabel";
+import {useHistory} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addLoad, updateLoad } from "../../actions/load";
 import moment from "moment";
-import { getDrivers } from "../../actions/driver";
+import {TimePicker} from '@mui/x-date-pickers/TimePicker';
+import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker'
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import FilledInput from '@mui/material/FilledInput';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import "./style.css";
+import { green } from "@mui/material/colors";
 import { FileCopyOutlined } from "@mui/icons-material";
+import {AdapterMoment} from '@mui/x-date-pickers/AdapterMoment';
+import { getDrivers } from "../../actions/driver";
 import { changeObjectKey } from "../../utils/helper";
-import { useStyles } from "./styles";
+import { addLoad, updateLoad } from "../../actions/load";
 import InputField from "../Atoms/form/InputField";
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import TimePicker from '@mui/lab/TimePicker';
-import DatePicker from '@mui/lab/DatePicker';
+import useFetch from "../../hooks/useFetch";
 import { blue } from "../layout/ui/Theme";
-import { getCheckStatusIcon } from "../../utils/utils";
-import {LOAD_STATUSES} from "../constants";
-import {green} from "@mui/material/colors";
+import LoadDetailsUploadComponent from "./components/LoadDetailsUploadComponent";
+import {getRoleNameString} from "../client/constants";
+import { useStyles } from "./styles";
+import "./style.css";
 
 
 const formInitialState = {
@@ -61,15 +61,28 @@ const MenuProps = {
     },
   },
 };
+const DATE_PICKER_SLOT_PROPS = {
+  textField: {
+    helperText: 'DD/MM/YYYY hh:mm AM/PM',
+    size: 'small',
+    fullWidth: true
+  },
+},
+    TIME_PICKET_SLOT_PROPS = {
+      textField: {
+        size: 'small',
+        fullWidth: true
+      }
+    }
 
 const TextPlaceHolder = ({ value }) => (value ? value : "--");
 
 const LoadDetailModal = ({
   modalEdit,
   open,
-  handleClose,
+  handleClose: onModalClose,
   listBarType,
-  load,
+  load, canUpdate
 }) => {
   let {
     _id,
@@ -92,22 +105,27 @@ const LoadDetailModal = ({
   const state = useSelector((state) => state);
   const [edit, setEdit] = React.useState(true);
   const [form, setForm] = React.useState({ ...formInitialState });
+  const {data: {data: LoadStatuses = []} = {}} = useFetch('/api/loadStatuses')
   const [isProcessingAsyncRequest, setIsProcessingAsyncRequest] = useState(false);
   const rateConfirmationRef = useRef();
-  const proofDeliveryRef = useRef(),
+  const proofDeliveryRef = useRef();
+  const accessorialsRef = useRef(),
+      history = useHistory(),
     SelectElement = edit ? OutlinedInput : FilledInput;
-  const assignedToOptions = state.driver.drivers.map(({ user = {} }) => {
-    const { name = '', _id = '' } = user || '';
+  const {assignees = [] } = state.driver || {};
+  const assignedToOptions = assignees.map((item) => {
+    const { _id, firstName, lastName, role, user = {} } = item || {},
+        {name = '', role: assigneeRole, _id: assigneeId} = user || {};
     return {
-      name, _id
+      name, _id: assigneeId || _id, firstName, lastName, role: getRoleNameString(assigneeRole || role)
     }
-  }).filter((driver) => !!driver?._id) || [];
+  }) || [];
 
   useEffect(() => {
     setupDrivers();
     setForm({
       status,
-      assignedTo: user,
+      assignedTo: user?._id,
       accessorials,
       trailorNumber,
       pickup,
@@ -118,22 +136,7 @@ const LoadDetailModal = ({
     });
     resetFileInputs();
   }, []);
-  useEffect(() => {
-    const drivers = state.driver.drivers;
-    if (drivers.length > 0) {
-      // console.log(user._id, state.driver.drivers);
-      // setForm({ ...form, assignedTo: user });
-      // for (let driver of drivers) {
-      //     if (driver.loads.length > 0) {
-      //         for (let load of driver.loads) {
-      //             if (load._id === _id) {
-      //                 setForm({ ...form, assignedTo: user._id });
-      //             }
-      //         }
-      //     }
-      // }
-    }
-  }, [state.driver.drivers]);
+
   useEffect(() => {
     const error = state.load.error;
     if (!error.msg) {
@@ -153,9 +156,13 @@ const LoadDetailModal = ({
     dispatch(getDrivers());
   };
 
+  const handleClose = () => {
+    onModalClose({history});
+  }
+
   const afterSubmit = (isSuccess) => {
     setIsProcessingAsyncRequest(false);
-    if(isSuccess) handleClose();
+    if (isSuccess) handleClose();
   }
 
   const handleSubmit = (event) => {
@@ -172,12 +179,12 @@ const LoadDetailModal = ({
     setForm({ ...form, [name]: value });
   };
 
-  const handlePickDropChange = (  { target: { value } },  keyToUpdate,  childKey) => {
+  const handlePickDropChange = ({ target: { value } }, keyToUpdate, childKey) => {
     if (keyToUpdate === "pickup") {
-        setForm({...form, pickup: [{...form.pickup[0], [childKey]: value}]});
+      setForm({ ...form, pickup: [{ ...form.pickup[0], [childKey]: value }] });
     }
     else if (keyToUpdate === "drop") {
-        setForm({...form, drop: [{...form.drop[0], [childKey]: value}]});
+      setForm({ ...form, drop: [{ ...form.drop[0], [childKey]: value }] });
     }
   };
 
@@ -227,18 +234,23 @@ const LoadDetailModal = ({
 
   if (bucketFiles.length) {
     const alpha = [...bucketFiles];
-    bucketFiles = {};
-    alpha.forEach((item = {}) => {
+    bucketFiles = {
+      'proofDelivery': [],
+      'rateConfirmation': [],
+      'accessorialsFiles': []
+    };
+    alpha.forEach((item = {}, idx) => {
       const { fileType = "", fileLocation = "" } = item;
-      Object.assign(bucketFiles, { [fileType]: fileLocation });
+      bucketFiles[fileType].push(fileLocation)
+
     });
   } else bucketFiles = {};
 
-  const { rateConfirmation = "", proofDelivery = "" } = bucketFiles || {};
+  const { rateConfirmation = [], proofDelivery = [], accessorialsFiles = [] } = bucketFiles || {};
 
   const StaticDataShow = ({ heading, values = [], spacing = 2, sxObject = {} }) => {
-    return <Stack spacing={spacing} sx={{ ...sxObject }}>
-      <Stack><Typography sx={{ fontWeight: 600, fontSize: 18, textAlign: 'center' }}>{heading}</Typography></Stack>
+    return <Stack spacing={spacing} sx={{ ...sxObject }} className='staticInfo'>
+      <Stack><Typography sx={{ fontWeight: 600, fontSize: 18, textAlign: 'center', pt: 3 }}>{heading}</Typography></Stack>
       {values.map(value => <Stack>
         <TextPlaceHolder value={value} />
       </Stack>)}
@@ -250,8 +262,10 @@ const LoadDetailModal = ({
         open={open}
         onClose={handleClose}
         aria-labelledby="server-modal-title"
+
       >
-        <div className={classes.paper}>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <div style={{ width: '90%' }} className={classes.paper}>
           <Stack direction={'row'} justifyContent={'space-between'} sx={{ mb: 2 }}>
             {/*<DeleteIcon*/}
             {/*    onClick={(e) => deleteLoad(_id, e)}*/}
@@ -271,24 +285,24 @@ const LoadDetailModal = ({
                 <Grid container className={classes.rootLoadDetailModal} spacing={2} sx={{ pl: 3, pr: 3 }}>
                   <Grid item xs={12} sm={4}>
                     <FormControl sx={{ m: 1 }} size="small" fullWidth>
-                    <InputLabel id="multiple-name">Status</InputLabel>
+                      <InputLabel id="multiple-name">Status</InputLabel>
                       <Select
-                          id="multiple-name"
-                          name="status"
-                          value={form.status}
-                          onChange={({ target: { value } }) => setForm({ ...form, status: value, })}
-                          input={<SelectElement size='small' label="" notched={false} sx={{  }} />}
-                          MenuProps={MenuProps}
-                          disabled={!edit || state.auth.user.role === "driver"}
+                        id="multiple-name"
+                        name="status"
+                        value={form.status}
+                        onChange={({ target: { value } }) => setForm({ ...form, status: value, })}
+                        input={<SelectElement size='small' label="" notched={false} sx={{}} />}
+                        MenuProps={MenuProps}
+                        disabled={!edit || state.auth.user.role === "driver"}
                       >
-                        {LOAD_STATUSES.map((name) => (
-                            <MenuItem
-                                key={name.id}
-                                value={name.id}
-                                // style={getStyles(name, personName, theme)}
-                            >
-                              {name.label}
-                            </MenuItem>
+                        {(LoadStatuses || []).map((name) => (
+                          <MenuItem
+                            key={name.id}
+                            value={name.id}
+                          // style={getStyles(name, personName, theme)}
+                          >
+                            {name.label}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -297,22 +311,22 @@ const LoadDetailModal = ({
                     <FormControl sx={{ m: 1 }} size="small" fullWidth>
                       <InputLabel id="multiple-name">Assigned</InputLabel>
                       <Select
-                          id="multiple-name"
-                          name="assignedTo"
-                          disabled={!edit || state.auth.user.role === "driver"}
-                          value={form.assignedTo}
-                          onChange={({ target: { value } }) => setForm({ ...form, assignedTo: value, })}
-                          input={<SelectElement size='small' label="" notched={false} sx={{  }} />}
-                          MenuProps={MenuProps}
+                        id="multiple-name"
+                        name="assignedTo"
+                        disabled={!edit || state.auth.user.role === "driver"}
+                        value={form.assignedTo}
+                        onChange={({ target: { value } }) => setForm({ ...form, assignedTo: value, })}
+                        input={<SelectElement size='small' label="" notched={false} sx={{}} />}
+                        MenuProps={MenuProps}
                       >
-                        {assignedToOptions.map((name) => (
-                            <MenuItem
-                                key={name.name}
-                                value={name._id}
-                                // style={getStyles(name, personName, theme)}
-                            >
-                              {name.name}
-                            </MenuItem>
+                        {assignedToOptions.map((assignee) => (
+                          <MenuItem
+                            key={assignee._id}
+                            value={assignee._id}
+                          // style={getStyles(name, personName, theme)}
+                          >
+                            {`${assignee.firstName} ${assignee.lastName} (${assignee.role || '--'})`}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -336,6 +350,7 @@ const LoadDetailModal = ({
                           { id: 'Lumper-by-Broker', label: 'Lumper by Broker' },
                           { id: 'Lumper-by-Carrier', label: 'Lumper by Carrier' },
                           { id: 'Layover', label: 'Layover' },
+                          { id: 'scale-ticket', label: 'Scale Ticket' },
                         ].map((name) => (
                           <MenuItem
                             key={name.id}
@@ -359,25 +374,25 @@ const LoadDetailModal = ({
             <Grid container>
               <Grid item xs={2} sx={{ display: 'flex' }}>
                 <Box sx={{ alignItems: 'end', display: 'flex' }}>
-                  {edit ? <Box sx={{position: 'relative'}}>
-                        <IconButton onClick={handleSubmit} disabled={isProcessingAsyncRequest}>
-                          <DoneIcon
-                              fontSize="large"
-                              color={isProcessingAsyncRequest ? "disabled" : 'primary'}
-                          />
-                        </IconButton>
-                        {isProcessingAsyncRequest && <CircularProgress
-                            size={65}
-                            sx={{
-                              color: green[500],
-                              position: 'absolute',
-                              top: -6,
-                              left: -6,
-                              zIndex: 1,
-                            }}
-                        />}
-                      </Box>
-                    : <IconButton onClick={() => setEdit(true)} title='Edit' disabled={isProcessingAsyncRequest}>
+                  {edit ? <Box sx={{ position: 'relative' }}>
+                    <IconButton onClick={handleSubmit} disabled={isProcessingAsyncRequest}>
+                      <DoneIcon
+                        fontSize="large"
+                        color={isProcessingAsyncRequest ? "disabled" : 'primary'}
+                      />
+                    </IconButton>
+                    {isProcessingAsyncRequest && <CircularProgress
+                      size={65}
+                      sx={{
+                        color: green[500],
+                        position: 'absolute',
+                        top: -6,
+                        left: -6,
+                        zIndex: 1,
+                      }}
+                    />}
+                  </Box>
+                    : <IconButton onClick={() => setEdit(true)} title='Edit' disabled={isProcessingAsyncRequest || !canUpdate}>
                       <EditIcon
                         fontSize="large"
                         color={isProcessingAsyncRequest ? "disabled" : 'primary'}
@@ -388,7 +403,7 @@ const LoadDetailModal = ({
                       fontSize="large"
                       color={isProcessingAsyncRequest ? "disabled" : 'primary'}
                     />
-                  </IconButton> : <IconButton onClick={createCopy} title='Create Copy' disabled={isProcessingAsyncRequest}>
+                  </IconButton> : <IconButton onClick={createCopy} title='Create Copy' disabled={isProcessingAsyncRequest || !canUpdate}>
                     <FileCopyOutlined
                       fontSize="large"
                       color={isProcessingAsyncRequest ? "disabled" : 'primary'}
@@ -497,8 +512,8 @@ const LoadDetailModal = ({
                             ) : <StaticDataShow
                               heading={'Pickup'}
                               values={[
-                                form.pickup[0] ? form.pickup[0].pickupAddress : "",
                                 pickup && pickup[0] ? pickup[0].shipperName : "",
+                                form.pickup[0] ? form.pickup[0].pickupAddress : "",
                                 `${pickup && pickup[0] ? pickup[0].pickupCity : ""}, ${pickup && pickup[0] ? pickup[0].pickupState : ""}, ${pickup && pickup[0] ? pickup[0].pickupZip : ""}`,
                               ]}
                             />}
@@ -508,57 +523,66 @@ const LoadDetailModal = ({
                               <Grid item xs={12}>
                                 <Typography sx={{ fontWeight: 600, fontSize: 18, textAlign: 'center' }}>Pickup Time</Typography>
                               </Grid>
-                              <Grid item xs={6}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                  <DatePicker
-                                    value={
-                                      form.pickup[0] ? form.pickup[0].pickupDate : ""
-                                    }
-                                    onChange={(date) =>
-                                      handleDateChange(date, "pickup")
-                                    }
-                                    renderInput={(params) => <TextField {...params} variant='standard' />}
+                              <Grid item xs={12}>
+                                <LocalizationProvider dateAdapter={AdapterMoment}>
+                                  <DateTimePicker
+                                      value={moment(form.pickup[0] ? form.pickup[0].pickupDate : "") || new Date()}
+                                      onChange={(date) => handleDateChange(date.toISOString(), "pickup")}
+                                      slotProps={DATE_PICKER_SLOT_PROPS}
+                                      label='Pickup Date'
                                   />
                                 </LocalizationProvider>
+                                {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                                {/*  <DatePicker*/}
+                                {/*    value={*/}
+                                {/*      form.pickup[0] ? form.pickup[0].pickupDate : ""*/}
+                                {/*    }*/}
+                                {/*    onChange={(date) =>*/}
+                                {/*      handleDateChange(date, "pickup")*/}
+                                {/*    }*/}
+                                {/*    renderInput={(params) => <TextField {...params} variant='standard' />}*/}
+                                {/*  />*/}
+                                {/*</LocalizationProvider>*/}
                               </Grid>
+                              {/*<Grid item xs={6}>*/}
+                              {/*    <TimePicker*/}
+                              {/*      value={moment(form.pickup[0] ? form.pickup[0].pickupDate : "")}*/}
+                              {/*      onChange={(date) =>*/}
+                              {/*        handleDateChange(date, "pickup")*/}
+                              {/*      }*/}
+                              {/*      label='Pickup Time'*/}
+                              {/*      slotProps={TIME_PICKET_SLOT_PROPS}*/}
+                              {/*    />*/}
+                              {/*</Grid>*/}
                               <Grid item xs={6}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                  <TimePicker
-                                    value={
-                                      form.pickup[0] ? form.pickup[0].pickupDate : ""
-                                    }
-                                    onChange={(date) =>
-                                      handleDateChange(date, "pickup")
-                                    }
-                                    renderInput={(params) => <TextField {...params} variant='standard' />}
-                                  />
-                                </LocalizationProvider>
-                              </Grid>
-                              <Grid item xs={6}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                  <TimePicker
+                                {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                                {/*  <TimePicker*/}
+                                {/*    label='In Time'*/}
+                                {/*    value={form.pickup[0] ? form.pickup[0].in_time : ""}*/}
+                                {/*    onChange={(date) =>*/}
+                                {/*      handleInOutTime(date, "pickup", "in_time")*/}
+                                {/*    }*/}
+                                {/*    renderInput={(params) => <TextField {...params} variant='standard' />}*/}
+                                {/*  />*/}
+                                {/*</LocalizationProvider>*/}
+                                <TimePicker
                                     label='In Time'
-                                    value={form.pickup[0] ? form.pickup[0].in_time : ""}
+                                    value={moment( form.pickup[0] ? form.pickup[0].in_time : "")}
                                     onChange={(date) =>
-                                      handleInOutTime(date, "pickup", "in_time")
+                                        handleInOutTime(date, "pickup", "in_time")
                                     }
-                                    renderInput={(params) => <TextField {...params} variant='standard' />}
-                                  />
-                                </LocalizationProvider>
+                                    slotProps={TIME_PICKET_SLOT_PROPS}
+                                />
                               </Grid>
                               <Grid item xs={6}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
                                   <TimePicker
                                     label='Out Time'
-                                    value={
-                                      form.pickup[0] ? form.pickup[0].out_time : ""
-                                    }
+                                    value={moment(form.pickup[0] ? form.pickup[0].out_time : "")}
                                     onChange={(date) =>
                                       handleInOutTime(date, "pickup", "out_time")
                                     }
-                                    renderInput={(params) => <TextField {...params} variant='standard' />}
+                                    slotProps={TIME_PICKET_SLOT_PROPS}
                                   />
-                                </LocalizationProvider>
                               </Grid>
                             </Grid>
                               : <Fragment>
@@ -578,7 +602,7 @@ const LoadDetailModal = ({
                                   <Stack>
                                     {pickup && pickup[0] && pickup[0].in_time ? (
                                       <Stack sx={{ textAlign: 'left' }}>
-                                        <Typography variant='inherit' sx={{ color: '#8898AA', fontSize: 10 }}>In Time: </Typography>
+                                        <Typography variant='subtitle2' sx={{ color: '#595959' }}>In Time: </Typography>
                                         <Box>{moment(pickup[0].in_time).format("h:mm A")}</Box>
                                       </Stack>
                                     ) : (
@@ -588,7 +612,7 @@ const LoadDetailModal = ({
                                   <Stack>
                                     {pickup && pickup[0] && pickup[0].out_time ? (
                                       <Stack sx={{ textAlign: 'left' }}>
-                                        <Typography variant='inherit' sx={{ color: '#8898AA', fontSize: 10 }}>Out Time:</Typography>
+                                        <Typography variant='subtitle2' sx={{ color: '#595959' }}>Out Time:</Typography>
                                         <Box>{moment(pickup[0].out_time).format("h:mm A")}</Box>
                                       </Stack>
                                     ) : (
@@ -605,8 +629,8 @@ const LoadDetailModal = ({
                                   <Typography fontWeight={700}>PO#</Typography>
                                   {edit ?
                                     <InputField
-                                        value={form && form.pickup[0] ? form.pickup[0].pickupPo : ""}
-                                        onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupPo')}
+                                      value={form && form.pickup[0] ? form.pickup[0].pickupPo : ""}
+                                      onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupPo')}
                                     />
                                     : <Typography>{pickup && pickup[0] ? pickup[0].pickupPo : ""}</Typography>}
                                 </Stack>
@@ -614,8 +638,8 @@ const LoadDetailModal = ({
                                   <Typography fontWeight={700}>Reference#</Typography>
                                   {edit ?
                                     <InputField
-                                        value={pickup && form.pickup[0] ? form.pickup[0].pickupReference : ""}
-                                        onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupReference')}
+                                      value={pickup && form.pickup[0] ? form.pickup[0].pickupReference : ""}
+                                      onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupReference')}
                                     />
                                     : <Typography>{pickup && pickup[0] ? pickup[0].pickupReference : ""}</Typography>}
                                 </Stack>
@@ -623,8 +647,8 @@ const LoadDetailModal = ({
                                   <Typography fontWeight={700}>Delivery#</Typography>
                                   {edit ?
                                     <InputField
-                                        value={pickup && form.pickup[0] ? form.pickup[0].pickupDeliverNumber : ""}
-                                        onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupDeliverNumber')}
+                                      value={pickup && form.pickup[0] ? form.pickup[0].pickupDeliverNumber : ""}
+                                      onChange={(e) => handlePickDropChange(e, 'pickup', 'pickupDeliverNumber')}
                                     />
                                     : <Typography>{pickup && pickup[0] ? pickup[0].pickupDeliverNumber : ""}</Typography>}
                                 </Stack>
@@ -729,47 +753,66 @@ const LoadDetailModal = ({
                             <Grid item xs={12}>
                               <Typography sx={{ fontWeight: 600, fontSize: 18, textAlign: 'center' }}>Drop Time</Typography>
                             </Grid>
-                            <Grid item xs={6}>
-                              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                  value={form.drop[0] ? form.drop[0].dropDate : ""}
-                                  onChange={(date) => handleDateChange(date, "drop")}
-                                  renderInput={(params) => <TextField {...params} variant='standard' />}
-                                />
-                              </LocalizationProvider>
+                            <Grid item xs={12}>
+                              <DateTimePicker
+                                  value={moment(form.drop[0] ? form.drop[0].dropDate : "") || new Date()}
+                                  onChange={(date) => handleDateChange(date.toISOString(), "drop")}
+                                  slotProps={DATE_PICKER_SLOT_PROPS}
+                                  label='Drop Date'
+                              />
+                              {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                              {/*  <DatePicker*/}
+                              {/*    value={form.drop[0] ? form.drop[0].dropDate : ""}*/}
+                              {/*    onChange={(date) => handleDateChange(date, "drop")}*/}
+                              {/*    renderInput={(params) => <TextField {...params} variant='standard' />}*/}
+                              {/*  />*/}
+                              {/*</LocalizationProvider>*/}
                             </Grid>
+                            {/*<Grid item xs={6}>*/}
+                            {/*    <TimePicker*/}
+                            {/*        label='Drop Time'*/}
+                            {/*      value={moment(form.drop[0] ? form.drop[0].dropDate : "")}*/}
+                            {/*      onChange={(date) => handleDateChange(date, "drop")}*/}
+                            {/*      slotProps={TIME_PICKET_SLOT_PROPS}*/}
+                            {/*    />*/}
+                            {/*</Grid>*/}
                             <Grid item xs={6}>
-                              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker
-                                  value={form.drop[0] ? form.drop[0].dropDate : ""}
-                                  onChange={(date) => handleDateChange(date, "drop")}
-                                  renderInput={(params) => <TextField {...params} variant='standard' />}
-                                />
-                              </LocalizationProvider>
-                            </Grid>
-                            <Grid item xs={6}>
-                              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker
+                              <TimePicker
                                   label='In Time'
-                                  value={form.drop[0] ? form.drop[0].in_time : ""}
-                                  onChange={(date) =>
-                                    handleInOutTime(date, "drop", "in_time")
-                                  }
-                                  renderInput={(params) => <TextField {...params} variant='standard' />}
-                                />
-                              </LocalizationProvider>
+                                  value={moment(form.drop[0] ? form.drop[0].in_time : "") || new Date()}
+                                  onChange={(date) => handleInOutTime(date, "drop", "in_time")}
+                                  slotProps={TIME_PICKET_SLOT_PROPS}
+                              />
+                              {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                              {/*  <TimePicker*/}
+                              {/*    label='In Time'*/}
+                              {/*    value={form.drop[0] ? form.drop[0].in_time : ""}*/}
+                              {/*    onChange={(date) =>*/}
+                              {/*      handleInOutTime(date, "drop", "in_time")*/}
+                              {/*    }*/}
+                              {/*    renderInput={(params) => <TextField {...params} variant='standard' />}*/}
+                              {/*  />*/}
+                              {/*</LocalizationProvider>*/}
                             </Grid>
                             <Grid item xs={6}>
-                              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker
+                              <TimePicker
                                   label='Out Time'
-                                  value={form.drop[0] ? form.drop[0].out_time : ""}
+                                  value={moment(form.drop[0] ? form.drop[0].out_time : "")}
                                   onChange={(date) =>
-                                    handleInOutTime(date, "drop", "out_time")
+                                      handleInOutTime(date, "drop", "out_time")
                                   }
-                                  renderInput={(params) => <TextField {...params} variant='standard' />}
-                                />
-                              </LocalizationProvider>
+                                  slotProps={TIME_PICKET_SLOT_PROPS}
+                              />
+                              {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                              {/*  <TimePicker*/}
+                              {/*    label='Out Time'*/}
+                              {/*    value={form.drop[0] ? form.drop[0].out_time : ""}*/}
+                              {/*    onChange={(date) =>*/}
+                              {/*      handleInOutTime(date, "drop", "out_time")*/}
+                              {/*    }*/}
+                              {/*    renderInput={(params) => <TextField {...params} variant='standard' />}*/}
+                              {/*  />*/}
+                              {/*</LocalizationProvider>*/}
                             </Grid>
                           </Grid> :
                             <Fragment>
@@ -789,7 +832,7 @@ const LoadDetailModal = ({
                                 <Stack>
                                   {drop && drop[0] && drop[0].in_time ? (
                                     <Stack sx={{ textAlign: 'left' }}>
-                                      <Typography variant='inherit' sx={{ color: '#8898AA', fontSize: 10 }}>In Time: </Typography>
+                                      <Typography variant='subtitle2' sx={{ color: '#595959' }}>In Time: </Typography>
                                       <Box>{moment(drop[0].in_time).format("h:mm A")}</Box>
                                     </Stack>
                                   ) : (
@@ -799,7 +842,7 @@ const LoadDetailModal = ({
                                 <Stack>
                                   {drop && drop[0] && drop[0].out_time ? (
                                     <Stack sx={{ textAlign: 'left' }}>
-                                      <Typography variant='inherit' sx={{ color: '#8898AA', fontSize: 10 }}>Out Time: </Typography>
+                                      <Typography variant='subtitle2' sx={{ color: '#595959' }}>Out Time: </Typography>
                                       <Box>{moment(drop[0].out_time).format("h:mm A")}</Box>
                                     </Stack>
                                   ) : (
@@ -815,7 +858,7 @@ const LoadDetailModal = ({
                               <Typography fontWeight={700}>PO#</Typography>
                               {edit ?
                                 <InputField
-                                    dropPo='dropPo'
+                                  dropPo='dropPo'
                                   value={form && form.drop[0] ? form.drop[0].dropPo : ""}
                                   onChange={(e) => handlePickDropChange(e, 'drop', 'dropPo')}
                                 />
@@ -865,100 +908,20 @@ const LoadDetailModal = ({
                 </Grid>
               </Grid>
               <Grid item xs={2} sx={{ display: 'flex', alignItems: 'end', justifyContent: 'flex-end' }}>
-                <Stack spacing={2} sx={{ alignItems: 'end' }}>
-                  <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
-                    {rateConfirmation ? (
-                      <span>
-                        <a href={rateConfirmation} target="_blank">
-                          Rate Con
-                        </a>
-                      </span>
-                    ) : (
-                      <span>Rate Con</span>
-                    )}
-                    <span>
-                      {edit ? <Fragment>
-                        <label htmlFor="contained-button-file1">
-                          <input
-                            style={{ display: 'none' }}
-                            type="file"
-                            multiple
-                            name="rateConfirmation"
-                            disabled={!edit || state.auth.user.role === "driver"}
-                            onChange={handleFileChange}
-                            ref={rateConfirmationRef}
-                            id="contained-button-file1"
-                          />
-                          <Button variant="outlined" component="span" size='small'>
-                            Attach
-                          </Button>
-                        </label>
-                      </Fragment>
-                        : getCheckStatusIcon(!!rateConfirmation)}
-                    </span>
-                  </Stack>
-                  <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
-                    {proofDelivery ? (
-                      <span>
-                        <a href={proofDelivery} target="_blank">
-                          POD
-                        </a>
-                      </span>
-                    ) : (
-                      <span>POD</span>
-                    )}
-                    <span>
-                      {edit ?
-                        <label htmlFor="contained-button-file2">
-                          <input
-                            style={{ display: 'none' }}
-                            type="file"
-                            multiple
-                            name="proofDelivery"
-                            disabled={!edit}
-                            onChange={handleFileChange}
-                            ref={proofDeliveryRef}
-                            id="contained-button-file2"
-                          />
-                          <Button variant="outlined" component="span" size='small'>
-                            Attach
-                          </Button>
-                        </label>
-                        : getCheckStatusIcon(!!proofDelivery)}
-                    </span>
-                  </Stack>
-                  <Stack style={{ margin: 0 }} direction={'row'} spacing={2}>
-                    {accessorials.length ? (
-                      <span>
-                        <a href={"#"} target="_blank">
-                          Accessorials
-                        </a>
-                      </span>
-                    ) : (
-                      <span>Accessorials</span>
-                    )}
-                    <span>
-                      {edit ? <Fragment>
-                        <label htmlFor="contained-button-file3">
-                          <input
-                            style={{ display: 'none' }}
-                            type="file"
-                            multiple
-                            name="accessorials"
-                            disabled={!edit || state.auth.user.role === "driver"}
-                            onChange={handleFileChange}
-                            ref={rateConfirmationRef}
-                            id="contained-button-file3"
-                          />
-                          <Button variant="outlined" component="span" size='small'>
-                            Attach
-                          </Button>
-                        </label>
-                      </Fragment>
-                        : getCheckStatusIcon(!!accessorials?.length)}
-                    </span>
-                  </Stack>
-                </Stack>
+                <LoadDetailsUploadComponent
+                    edit={edit}
+                    rateConfirmation = {rateConfirmation}
+                    proofDelivery = {proofDelivery}
+                    accessorialsFiles = {accessorialsFiles}
+                    handleFileChange={handleFileChange}
+                    rateConfirmationRef={rateConfirmationRef}
+                    proofDeliveryRef={proofDeliveryRef}
+                    accessorialsRef={accessorialsRef}
+                    state={state}
+                    rateConFile={form.rateConfirmation}
+                    podFile={form.proofDelivery}
+                    formAccessorialsFiles={form.accessorialsFiles}
+                />
               </Grid>
             </Grid>
             {/*******************NEW Grid END***********************************/}
@@ -974,185 +937,7 @@ const LoadDetailModal = ({
             >
               <Grid item xs={1}></Grid>
               <Grid item xs={4} justifyContent={'center'} sx={{ textAlign: 'center' }}>
-                {/*<Typography item sx={{fontWeight: 600, fontSize:18, textAlign: 'center'}}>Pickup</Typography>*/}
-                {/*<p>*/}
-                {/*  {edit && state.auth.user.role !== "driver" ? (*/}
-                {/*    <InputField*/}
-                {/*      id="outlined-basic"*/}
-                {/*      variant="outlined"*/}
-                {/*      placeholder="Address"*/}
-                {/*      value={form.pickup[0] ? form.pickup[0].pickupAddress : ""}*/}
-                {/*      onChange={(event) =>*/}
-                {/*        handlePickDropChange(event, "pickup", "pickupAddress")*/}
-                {/*      }*/}
-                {/*    />*/}
-                {/*  ) : (*/}
-                {/*    <TextPlaceHolder*/}
-                {/*      value={pickup && pickup[0] ? pickup[0].pickupAddress : ""}*/}
-                {/*    />*/}
-                {/*  )}*/}
-                {/*</p>*/}
-                {/*<p>*/}
-                {/*  {edit && state.auth.user.role !== "driver" ? (*/}
-                {/*    <Grid*/}
-                {/*      container*/}
-                {/*      spacing={2}*/}
-                {/*      className={classes.rootLoadDetailModal}*/}
-                {/*    >*/}
-                {/*      <Grid item xs={4}>*/}
-                {/*        <InputField*/}
-                {/*          id="outlined-basic"*/}
-                {/*          variant="outlined"*/}
-                {/*          placeholder="City"*/}
-                {/*          value={*/}
-                {/*            form.pickup[0] ? form.pickup[0].pickupCity : ""*/}
-                {/*          }*/}
-                {/*          onChange={(event) =>*/}
-                {/*            handlePickDropChange(event, "pickup", "pickupCity")*/}
-                {/*          }*/}
-                {/*        />*/}
-                {/*      </Grid>*/}
-                {/*      <Grid item xs={4}>*/}
-                {/*        <InputField*/}
-                {/*          id="outlined-basic"*/}
-                {/*          placeholder="State"*/}
-                {/*          value={*/}
-                {/*            form.pickup[0] ? form.pickup[0].pickupState : ""*/}
-                {/*          }*/}
-                {/*          onChange={(event) =>*/}
-                {/*            handlePickDropChange(event, "pickup", "pickupState")*/}
-                {/*          }*/}
-                {/*        />*/}
-                {/*      </Grid>*/}
-                {/*      <Grid item xs={4}>*/}
-                {/*        <InputField*/}
-                {/*          id="outlined-basic"*/}
-                {/*          variant="outlined"*/}
-                {/*          placeholder="Zip"*/}
-                {/*          value={form.pickup[0] ? form.pickup[0].pickupZip : ""}*/}
-                {/*          onChange={(event) =>*/}
-                {/*            handlePickDropChange(event, "pickup", "pickupZip")*/}
-                {/*          }*/}
-                {/*        />*/}
-                {/*      </Grid>*/}
-                {/*    </Grid>*/}
-                {/*  ) : (*/}
-                {/*    <>*/}
-                {/*      <TextPlaceHolder*/}
-                {/*        value={pickup && pickup[0] ? pickup[0].pickupCity : ""}*/}
-                {/*      />*/}
-                {/*      ,*/}
-                {/*      <TextPlaceHolder*/}
-                {/*        value={pickup && pickup[0] ? pickup[0].pickupState : ""}*/}
-                {/*      />*/}
-                {/*      ,*/}
-                {/*      <TextPlaceHolder*/}
-                {/*        value={pickup && pickup[0] ? pickup[0].pickupZip : ""}*/}
-                {/*      />*/}
-                {/*    </>*/}
-                {/*  )}*/}
-                {/*</p>*/}
-                {/*<p>*/}
-                {/*  <Typography sx={{fontWeight:600, mb:1, textAlign: 'center'}}>Pickup Time</Typography>*/}
-                {/*  {edit && state.auth.user.role !== "driver" ? (*/}
-                {/*    <Grid container>*/}
-                {/*      <Grid item xs={6}>*/}
-                {/*        <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
-                {/*          <KeyboardTimePicker*/}
-                {/*            className={classes.textFieldDialog}*/}
-                {/*            InputProps={{*/}
-                {/*              classes: { input: classes.resizeDialog },*/}
-                {/*            }}*/}
-                {/*            size="small"*/}
-                {/*            id="time-picker"*/}
-                {/*            value={*/}
-                {/*              form.pickup[0] ? form.pickup[0].pickupDate : ""*/}
-                {/*            }*/}
-                {/*            onChange={(date) =>*/}
-                {/*              handleDateChange(date, "pickup")*/}
-                {/*            }*/}
-                {/*          />*/}
-                {/*        </MuiPickersUtilsProvider>*/}
-                {/*      </Grid>*/}
-                {/*      <Grid item xs={6}>*/}
-                {/*        <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
-                {/*          <KeyboardDatePicker*/}
-                {/*            className={classes.textFieldDialog}*/}
-                {/*            InputProps={{*/}
-                {/*              classes: { input: classes.resizeDialog },*/}
-                {/*            }}*/}
-                {/*            size="small"*/}
-                {/*            id="date-picker-dialog"*/}
-                {/*            format="MM/dd/yyyy"*/}
-                {/*            value={*/}
-                {/*              form.pickup[0] ? form.pickup[0].pickupDate : ""*/}
-                {/*            }*/}
-                {/*            onChange={(date) =>*/}
-                {/*              handleDateChange(date, "pickup")*/}
-                {/*            }*/}
-                {/*          />*/}
-                {/*        </MuiPickersUtilsProvider>*/}
-                {/*      </Grid>*/}
-                {/*    </Grid>*/}
-                {/*  ) : pickup && pickup[0] ? (*/}
-                {/*    moment(pickup[0].pickupDate).format("LLL")*/}
-                {/*  ) : (*/}
-                {/*    ""*/}
-                {/*  )}*/}
-                {/*</p>*/}
-                {/*<p>*/}
-                {/*  <Grid container>*/}
-                {/*    <Grid item xs={6}>*/}
-                {/*      {edit ? (*/}
-                {/*        <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
-                {/*          <KeyboardTimePicker*/}
-                {/*            label="In Time"*/}
-                {/*            className={classes.textFieldDialog}*/}
-                {/*            InputProps={{*/}
-                {/*              classes: { input: classes.resizeDialog },*/}
-                {/*            }}*/}
-                {/*            size="small"*/}
-                {/*            id="time-picker"*/}
-                {/*            value={form.pickup[0] ? form.pickup[0].in_time : ""}*/}
-                {/*            onChange={(date) =>*/}
-                {/*              handleInOutTime(date, "pickup", "in_time")*/}
-                {/*            }*/}
-                {/*          />*/}
-                {/*        </MuiPickersUtilsProvider>*/}
-                {/*      ) : pickup && pickup[0] && pickup[0].in_time ? (*/}
-                {/*        "In time: " + moment(pickup[0].in_time).format("h:mm A")*/}
-                {/*      ) : (*/}
-                {/*        "--"*/}
-                {/*      )}*/}
-                {/*    </Grid>*/}
-                {/*    <Grid item xs={6}>*/}
-                {/*      {edit ? (*/}
-                {/*        <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
-                {/*          <KeyboardTimePicker*/}
-                {/*            label="Out Time"*/}
-                {/*            className={classes.textFieldDialog}*/}
-                {/*            InputProps={{*/}
-                {/*              classes: { input: classes.resizeDialog },*/}
-                {/*            }}*/}
-                {/*            size="small"*/}
-                {/*            id="time-picker"*/}
-                {/*            value={*/}
-                {/*              form.pickup[0] ? form.pickup[0].out_time : ""*/}
-                {/*            }*/}
-                {/*            onChange={(date) =>*/}
-                {/*              handleInOutTime(date, "pickup", "out_time")*/}
-                {/*            }*/}
-                {/*          />*/}
-                {/*        </MuiPickersUtilsProvider>*/}
-                {/*      ) : pickup && pickup[0] && pickup[0].out_time ? (*/}
-                {/*        "Out time: " +*/}
-                {/*        moment(pickup[0].out_time).format("h:mm A")*/}
-                {/*      ) : (*/}
-                {/*        "--"*/}
-                {/*      )}*/}
-                {/*    </Grid>*/}
-                {/*  </Grid>*/}
-                {/*</p>*/}
+
               </Grid>
               <Grid item xs={2} justifyContent='center' display={'flex'}>
                 {/*<ArrowForwardIosIcon*/}
@@ -1166,190 +951,13 @@ const LoadDetailModal = ({
                 {/*/>*/}
               </Grid>
               <Grid item xs={4} style={{ textAlign: "center" }}>
-                {/*<Typography item sx={{fontSize:18, textAlign: 'center', fontWeight:600,}}>Drop</Typography>*/}
-                {/*<p>*/}
-                {/*  {edit && state.auth.user.role !== "driver" ? (*/}
-                {/*    <InputField*/}
-                {/*      id="outlined-basic"*/}
-                {/*      variant="outlined"*/}
-                {/*      placeholder="Receiver Name"*/}
-                {/*      value={form.drop[0] ? form.drop[0].receiverName : ""}*/}
-                {/*      onChange={(event) =>*/}
-                {/*        handlePickDropChange(event, "drop", "receiverName")*/}
-                {/*      }*/}
-                {/*    />*/}
-                {/*  ) : (*/}
-                {/*    <TextPlaceHolder*/}
-                {/*      value={drop && drop[0] ? drop[0].receiverName : ""}*/}
-                {/*    />*/}
-                {/*  )}*/}
-                {/*</p>*/}
-                {/*<p>*/}
-                {/*  {edit && state.auth.user.role !== "driver" ? (*/}
-                {/*    <InputField*/}
-                {/*      id="outlined-basic"*/}
-                {/*      variant="outlined"*/}
-                {/*      placeholder="Address"*/}
-                {/*      value={form.drop[0] ? form.drop[0].dropAddress : ""}*/}
-                {/*      onChange={(event) =>*/}
-                {/*        handlePickDropChange(event, "drop", "dropAddress")*/}
-                {/*      }*/}
-                {/*    />*/}
-                {/*  ) : (*/}
-                {/*    <TextPlaceHolder*/}
-                {/*      value={drop && drop[0] ? drop[0].dropAddress : ""}*/}
-                {/*    />*/}
-                {/*  )}*/}
-                {/*</p>*/}
-                {/*<p>*/}
-                {/*  {edit && state.auth.user.role !== "driver" ? (*/}
-                {/*    <Grid*/}
-                {/*      container*/}
-                {/*      spacing={2}*/}
-                {/*      className={classes.rootLoadDetailModal}*/}
-                {/*    >*/}
-                {/*      <Grid item xs={4}>*/}
-                {/*        <InputField*/}
-                {/*          id="outlined-basic"*/}
-                {/*          variant="outlined"*/}
-                {/*          placeholder="City"*/}
-                {/*          value={form.drop[0] ? form.drop[0].dropCity : ""}*/}
-                {/*          onChange={(event) =>*/}
-                {/*            handlePickDropChange(event, "drop", "dropCity")*/}
-                {/*          }*/}
-                {/*        />*/}
-                {/*      </Grid>*/}
-                {/*      <Grid item xs={4}>*/}
-                {/*        <InputField*/}
-                {/*          id="outlined-basic"*/}
-                {/*          variant="outlined"*/}
-                {/*          placeholder="State"*/}
-                {/*          value={form.drop[0] ? form.drop[0].dropState : ""}*/}
-                {/*          onChange={(event) =>*/}
-                {/*            handlePickDropChange(event, "drop", "dropState")*/}
-                {/*          }*/}
-                {/*        />*/}
-                {/*      </Grid>*/}
-                {/*      <Grid item xs={4}>*/}
-                {/*        <InputField*/}
-                {/*          id="outlined-basic"*/}
-                {/*          variant="outlined"*/}
-                {/*          placeholder="Zip"*/}
-                {/*          value={form.drop[0] ? form.drop[0].dropZip : ""}*/}
-                {/*          onChange={(event) =>*/}
-                {/*            handlePickDropChange(event, "drop", "dropZip")*/}
-                {/*          }*/}
-                {/*        />*/}
-                {/*      </Grid>*/}
-                {/*    </Grid>*/}
-                {/*  ) : (*/}
-                {/*    <>*/}
-                {/*      <TextPlaceHolder*/}
-                {/*        value={drop && drop[0] ? drop[0].dropCity : ""}*/}
-                {/*      />*/}
-                {/*      ,*/}
-                {/*      <TextPlaceHolder*/}
-                {/*        value={drop && drop[0] ? drop[0].dropState : ""}*/}
-                {/*      />*/}
-                {/*      ,*/}
-                {/*      <TextPlaceHolder*/}
-                {/*        value={drop && drop[0] ? drop[0].dropZip : ""}*/}
-                {/*      />*/}
-                {/*    </>*/}
-                {/*  )}*/}
-                {/*</p>*/}
-                {/*<p>*/}
-                {/*  <Typography sx={{fontWeight:600, mb:1}}>Drop Time</Typography>*/}
-                {/*  {edit && state.auth.user.role !== "driver" ? (*/}
-                {/*    <Grid container>*/}
-                {/*      <Grid item xs={6}>*/}
-                {/*        <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
-                {/*          <KeyboardTimePicker*/}
-                {/*            className={classes.textFieldDialog}*/}
-                {/*            InputProps={{*/}
-                {/*              classes: { input: classes.resizeDialog },*/}
-                {/*            }}*/}
-                {/*            size="small"*/}
-                {/*            id="time-picker"*/}
-                {/*            value={form.drop[0] ? form.drop[0].dropDate : ""}*/}
-                {/*            onChange={(date) => handleDateChange(date, "drop")}*/}
-                {/*          />*/}
-                {/*        </MuiPickersUtilsProvider>*/}
-                {/*      </Grid>*/}
-                {/*      <Grid item xs={6}>*/}
-                {/*        <LocalizationProvider dateAdapter={AdapterDateFns}>*/}
-                {/*          <DatePicker*/}
-                {/*              // label="Basic example"*/}
-                {/*              value={form.drop[0] ? form.drop[0].dropDate : ""}*/}
-                {/*              onChange={(newValue) => {*/}
-                {/*                handleDateChange(newValue, "drop")*/}
-                {/*              }}*/}
-                {/*              renderInput={(params) => <TextField {...params} />}*/}
-                {/*          />*/}
-                {/*        </LocalizationProvider>*/}
-                {/*      </Grid>*/}
-                {/*    </Grid>*/}
-                {/*  ) : drop && drop[0] ? (*/}
-                {/*    moment(drop[0].dropDate).format("LLL")*/}
-                {/*  ) : (*/}
-                {/*    ""*/}
-                {/*  )}*/}
-                {/*</p>*/}
-                {/*<p>*/}
-                {/*  <Grid container>*/}
-                {/*    <Grid item xs={6}>*/}
-                {/*      {edit ? (*/}
-                {/*        <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
-                {/*          <KeyboardTimePicker*/}
-                {/*            label="In Time"*/}
-                {/*            className={classes.textFieldDialog}*/}
-                {/*            InputProps={{*/}
-                {/*              classes: { input: classes.resizeDialog },*/}
-                {/*            }}*/}
-                {/*            size="small"*/}
-                {/*            id="time-picker"*/}
-                {/*            value={form.drop[0] ? form.drop[0].in_time : ""}*/}
-                {/*            onChange={(date) =>*/}
-                {/*              handleInOutTime(date, "drop", "in_time")*/}
-                {/*            }*/}
-                {/*          />*/}
-                {/*        </MuiPickersUtilsProvider>*/}
-                {/*      ) : drop && drop[0] && drop[0].in_time ? (*/}
-                {/*        "In time: " + moment(drop[0].in_time).format("h:mm A")*/}
-                {/*      ) : (*/}
-                {/*        "--"*/}
-                {/*      )}*/}
-                {/*    </Grid>*/}
-                {/*    <Grid item xs={6}>*/}
-                {/*      {edit ? (*/}
-                {/*        <MuiPickersUtilsProvider utils={DateFnsUtils}>*/}
-                {/*          <KeyboardTimePicker*/}
-                {/*            label="Out Time"*/}
-                {/*            className={classes.textFieldDialog}*/}
-                {/*            InputProps={{*/}
-                {/*              classes: { input: classes.resizeDialog },*/}
-                {/*            }}*/}
-                {/*            size="small"*/}
-                {/*            id="time-picker"*/}
-                {/*            value={form.drop[0] ? form.drop[0].out_time : ""}*/}
-                {/*            onChange={(date) =>*/}
-                {/*              handleInOutTime(date, "drop", "out_time")*/}
-                {/*            }*/}
-                {/*          />*/}
-                {/*        </MuiPickersUtilsProvider>*/}
-                {/*      ) : drop && drop[0] && drop[0].out_time ? (*/}
-                {/*        "Out time: " + moment(drop[0].out_time).format("h:mm A")*/}
-                {/*      ) : (*/}
-                {/*        "--"*/}
-                {/*      )}*/}
-                {/*    </Grid>*/}
-                {/*  </Grid>*/}
-                {/*</p>*/}
+
               </Grid>
               <Grid item xs={1}></Grid>
             </Grid>
           </form>
         </div>
+        </LocalizationProvider>
       </Modal>
     </>
   );

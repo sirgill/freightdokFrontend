@@ -32,7 +32,7 @@ const Form = ({onCloseUrl}) => {
             }
         }
         getCarrierProfile();
-    }, [])
+    }, [id])
 
     const handleFileChange = ({ target: { name, files } }) => {
         setFormData((f) => ({ ...f, [name]: files || null }));

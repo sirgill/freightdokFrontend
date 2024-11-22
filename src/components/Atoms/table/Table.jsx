@@ -1,5 +1,7 @@
 import {
+    Backdrop,
     Box,
+    Checkbox,
     DialogContentText,
     Grid,
     IconButton,
@@ -10,7 +12,7 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow, Typography
+    TableRow, TableSortLabel, Typography
 } from '@mui/material';
 import _ from 'lodash';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -22,6 +24,7 @@ import {Delete, Refresh} from "@mui/icons-material";
 import Dialog from "../Dialog";
 import {styled} from "@mui/material/styles";
 import {getUserDetail} from "../../../utils/utils";
+import Tooltip from "../Tooltip";
 
 const Cell = styled(TableCell)(({theme}) => ({
     [theme.breakpoints.down('xs')]: {
@@ -35,11 +38,11 @@ const DeleteIcon = styled(Delete)(({theme}) => ({
     }
 }))
 
-function Headers({columns = [], config = {}, role}) {
-    const {headerCellSx = {}, hasDelete} = config;
+function Headers({columns = [], config = {}, role, handleRequestSort, hasSort}) {
+    const {headerCellSx = {}, hasDelete, sortField, sortOrder, showCheckbox} = config;
     const headers = useMemo(() => {
         return columns.map((column, index) => {
-            const {label = '', id = '', visible = true} = column || {};
+            const {label = '', id = '', visible = true, sort = false} = column || {};
             // eslint-disable-next-line array-callback-return
             const isVisible = _.isFunction(visible) ? visible({column, role}) : visible;
             if (!isVisible) {
@@ -47,13 +50,25 @@ function Headers({columns = [], config = {}, role}) {
             }
             return (
                 <Cell padding={'normal'} sx={{color: '#000', bgcolor: '#fafafa', fontWeight: 800, ...headerCellSx}}
-                      key={id || index}>{label}</Cell>
+                      key={id || index}>
+                    {(hasSort && sort)
+                        ? <TableSortLabel onClick={(e) => handleRequestSort(e, id)} active={id === sortField}
+                                     direction={sortOrder}
+                                     sx={{ ...headerCellSx}}>
+                        {label}
+                    </TableSortLabel>
+                        : label}
+                </Cell>
             )
         })
     }, [columns, headerCellSx])
+
+    if(showCheckbox){
+        headers.unshift(<Cell key='checkbox-header' padding={'normal'} sx={{color: '#000', bgcolor: '#fafafa', fontWeight: 800, ...headerCellSx}} />)
+    }
     return <TableRow>
         {headers}
-        {hasDelete && <Cell padding={'none'} sx={{...headerCellSx}}/>}
+        {hasDelete && <Cell padding={'none'} sx={{color: '#000', bgcolor: '#fafafa', fontWeight: 800, ...headerCellSx}}/>}
     </TableRow>;
 }
 
@@ -65,15 +80,17 @@ const getTableCell = ({
                           rowIndex,
                           handleDelete,
                           hasDeletePermission,
+                          checkboxKey,
                           ...rest
                       }) => {
     const {
         hasDelete = false,
         rowCellPadding = 'none',
         onRowClick = undefined,
-        rowStyleCb
+        rowStyleCb,
+        showCheckbox = false
     } = config;
-    const {role} = rest;
+    const {role, onCheckboxChange, checkboxes} = rest;
     let rowStyle = {}
     if (rowStyleCb) {
         rowStyle = rowStyleCb({row}) || {};
@@ -83,13 +100,15 @@ const getTableCell = ({
             if (_.isFunction(handleRowClick)) handleRowClick(row)
         },
         deleteCell = <Cell sx={{}} padding={'none'} component="th" scope="row">
-            <IconButton onClick={handleDelete.bind(this, row._id, row)} disabled={!hasDeletePermission}>
-                <DeleteIcon color={'error'}/>
-            </IconButton>
+            <Tooltip title='Delete' placement='top'>
+                <IconButton onClick={handleDelete.bind(this, row._id, row)} disabled={!hasDeletePermission}>
+                    <DeleteIcon color={hasDeletePermission ? 'error' : 'disabled'}/>
+                </IconButton>
+            </Tooltip>
         </Cell>;
 
     const cell = columns.map((column, i) => {
-        const {id = '', renderer, emptyState = '', valueFormatter, visible = true} = column || {};
+        const {id = '', renderer, emptyState = '--', valueFormatter, visible = true, cellPadding} = column || {};
         const isVisible = _.isFunction(visible) ? visible({column, role}) : visible;
         if (!isVisible) {
             return null;
@@ -100,12 +119,22 @@ const getTableCell = ({
         } else if (_.isFunction(renderer)) {
             cell = renderer({row, role}, rowIndex) || emptyState;
         } else {
-            cell = _.isObject(row) ? _.get(row, id, emptyState) : (row[id] || emptyState);
+            cell = _.get(row, id, emptyState) || emptyState;
         }
-        return <Cell key={id + i} padding={rowCellPadding || 'normal'} component="th" scope="row">
+        return <Cell key={id + i} padding={cellPadding || rowCellPadding || 'normal'} component="th" scope="row">
             {cell}
         </Cell>
     });
+
+    if(showCheckbox){
+        if(!checkboxKey){
+            throw new Error('Checkbox key not provided');
+        }
+        const checked = checkboxes.indexOf(row[checkboxKey]) > -1;
+        cell.unshift(<Cell onClick={onCheckboxChange.bind(this, row)} key={`checkbox-${rowIndex}`}>
+            <Checkbox checked={checked} />
+        </Cell>)
+    }
 
     return <TableRow key={rowIndex} hover={!!onRowClick} onClick={rowClickHandler}
                      sx={!!onRowClick ? {cursor: 'pointer', ...rowStyle} : {...rowStyle}}>
@@ -126,8 +155,9 @@ const TableData = ({columns, data = [], config = {}, handleRowClick, handleDelet
 }
 
 
-const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch, isRefetching}) => {
+const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefetch, isRefetching, actions, isPaginationLoading=false, ...rest}) => {
     data = data || [];
+    const {onCheckboxChange, checkboxes, checkboxKey} = rest;
     const [tableState, setTableState] = useState({}),
         [dialog, setDialog] = useState({open: false, config: {}}),
         {
@@ -138,6 +168,8 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             page,
             count,
             limit,
+            onPageSizeChange,
+            onLimitChange,
             size = 'medium',
             emptyMessage = '',
             onRowClickDataCallback,
@@ -146,11 +178,21 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
             deleteMessage,
             deletePermissions = [],
             containerHeight='',
+            sortField,
+            sortOrder = 'asc',
+            handleSortChange,
+            hasSort = false
         } = config,
         {role = ''} = getUserDetail().user,
-        hasDeletePermission = deletePermissions.indexOf(role) > -1 || false,
+        hasDeletePermission = typeof deletePermissions === 'boolean' ? deletePermissions : deletePermissions.indexOf(role) > -1 || false,
         ref = React.useRef([]);
-    const length = Array.isArray(data) && data.length;
+    const length = Array.isArray(data) && data.length,
+        Actions = useMemo(() => {
+        if(actions && React.isValidElement(actions)){
+            return actions;
+        }
+        return <></>
+    }, [actions]);
 
     const handleRowClick = (row) => {
         if (hasOnClickUrl && onRowClick) {
@@ -164,6 +206,13 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         }
     }
 
+    const handleRequestSort = (event, property) => {
+        const isAsc = sortField === property && sortOrder === 'asc';
+        // setOrder(isAsc ? 'desc' : 'asc');
+        // setOrderBy(property);
+        handleSortChange && handleSortChange({field: property, order: isAsc ? 'desc' : 'asc'})
+    };
+
     const handleDelete = (id, row, e) => {
         e.stopPropagation();
         const config = {
@@ -172,9 +221,9 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
                 <Typography sx={{fontSize: '1.25rem', fontWeight: 550}} color='error'>Delete</Typography>
             </Grid>,
             okText: 'Delete',
-            onOk: () => onDelete(id, onDialogClose),
+            onOk: () => onDelete(id, onDialogClose, {row}),
             content: () => <DialogContentText
-                sx={{color: '#000'}}>{deleteMessage || 'Are you sure you want to delete the record?'}</DialogContentText>
+                sx={{color: '#000'}}>{_.isFunction(deleteMessage) ? deleteMessage({row}) : deleteMessage || 'Are you sure you want to delete the record?'}</DialogContentText>
         }
         setDialog({...dialog, open: true, config});
     }
@@ -202,22 +251,24 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         }
         return <Fragment>
             <TableHead className={''} sx={{backgroundColor: '#fafafa', borderTop: '1px solid rgba(224, 224, 224, 1)'}}>
-                <Headers columns={columns} config={config} role={role} />
+                <Headers columns={columns} config={config} role={role} handleRequestSort={handleRequestSort} hasSort={hasSort}/>
             </TableHead>
             <TableBody>
                 <TableData
                     role={role}
-                    key={Date.now()}
                     columns={columns}
                     data={data}
                     config={config}
+                    checkboxes={checkboxes}
+                    checkboxKey={checkboxKey}
                     handleRowClick={handleRowClick}
                     handleDelete={handleDelete}
+                    onCheckboxChange={onCheckboxChange}
                     hasDeletePermission={hasDeletePermission}
                 />
             </TableBody>
         </Fragment>
-    }, [data, config])
+    }, [data, config, checkboxes])
 
     useEffect(() => {
         if (ref?.current?.table) {
@@ -226,25 +277,39 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         }
     }, [])
 
+    useEffect(() => {
+        if((isPaginationLoading || isRefetching) && ref.current?.tableContainer){
+            ref.current.tableContainer.scrollTo(0, 0)
+        }
+    }, [isPaginationLoading, isRefetching])
+
     return <Box className='enhanced-table' sx={{height: length && !loading ? (containerHeight || '95%') : 'auto'}}>
-        {showRefresh && <Stack alignItems='flex-end'>
-            <IconButton title='Refresh' onClick={onRefetch}>
+        <Stack alignItems='flex-end' justifyContent='flex-end' direction='row' py={1} gap={.5}>
+            {Actions}
+            {showRefresh && <IconButton title='Refresh' onClick={onRefetch}>
                 <Refresh className={(isRefetching) ? 'rotateIcon' : undefined}/>
-            </IconButton>
-        </Stack>}
+            </IconButton>}
+        </Stack>
         <TableContainer
             component={Paper}
             className={''}
-            sx={{boxShadow: '0px 0px 32px #8898AA26', mb: 2, height: length && !loading ? 'calc(100% - 64px)' : 'auto'}}
+            ref={el => ref.current['tableContainer'] = el}
+            sx={{boxShadow: '0px 0px 32px #8898AA26', mb: 2, height: length && !loading ? 'calc(100% - 80px)' : 'auto', position: 'relative'}}
         >
             {loading
                 ? getLoader()
                 : <Table ref={el => ref.current['table'] = el} aria-label="caption table" size={size} stickyHeader>
                     {getTableContent}
                 </Table>}
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1, position: 'absolute' }}
+                open={isPaginationLoading || isRefetching || false}
+            >
+                <Spinner sx={{color: 'inherit'}} />
+            </Backdrop>
         </TableContainer>
         {!loading && data.length > 0 &&
-            <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit}/>}
+            <TablePagination data={data} onPageChange={onPageChange} page={page} count={count} limit={limit} onLimitChange={onLimitChange || onPageSizeChange} isLoading={isRefetching || isPaginationLoading} />}
         <Dialog className='enhancedTable_dialog' open={dialog.open} config={dialog.config} onClose={onDialogClose}/>
     </Box>;
 };

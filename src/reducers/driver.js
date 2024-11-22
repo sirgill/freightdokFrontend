@@ -17,6 +17,7 @@ export default function driver (state = initialState, action) {
         ...state,
         drivers: payload.drivers,
         all_drivers: payload.users,
+        assignees: payload.assignees,
         loading: false,
         timestamp: payload.timestamp
       };

@@ -9,7 +9,6 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
-import InputField from "../Atoms/form/InputField";
 import Button from "@mui/material/Button";
 import {blue} from "../layout/ui/Theme";
 import IconButton from "@mui/material/IconButton";
@@ -17,36 +16,60 @@ import CloseIcon from "@mui/icons-material/Close";
 import {Box} from "@mui/material";
 import useMutation from "../../hooks/useMutation";
 import {notification} from "../../actions/alert";
-import LoadingButton from "@mui/lab/LoadingButton";
 import {getDrivers} from "../../actions/driver";
+import {UserSettings} from "../Atoms/client";
+import {Input, LoadingButton, Select} from "../Atoms";
+import AddIcon from "@mui/icons-material/Add";
+
+// const ADD_DRIVERS_ROLES_PERMITTED = [ROLES.superadmin, ROLES.admin, ROLES.afterhours];
+
+const {add} = UserSettings.getUserPermissionsByDashboardId('drivers')
+
+const validateForm = ({firstName, phoneNumber, user, lastName}) => {
+    let valid = true, errors = {}
+    if (!firstName) {
+        valid = false;
+        errors.firstName = 'First Name is required'
+    }
+    if (!lastName) {
+        valid = false;
+        errors.lastName = 'Last Name is required'
+    }
+    if (!phoneNumber) {
+        valid = false;
+        errors.phoneNumber = 'Phone Number is required'
+    }
+    if (!user) {
+        valid = false;
+        errors.user = 'Please select a Driver'
+    }
+    return {valid, errors};
+}
 
 const AddDriverForm = (props) => {
     const {
-            user,
-            addDriver,
-            all_drivers,
-            getLoads,
-            isEdit = false,
-            data = {},
-            closeEditForm,
-            load: {loads, allLoads, loading},
-        } = props;
+        all_drivers,
+        getLoads,
+        isEdit = false,
+        data = {},
+        closeEditForm,
+    } = props;
     const {loading: isSaving, mutation} = useMutation("/api/drivers")
     const formTemplate = {
-        firstName: "",
-        lastName: "",
-        phoneNumber: "",
-        loads: [],
-        user: "",
-    },
+            firstName: "",
+            lastName: "",
+            phoneNumber: "",
+            user: "",
+        },
         dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
     const [count, setCount] = useState(1);
-    const [form, setForm] = useState(formTemplate);
+    const [form, setForm] = useState(formTemplate),
+        [errors, setErrors] = useState({});
 
     useEffect(() => {
-        if (count == 2) {
+        if (count === 2) {
             getLoads();
         }
     }, [count]);
@@ -62,52 +85,56 @@ const AddDriverForm = (props) => {
             handleClickOpen()
             setForm(data)
         }
-    }, [isEdit])
-
-    useEffect(() => {
         return () => {
-            setForm(formTemplate);
+            setForm(() => formTemplate);
         }
-    }, [])
+    }, [isEdit])
 
     const handleClose = () => {
         setOpen(false);
         // setForm(formTemplate);
         setCount(1);
-        if(closeEditForm) closeEditForm()
+        if (closeEditForm) closeEditForm()
     };
 
     const onSubmit = (e) => {
         e.preventDefault();
-
+        const {valid, errors} = validateForm(form);
+        if (!valid) {
+            return setErrors({...errors})
+        }
         mutation(form, null, ({success, data}) => {
-            if(success) {
+            if (success) {
                 dispatch(getDrivers());
                 handleClose();
-            }
-            else {
+                setForm(() => formTemplate);
+                notification(data.message);
+            } else {
                 notification(data.message, 'error')
             }
         })
     };
 
-    const updateForm = (e) => {
+    const updateForm = ({name, value}) => {
         setForm({
             ...form,
-            [e.target.name]: e.target.value,
+            [name]: value,
         });
+        setErrors((prev) => ({...prev, [name]: ''}))
     };
 
     return (
         <>
-            {(user && user.role === "afterhours") || (!isEdit &&
+            {(!isEdit &&
                 <Button
+                    disabled={!add}
                     color="primary"
                     onClick={handleClickOpen}
                     style={{marginBottom: "20%"}}
                     variant={'contained'}
+                    startIcon={<AddIcon />}
                 >
-                    Add Driver
+                    Add
                 </Button>
             )}
 
@@ -129,73 +156,71 @@ const AddDriverForm = (props) => {
                     letterSpacing: 1
                 }}>
 
-                        <IconButton
-                            aria-label="close"
-                            onClick={handleClose}
-                            sx={{
-                                position: "absolute",
-                                left: 8,
-                                top: 8,
-                                color: (theme) => theme.palette.grey[500],
-                            }}
-                        >
-                            <CloseIcon />
-                        </IconButton>
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleClose}
+                        sx={{
+                            position: "absolute",
+                            left: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <CloseIcon/>
+                    </IconButton>
 
                     {isEdit ? 'Edit' : 'Add'} Driver
                 </DialogTitle>
                 <DialogContent>
                     <div className="">
-                        <Box component={'form'} sx={{px: 4, pb: 3}} onSubmit={onSubmit}>
-                            {count === 1 ? (
-                                <div>
-
-                            <div>
-                                <InputField
+                        <Box component={'form'} sx={{px: 4, pb: 3}} onSubmit={onSubmit} noValidate>
+                            <Grid container sx={{'& .MuiFormControl-fullWidth': {mb: 2}}}>
+                                <Input
                                     name={"firstName"}
                                     label={"First Name"}
                                     onChange={updateForm}
                                     value={form.firstName}
+                                    errors={errors}
+                                    formControlSx={{mt: .8}}
+                                    required
                                 />
-                                <InputField
+                                <Input
                                     name={"lastName"}
                                     label={"Last Name"}
                                     onChange={updateForm}
                                     value={form.lastName}
+                                    errors={errors}
+                                    required
                                 />
-                                <InputField
+                                <Input
                                     name={"phoneNumber"}
                                     label={"Phone Number"}
                                     onChange={updateForm}
                                     value={form.phoneNumber}
+                                    errors={errors}
+                                    required
                                 />
-                                {!isEdit && <InputField
+                                {!isEdit && <Select
                                     value={form.user}
                                     name="user"
                                     onChange={updateForm}
                                     label='Select Driver'
-                                    type={'select'}
-                                    showFirstBlank={true}
+                                    showNone={true}
                                     options={all_drivers.map(driver => ({id: driver._id, label: driver.email}))}
+                                    errors={errors}
+                                    required
                                 />}
-                            </div>
-
-                                    <Grid container spacing={1} style={{marginTop: "20px"}} justifyContent={'center'}>
-                                        <Grid item xs={12}>
-                                            <LoadingButton
-                                                loading={isSaving}
-                                                className=""
-                                                type="submit"
-                                                variant="contained"
-                                                color="primary"
-                                                sx={{width: '100%'}}
-                                            >
-                                                {(isEdit ? 'Update ' : 'Add ') + 'Driver'}
-                                            </LoadingButton>
-                                        </Grid>
-                                    </Grid>
-                                </div>
-                            ) : null}
+                            </Grid>
+                            <LoadingButton
+                                sx={{mt: 2}}
+                                type="submit"
+                                variant="contained"
+                                loadingText={isEdit ? 'Updating...' : 'Saving...'}
+                                fullWidth
+                                isLoading={isSaving}
+                            >
+                                {(isEdit ? 'Update ' : 'Add ') + 'Driver'}
+                            </LoadingButton>
                         </Box>
                     </div>
                 </DialogContent>

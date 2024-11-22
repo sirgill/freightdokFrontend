@@ -269,6 +269,9 @@ export const getNewTrulLoads = (pageSize, pageIndex, params) => async dispatch =
 
 export const getOpenBoardLoads = (filters) => async (dispatch) => {
     const { user: { orgId = null } = {} } = getUserDetail();
+    //pageIndex works on index which starts from 0
+    filters.pageIndex = filters.pageIndex - 1;
+
     dispatch({
         type: GET_SHIPMENTS,
         payload: {

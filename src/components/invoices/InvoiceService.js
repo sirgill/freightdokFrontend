@@ -14,9 +14,10 @@ const LOOKUP_DATA = [
 const InvoiceService = ({ serviceName, amount, price, quantity, description, index, deleteService, onChangeService }) => {
     const handleChange = (e) => {
         const name = e.target.name
-        const value = e.target.value
+        const value = +e.target.value
         if (onChangeService) {
             onChangeService(index, { name, value })
+            // onChangeService(index, { name: 'amount', value: value * quantity });
         }
     }
 
@@ -26,20 +27,28 @@ const InvoiceService = ({ serviceName, amount, price, quantity, description, ind
         onChangeService(index, { name, value })
     }
 
-    const onBlur = (e) => {
-        const value = parseInt(e.target.value)
-        const name = e.target.name
-        if (value < 1) {
+    const onBlur = (name, value) => {
+        if (+value < 0) {
             if (onChangeService) {
                 onChangeService(index, { name, value: 1 })
-                onChangeService(index, { name: 'price', value: parseInt(amount) });
+                onChangeService(index, { name: 'amount', value: parseInt(price) });
 
             }
         } else {
             if (onChangeService) {
                 onChangeService(index, { name, value });
-                onChangeService(index, { name: 'price', value: parseInt(amount) * value });
+                onChangeService(index, { name: 'amount', value: parseInt(price) * +value });
             }
+        }
+    }
+
+    const onBlurPrice = (name, value) => {
+        value = +value;
+        if(value < 0) {
+            value = 1;
+            onChangeService(index, {name: 'amount', value: value * quantity})
+        } else {
+            onChangeService(index, {name: 'amount', value: value * quantity})
         }
     }
 
@@ -50,9 +59,9 @@ const InvoiceService = ({ serviceName, amount, price, quantity, description, ind
                 <td><InputField name={'description'} value={description} onChange={handleChange} className='serviceInputField'
                     placeholder={'Enter item description'} /></td>
                 <td><InputField name={'quantity'} onChange={handleQuantity} onBlur={onBlur} className='serviceInputField' type='number' value={quantity} /></td>
-                <td><InputField name={'price'} onChange={handleChange} value={price} className='serviceInputField' /></td>
-                <td>{price ? `$${parseFloat(price).toFixed(2)}` : '$0.00'}</td>
-                <td><IconButton onClick={deleteService.bind(null, index)}>
+                <td><InputField name={'price'} onChange={handleChange} value={price} onBlur={onBlurPrice} className='serviceInputField' type='number' /></td>
+                <td>{amount ? `$${parseFloat(amount).toFixed(2)}` : '$0.00'}</td>
+                <td><IconButton onClick={deleteService.bind(null, index)} className='deleteService'>
                     <DeleteOutlineIcon color={'error'} />
                 </IconButton></td>
             </tr>
@@ -60,18 +69,6 @@ const InvoiceService = ({ serviceName, amount, price, quantity, description, ind
     )
 }
 
-
-const InvoiceDataTableRows = ({ price = 99 }) => {
-    return (<Fragment>
-        <tr className='InvoiceDataTableRows'>
-            <td>9</td>
-            <td>a</td>
-            <td>b</td>
-            <td>c</td>
-            <td>{price ? `$${parseFloat(price).toFixed(2)}` : '$0.00'}</td>
-        </tr>
-    </Fragment>)
-}
 
 const LookUp = ({ handleClose, anchorEl, onAddNewService }) => {
     const [list, setList] = useState(LOOKUP_DATA)
@@ -134,7 +131,7 @@ const InvoiceServiceWrapper = ({ services, onAddNewService, onChangeService, del
     const [anchorEl, setAnchorEl] = React.useState(null);
     const servicesComp = useMemo(() => {
         return services.map((s, index) => {
-            return <InvoiceService {...s} index={index} onChangeService={onChangeService}
+            return <InvoiceService key={index} {...s} index={index} onChangeService={onChangeService}
                 deleteService={deleteService} />
         })
     }, [services])
@@ -161,7 +158,7 @@ const InvoiceServiceWrapper = ({ services, onAddNewService, onChangeService, del
                 {servicesComp}
                 <tr className='addNewItemRow'>
                     <td className='addNewItem' onClick={handleClick}>
-                        <Button sx={{ width: 135 }} startIcon={<AddCircleOutlineIcon />} aria-describedby={'jugal'}>
+                        <Button sx={{ width: 135 }} startIcon={<AddCircleOutlineIcon />}>
                             Add new item
                         </Button>
                     </td>

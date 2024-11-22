@@ -7,6 +7,7 @@ import DateRangePicker from "../../components/Atoms/form/DateRangePicker";
 import SearchAutoComplete from "../../components/Atoms/SearchAutoComplete";
 import Input from "../../components/Atoms/form/Input";
 import { geoLocationService } from "../../actions/warehouse";
+import {serialize} from "../../utils/utils";
 
 const radioConfig = {
     title: '',
@@ -33,16 +34,6 @@ const options = [
     { label: 'Dry Van', value: 'Dry Van' },
     // { label: 'Dry Van or Reefer', value: 'Dry Van & Reefer' },
 ]
-
-const serialize = (obj = {}) => {
-    const str = [];
-    for (let p in obj)
-        if (obj.hasOwnProperty(p)) {
-            const q = encodeURIComponent(p) + "=" + encodeURIComponent(obj[p])
-            str.push(q.replaceAll('%20', '+'));
-        }
-    return str.join("&");
-}
 
 const getQueryString = (form) => {
     let _form = { ...form };
