@@ -13,6 +13,9 @@ import useFetch from "../../hooks/useFetch";
 import {GET_FACTORING_PARTNERS, GET_SECRETS_MANAGER} from "../../config/requestEndpoints";
 import FactoringPartnersForm from "./factoringPartners/FactoringPartnersForm";
 import useEnhancedFetch from "../../hooks/useEnhancedFetch";
+import {UserSettings} from "../../components/Atoms/client";
+
+const {viewFactoringPartners, updateFactoringPartners} = UserSettings.getUserPermissionsByDashboardId('carrierProfile');
 
 const CarrierProfile = ({match = {}}) => {
     const {path} = match,
@@ -45,7 +48,7 @@ const CarrierProfile = ({match = {}}) => {
                 <EnhancedTable data={integrationsList} loading={integrationsLoading}
                                config={integrationCredentialConfig({path, data: _dbData, list: integrationsList})}/>
             </Box>
-            <Paper
+            {viewFactoringPartners && <Paper
                 variant='outlined'
                 sx={{
                     mt: 4,
@@ -61,13 +64,13 @@ const CarrierProfile = ({match = {}}) => {
             >
                 <Typography variant='h6' fontWeight='bold'>Factoring Partners</Typography>
                 <EnhancedTable
-                    config={factoringPartnersTableConfig({path})}
+                    config={factoringPartnersTableConfig({path, updateFactoringPartners})}
                     data={factoringPartnersData?.data}
                     loading={loadingFactoringPartners}
                     isRefetching={refectingFactoringPartners}
                     onRefetch={refetchFP}
                 />
-            </Paper>
+            </Paper>}
             <Route component={IntegrationsForm} path={path + UPDATE_INTEGRATIONS_LINK}/>
             <Route render={(props) => <FactoringPartnersForm {...props} refetch={refetchFP} onCloseUrl={path} />} path={path + UPDATE_FACTORING_PARTNERS}/>
         </Box>

@@ -79,7 +79,7 @@ export const tableConfig = {
     ]
 }
 
-export const factoringPartnersTableConfig = ({path}) => {
+export const factoringPartnersTableConfig = ({path, updateFactoringPartners}) => {
     return {
         rowCellPadding: 'normal',
         showRefresh: true,
@@ -126,7 +126,8 @@ export const factoringPartnersTableConfig = ({path}) => {
                     return <IconButton color='primary' component={Link} to={path + FACTORING_PARTNERS + `/${row._id}`}>
                         <EditOutlinedIcon />
                     </IconButton>
-                }
+                },
+                visible: updateFactoringPartners
             }
         ]
     }
