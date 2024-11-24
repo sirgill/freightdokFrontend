@@ -1,9 +1,11 @@
-import {getCheckStatusIcon} from "../../utils/utils";
-import {Button} from "@mui/material";
+import {getCheckStatusIcon, getActiveInactiveStatus} from "../../utils/utils";
+import {Button, IconButton} from "@mui/material";
 import {Link} from "react-router-dom";
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import {UPDATE_INTEGRATIONS_LINK} from "../../components/constants";
 import React from "react";
 import {UserSettings} from "../../components/Atoms/client";
+import {FACTORING_PARTNERS} from "../../components/client/routes";
 
 export const integrationNameMap = {chRobinson: 'C.H. Robinson', newtrul: 'New Trul'};
 
@@ -75,6 +77,60 @@ export const tableConfig = {
             }
         },
     ]
+}
+
+export const factoringPartnersTableConfig = ({path, updateFactoringPartners}) => {
+    return {
+        rowCellPadding: 'normal',
+        showRefresh: true,
+        columns: [
+            {
+                id: 'name',
+                label: 'Partner Name'
+            },
+            {
+                id: 'host',
+                label: 'Host'
+            },
+            {
+                id: 'email',
+                label: 'Email'
+            },
+            {
+                id: 'password',
+                label: 'Password',
+                valueFormatter: () => '******'
+            },
+            {
+                id: 'port',
+                label: 'Port'
+            },
+            {
+                id: 'noticeText',
+                label: 'Notice Text'
+            },
+            {
+                id: 'lastUpdatedBy.name',
+                label: 'Last Updated By',
+            },
+            {
+                id: 'status',
+                label: 'Status',
+                renderer: ({row}) => {
+                    return getActiveInactiveStatus(row.status)
+                }
+            },
+            {
+                id: 'actions',
+                renderer: ({row}) => {
+                    return <IconButton color='primary' component={Link} to={path + FACTORING_PARTNERS + `/${row._id}`}>
+                        <EditOutlinedIcon />
+                    </IconButton>
+                },
+                visible: updateFactoringPartners
+            }
+        ]
+    }
 }
 
 export const modalConfig = {
