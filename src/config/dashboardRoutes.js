@@ -21,6 +21,7 @@ const Driverlistbar = LoadModuleAsync(() => import("../components/driverbar/Driv
 const Loadlistbar = LoadModuleAsync(() => import("../components/loadbar/Loadlistbar.js"));
 const LoadsStatus = LoadModuleAsync(() => import("../components/loads/LoadsStatus"));
 const Facilities = LoadModuleAsync(() => import("../components/facilities/Facilities"));
+const ServiceCostsDashboard = LoadModuleAsync(() => import("../views/serviceCosts/ServiceCostsDahboard"));
 
 export const routes = [
     {
@@ -139,4 +140,10 @@ export const dashboardConfig = [
         component: Facilities,
         icon: FacilitiesIcon,
     },
+    {
+        id: 'serviceCosts',
+        title: 'Service Costs',
+        component: ServiceCostsDashboard,
+        icon: FacilitiesIcon
+    }
 ]

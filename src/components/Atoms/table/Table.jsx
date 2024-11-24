@@ -161,7 +161,8 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
     const [tableState, setTableState] = useState({}),
         [dialog, setDialog] = useState({open: false, config: {}}),
         {
-            columns = [],
+            columns: _columns = [],
+            columnsBuilder,
             onRowClick,
             hasOnClickUrl = true,
             onPageChange,
@@ -186,6 +187,7 @@ const EnhancedTable = ({config = {}, data = [], history, loading = false, onRefe
         {role = ''} = getUserDetail().user,
         hasDeletePermission = typeof deletePermissions === 'boolean' ? deletePermissions : deletePermissions.indexOf(role) > -1 || false,
         ref = React.useRef([]);
+    const columns = typeof columnsBuilder === 'function' ? columnsBuilder({data, columns: _columns}) : _columns;
     const length = Array.isArray(data) && data.length,
         Actions = useMemo(() => {
         if(actions && React.isValidElement(actions)){
