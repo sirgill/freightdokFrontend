@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo, useState} from "react";
-import {Route} from "react-router-dom";
-import {Box} from "@mui/material";
+import {Link, Route} from "react-router-dom";
+import {Box, Button} from "@mui/material";
 import Widget from "../../layout/Widget";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import {efsTransactionRatesTableConfig, ownerOperatorTableConfig} from "./config";
@@ -9,8 +9,10 @@ import {GET_SERVICE_COSTS_EFS_TRANSACTION, GET_SERVICE_COSTS_OWNER_OPERATOR} fro
 import {Input, LoadingButton} from "../../components/Atoms";
 import EfsTransactionCostForm from "./EfsTransactionCostForm";
 import {addEvent, removeEvent} from "../../utils/utils";
+import {UserSettings} from "../../components/Atoms/client";
 
 const ServiceCostsDashboard = (props) => {
+    const {viewEfsTransactionRates, editEfsTransactionRates, addEfsTransactionRates, viewOpCosts, addOpCosts, editOpCosts} = UserSettings.getUserPermissionsByDashboardId('serviceCosts');
     const {match: {path} = {}} = props;
     const {data={}, loading, refetch, isRefetching} = useFetch(GET_SERVICE_COSTS_OWNER_OPERATOR);
     const {data: efsData={}, loading: isEfsLoading, refetch: efsRefetch, isRefetching: isEfsRefetching} = useFetch(GET_SERVICE_COSTS_EFS_TRANSACTION);
@@ -22,11 +24,15 @@ const ServiceCostsDashboard = (props) => {
     }, [input])
 
     const actions = useMemo(() => {
-        return <Box sx={{display: 'flex', gap: 1}} component='form' onSubmit={onSubmit}>
+        return addOpCosts && <Box sx={{display: 'flex', gap: 1}} component='form' onSubmit={onSubmit}>
             <Input label='Add Category' value={input} onChange={({value}) => setInput(value)} />
             <LoadingButton type='submit' isLoading={false}>Add</LoadingButton>
         </Box>
-    }, [input, onSubmit])
+    }, [input, onSubmit, addOpCosts]);
+
+    const EfsActions = useMemo(() => {
+        return addEfsTransactionRates && <Button component={Link} to={path + `/efs/new`} variant='outlined'>Add</Button>
+    }, [addEfsTransactionRates, path])
 
     useEffect(() => {
         addEvent(window, 'refetchEfsTransactionCosts', efsRefetch);
@@ -37,25 +43,26 @@ const ServiceCostsDashboard = (props) => {
     }, [efsRefetch]);
 
     return <Box sx={{height: '100%'}}>
-        <Widget title='Owner Operator Costs' sx={{mt: 2}}>
+        {viewOpCosts && <Widget title='Owner Operator Costs' sx={{mt: 2}}>
             <EnhancedTable
                 data={data.data}
-                config={ownerOperatorTableConfig({path})}
+                config={ownerOperatorTableConfig({path, editOpCosts})}
                 onRefetch={refetch}
                 loading={loading}
                 actions={actions}
                 isRefetching={isRefetching}
             />
-        </Widget>
-        <Widget title='EFS Transaction Costs' sx={{mt: 2}}>
+        </Widget>}
+        {viewEfsTransactionRates && <Widget title='EFS Transaction Costs' sx={{mt: 2}}>
             <EnhancedTable
                 data={efsData.data}
-                config={efsTransactionRatesTableConfig({path})}
+                config={efsTransactionRatesTableConfig({path, editEfsTransactionRates})}
                 isRefetching={isEfsRefetching}
                 onRefetch={efsRefetch}
                 loading={isEfsLoading}
+                actions={EfsActions}
             />
-        </Widget>
+        </Widget>}
         <Route path={path+'/efs/:id'} component={EfsTransactionCostForm} />
     </Box>
 }
