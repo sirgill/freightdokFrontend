@@ -16,3 +16,5 @@ export const WAREHOUSE = '/facilities';
 export const USERS = '/users';
 export const OWNER_OPERATOR = '/owner_operator';
 export const FACTORING_PARTNERS = '/updateFactoring_Partners'
+export const SERVICE_COSTS = '/service_costs'
+export const EFS_TRANSACTION_COSTS = '/efs'
