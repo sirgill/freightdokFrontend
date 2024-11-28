@@ -5,7 +5,7 @@ import {EFS_TRANSACTION_COSTS, SERVICE_COSTS} from "../../components/client/rout
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import React from "react";
 
-export const ownerOperatorTableConfig = ({path}) => ({
+export const ownerOperatorTableConfig = ({path, editOpCosts}) => ({
     showRefresh: true,
     rowCellPadding: 'normal',
     columnsBuilder: ({data, columns}) => {
@@ -66,6 +66,7 @@ export const ownerOperatorTableConfig = ({path}) => ({
         },
         {
             id: 'actions',
+            visible: editOpCosts,
             renderer: ({row}) => {
                 return <IconButton color='primary' component={Link} to={path + SERVICE_COSTS + `/${row._id}`}>
                     <EditOutlinedIcon />
@@ -75,7 +76,7 @@ export const ownerOperatorTableConfig = ({path}) => ({
     ]
 })
 
-export const efsTransactionRatesTableConfig = ({path}) => {
+export const efsTransactionRatesTableConfig = ({path, editEfsTransactionRates}) => {
    return {
        showRefresh: true,
        rowCellPadding: 'normal',
@@ -90,10 +91,12 @@ export const efsTransactionRatesTableConfig = ({path}) => {
            },
            {
                id: 'transactionCost',
-               label: 'Transaction Cost'
+               label: 'Transaction Cost',
+               valueFormatter: value => getDollarPrefixedPrice(value)
            },
            {
                id: 'actions',
+               visible: editEfsTransactionRates,
                renderer: ({row}) => {
                    return <IconButton color='primary' component={Link} to={path + EFS_TRANSACTION_COSTS + `/${row._id}`}>
                        <EditOutlinedIcon />
