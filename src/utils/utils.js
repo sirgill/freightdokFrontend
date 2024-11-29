@@ -55,7 +55,7 @@ String.prototype.removeWhiteSpaces = function (replaceBy) {
 // eslint-disable-next-line no-extend-native
 Object.defineProperty(String.prototype, 'capitalize', {
     value: function () {
-        return this.charAt(0).toUpperCase() + this.splice(1)
+        return this.charAt(0).toUpperCase() + this.slice(1)
     },
     enumerable: false
 })

@@ -125,7 +125,8 @@ function MiniDrawer({children, routes = [], basePath}) {
                             <Title routes={routes} basePath={basePath}/>
                         </Typography>
                     </Box>
-                    <Box sx={{ flexGrow: 0 }}>
+                    <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
+                        <Typography align='center' color='text.secondary' variant='body1' mr={3}>{process.env.REACT_APP_ENV}</Typography>
                         <UserMenu />
                     </Box>
                 </Toolbar>
@@ -150,7 +151,7 @@ function MiniDrawer({children, routes = [], basePath}) {
                     <NavLinks open={open} config={routes} basePath={basePath} />
                 </Box>
             </Drawer>
-            <Box component="main" sx={{flexGrow: 1, px: 3, pt: 8, pb: .8, height: '100%', overflow: 'hidden'}}>
+            <Box component="main" sx={{flexGrow: 1, pt: 8, pb: .8, height: '100%', overflow: 'hidden', '.dashboardRoot': {overflow: 'auto', px: 3}}}>
                 {/*<DrawerHeader/>*/}
                 {children}
             </Box>

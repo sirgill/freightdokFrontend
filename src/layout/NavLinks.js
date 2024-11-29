@@ -21,7 +21,7 @@ const NavLinks = ({open, config: routes = [], basePath, ...rest}) => {
 
     const links = useMemo(() => {
         return routes.map(route => {
-            const {id, title, icon: Icon} = route;
+            const {id, title, icon: Icon, reactIcon: ReactIcon} = route;
             const url = basePath + `/${id}`;
             const isSelected = location.pathname.includes(url)
             return <Tooltip key={id} title={!open ? title : undefined} sx={{fontSize: '1em'}}>
@@ -55,7 +55,7 @@ const NavLinks = ({open, config: routes = [], basePath, ...rest}) => {
                                 justifyContent: 'center',
                             }}
                         >
-                            <img src={Icon} alt={title}/>
+                            {ReactIcon ? <ReactIcon sx={{color: '#000'}} /> : <img src={Icon} alt={title}/>}
                         </ListItemIcon>
                         <ListItemText sx={{opacity: open ? 1 : 0}} primary={title} />
                 </ListItemButton>

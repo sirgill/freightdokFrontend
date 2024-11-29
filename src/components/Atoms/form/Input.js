@@ -56,6 +56,9 @@ const Input = (props) => {
         if (trimValue) {
             value = value.trim();
         }
+        if(type === 'number') {
+            value = Number(value);
+        }
         if (onChange) onChange({name, value});
     }
 

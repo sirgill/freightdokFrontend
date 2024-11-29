@@ -107,7 +107,7 @@ const Facilities = () => {
     </Stack>
 
     return (
-        <Box sx={{height: 'inherit'}}>
+        <Box sx={{height: 'inherit'}} className='dashboardRoot'>
             <EnhancedTable config={config} data={facilities} loading={loading} onRefetch={refetch} isRefetching={isRefetching} actions={Actions}
                            isPaginationLoading={isPaginationLoading || isSearching}
             />

@@ -40,7 +40,7 @@ const CarrierProfile = ({match = {}}) => {
 
 
     return (
-        <Box sx={{height: '100%', overflow: 'auto'}}>
+        <Box sx={{height: '100%', overflow: 'auto'}} className='dashboardRoot'>
             <EnhancedTable data={data} loading={loading} config={tableConfig} onRefetch={refetch}
                            isRefetching={isRefetching}/>
             {isMatch && <UpdateCarrierProfile onCloseUrl={path}/>}

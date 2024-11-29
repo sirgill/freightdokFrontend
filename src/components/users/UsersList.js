@@ -2,7 +2,7 @@ import React, {Fragment, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchUsers} from "../../actions/users";
 import EnhancedTable from "../Atoms/table/Table";
-import {Button} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import {showDelete} from "../../actions/component.action";
 import {getRoleNameString} from "../client/constants";
 import {UserSettings} from "../Atoms/client";
@@ -91,10 +91,10 @@ const UsersList = (props) => {
     const Actions = () => <Button disabled={!add} variant={'contained'} startIcon={<AddIcon />} onClick={() => history.push(path + '/add')}>Add</Button>
 
     return (
-        <Fragment>
+        <Box className='dashboardRoot'>
             <EnhancedTable loading={loading} data={list} config={config} onRefetch={() => dispatch(fetchUsers(+page, +limit))} actions={<Actions />}/>
             <Route path={path + '/:id'} render={(props) => <Form onCloseUrl={path} {...props} onRefetch={() => dispatch(fetchUsers(+page, +limit))} />} />
-        </Fragment>
+        </Box>
     );
 };
 
