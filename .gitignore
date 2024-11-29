@@ -3,3 +3,6 @@ node_modules
 .vscode
 /package-lock.json
 package-lock.json
+.env.development
+.env.staging
+.env.production
