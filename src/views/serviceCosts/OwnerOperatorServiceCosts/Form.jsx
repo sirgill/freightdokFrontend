@@ -7,7 +7,7 @@ import {GET_SERVICE_COSTS_OWNER_OPERATOR} from "../../../config/requestEndpoints
 import {InputAdornment} from "@mui/material";
 import useMutation from "../../../hooks/useMutation";
 import {notification} from "../../../actions/alert";
-import {triggerCustomEvent} from "../../../utils/utils";
+import {parseObjectValueToFloat, triggerCustomEvent} from "../../../utils/utils";
 import {useHistory} from "react-router-dom";
 import {ENHANCED_DASHBOARD} from "../../../components/client/routes";
 
@@ -21,7 +21,8 @@ const Form = ({id, data}) => {
         const inputs = []
         for(let i in additionalCosts){
             inputs.push(<Grid2 xs={12}>
-                <Input name={i} value={additionalCostsForm[i] || '0'}  type='number' label={i} onChange={additionalCostsOnChange}
+                <Input name={i} value={additionalCostsForm[i]}  type='number' label={i} onChange={additionalCostsOnChange}
+                       onBlur={additionalCostsOnBlur}
                        InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
             </Grid2>)
         }
@@ -31,15 +32,23 @@ const Form = ({id, data}) => {
     function additionalCostsOnChange({name, value}) {
         setAdditionalCostsForm((prev) => ({...prev, [name]: value}))
     }
+    function additionalCostsOnBlur ({name, value}) {
+        setAdditionalCostsForm((prev) => ({...prev, [name]: value || 0}));
+    }
 
     const onChange = ({name, value}) => {
         setForm({...form, [name]: value});
     }
 
+    function onBlur ({name, value}) {
+        setForm({...form, [name]: parseFloat(value) || 0});
+    }
+
     const onSubmit = e => {
         e.preventDefault();
         const {lease,truckInsurance,trailerInsurance,eld, parking} = form;
-        mutation({lease, truckInsurance,trailerInsurance,eld, parking, additionalCosts: additionalCostsForm}, 'put')
+        const body = parseObjectValueToFloat({lease, truckInsurance, trailerInsurance, eld, parking, additionalCosts: additionalCostsForm})
+        mutation(body, 'put')
             .then(({success, data}) => {
                 if(success){
                     history.replace(ENHANCED_DASHBOARD + '/serviceCosts');
@@ -53,23 +62,23 @@ const Form = ({id, data}) => {
 
     return <Grid2 spacing={2} container sx={{maxWidth: {xs: 'auto', sm: 350}}} component='form' onSubmit={onSubmit}>
         <Grid2 xs={12}>
-            <Input name='lease' value={form?.lease}  type='number' label='Lease (%)' autoFocus onChange={onChange}
+            <Input name='lease' value={form?.lease}  type='number' label='Lease (%)' autoFocus onChange={onChange} onBlur={onBlur}
                    InputProps={{startAdornment: <InputAdornment position="start">%</InputAdornment>}}/>
         </Grid2>
         <Grid2 xs={12}>
-            <Input name='truckInsurance' value={form?.truckInsurance} type='number' label='Truck Insurance' onChange={onChange}
+            <Input name='truckInsurance' value={form?.truckInsurance} type='number' label='Truck Insurance' onChange={onChange} onBlur={onBlur}
                    InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
         </Grid2>
         <Grid2 xs={12}>
-            <Input name='trailerInsurance' value={form?.trailerInsurance} type='number' label='Trailer Insurance' onChange={onChange}
+            <Input name='trailerInsurance' value={form?.trailerInsurance} type='number' label='Trailer Insurance' onChange={onChange} onBlur={onBlur}
                    InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
         </Grid2>
         <Grid2 xs={12}>
-            <Input name='eld' value={form?.eld} type='number' label='ELD' onChange={onChange}
+            <Input name='eld' value={form?.eld} type='number' label='ELD' onChange={onChange} onBlur={onBlur}
                    InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
         </Grid2>
         <Grid2 xs={12}>
-            <Input name='parking' value={form?.parking} type='number' label='Parking' onChange={onChange}
+            <Input name='parking' value={form?.parking} type='number' label='Parking' onChange={onChange} onBlur={onBlur}
                    InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
         </Grid2>
         {additionalCostsInput}

@@ -40,7 +40,7 @@ const ServiceCostsDashboard = (props) => {
                 config={ownerOperatorTableConfig({path, editOpCosts})}
                 onRefetch={refetch}
                 loading={loading}
-                actions={<AddCategoryComponent visible={addOpCosts} onRefetch={refetch} />}
+                actions={<AddCategoryComponent visible={addOpCosts} onRefetch={refetch} data={data.data} />}
                 isRefetching={isRefetching}
             />
         </Widget>}

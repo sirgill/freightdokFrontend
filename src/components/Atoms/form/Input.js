@@ -56,9 +56,6 @@ const Input = (props) => {
         if (trimValue) {
             value = value.trim();
         }
-        if(type === 'number') {
-            value = Number(value);
-        }
         if (onChange) onChange({name, value});
     }
 
@@ -68,7 +65,7 @@ const Input = (props) => {
             const {max, min} = inputProps;
             if (max && value > max) {
                 _.isFunction(onChange) && onChange({name, value: max})
-            } else if (max && value < min) {
+            } else if (min && value < min) {
                 _.isFunction(onChange) && onChange({name, value: min})
             }
         }

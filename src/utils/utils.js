@@ -177,6 +177,20 @@ export const getDollarPrefixedPrice = (price) => {
     return USDollar.format(price)
 }
 
+export const parseObjectValueToFloat = (obj) => {
+    if(typeof obj !== 'object'){
+        return null;
+    }
+    for(let i in obj) {
+        if(typeof obj[i] === 'object'){
+            obj[i] = parseObjectValueToFloat(obj[i])
+        }
+        else if(obj[i] !== null)
+            obj[i] = parseFloat(obj[i])
+    }
+    return obj;
+}
+
 // Just for reference
 /*
 * const createPdf = () => {
