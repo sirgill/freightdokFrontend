@@ -13,7 +13,6 @@ export const ownerOperatorTableConfig = ({path, editOpCosts}) => ({
         data.forEach((col) => {
             const {additionalCosts} = col;
             for(let key in additionalCosts){
-                const val = additionalCosts[key] || null
                 const idx = columns.findIndex(item => {
                     return item.id === key;
                 })
@@ -21,7 +20,7 @@ export const ownerOperatorTableConfig = ({path, editOpCosts}) => ({
                     columns.splice(index, 0, {
                         id: key,
                         label: key,
-                        valueFormatter: () => getDollarPrefixedPrice(val)
+                        valueFormatter: (value, row) => getDollarPrefixedPrice(row.additionalCosts[key])
                     })
                     index++;
                 }

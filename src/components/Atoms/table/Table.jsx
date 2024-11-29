@@ -115,7 +115,7 @@ const getTableCell = ({
         }
         let cell;
         if (valueFormatter && _.isFunction(valueFormatter)) {
-            cell = valueFormatter(row[id]);
+            cell = valueFormatter(row[id], row);
         } else if (_.isFunction(renderer)) {
             cell = renderer({row, role}, rowIndex) || emptyState;
         } else {
