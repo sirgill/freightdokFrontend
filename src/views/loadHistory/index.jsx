@@ -153,7 +153,7 @@ const LoadHistory = (props) => {
         title: 'Move Load'
     }
 
-    return <Box sx={{height: 'inherit'}}>
+    return <Box sx={{height: 'inherit'}} className='dashboardRoot'>
         <EnhancedTable
             data={loads}
             config={config}

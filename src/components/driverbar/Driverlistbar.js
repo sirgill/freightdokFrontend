@@ -86,7 +86,7 @@ const Driverlistbar = (props = {}) => {
     </Box>
 
     return (
-        <div>
+        <div className='dashboardRoot'>
             <EnhancedTable config={tableConfig} data={drivers} loading={loading} actions={Actions}/>
             {edit.open && <EditDriver closeEditForm={closeEditForm} data={edit.data} isEdit={true} onRefresh={fetchDrivers} />}
         </div>

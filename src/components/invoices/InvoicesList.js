@@ -221,7 +221,7 @@ export default function InvoicesList() {
     </Box>
 
     return (
-        <Box sx={{height: 'inherit'}}>
+        <Box sx={{height: 'inherit'}} className='dashboardRoot'>
             <Fragment>
                 <EnhancedTable
                     config={config}

@@ -8,6 +8,7 @@ import OwnerOperatorIcon from "../assets/icons/icons8-engineer-24.png";
 import LoadHistoryIcon from "../assets/icons/icons8-bulleted-list-24.png";
 import CarrierProfileIcon from "../assets/icons/settings-18-1-1-1-1-1.svg";
 import FacilitiesIcon from '../assets/icons/icons8-warehouse-24.png'
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import LoadModuleAsync from "../components/Atoms/LoadModuleAsync";
 
 const OpenBoard = LoadModuleAsync(() => import("../views/openBoard/OpenBoard.js"));
@@ -144,6 +145,6 @@ export const dashboardConfig = [
         id: 'serviceCosts',
         title: 'Service Costs',
         component: ServiceCostsDashboard,
-        icon: FacilitiesIcon
+        reactIcon: AttachMoneyIcon
     }
 ]

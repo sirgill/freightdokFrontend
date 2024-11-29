@@ -101,7 +101,7 @@ const OpenBoard = () => {
     }
 
     return (
-        <Stack style={{ gap: '10px', height: '100%', }}>
+        <Stack style={{ gap: '10px', height: '100%', }} className='dashboardRoot'>
             <Stack direction={'row'} justifyContent='end'>
                 <Stack>
                     <IconButton title='Refresh' onClick={getBiddingList}>

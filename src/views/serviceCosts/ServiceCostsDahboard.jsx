@@ -20,7 +20,7 @@ const ServiceCostsDashboard = (props) => {
     const {data: efsData={}, loading: isEfsLoading, refetch: efsRefetch, isRefetching: isEfsRefetching} = useFetch(GET_SERVICE_COSTS_EFS_TRANSACTION);
 
     const EfsActions = useMemo(() => {
-        return addEfsTransactionRates && <Button component={Link} to={path + `/efs/new`} variant='outlined'>Add</Button>
+        return addEfsTransactionRates && <Button component={Link} to={path + `/efs/new`} variant='contained'>Add</Button>
     }, [addEfsTransactionRates, path])
 
     useEffect(() => {
@@ -31,9 +31,9 @@ const ServiceCostsDashboard = (props) => {
             removeEvent(window, 'refetchEfsTransactionCosts', efsRefetch);
             removeEvent(window, 'refetchServiceCosts', efsRefetch);
         }
-    }, []);
+    }, [    ]);
 
-    return <Box sx={{height: '100%', overflow:'auto'}}>
+    return <Box sx={{height: '100%'}} className='dashboardRoot'>
         {viewOpCosts && <Widget title='Owner Operator Costs' sx={{mt: 2}}>
             <EnhancedTable
                 data={data.data}

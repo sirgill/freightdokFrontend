@@ -1,5 +1,5 @@
 import React, {Fragment, useCallback, useEffect} from "react";
-import {Button, IconButton} from "@mui/material";
+import {Box, Button, IconButton} from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import {Delete} from "@mui/icons-material";
 import AddIcon from '@mui/icons-material/Add';
@@ -123,7 +123,7 @@ const OwnerOperator = () => {
   </Button>
 
   return (
-    <>
+    <Box className='dashboardRoot'>
       <EnhancedTable
         config={tableConfig}
         data={data}
@@ -136,7 +136,7 @@ const OwnerOperator = () => {
 
       <Route path={path + "/add"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
       <Route path={path + "/edit/:id"} render={(props) => <FormModal {...props} onCloseUrl={path} />} />
-    </>
+    </Box>
   );
 };
 
