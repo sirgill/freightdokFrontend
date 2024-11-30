@@ -1,7 +1,7 @@
 import React from "react";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import useFetchWithSearchPagination from "../../hooks/useFetchWithSearchPagination";
-import {Close} from "@mui/icons-material";
+import {Close, Search} from "@mui/icons-material";
 import moment from "moment";
 import {Box, IconButton, Stack, Typography} from "@mui/material";
 import {getDollarPrefixedPrice} from "../../utils/utils";
@@ -142,9 +142,9 @@ const LoadHistory = (props) => {
             }}
             autoFocus
             InputProps={{
-                endAdornment: <IconButton onClick={() => handleSearch({value: ''})} sx={{visibility: searchQuery ? 'visible' : 'hidden'}}>
+                endAdornment: searchQuery ? <IconButton onClick={() => handleSearch({value: ''})} sx={{visibility: searchQuery ? 'visible' : 'hidden'}}>
                     <Close fontSize='small' />
-                </IconButton>
+                </IconButton> : <IconButton disableRipple><Search /></IconButton>,
             }}
         />
     </Stack>
