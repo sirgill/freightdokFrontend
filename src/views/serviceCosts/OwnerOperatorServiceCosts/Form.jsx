@@ -27,7 +27,7 @@ const Form = ({id, data}) => {
             </Grid2>)
         }
         return inputs;
-    }, [data, additionalCostsForm]);
+    }, [additionalCostsForm, additionalCosts]);
 
     function additionalCostsOnChange({name, value}) {
         setAdditionalCostsForm((prev) => ({...prev, [name]: value}))

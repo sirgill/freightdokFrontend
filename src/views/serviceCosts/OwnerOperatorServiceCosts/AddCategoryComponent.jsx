@@ -1,5 +1,5 @@
 import {Input} from "../../../components/Atoms";
-import {Box, Button, Menu, MenuItem} from "@mui/material";
+import {Box, Button, Menu, MenuItem, Typography} from "@mui/material";
 import React, {memo, useCallback, useMemo, useState} from "react";
 import useMutation from "../../../hooks/useMutation";
 import {CREATE_ADDITIONAL_CATEGORY, REMOVE_ADDITIONAL_SERVICE_COSTS} from "../../../config/requestEndpoints";
@@ -50,7 +50,6 @@ const StyledMenu = styled((props) => (
 }));
 
 function CustomizedMenus({data = [], onRefetch}) {
-    const {mutation, loading} = useMutation(REMOVE_ADDITIONAL_SERVICE_COSTS)
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -65,7 +64,13 @@ function CustomizedMenus({data = [], onRefetch}) {
         handleClose()
     }
     const onMenuClick = (item) => {
-        showDelete({message: 'Are you sure you want to delete '+item,
+        showDelete({
+            message: <Box>
+                <Typography variant='h6'>{`Are you sure you want to delete column ${item}?`}</Typography>
+                <Typography variant='subtitle2' color='text.secondary' align='center' sx={{mt: 2}}>
+                    This will remove the column from every record.
+                </Typography>
+            </Box>,
             uri: REMOVE_ADDITIONAL_SERVICE_COSTS, afterSuccessCb,
             body: {key: item}
         })();
