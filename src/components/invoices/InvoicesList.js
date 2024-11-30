@@ -9,7 +9,7 @@ import EnhancedTable from "../Atoms/table/Table";
 import ReplayIcon from '@mui/icons-material/Replay';
 import MoveToMyLoads from "./MoveToMyLoads";
 import {UserSettings} from "../Atoms/client";
-import {getDollarPrefixedPrice} from "../../utils/utils";
+import {getDollarPrefixedPrice, readableDateTime} from "../../utils/utils";
 import useFetchWithSearchPagination from "../../hooks/useFetchWithSearchPagination";
 import Tooltip from "../Atoms/Tooltip";
 import useMutation from "../../hooks/useMutation";
@@ -121,7 +121,7 @@ export default function InvoicesList() {
             {
                 id: 'updatedAt',
                 label: 'Updated On',
-                valueFormatter: (value) => new Date(value).toLocaleString()
+                valueFormatter: (value) => readableDateTime(value)
             },
             {
                 id: '',

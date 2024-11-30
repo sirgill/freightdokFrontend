@@ -1,10 +1,10 @@
 import React from "react";
 import EnhancedTable from "../../components/Atoms/table/Table";
 import useFetchWithSearchPagination from "../../hooks/useFetchWithSearchPagination";
-import {Close} from "@mui/icons-material";
+import {Close, Search} from "@mui/icons-material";
 import moment from "moment";
 import {Box, IconButton, Stack, Typography} from "@mui/material";
-import {getDollarPrefixedPrice} from "../../utils/utils";
+import {getDollarPrefixedPrice, readableDateTime} from "../../utils/utils";
 import {Input} from "../../components/Atoms";
 import {Link, Route} from "react-router-dom";
 import ReplayIcon from "@mui/icons-material/Replay";
@@ -101,7 +101,7 @@ const LoadHistory = (props) => {
                 id: 'updatedAt',
                 label: 'Updated On',
                 sort: true,
-                valueFormatter: (value) => new Date(value).toLocaleString()
+                valueFormatter: (value) => readableDateTime(value)
             },
             {
                 id: '',
@@ -142,9 +142,9 @@ const LoadHistory = (props) => {
             }}
             autoFocus
             InputProps={{
-                endAdornment: <IconButton onClick={() => handleSearch({value: ''})} sx={{visibility: searchQuery ? 'visible' : 'hidden'}}>
+                endAdornment: searchQuery ? <IconButton onClick={() => handleSearch({value: ''})} sx={{visibility: searchQuery ? 'visible' : 'hidden'}}>
                     <Close fontSize='small' />
-                </IconButton>
+                </IconButton> : <IconButton disableRipple><Search /></IconButton>,
             }}
         />
     </Stack>

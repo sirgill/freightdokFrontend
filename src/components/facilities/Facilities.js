@@ -11,7 +11,7 @@ import {UserSettings} from "../Atoms/client";
 import EnhancedTable from "../../components/Atoms/table/Table"
 import {showDelete} from "../../actions/component.action";
 import useFetchWithSearchPagination from "../../hooks/useFetchWithSearchPagination";
-import {Close} from "@mui/icons-material";
+import {Close, Search} from "@mui/icons-material";
 
 
 const Facilities = () => {
@@ -96,9 +96,9 @@ const Facilities = () => {
                 }
             }}
             InputProps={{
-                endAdornment: <IconButton onClick={() => handleSearch({value: ''})} sx={{visibility: searchQuery ? 'visible' : 'hidden'}}>
+                endAdornment: searchQuery ? <IconButton onClick={() => handleSearch({value: ''})} sx={{visibility: searchQuery ? 'visible' : 'hidden'}}>
                     <Close fontSize='small' />
-                </IconButton>
+                </IconButton> : <IconButton disableRipple><Search /></IconButton>
             }}
         />
         <Button variant='contained' component={Link} to={path + '/add'} disabled={!add} startIcon={<AddIcon />}>
