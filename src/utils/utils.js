@@ -2,7 +2,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { errorIconColor, successIconColor } from "../components/layout/ui/Theme";
 import { Cancel as CancelIcon } from "@mui/icons-material";
 import React from "react";
-import {Chip} from "@mui/material";
+import { Chip } from "@mui/material";
 
 const addEvent = (elem, type, eventHandle) => {
     if (elem == null || typeof elem === 'undefined') {
@@ -61,7 +61,7 @@ Object.defineProperty(String.prototype, 'capitalize', {
 })
 
 function parseToken(token = '') {
-    if(token && String(token) !== 'undefined'){
+    if (token && String(token) !== 'undefined') {
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
@@ -137,11 +137,11 @@ export const verticalAlignStyle = {
 }
 
 export const getRoutesByPermission = (routes) => {
-    const {user: {role = ''} = {}} = getUserDetail();
+    const { user: { role = '' } = {} } = getUserDetail();
     const arr = [];
     routes.forEach(route => {
-        const {permissions = []} = route;
-        if(permissions.indexOf(role) > -1){
+        const { permissions = [] } = route;
+        if (permissions.indexOf(role) > -1) {
             arr.push(route)
         }
     })
@@ -178,17 +178,28 @@ export const getDollarPrefixedPrice = (price) => {
 }
 
 export const parseObjectValueToFloat = (obj) => {
-    if(typeof obj !== 'object'){
+    if (typeof obj !== 'object') {
         return null;
     }
-    for(let i in obj) {
-        if(typeof obj[i] === 'object'){
+    for (let i in obj) {
+        if (typeof obj[i] === 'object') {
             obj[i] = parseObjectValueToFloat(obj[i])
         }
-        else if(obj[i] !== null)
+        else if (obj[i] !== null)
             obj[i] = parseFloat(obj[i])
     }
     return obj;
+}
+const dateTime = new Intl.DateTimeFormat('en-US', {
+    month: "short",
+    day: 'numeric',
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+})
+export const readableDateTime = (dateObject) => {
+    const dt = new Date(dateObject)
+    return dt ? dateTime.format(dt) : '--';
 }
 
 // Just for reference

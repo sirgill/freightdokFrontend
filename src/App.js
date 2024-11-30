@@ -1,12 +1,9 @@
-import React from "react";
+import React, {useEffect} from "react";
 import axios from "axios";
 import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
-// import OwnerOp from "./components/auth/OwnerOpRegister";
-// import Fleet from "./components/auth/FleetRegister";
-// import Dashboard from "./components/dashboard/Dashboard";
+import {useDispatch} from "react-redux";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import setAuthToken from "./utils/setAuthToken";
-// import Profile from "./components/users/Profile";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Notification from "./components/layout/Notification";
 
@@ -21,6 +18,7 @@ import {
 import LoadModuleAsync from "./components/Atoms/LoadModuleAsync";
 import {ENHANCED_DASHBOARD} from "./components/client/routes";
 import {Box} from "@mui/material";
+import {buildAppVariables} from "./actions/app.action";
 
 const SignUp = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/SignUp"))
 const Support = LoadModuleAsync(() => import("./components/auth/signUpWithFMCSA/Support"))
@@ -50,6 +48,13 @@ const PreAuthRoutes = () => {
 }
 
 const App = () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(buildAppVariables())
+    }, [dispatch])
+    console.log(process.env)
+
     return (
         <Box sx={{height: '100%'}} className='app'>
             <Notification/>

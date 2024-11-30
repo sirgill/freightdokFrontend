@@ -110,6 +110,10 @@ const UserMenu = ({history}) => {
                     <Typography textAlign="center">{setting.title}</Typography>
                 </MenuItem>
             ))}
+            <Divider />
+            <Box sx={{px: 2, py: .5, display: 'flex', flexDirection: 'column'}}>
+                <Typography fontSize={12}>Version: {process.env.REACT_APP_VERSION}</Typography>
+            </Box>
         </Menu>
     </Box>
 }
