@@ -15,6 +15,7 @@ const InputFieldPure = ({
                             inputProps,
                             helperText,
                             fullWidth,
+                            inputRef,
                             formControlSx,
                             ...rest
                         }) => {
@@ -33,6 +34,7 @@ const InputFieldPure = ({
             helperText={hasError ? errorText : helperText}
             size='small'
             inputProps={{readOnly, ...inputProps}}
+            inputRef={inputRef}
             {...rest}
         />
     </FormControl>
@@ -42,7 +44,7 @@ const InputField = memo(InputFieldPure)
 
 const Input = (props) => {
     const {
-        label, name, errors = {}, onChange, value, className, classNameRoot, isCapitalize = false, inputProps = {},
+        label, name, errors = {}, inputRef={}, onChange, value, className, classNameRoot, isCapitalize = false, inputProps = {},
         type = 'text', onBlur, InputProps, readOnly, helperText, fullWidth = true, trimValue = false, formControlSx = {}, ...rest
     } = props;
     const hasError = errors[name] || false,
@@ -89,6 +91,7 @@ const Input = (props) => {
             helperText={helperText}
             fullWidth={fullWidth}
             formControlSx={formControlSx}
+            inputRef={inputRef}
             {...rest}
         />
     )

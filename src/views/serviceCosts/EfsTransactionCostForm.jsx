@@ -10,6 +10,23 @@ import {useHistory} from "react-router-dom";
 import {ENHANCED_DASHBOARD} from "../../components/client/routes";
 import useLazyFetch from "../../hooks/useLazyFetch";
 
+function validateForm({minAmount, maxAmount, transactionCost}) {
+    let valid = true, errors = {};
+    if(!minAmount){
+        valid = false;
+        errors.minAmount = 'Enter Minimum Amount'
+    }
+    if(!maxAmount){
+        valid = false;
+        errors.maxAmount = 'Enter Maximum Amount'
+    }
+    if(!transactionCost){
+        valid = false;
+        errors.transactionCost = 'Enter Transaction Cost'
+    }
+    return  {valid, errors}
+}
+
 const Body = ({id, data}) => {
     const history = useHistory();
     const {mutation, loading} = useMutation(GET_SERVICE_COSTS_EFS_TRANSACTION + `/${id}`)
@@ -18,14 +35,20 @@ const Body = ({id, data}) => {
         maxAmount: data?.maxAmount,
         minAmount: data?.minAmount,
         transactionCost: data?.transactionCost
-    })
+    }),
+        [errors,setErrors] = useState({});
 
     const onChange = ({name, value}) => {
         setForm({...form, [name]: value});
+        setErrors({...errors, [name]: ''})
     }
 
     const onSubmit = (e) => {
         e.preventDefault();
+        const {valid, errors} = validateForm(form);
+        if(!valid) {
+            return setErrors(errors);
+        }
         if (id) {
             mutation(form, 'put', afterSubmit)
         } else {
@@ -43,17 +66,17 @@ const Body = ({id, data}) => {
         }
     }
 
-    return <Grid container spacing={3} component='form' sx={{width: {xs: 'auto', sm: '350px'}}} onSubmit={onSubmit}>
+    return <Grid container spacing={3} component='form' sx={{width: {xs: 'auto'}}} onSubmit={onSubmit}>
         <Grid item xs={12}>
-            <Input name='minAmount' value={form.minAmount} onChange={onChange} label='Min Amount' type='number'
+            <Input name='minAmount' value={form.minAmount} onChange={onChange} label='Minimum Amount' errors={errors} type='number'
                    InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
         </Grid>
         <Grid item xs={12}>
-            <Input name='maxAmount' value={form.maxAmount} onChange={onChange} label='Max  Amount' type='number'
+            <Input name='maxAmount' value={form.maxAmount} onChange={onChange} label='Maximum  Amount' errors={errors} type='number'
                    InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
         </Grid>
         <Grid item xs={12}>
-            <Input name='transactionCost' value={form.transactionCost} onChange={onChange} label='Transaction Cost'
+            <Input name='transactionCost' value={form.transactionCost} onChange={onChange} label='Transaction Cost' errors={errors}
                    type='number' InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
         </Grid>
         <Grid xs={12} item>
@@ -72,7 +95,7 @@ const EfsTransactionCostForm = (props) => {
         return <FullScreenLoader/>
     }
 
-    return <Modal config={{title: 'Edit EFS Transaction Cost'}}>
+    return <Modal config={{title: 'Edit EFS Transaction Cost', preventBackdropClick: true, maxWidth: 'sm'}}>
         <Body id={id === 'new' ? null : id} data={data?.data}/>
     </Modal>
 }

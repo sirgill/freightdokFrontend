@@ -58,7 +58,8 @@ export default function Modal(props) {
             showClose = true,
             paperProps = {},
             preventBackdropClick = false,
-            titleStyles = {}
+            titleStyles = {},
+            maxWidth = 'md'
         } = config;
     const [open, setOpen] = React.useState(false);
     const theme = useTheme();
@@ -100,7 +101,7 @@ export default function Modal(props) {
             onClose={handleClose}
             aria-labelledby={title || "customized-dialog-title"}
             open={open}
-            maxWidth={'lg'}
+            maxWidth={maxWidth}
             TransitionComponent={Transition}
             PaperProps={paperProps}
             fullScreen={fullScreen}
