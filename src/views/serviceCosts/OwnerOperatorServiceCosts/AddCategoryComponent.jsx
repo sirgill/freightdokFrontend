@@ -1,6 +1,6 @@
 import {Input} from "../../../components/Atoms";
 import {Box, Button, Menu, MenuItem, Typography} from "@mui/material";
-import React, {memo, useCallback, useMemo, useState} from "react";
+import React, {memo, useCallback, useMemo, useRef, useState} from "react";
 import useMutation from "../../../hooks/useMutation";
 import {CREATE_ADDITIONAL_CATEGORY, REMOVE_ADDITIONAL_SERVICE_COSTS} from "../../../config/requestEndpoints";
 import {notification} from "../../../actions/alert";
@@ -119,20 +119,33 @@ function CustomizedMenus({data = [], onRefetch}) {
     );
 }
 
-const AddCategoryComponent = ({visible, onRefetch, data}) => {
-    const [input, setInput] = useState('');
+const AddCategoryComponent = ({visible, onRefetch, data, showAlert, onCloseAlert}) => {
+    const [input, setInput] = useState(''),
+        ref = useRef(null);
     const {mutation, loading} = useMutation(CREATE_ADDITIONAL_CATEGORY);
 
     const onSubmit = useCallback((e) => {
         e.preventDefault();
+        let valid = true;
+        data.forEach(col => {
+            const {additionalCosts} = col || {};
+            if(additionalCosts.hasOwnProperty(input)){
+                valid = false;
+            }
+        })
+        if(!valid) {
+            ref.current.focus();
+            return showAlert({message: input + ' is already present as a Cost. Please check the Category provided.'});
+        }
         mutation({category: input}, 'post')
             .then(({success, data}) => {
+                onCloseAlert()
                 if(success){
                     notification(data.message);
                     onRefetch();
                     setInput('');
                 } else {
-                    notification(data.message, 'error');
+                    showAlert({message: data.message});
                 }
             })
     }, [input, mutation, onRefetch])
@@ -141,9 +154,9 @@ const AddCategoryComponent = ({visible, onRefetch, data}) => {
         return null;
     }
 
-    return <Box sx={{display: 'flex', gap: 1}} component='form' onSubmit={onSubmit}>
-        <Input isCapitalize label='Add Category' value={input} onChange={({value}) => setInput(value)} />
-        <Button variant='contained' type='submit' disabled={loading}>{'Add'}</Button>
+    return <Box sx={{display: 'flex', gap: 1.5}} component='form' onSubmit={onSubmit}>
+        <Input isCapitalize label='Add Category' value={input} onChange={({value}) => setInput(value)} inputRef={ref} />
+        <Button variant='contained' type='submit' disabled={loading || input.length < 3}>{'Add'}</Button>
         <CustomizedMenus data={data} onRefetch={onRefetch}/>
     </Box>
 }

@@ -1,4 +1,4 @@
-import {useEffect, useMemo} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {Link, Route} from "react-router-dom";
 import {Box, Button} from "@mui/material";
 import Widget from "../../layout/Widget";
@@ -12,10 +12,12 @@ import {UserSettings} from "../../components/Atoms/client";
 import AddCategoryComponent from "./OwnerOperatorServiceCosts/AddCategoryComponent";
 import OwnerOperatorServiceCostsForm from "./OwnerOperatorServiceCosts/Form";
 import {SERVICE_COSTS} from "../../components/client/routes";
+import {Alert} from "../../components/Atoms";
 
 const ServiceCostsDashboard = (props) => {
     const {viewEfsTransactionRates, editEfsTransactionRates, addEfsTransactionRates, viewOpCosts, addOpCosts, editOpCosts} = UserSettings.getUserPermissionsByDashboardId('serviceCosts');
-    const {match: {path} = {}} = props;
+    const {match: {path} = {}} = props,
+        [alert, setAlert] = useState({open: false, message: '', severity: 'error'});
     const {data={}, loading, refetch, isRefetching} = useFetch(GET_SERVICE_COSTS_OWNER_OPERATOR);
     const {data: efsData={}, loading: isEfsLoading, refetch: efsRefetch, isRefetching: isEfsRefetching} = useFetch(GET_SERVICE_COSTS_EFS_TRANSACTION);
 
@@ -31,16 +33,25 @@ const ServiceCostsDashboard = (props) => {
             removeEvent(window, 'refetchEfsTransactionCosts', efsRefetch);
             removeEvent(window, 'refetchServiceCosts', efsRefetch);
         }
-    }, [    ]);
+    }, []);
+
+    const showAlert = useCallback(({message, severity= 'error'}) => {
+        setAlert({open: true, message, severity})
+    }, [alert])
+
+    const onCloseAlert = useCallback(() => {
+        setAlert({...alert, open: false})
+    }, [alert])
 
     return <Box sx={{height: '100%'}} className='dashboardRoot'>
+        <Alert config={alert} onClose={onCloseAlert} inStyles={{width: 'fit-content', margin: 'auto', mt: 1 }}/>
         {viewOpCosts && <Widget title='Owner Operator Costs' sx={{mt: 2}}>
             <EnhancedTable
                 data={data.data}
                 config={ownerOperatorTableConfig({path, editOpCosts})}
                 onRefetch={refetch}
                 loading={loading}
-                actions={<AddCategoryComponent visible={addOpCosts} onRefetch={refetch} data={data.data} />}
+                actions={<AddCategoryComponent visible={addOpCosts} onRefetch={refetch} data={data.data} showAlert={showAlert} onCloseAlert={onCloseAlert} />}
                 isRefetching={isRefetching}
             />
         </Widget>}

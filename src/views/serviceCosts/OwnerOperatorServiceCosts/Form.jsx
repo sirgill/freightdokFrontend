@@ -20,8 +20,8 @@ const Form = ({id, data}) => {
     const additionalCostsInput = useMemo(() => {
         const inputs = []
         for(let i in additionalCosts){
-            inputs.push(<Grid2 xs={12}>
-                <Input name={i} value={additionalCostsForm[i]}  type='number' label={i} onChange={additionalCostsOnChange}
+            inputs.push(<Grid2 xs={12} key={i} md={6}>
+                <Input name={i} value={additionalCostsForm[i]} type='number' label={i} onChange={additionalCostsOnChange}
                        onBlur={additionalCostsOnBlur}
                        InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
             </Grid2>)
@@ -60,24 +60,24 @@ const Form = ({id, data}) => {
             })
     }
 
-    return <Grid2 spacing={2} container sx={{maxWidth: {xs: 'auto', sm: 350}}} component='form' onSubmit={onSubmit}>
-        <Grid2 xs={12}>
+    return <Grid2 spacing={2} container sx={{maxWidth: {xs: 'auto', sm: 'auto'}}} component='form' onSubmit={onSubmit}>
+        <Grid2 xs={12} md={6}>
             <Input name='lease' value={form?.lease}  type='number' label='Lease (%)' autoFocus onChange={onChange} onBlur={onBlur}
                    InputProps={{startAdornment: <InputAdornment position="start">%</InputAdornment>}}/>
         </Grid2>
-        <Grid2 xs={12}>
+        <Grid2 xs={12} md={6}>
             <Input name='truckInsurance' value={form?.truckInsurance} type='number' label='Truck Insurance' onChange={onChange} onBlur={onBlur}
                    InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
         </Grid2>
-        <Grid2 xs={12}>
+        <Grid2 xs={12} md={6}>
             <Input name='trailerInsurance' value={form?.trailerInsurance} type='number' label='Trailer Insurance' onChange={onChange} onBlur={onBlur}
                    InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
         </Grid2>
-        <Grid2 xs={12}>
+        <Grid2 xs={12} md={6}>
             <Input name='eld' value={form?.eld} type='number' label='ELD' onChange={onChange} onBlur={onBlur}
                    InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
         </Grid2>
-        <Grid2 xs={12}>
+        <Grid2 xs={12} md={6}>
             <Input name='parking' value={form?.parking} type='number' label='Parking' onChange={onChange} onBlur={onBlur}
                    InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
         </Grid2>
@@ -94,7 +94,7 @@ const OwnerOperatorServiceCostsForm = ({match}) => {
     if(loading){
         return <FullScreenLoader />
     }
-    return <Modal config={{title: 'Edit Service Cost'}}>
+    return <Modal config={{title: 'Edit Service Cost', preventBackdropClick: true, maxWidth: 'sm'}}>
         <Form id={id} data={data?.data || {}}/>
     </Modal>
 }

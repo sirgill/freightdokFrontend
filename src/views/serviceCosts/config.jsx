@@ -30,8 +30,16 @@ export const ownerOperatorTableConfig = ({path, editOpCosts}) => ({
     },
     columns: [
         {
-            id: 'ownerOperatorId.name',
-            label: 'Owner Operator'
+            id: 'ownerOperatorId',
+            label: 'Owner Operator',
+            valueFormatter(value) {
+                const {firstName, lastName, name} = value || {};
+                if(name) {
+                    return name;
+                } else {
+                    return firstName + ' ' + (lastName ? lastName : '')
+                }
+            }
         },
         {
             id: 'lease',
