@@ -151,7 +151,7 @@ function MiniDrawer({children, routes = [], basePath}) {
                     <NavLinks open={open} config={routes} basePath={basePath} />
                 </Box>
             </Drawer>
-            <Box component="main" sx={{flexGrow: 1, pt: 8, pb: .8, height: '100%', overflow: 'hidden', '.dashboardRoot': {overflow: 'auto', px: 3}}}>
+            <Box component="main" sx={{flexGrow: 1, pt: 8, pb: .8, height: '100%', overflow: 'hidden', '.dashboardRoot': {overflow: 'auto', px: 3, height: 'inherit'}}}>
                 {/*<DrawerHeader/>*/}
                 {children}
             </Box>
