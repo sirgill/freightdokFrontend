@@ -11,7 +11,7 @@ import {addEvent, removeEvent} from "../../utils/utils";
 import {UserSettings} from "../../components/Atoms/client";
 import AddCategoryComponent from "./OwnerOperatorServiceCosts/AddCategoryComponent";
 import OwnerOperatorServiceCostsForm from "./OwnerOperatorServiceCosts/Form";
-import {SERVICE_COSTS} from "../../components/client/routes";
+import {EFS_TRANSACTION_COSTS, SERVICE_COSTS} from "../../components/client/routes";
 import {Alert} from "../../components/Atoms";
 
 const ServiceCostsDashboard = (props) => {
@@ -65,7 +65,7 @@ const ServiceCostsDashboard = (props) => {
                 actions={EfsActions}
             />
         </Widget>}
-        <Route path={path+'/efs/:id'} component={EfsTransactionCostForm} />
+        <Route path={path+`${EFS_TRANSACTION_COSTS}/:id`} render={(props) => <EfsTransactionCostForm {...props} data={efsData.data} />} />
         <Route path={path+`${SERVICE_COSTS}/:id`} component={OwnerOperatorServiceCostsForm} />
     </Box>
 }

@@ -27,7 +27,7 @@ function validateForm({minAmount, maxAmount, transactionCost}) {
     return  {valid, errors}
 }
 
-const Body = ({id, data}) => {
+const Body = ({id, data, efsData}) => {
     const history = useHistory();
     const {mutation, loading} = useMutation(GET_SERVICE_COSTS_EFS_TRANSACTION + `/${id}`)
     const {mutation: createServiceCostMutation, loading: isLoading} = useMutation(GET_SERVICE_COSTS_EFS_TRANSACTION)
@@ -43,11 +43,31 @@ const Body = ({id, data}) => {
         setErrors({...errors, [name]: ''})
     }
 
+    function validateRange(minAmount, maxAmount) {
+        for (const range of efsData) {
+            if (
+                (minAmount >= range.minAmount && minAmount <= range.maxAmount) ||
+                (maxAmount >= range.minAmount && maxAmount <= range.maxAmount) ||
+                (minAmount <= range.minAmount && maxAmount >= range.maxAmount)
+            ) {
+                console.log(`Range (${minAmount}-${maxAmount}) overlaps with existing range (${range.minAmount}-${range.maxAmount}).`)
+                return false
+            }
+        }
+        console.log(`Range (${minAmount}-${maxAmount}) is valid and does not overlap.`);
+        return true;
+    }
+
     const onSubmit = (e) => {
         e.preventDefault();
         const {valid, errors} = validateForm(form);
         if(!valid) {
             return setErrors(errors);
+        }
+        const isValid = validateRange(form.minAmount, form.maxAmount)
+        if(!isValid){
+            notification('This range conflicts with the previous range', 'error');
+            return;
         }
         if (id) {
             mutation(form, 'put', afterSubmit)
@@ -68,7 +88,7 @@ const Body = ({id, data}) => {
 
     return <Grid container spacing={3} component='form' sx={{width: {xs: 'auto'}}} onSubmit={onSubmit}>
         <Grid item xs={12}>
-            <Input name='minAmount' value={form.minAmount} onChange={onChange} label='Minimum Amount' errors={errors} type='number'
+            <Input name='minAmount' value={form.minAmount} onChange={onChange} label='Minimum Amount' errors={errors} type='number' autoFocus
                    InputProps={{startAdornment: <InputAdornment position="start">$</InputAdornment>}}/>
         </Grid>
         <Grid item xs={12}>
@@ -86,7 +106,7 @@ const Body = ({id, data}) => {
     </Grid>
 }
 const EfsTransactionCostForm = (props) => {
-    const {match: {params: {id}} = {}} = props;
+    const {match: {params: {id}} = {}, data: efsData} = props;
     const {data, loading} = useLazyFetch(GET_SERVICE_COSTS_EFS_TRANSACTION + `/${id}`, {
         lazyFetchCondition: () => id !== 'new'
     });
@@ -96,7 +116,7 @@ const EfsTransactionCostForm = (props) => {
     }
 
     return <Modal config={{title: 'Edit EFS Transaction Cost', preventBackdropClick: true, maxWidth: 'sm'}}>
-        <Body id={id === 'new' ? null : id} data={data?.data}/>
+        <Body id={id === 'new' ? null : id} data={data?.data} efsData={efsData} />
     </Modal>
 }
 
