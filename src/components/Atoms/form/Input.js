@@ -55,14 +55,11 @@ const Input = (props) => {
         if (isCapitalize) {
             value = value.capitalize()
         }
-        if (trimValue) {
-            value = value.trim();
-        }
         if (onChange) onChange({name, value});
     }
 
     const handleBlur = (e) => {
-        const {name, value} = e.target
+        let {name, value} = e.target
         if (type === 'number') {
             const {max, min} = inputProps;
             if (max && value > max) {
@@ -70,6 +67,9 @@ const Input = (props) => {
             } else if (min && value < min) {
                 _.isFunction(onChange) && onChange({name, value: min})
             }
+        }
+        if (trimValue) {
+            value = value.trim();
         }
         if (onBlur) onBlur({name, value})
     }
