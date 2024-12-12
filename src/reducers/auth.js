@@ -19,6 +19,10 @@ const initialState = {
   user: null,
   roles: [],
   error: '',
+  userPermissions: {
+    permissions: {},
+    roleName: ''
+  }
 };
 
 export default function auth(state = initialState, action) {

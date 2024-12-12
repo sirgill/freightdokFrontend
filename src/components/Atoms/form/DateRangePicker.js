@@ -61,16 +61,14 @@ const getDateString = (s, e) => {
     return moment(s).format('MM/DD/YYYY') + ' - ' + moment(e).format('MM/DD/YYYY')
 }
 
-const DateRangePicker = ({ value, onChange, label, name }) => {
-    console.log(value)
+const DateRangePicker = ({ value, onChange, label, name, pickerProps={} }) => {
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const id = open && Boolean(anchorEl) ? 'transition-popper' : undefined;
     const [selectionRange, setSelectionRange] = useState({
-        // startDate: new Date(),
-        // endDate: new Date(),
-        // key: 'selection',
-        ...value
+        startDate: new Date(),
+        endDate: new Date(),
+        key: 'selection',
     })
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(new Date());
@@ -78,7 +76,9 @@ const DateRangePicker = ({ value, onChange, label, name }) => {
 
     useEffect(() => {
         if(value){
+            const {startDate, endDate} = value;
             setSelectionRange(value)
+            setTextField(getDateString(startDate, endDate));
         }
     }, [value])
 
@@ -136,6 +136,7 @@ const DateRangePicker = ({ value, onChange, label, name }) => {
                         onChange={handleSelect}
                         className={'basePicker'}
                         staticRanges={staticRanges}
+                        {...pickerProps}
                     />
                 </Box>
             </Popover>
