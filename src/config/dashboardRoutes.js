@@ -7,6 +7,7 @@ import DriverIcon from "../assets/icons/icons8-driver-24.png";
 import OwnerOperatorIcon from "../assets/icons/icons8-engineer-24.png";
 import LoadHistoryIcon from "../assets/icons/icons8-bulleted-list-24.png";
 import CarrierProfileIcon from "../assets/icons/settings-18-1-1-1-1-1.svg";
+import InsightsIcon from '@mui/icons-material/Insights';
 import FacilitiesIcon from '../assets/icons/icons8-warehouse-24.png'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import LoadModuleAsync from "../components/Atoms/LoadModuleAsync";
@@ -16,6 +17,7 @@ const MyBids = LoadModuleAsync(() => import("../views/mybids/Mybids"));
 const CarrierProfile = LoadModuleAsync(() => import("../views/carrierProfile/CarrierProfile"));
 const LoadHistory = LoadModuleAsync(() => import("../views/loadHistory"));
 const OwnerOperator = LoadModuleAsync(() => import("../views/ownerOperator/OwnerOperator"));
+const BITab = LoadModuleAsync(() => import("../views/businessIntelligence"));
 const UsersList = LoadModuleAsync(() => import("../components/users/UsersList"));
 const InvoicesList = LoadModuleAsync(() => import("../components/invoices/InvoicesList"));
 const Driverlistbar = LoadModuleAsync(() => import("../components/driverbar/Driverlistbar.js"));
@@ -85,6 +87,12 @@ export const routes = [
         component: Facilities,
         icon: FacilitiesIcon,
         permissions: ['admin', 'superAdmin', 'support']
+    }, {
+        id: 'biTool',
+        title: 'Business Insights',
+        component: BITab,
+        icon: InsightsIcon,
+        permissions: ['admin', 'superAdmin', 'support']
     },
 ]
 
@@ -140,6 +148,11 @@ export const dashboardConfig = [
         title: 'Facilities',
         component: Facilities,
         icon: FacilitiesIcon,
+    }, {
+        id: 'businessIntelligence',
+        title: 'Business Intelligence',
+        component: BITab,
+        reactIcon: InsightsIcon,
     },
     {
         id: 'serviceCosts',

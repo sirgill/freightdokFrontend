@@ -3,7 +3,7 @@ import moment from "moment";
 import { endOfDay, startOfDay, startOfWeek, startOfMonth, startOfQuarter, startOfYear } from 'date-fns'
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import 'react-date-range/dist/styles.css'; // main style file
-import React, { Fragment, useState } from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {
     Box,
     InputAdornment,
@@ -62,17 +62,25 @@ const getDateString = (s, e) => {
 }
 
 const DateRangePicker = ({ value, onChange, label, name }) => {
+    console.log(value)
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const id = open && Boolean(anchorEl) ? 'transition-popper' : undefined;
     const [selectionRange, setSelectionRange] = useState({
-        startDate: new Date(),
-        endDate: new Date(),
-        key: 'selection',
+        // startDate: new Date(),
+        // endDate: new Date(),
+        // key: 'selection',
+        ...value
     })
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(new Date());
     const [textField, setTextField] = useState(getDateString())
+
+    useEffect(() => {
+        if(value){
+            setSelectionRange(value)
+        }
+    }, [value])
 
     function handleSelect(ranges) {
         const { selection: { startDate, endDate } = {} } = ranges;
