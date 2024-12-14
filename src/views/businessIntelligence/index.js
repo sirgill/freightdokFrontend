@@ -23,8 +23,6 @@ const BITab = (props) => {
 
 
     useEffect(() => {
-        history.replace(path + '/overview')
-
         setDateRange({
             key: 'selection',
             startDate: new Date(sun.toDate()),

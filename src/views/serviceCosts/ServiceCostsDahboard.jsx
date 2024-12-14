@@ -37,7 +37,7 @@ const ServiceCostsDashboard = (props) => {
 
     const showAlert = useCallback(({message, severity= 'error'}) => {
         setAlert({open: true, message, severity})
-    }, [alert])
+    }, [])
 
     const onCloseAlert = useCallback(() => {
         setAlert({...alert, open: false})

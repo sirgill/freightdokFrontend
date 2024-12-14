@@ -1,10 +1,7 @@
-import {Box, Paper, Tab, Tabs} from "@mui/material";
-import styled from "@mui/material/styles/styled";
-import {Link, matchPath} from "react-router-dom";
-import {useLocation} from "react-router";
-import {useSelector} from "react-redux";
-import _ from "lodash";
+import {Paper} from "@mui/material";
+import BITabs from "./BITabs";
 
+/*
 const CustomTab = styled(Tab)(() => ({
     '&:hover': {
         textDecoration: 'none'
@@ -74,13 +71,12 @@ const MyTabs = ({basePath}) => {
         </Box>
     );
 }
-
+*/
 
 const BIDashboardTabs = ({basePath}) => {
-    const {financialTab, historicalTab, overviewTab} = useSelector(state => _.get(state, 'auth.userPermissions.permissions.businessIntelligence', {}));
-
     return <Paper elevation={0} width={'fit-content'} sx={{boxShadow: '0px 0px 32px #63636326', borderRadius: 5, overflow: 'hidden'}}>
-        <MyTabs basePath={basePath} />
+        {/*<MyTabs basePath={basePath} />*/}
+        <BITabs />
     </Paper>
 }
 
