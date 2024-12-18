@@ -8,6 +8,7 @@ import users from './users';
 import warehouse from '../reducers/warehouse.reducer';
 import openBoard from '../reducers/openBoard.reducer';
 import carrierProfile from '../reducers/carrierProfile.reducer';
+import businessIntelligence from '../reducers/businessIntelligence.reducer';
 import {app} from "./app.reducer";
 import {LOGOUT} from "../actions/types";
 
@@ -21,7 +22,8 @@ const appReducer = combineReducers({
   warehouse,
   app,
   openBoard,
-  carrierProfile
+  carrierProfile,
+  businessIntelligence
 })
 
 const rootReducer = (state, action) => {
