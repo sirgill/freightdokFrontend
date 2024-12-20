@@ -4,7 +4,12 @@ const initialState = {
     loading: false,
     isRefetching: false,
     businessIntelligenceData: {
-        success: true, data: {}
+        success: true, data: {
+            revenue: null,
+            averageRate: null,
+            loadCount: null,
+            overview: []
+        }
     }
 }
 const businessIntelligence = (state = initialState, {type, payload}) => {
