@@ -20,7 +20,7 @@ export const ownerOperatorTableConfig = ({path, editOpCosts}) => ({
                     columns.splice(index, 0, {
                         id: key,
                         label: key,
-                        valueFormatter: (value, row) => getDollarPrefixedPrice(row.additionalCosts[key])
+                        valueFormatter: (value, row) => getDollarPrefixedPrice(row.additionalCosts[key] || 0)
                     })
                     index++;
                 }

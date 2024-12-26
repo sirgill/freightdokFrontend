@@ -150,12 +150,16 @@ const AddCategoryComponent = ({visible, onRefetch, data, showAlert, onCloseAlert
             })
     }, [input, mutation, onRefetch])
 
+    const onBlur = ({value}) => {
+        setInput(value.trim());
+    }
+
     if(!visible) {
         return null;
     }
 
     return <Box sx={{display: 'flex', gap: 1.5}} component='form' onSubmit={onSubmit}>
-        <Input isCapitalize label='Add Category' value={input} onChange={({value}) => setInput(value)} inputRef={ref} />
+        <Input onBlur={onBlur} isCapitalize label='Add Category' value={input} onChange={({value}) => setInput(value)} inputRef={ref} />
         <Button variant='contained' type='submit' disabled={loading || input.length < 3}>{'Add'}</Button>
         <CustomizedMenus data={data} onRefetch={onRefetch}/>
     </Box>
