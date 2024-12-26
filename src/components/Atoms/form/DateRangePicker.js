@@ -3,7 +3,7 @@ import moment from "moment";
 import { endOfDay, startOfDay, startOfWeek, startOfMonth, startOfQuarter, startOfYear } from 'date-fns'
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import 'react-date-range/dist/styles.css'; // main style file
-import React, { Fragment, useState } from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {
     Box,
     InputAdornment,
@@ -61,7 +61,7 @@ const getDateString = (s, e) => {
     return moment(s).format('MM/DD/YYYY') + ' - ' + moment(e).format('MM/DD/YYYY')
 }
 
-const DateRangePicker = ({ value, onChange, label, name }) => {
+const DateRangePicker = ({ value, onChange, label, name, pickerProps={} }) => {
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const id = open && Boolean(anchorEl) ? 'transition-popper' : undefined;
@@ -73,6 +73,14 @@ const DateRangePicker = ({ value, onChange, label, name }) => {
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(new Date());
     const [textField, setTextField] = useState(getDateString())
+
+    useEffect(() => {
+        if(value){
+            const {startDate, endDate} = value;
+            setSelectionRange(value)
+            setTextField(getDateString(startDate, endDate));
+        }
+    }, [value])
 
     function handleSelect(ranges) {
         const { selection: { startDate, endDate } = {} } = ranges;
@@ -128,6 +136,7 @@ const DateRangePicker = ({ value, onChange, label, name }) => {
                         onChange={handleSelect}
                         className={'basePicker'}
                         staticRanges={staticRanges}
+                        {...pickerProps}
                     />
                 </Box>
             </Popover>

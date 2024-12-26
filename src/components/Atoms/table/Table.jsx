@@ -23,7 +23,7 @@ import Spinner from "../../layout/Spinner";
 import {Delete, Refresh} from "@mui/icons-material";
 import Dialog from "../Dialog";
 import {styled} from "@mui/material/styles";
-import {getUserDetail} from "../../../utils/utils";
+import {getDollarPrefixedPrice, getUserDetail} from "../../../utils/utils";
 import Tooltip from "../Tooltip";
 
 const Cell = styled(TableCell)(({theme}) => ({
@@ -108,13 +108,16 @@ const getTableCell = ({
         </Cell>;
 
     const cell = columns.map((column, i) => {
-        const {id = '', renderer, emptyState = '--', valueFormatter, visible = true, cellPadding} = column || {};
+        const {id = '', renderer, emptyState = '--', valueFormatter, visible = true, cellPadding, isCostCell} = column || {};
         const isVisible = _.isFunction(visible) ? visible({column, role}) : visible;
         if (!isVisible) {
             return null;
         }
         let cell;
-        if (valueFormatter && _.isFunction(valueFormatter)) {
+        if(isCostCell){
+            cell = row[id] ? getDollarPrefixedPrice(row[id] || '') : emptyState
+        }
+        else if (valueFormatter && _.isFunction(valueFormatter)) {
             cell = valueFormatter(row[id], row);
         } else if (_.isFunction(renderer)) {
             cell = renderer({row, role}, rowIndex) || emptyState;
