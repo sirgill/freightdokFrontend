@@ -1,16 +1,17 @@
 import {Stack, Box, IconButton} from "@mui/material";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {lazy, Suspense, useCallback, useEffect, useState} from "react";
 import {withRouter} from 'react-router-dom';
-import {DateRangePicker} from "../../components/Atoms";
+import {DateRangePicker, LoadingComponent} from "../../components/Atoms";
 import moment from "moment";
 import loadModuleAsync from "../../components/Atoms/LoadModuleAsync";
 import {useDispatch, useSelector} from "react-redux";
 import _ from "lodash";
 import {fetchBI} from "../../actions/businessIntelligence.action";
 import {Refresh} from "@mui/icons-material";
-import BITabs from "./BIDashboardTabs/BITabs";
+import {Spinner} from "reactstrap";
 
-const CardSection = loadModuleAsync(() => import("./cardSection/CardSection"));
+const CardSection = lazy(() => import("./cardSection/CardSection"));
+const BITabs = lazy(() => import("./BIDashboardTabs/BITabs"));
 
 const BITab = (props) => {
     const {canViewCards} = useSelector(state => _.get(state, 'auth.userPermissions.permissions.businessIntelligence', {}));
@@ -58,8 +59,12 @@ const BITab = (props) => {
                 <Refresh className={(isRefetching) ? 'rotateIcon' : undefined}/>
             </IconButton>
         </Box>}
-        <CardSection/>
-        <BITabs basePath={path} dateRange={dateRange} />
+        <Suspense fallback={<LoadingComponent />}>
+            <CardSection/>
+        </Suspense>
+        <Suspense fallback={<LoadingComponent />}>
+            <BITabs basePath={path} dateRange={dateRange} />
+        </Suspense>
     </Stack>
 }
 

@@ -13,8 +13,8 @@ const OwnerOperatorCardsConfig = [
     {title: 'Revenue', id: 'revenue', icon: AttachMoneyIcon, iconStyles: {color: SUCCESS_COLOR} },
     {title: 'Loads', id: 'loadCount', icon: LocalShippingOutlinedIcon, iconStyles: {color: PRIMARY_BLUE}},
     {title: 'Average Rate', id: 'averageRate', icon: TrendingUpOutlinedIcon, iconStyles: {color: 'violet'}},
-    {title: 'Total Miles', icon: MapOutlinedIcon, iconStyles: {color: 'orange'}},
-    {title: 'Rate per Mile', icon: CalendarTodayOutlinedIcon, iconStyles: {color: 'darkturquoise'}},
+    {title: 'Total Miles', id: 'totalMiles', icon: MapOutlinedIcon, iconStyles: {color: 'orange'}},
+    {title: 'Rate per Mile', id: 'ratePerMile', icon: CalendarTodayOutlinedIcon, iconStyles: {color: 'darkturquoise'}},
 ]
 const Card = ({icon: Icon, title, loading = false, value = '--'}) => {
     return <Grid container sx={{p: 2, borderRadius: 4, width: {sm: '100%', md: 'fit-content'}, boxShadow: '0px 0px 32px #8898AA26', minWidth: 200}} component={Paper} elevation={0}>

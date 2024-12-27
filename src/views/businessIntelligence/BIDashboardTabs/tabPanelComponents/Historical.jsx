@@ -52,12 +52,13 @@ function LoadingHistorical() {
 }
 
 function HistoricalPerformance({dateRange, data, loading}) {
-    return <Box sx={{width: '100%', border: '1px solid #e5e5e5', borderRadius: '.5rem', px: 2, pt: .5}}>
+    return <Box sx={{width: '100%', border: '1px solid #e5e5e5', borderRadius: '.5rem', px: 2, pt: 1}}>
         <Typography fontWeight='bold' sx={{px: .5}}>{dateRange}</Typography>
         <Box sx={{
             '.enhanced-table': {
                 '.tableContainer': {
                     boxShadow: 'none',
+                    mb: 0
                 }
             }
         }}>

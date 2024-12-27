@@ -206,6 +206,9 @@ export const getPresentableDateRange = (startDate, endDate) => {
     return `${new Date(startDate).toLocaleString('default', {month: 'short'})} ${new Date(startDate).getDate()} - ${new Date(endDate).toLocaleString('default', {month: 'short'})} ${new Date(endDate).getDate()}`
 }
 
+export const wait = (delayInMs = 1000) => {
+    return new Promise(resolve => setTimeout(resolve, delayInMs));
+}
 // Just for reference
 /*
 * const createPdf = () => {

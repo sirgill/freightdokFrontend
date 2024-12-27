@@ -1,6 +1,6 @@
 import {requestGet} from "../utils/request";
 import {BUSINESS_INTELLIGENCE, BUSINESS_INTELLIGENCE_HISTORICAL_PERFORMANCE} from "../config/requestEndpoints";
-import {serialize} from "../utils/utils";
+import {serialize, wait} from "../utils/utils";
 import {notification} from "./alert";
 import {
     IS_BI_LOADING,
@@ -27,10 +27,6 @@ export const fetchBI = (options, isRefetch) => async (dispatch) => {
 const fetchHistoricalPerformance = async (options = {}) => {
     const uri = `${BUSINESS_INTELLIGENCE_HISTORICAL_PERFORMANCE}?${serialize(options)}`
     return requestGet({uri});
-}
-
-const wait = (delayInMs = 1000) => {
-    return new Promise(resolve => setTimeout(resolve, delayInMs));
 }
 
 export const getHistoricalPerformance = (dateArray) => async (dispatch) => {
