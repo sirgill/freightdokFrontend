@@ -3,12 +3,10 @@ import React, {lazy, Suspense, useCallback, useEffect, useState} from "react";
 import {withRouter} from 'react-router-dom';
 import {DateRangePicker, LoadingComponent} from "../../components/Atoms";
 import moment from "moment";
-import loadModuleAsync from "../../components/Atoms/LoadModuleAsync";
 import {useDispatch, useSelector} from "react-redux";
 import _ from "lodash";
 import {fetchBI} from "../../actions/businessIntelligence.action";
 import {Refresh} from "@mui/icons-material";
-import {Spinner} from "reactstrap";
 
 const CardSection = lazy(() => import("./cardSection/CardSection"));
 const BITabs = lazy(() => import("./BIDashboardTabs/BITabs"));
