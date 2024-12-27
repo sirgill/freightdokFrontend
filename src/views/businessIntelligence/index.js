@@ -7,12 +7,13 @@ import {useDispatch, useSelector} from "react-redux";
 import _ from "lodash";
 import {fetchBI} from "../../actions/businessIntelligence.action";
 import {Refresh} from "@mui/icons-material";
+import {UserSettings} from "../../components/Atoms/client";
 
 const CardSection = lazy(() => import("./cardSection/CardSection"));
 const BITabs = lazy(() => import("./BIDashboardTabs/BITabs"));
 
 const BITab = (props) => {
-    const {canViewCards} = useSelector(state => _.get(state, 'auth.userPermissions.permissions.businessIntelligence', {}));
+    const {canViewCards} = UserSettings.getUserPermissionsByDashboardId('businessIntelligence');
     const sun = moment().subtract(1, 'weeks').startOf('week');
     const sat = moment().subtract(1, 'weeks').endOf('week');
     const isRefetching = useSelector(state => _.get(state, 'businessIntelligence.isRefetching', false));

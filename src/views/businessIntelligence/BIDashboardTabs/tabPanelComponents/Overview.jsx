@@ -1,4 +1,4 @@
-import {Box, Typography} from "@mui/material";
+import {Box, Fade, Typography} from "@mui/material";
 import Widget from "../../../../layout/Widget";
 import Table from "../../../../components/Atoms/table/Table";
 import _ from "lodash";
@@ -44,26 +44,28 @@ const config = {
     ]
 }
 const Overview = ({data, loading, isRefetching, presentableDateRange}) => {
-    return <Box>
-        <Widget title='Recent Loads' titleSx={{fontSize: 16}} sx={{border: 'none'}}>
-            <Typography align='right' fontWeight='bold'>Performance metrics ({presentableDateRange})</Typography>
-            <Box
-                sx={{
-                    background: '#fff',
-                    '.enhanced-table': {
-                        '.tableContainer': {
-                            boxShadow: 'none',
-                            border: '1px solid #e5e5e5',
-                            height: 400
+    return <Fade in timeout={1000}>
+        <Box>
+            <Widget title='Recent Loads' titleSx={{fontSize: 16}} sx={{border: 'none'}}>
+                <Typography align='right' fontWeight='bold'>Performance metrics ({presentableDateRange})</Typography>
+                <Box
+                    sx={{
+                        background: '#fff',
+                        '.enhanced-table': {
+                            '.tableContainer': {
+                                boxShadow: 'none',
+                                border: '1px solid #e5e5e5',
+                                height: 400
+                            }
                         }
-                    }
-                }}
-            >
-                <Table loading={loading} data={data} config={config} isRefetching={isRefetching}/>
-            </Box>
-            <Typography color='text.secondary'>Total: {data.length}</Typography>
-        </Widget>
-    </Box>
+                    }}
+                >
+                    <Table loading={loading} data={data} config={config} isRefetching={isRefetching}/>
+                </Box>
+                <Typography color='text.secondary'>Total: {data.length}</Typography>
+            </Widget>
+        </Box>
+    </Fade>
 }
 
 export default Overview;

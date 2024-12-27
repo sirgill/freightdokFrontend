@@ -13,7 +13,7 @@ import CompanyText from "../components/Atoms/CompanyText";
 import BackgroundImage from '../assets/images/ProfileBackground.png'
 import NavLinks from "./NavLinks";
 import {Tooltip, UserMenu} from "../components/Atoms";
-import {useMediaQuery} from "@mui/material";
+import {Paper, useMediaQuery} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {useEffect} from "react";
 
@@ -151,10 +151,10 @@ function MiniDrawer({children, routes = [], basePath}) {
                     <NavLinks open={open} config={routes} basePath={basePath} />
                 </Box>
             </Drawer>
-            <Box component="main" sx={{flexGrow: 1, pt: 8, pb: .8, height: '100%', overflow: 'hidden', '.dashboardRoot': {overflow: 'auto', px: 3, height: 'inherit'}}}>
+            <Paper elevation={0} component="main" sx={{flexGrow: 1, pt: 8, pb: .8, height: '100%', overflow: 'hidden', '.dashboardRoot': {overflow: 'auto', px: 3, height: 'inherit'}}}>
                 {/*<DrawerHeader/>*/}
                 {children}
-            </Box>
+            </Paper>
         </Box>
     );
 }

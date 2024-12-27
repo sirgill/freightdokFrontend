@@ -8,7 +8,7 @@ import {useSelector} from "react-redux";
 import _ from "lodash";
 import Historical from "./tabPanelComponents/Historical";
 import Financial from "./tabPanelComponents/Financial";
-import {Paper} from "@mui/material";
+import {Fade, Paper} from "@mui/material";
 import {getPresentableDateRange} from "../../../utils/utils";
 
 function CustomTabPanel(props) {
@@ -71,28 +71,30 @@ const BITabs = ({dateRange}) => {
     }, [value, history])
 
     return (
-        <Paper elevation={0} width={'fit-content'}
-               sx={{boxShadow: '0px 0px 32px #63636326', borderRadius: 5}}>
-            <Box sx={{width: '100%', height: 'inherit'}}>
-                <Box sx={{}}>
-                    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                        {overviewTab && <Tab label="Overview" {...a11yProps(0)} value='overview'/>}
-                        {historicalTab && <Tab label="Historical" {...a11yProps(1)} value='historical'/>}
-                        {financialTab && <Tab label="Financial" {...a11yProps(2)} value='financial'/>}
-                    </Tabs>
+        <Fade in timeout={1000}>
+            <Paper elevation={0} width={'fit-content'}
+                   sx={{boxShadow: '0px 0px 32px #63636326', borderRadius: 5}}>
+                <Box sx={{width: '100%', height: 'inherit'}}>
+                    <Box sx={{}}>
+                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                            {overviewTab && <Tab label="Overview" {...a11yProps(0)} value='overview'/>}
+                            {historicalTab && <Tab label="Historical" {...a11yProps(1)} value='historical'/>}
+                            {financialTab && <Tab label="Financial" {...a11yProps(2)} value='financial'/>}
+                        </Tabs>
+                    </Box>
+                    <CustomTabPanel value={value} index={'overview'}>
+                        <Overview data={overview} loading={loading} isRefetching={isRefetching}
+                                  presentableDateRange={presentableDateRange}/>
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={'historical'}>
+                        <Historical/>
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={'financial'}>
+                        <Financial presentableDateRange={presentableDateRange} />
+                    </CustomTabPanel>
                 </Box>
-                <CustomTabPanel value={value} index={'overview'}>
-                    <Overview data={overview} loading={loading} isRefetching={isRefetching}
-                              presentableDateRange={presentableDateRange}/>
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={'historical'}>
-                    <Historical/>
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={'financial'}>
-                    <Financial presentableDateRange={presentableDateRange} />
-                </CustomTabPanel>
-            </Box>
-        </Paper>
+            </Paper>
+        </Fade>
     )
 }
 
