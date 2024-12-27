@@ -17,7 +17,7 @@ const OwnerOperatorCardsConfig = [
     {title: 'Rate per Mile', icon: CalendarTodayOutlinedIcon, iconStyles: {color: 'darkturquoise'}},
 ]
 const Card = ({icon: Icon, title, loading = false, value = '--'}) => {
-    return <Grid container sx={{p: 2, borderRadius: 4, width: 'fit-content', boxShadow: '0px 0px 32px #8898AA26', minWidth: 200}} component={Paper} elevation={0}>
+    return <Grid container sx={{p: 2, borderRadius: 4, width: {sm: '100%', md: 'fit-content'}, boxShadow: '0px 0px 32px #8898AA26', minWidth: 200}} component={Paper} elevation={0}>
         <Grid item sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}} xs={12}>
             {loading ? <Skeleton animation="wave" sx={{width: '100%', mr: 2}} /> : <Typography variant='body1' color='#787878'>{title}</Typography>}
             {loading ? <Skeleton animation="wave" width={20} height={16} variant="circular" /> : Icon}

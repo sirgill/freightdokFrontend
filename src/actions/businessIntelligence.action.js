@@ -1,8 +1,14 @@
 import {requestGet} from "../utils/request";
-import {BUSINESS_INTELLIGENCE} from "../config/requestEndpoints";
+import {BUSINESS_INTELLIGENCE, BUSINESS_INTELLIGENCE_HISTORICAL_PERFORMANCE} from "../config/requestEndpoints";
 import {serialize} from "../utils/utils";
 import {notification} from "./alert";
-import {IS_BI_LOADING, FETCH_BI, IS_BI_REFETCHING} from "./types";
+import {
+    IS_BI_LOADING,
+    FETCH_BI,
+    IS_BI_REFETCHING,
+    BI_HISTORICAL_PERFORMANCE,
+    BI_HISTORICAL_PERFORMANCE_LOADING
+} from "./types";
 
 export const fetchBI = (options, isRefetch) => async (dispatch) => {
     try {
@@ -15,5 +21,43 @@ export const fetchBI = (options, isRefetch) => async (dispatch) => {
     } catch (e) {
         notification(e.message, 'error')
         isRefetch ? dispatch({type: IS_BI_REFETCHING, payload: false}) : dispatch({type: IS_BI_LOADING, payload: false})
+    }
+}
+
+const fetchHistoricalPerformance = async (options = {}) => {
+    const uri = `${BUSINESS_INTELLIGENCE_HISTORICAL_PERFORMANCE}?${serialize(options)}`
+    return requestGet({uri});
+}
+
+const wait = (delayInMs = 1000) => {
+    return new Promise(resolve => setTimeout(resolve, delayInMs));
+}
+
+export const getHistoricalPerformance = (dateArray) => async (dispatch) => {
+    try {
+        dispatch({type: BI_HISTORICAL_PERFORMANCE_LOADING, payload: true})
+        const promiseRequests = dateArray.map(async ({startDate, endDate}) => {
+            return fetchHistoricalPerformance({startDate: startDate.utc(true).toISOString(), endDate: endDate.utc(true).toISOString()})
+        })
+        await wait(2000);
+        const promise = await Promise.all(promiseRequests);
+        const data = promise.map((response, i) => {
+            const {success, data} = response;
+            if(success && data) {
+                return {
+                    data,
+                    dateRange: dateArray[i]
+                };
+            } else {
+                return []
+            }
+        })
+
+        dispatch({ type: BI_HISTORICAL_PERFORMANCE, payload: data })
+    } catch (e) {
+        console.log(e)
+    }
+    finally {
+        dispatch({type: BI_HISTORICAL_PERFORMANCE_LOADING, payload: false})
     }
 }

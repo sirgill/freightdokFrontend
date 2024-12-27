@@ -59,6 +59,9 @@ export const themeNew = muiCreateTheme({
         success: {
             main: SUCCESS_COLOR
         },
+        error: {
+            main: '#ef4444'
+        }
     },
     typography: {
         fontFamily: ['Myriad-Pro Regular', "Sans-serif"].join(','),

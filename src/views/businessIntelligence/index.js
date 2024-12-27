@@ -51,7 +51,7 @@ const BITab = (props) => {
         dispatch(fetchBI({startDate: sun.toISOString(), endDate: sat.toISOString()}, refetch ));
     }
 
-    return <Stack sx={{height: '100%', pt: 2, gap: 4}} className='dashboardRoot'>
+    return <Stack sx={{height: '100%', pt: 2, gap: {xs: 2, md: 4}, overflow: 'auto'}} className='dashboardRoot'>
         {canViewCards && <Box sx={{textAlign: 'right'}}>
             <DateRangePicker label='Date Range' value={dateRange} pickerProps={{maxDate: sat.toDate()}} onChange={onChange}/>
             <IconButton title='Refresh' onClick={fetchBIData.bind(null, true)}>

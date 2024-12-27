@@ -88,7 +88,8 @@ const getTableCell = ({
         rowCellPadding = 'none',
         onRowClick = undefined,
         rowStyleCb,
-        showCheckbox = false
+        showCheckbox = false,
+        rowCellSx={}
     } = config;
     const {role, onCheckboxChange, checkboxes} = rest;
     let rowStyle = {}
@@ -124,7 +125,7 @@ const getTableCell = ({
         } else {
             cell = _.get(row, id, emptyState) || emptyState;
         }
-        return <Cell key={id + i} padding={cellPadding || rowCellPadding || 'normal'} component="th" scope="row">
+        return <Cell key={id + i} padding={cellPadding || rowCellPadding || 'normal'} sx={rowCellSx} component="th" scope="row">
             {cell}
         </Cell>
     });
@@ -134,7 +135,7 @@ const getTableCell = ({
             throw new Error('Checkbox key not provided');
         }
         const checked = checkboxes.indexOf(row[checkboxKey]) > -1;
-        cell.unshift(<Cell onClick={onCheckboxChange.bind(this, row)} key={`checkbox-${rowIndex}`}>
+        cell.unshift(<Cell onClick={onCheckboxChange.bind(this, row)} key={`checkbox-${rowIndex}`} sx={rowCellSx}>
             <Checkbox checked={checked} />
         </Cell>)
     }

@@ -38,8 +38,8 @@ const config = {
         },
         {
             id: 'updatedAt',
-            label: 'Updated On',
-            valueFormatter: val => readableDateTime(val)
+            label: 'Last Updated On',
+            valueFormatter: readableDateTime
         }
     ]
 }

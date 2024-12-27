@@ -1,4 +1,10 @@
-import {FETCH_BI, IS_BI_LOADING, IS_BI_REFETCHING} from "../actions/types";
+import {
+    BI_HISTORICAL_PERFORMANCE,
+    BI_HISTORICAL_PERFORMANCE_LOADING,
+    FETCH_BI,
+    IS_BI_LOADING,
+    IS_BI_REFETCHING
+} from "../actions/types";
 
 const initialState = {
     loading: false,
@@ -10,6 +16,10 @@ const initialState = {
             loadCount: null,
             overview: []
         }
+    },
+    historicalPerformance: {
+        loading: true,
+        data: []
     }
 }
 const businessIntelligence = (state = initialState, {type, payload}) => {
@@ -28,6 +38,22 @@ const businessIntelligence = (state = initialState, {type, payload}) => {
             return {
                 ...state,
                 isRefetching: payload
+            }
+        case BI_HISTORICAL_PERFORMANCE_LOADING:
+            return {
+                ...state,
+                historicalPerformance: {
+                    loading: payload,
+                    data: state.historicalPerformance.data
+                }
+            }
+        case BI_HISTORICAL_PERFORMANCE:
+            return {
+                ...state,
+                historicalPerformance: {
+                    loading: false,
+                    data: payload
+                }
             }
         default:
             return {
