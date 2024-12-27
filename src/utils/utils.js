@@ -173,8 +173,8 @@ let USDollar = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
 });
-export const getDollarPrefixedPrice = (price) => {
-    return USDollar.format(price)
+export const getDollarPrefixedPrice = (price, showNegative) => {
+    return showNegative ? '-' + USDollar.format(price) : USDollar.format(price)
 }
 
 export const parseObjectValueToFloat = (obj) => {
@@ -200,6 +200,10 @@ const dateTime = new Intl.DateTimeFormat('en-US', {
 export const readableDateTime = (dateObject) => {
     const dt = new Date(dateObject)
     return dt ? dateTime.format(dt) : '--';
+}
+
+export const getPresentableDateRange = (startDate, endDate) => {
+    return `${new Date(startDate).toLocaleString('default', {month: 'short'})} ${new Date(startDate).getDate()} - ${new Date(endDate).toLocaleString('default', {month: 'short'})} ${new Date(endDate).getDate()}`
 }
 
 // Just for reference

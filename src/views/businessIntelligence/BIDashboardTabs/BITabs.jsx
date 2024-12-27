@@ -9,6 +9,7 @@ import _ from "lodash";
 import Historical from "./tabPanelComponents/Historical";
 import Financial from "./tabPanelComponents/Financial";
 import {Paper} from "@mui/material";
+import {getPresentableDateRange} from "../../../utils/utils";
 
 function CustomTabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -53,7 +54,7 @@ const BITabs = ({dateRange}) => {
     const isRefetching = useSelector(state => _.get(state, 'businessIntelligence.isRefetching', false));
     const {overview} = data,
         {startDate, endDate} = dateRange,
-        presentableDateRange = `${new Date(startDate).toLocaleString('default', {month: 'short'})} ${new Date(startDate).getDate()} - ${new Date(endDate).toLocaleString('default', {month: 'short'})} ${new Date(endDate).getDate()}`;
+        presentableDateRange = getPresentableDateRange(startDate, endDate);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -71,7 +72,7 @@ const BITabs = ({dateRange}) => {
 
     return (
         <Paper elevation={0} width={'fit-content'}
-               sx={{boxShadow: '0px 0px 32px #63636326', borderRadius: 5, overflow: 'hidden'}}>
+               sx={{boxShadow: '0px 0px 32px #63636326', borderRadius: 5}}>
             <Box sx={{width: '100%', height: 'inherit'}}>
                 <Box sx={{}}>
                     <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
@@ -88,7 +89,7 @@ const BITabs = ({dateRange}) => {
                     <Historical/>
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={'financial'}>
-                    <Financial/>
+                    <Financial presentableDateRange={presentableDateRange} />
                 </CustomTabPanel>
             </Box>
         </Paper>
