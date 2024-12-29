@@ -7,6 +7,7 @@ import NewTrulLoadDetails from "../openBoard/NewTrulLoadDetails";
 import useFetch from "../../hooks/useFetch";
 import {tableConfigCb} from "./bids/config";
 import BrokerSetupMessage from "../../components/common/BrokerSetupMessage";
+import {Box} from "@mui/material";
 
 
 const MyBids = () => {
@@ -40,7 +41,7 @@ const MyBids = () => {
     }
 
     return (
-        <>
+        <Box className='dashboardRoot'>
             <EnhancedTable
                 config={tableConfigCb({history, path, totalCount, onPageChange, page, limit})}
                 data={bidsData}
@@ -54,7 +55,7 @@ const MyBids = () => {
                 <Route path={path + "/newtrul/:loadId"}
                        render={(props) => <NewTrulLoadDetails {...props} callDetail={false}/>}/>
             </Switch>
-        </>
+        </Box>
     );
 };
 

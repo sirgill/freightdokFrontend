@@ -196,7 +196,7 @@ const Loadlistbar = ({
     </Box>;
 
     return (
-        <Box sx={{height: 'inherit'}} className='dashboardRoot'>
+        <Box sx={{height: '100%', overflow: 'auto'}} className='dashboardRoot'>
             <EnhancedTable
                 config={tableConfig}
                 data={rawLoades}
