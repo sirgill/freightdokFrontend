@@ -13,9 +13,10 @@ import CompanyText from "../components/Atoms/CompanyText";
 import BackgroundImage from '../assets/images/ProfileBackground.png'
 import NavLinks from "./NavLinks";
 import {Tooltip, UserMenu} from "../components/Atoms";
-import {useMediaQuery} from "@mui/material";
+import {Paper, useMediaQuery} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {useEffect} from "react";
+import Slide from "@mui/material/Slide";
 
 const drawerWidth = 240;
 
@@ -105,56 +106,72 @@ function MiniDrawer({children, routes = [], basePath}) {
     return (
         <Box sx={{display: 'flex', height: 'inherit'}} className='sidebar-container'>
             <CssBaseline/>
-            <AppBar position="fixed" open={open}>
-                <Toolbar>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex' }, alignItems: 'center' }}>
-                        <Tooltip title={open ? 'Minimize Sidebar' : 'Maximize Sidebar'} placement='bottom'>
-                            <IconButton
-                                color="primary"
-                                aria-label="open drawer"
-                                onClick={open ? handleDrawerClose : handleDrawerOpen}
-                                edge="start"
-                                sx={{
-                                    marginRight: 3,
-                                }}
-                            >
-                                {open ? <ChevronLeftIcon/> : <MenuIcon/>}
-                            </IconButton>
-                        </Tooltip>
-                        <Typography variant="h6" noWrap component="div" color='text.primary' fontWeight='bold'>
-                            <Title routes={routes} basePath={basePath}/>
-                        </Typography>
+            <Slide in timeout={200}>
+                <AppBar position="fixed" open={open}>
+                    <Toolbar>
+                        <Box sx={{flexGrow: 1, display: {xs: 'flex'}, alignItems: 'center'}}>
+                            <Tooltip title={open ? 'Minimize Sidebar' : 'Maximize Sidebar'} placement='bottom'>
+                                <IconButton
+                                    color="primary"
+                                    aria-label="open drawer"
+                                    onClick={open ? handleDrawerClose : handleDrawerOpen}
+                                    edge="start"
+                                    sx={{
+                                        marginRight: 3,
+                                    }}
+                                >
+                                    {open ? <ChevronLeftIcon/> : <MenuIcon/>}
+                                </IconButton>
+                            </Tooltip>
+                            <Typography variant="h6" noWrap component="div" color='text.primary' fontWeight='bold'>
+                                <Title routes={routes} basePath={basePath}/>
+                            </Typography>
+                        </Box>
+                        <Box sx={{flexGrow: 0, display: 'flex', alignItems: 'center'}}>
+                            <Typography align='center' color='text.secondary' variant='body1'
+                                        mr={3}>{process.env.REACT_APP_ENV}</Typography>
+                            <UserMenu/>
+                        </Box>
+                    </Toolbar>
+                </AppBar>
+            </Slide>
+            <Slide in timeout={200} direction='right'>
+                <Drawer variant="permanent" open={open} PaperProps={{
+                    sx: {
+                        overflow: 'hidden'
+                    }
+                }}>
+                    <Box sx={{height: 277, background: `url(${BackgroundImage})`}}>
+                        <CompanyText
+                            style={{
+                                color: '#fff',
+                                fontWeight: 900,
+                                fontSize: 25,
+                                cursor: 'pointer',
+                                padding: 3,
+                            }}
+                            onClick={() => {
+                            }}
+                        />
                     </Box>
-                    <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
-                        <Typography align='center' color='text.secondary' variant='body1' mr={3}>{process.env.REACT_APP_ENV}</Typography>
-                        <UserMenu />
-                    </Box>
-                </Toolbar>
-            </AppBar>
-            <Drawer variant="permanent" open={open} PaperProps={{sx: {
-                overflow: 'hidden'
-                }}}>
-                <Box sx={{height: 277, background: `url(${BackgroundImage})`}}>
-                    <CompanyText
-                        style={{
-                            color: '#fff',
-                            fontWeight: 900,
-                            fontSize: 25,
-                            cursor: 'pointer',
-                            padding: 3,
-                        }}
-                        onClick={() => {
-                        }}
-                    />
-                </Box>
-                <Box sx={{overflow: 'hidden', overflowY: 'auto', height: `calc(100% - ${277}px)`}}>
-                    <NavLinks open={open} config={routes} basePath={basePath} />
-                </Box>
-            </Drawer>
-            <Box component="main" sx={{flexGrow: 1, pt: 8, pb: .8, height: '100%', overflow: 'hidden', '.dashboardRoot': {overflow: 'auto', px: 3, height: 'inherit'}}}>
+                    <Slide in timeout={500} direction='right'>
+                        <Box sx={{overflow: 'hidden', overflowY: 'auto', height: `calc(100% - ${277}px)`}}>
+                            <NavLinks open={open} config={routes} basePath={basePath}/>
+                        </Box>
+                    </Slide>
+                </Drawer>
+            </Slide>
+            <Paper elevation={0} component="main" sx={{
+                flexGrow: 1,
+                pt: 8,
+                pb: .8,
+                height: '100%',
+                overflow: 'hidden',
+                '.dashboardRoot': {overflow: 'auto', px: 3, height: 'inherit'}
+            }}>
                 {/*<DrawerHeader/>*/}
                 {children}
-            </Box>
+            </Paper>
         </Box>
     );
 }

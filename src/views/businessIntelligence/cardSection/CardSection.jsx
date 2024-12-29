@@ -1,4 +1,4 @@
-import {Box, Grid, Paper, Skeleton, Typography} from "@mui/material";
+import {Box, Grid, Grow, Paper, Skeleton, Typography} from "@mui/material";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import {PRIMARY_BLUE, SUCCESS_COLOR} from "../../../components/layout/ui/Theme";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
@@ -13,19 +13,21 @@ const OwnerOperatorCardsConfig = [
     {title: 'Revenue', id: 'revenue', icon: AttachMoneyIcon, iconStyles: {color: SUCCESS_COLOR} },
     {title: 'Loads', id: 'loadCount', icon: LocalShippingOutlinedIcon, iconStyles: {color: PRIMARY_BLUE}},
     {title: 'Average Rate', id: 'averageRate', icon: TrendingUpOutlinedIcon, iconStyles: {color: 'violet'}},
-    {title: 'Total Miles', icon: MapOutlinedIcon, iconStyles: {color: 'orange'}},
-    {title: 'Rate per Mile', icon: CalendarTodayOutlinedIcon, iconStyles: {color: 'darkturquoise'}},
+    {title: 'Total Miles', id: 'totalMiles', icon: MapOutlinedIcon, iconStyles: {color: 'orange'}},
+    {title: 'Rate per Mile', id: 'ratePerMile', icon: CalendarTodayOutlinedIcon, iconStyles: {color: 'darkturquoise'}},
 ]
 const Card = ({icon: Icon, title, loading = false, value = '--'}) => {
-    return <Grid container sx={{p: 2, borderRadius: 4, width: {sm: '100%', md: 'fit-content'}, boxShadow: '0px 0px 32px #8898AA26', minWidth: 200}} component={Paper} elevation={0}>
-        <Grid item sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}} xs={12}>
-            {loading ? <Skeleton animation="wave" sx={{width: '100%', mr: 2}} /> : <Typography variant='body1' color='#787878'>{title}</Typography>}
-            {loading ? <Skeleton animation="wave" width={20} height={16} variant="circular" /> : Icon}
+    return <Grow in timeout={1000}>
+        <Grid container sx={{p: 2, borderRadius: 4, width: {sm: '100%', md: 'fit-content'}, boxShadow: '0px 0px 32px #8898AA26', minWidth: 200}} component={Paper} elevation={0}>
+            <Grid item sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}} xs={12}>
+                {loading ? <Skeleton animation="wave" sx={{width: '100%', mr: 2}} /> : <Typography variant='body1' color='#787878'>{title}</Typography>}
+                {loading ? <Skeleton animation="wave" width={20} height={16} variant="circular" /> : Icon}
+            </Grid>
+            <Grid item>
+                {loading ? <Skeleton animation="wave" sx={{width: '100%', minWidth: 130}} /> : <Typography fontWeight='bold' variant='h5'>{value}</Typography>}
+            </Grid>
         </Grid>
-        <Grid item>
-            {loading ? <Skeleton animation="wave" sx={{width: '100%', minWidth: 130}} /> : <Typography fontWeight='bold' variant='h5'>{value}</Typography>}
-        </Grid>
-    </Grid>
+    </Grow>
 }
 
 const CardSection = () => {
