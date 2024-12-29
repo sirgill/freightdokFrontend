@@ -1,4 +1,4 @@
-import {Box, Fade, Typography} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import Widget from "../../../../layout/Widget";
 import Table from "../../../../components/Atoms/table/Table";
 import _ from "lodash";
@@ -44,7 +44,7 @@ const config = {
     ]
 }
 const Overview = ({data, loading, isRefetching, presentableDateRange}) => {
-    return <Fade in timeout={1000}>
+    return <>
         <Box>
             <Widget title='Recent Loads' titleSx={{fontSize: 16}} sx={{border: 'none'}}>
                 <Typography align='right' fontWeight='bold'>Performance metrics ({presentableDateRange})</Typography>
@@ -65,7 +65,7 @@ const Overview = ({data, loading, isRefetching, presentableDateRange}) => {
                 <Typography color='text.secondary'>Total: {data.length}</Typography>
             </Widget>
         </Box>
-    </Fade>
+    </>
 }
 
 export default Overview;

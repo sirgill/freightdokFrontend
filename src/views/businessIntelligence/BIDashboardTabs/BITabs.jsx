@@ -22,7 +22,9 @@ function CustomTabPanel(props) {
             aria-labelledby={`tab-${index}`}
             {...other}
         >
-            {value === index && <Box sx={{p: 1}}>{children}</Box>}
+            {value === index && <Fade in timeout={500}>
+                <Box sx={{p: 1}}>{children}</Box>
+            </Fade>}
         </Box>
     );
 }
