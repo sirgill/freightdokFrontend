@@ -2,11 +2,9 @@ import {Box, Skeleton, Typography} from "@mui/material";
 import Widget from "../../../../layout/Widget";
 import EnhancedTable from "../../../../components/Atoms/table/Table";
 import Grid2 from "@mui/material/Unstable_Grid2";
-import moment from "moment/moment";
 import {getPresentableDateRange} from "../../../../utils/utils";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {memo, useEffect} from "react";
-import {getHistoricalPerformance} from "../../../../actions/businessIntelligence.action";
 
 const tableConfig = {
     rowCellPadding: 'normal',
@@ -71,26 +69,12 @@ function HistoricalPerformance({dateRange, data, loading}) {
     </Box>;
 }
 
-const Historical = () => {
-    const startDate = moment().subtract(1, 'weeks').startOf('week');
-    const endDate = moment().subtract(1, 'weeks').endOf('week')
-
-    const startDate_2 = moment().subtract(2, 'weeks').startOf('week')
-    const endDate_2 = moment().subtract(2, 'weeks').endOf('week')
-
-    const startDate_3 = moment().subtract(3, 'weeks').startOf('week');
-    const endDate_3 = moment().subtract(2, 'weeks').endOf('week')
-
-    const dispatch = useDispatch();
+const Historical = ({fetchHistoricalTabData}) => {
     const {loading, data= []} = useSelector(state => state.businessIntelligence.historicalPerformance);
 
     useEffect(() => {
         if(!data.length){
-            dispatch(getHistoricalPerformance([
-                {startDate, endDate},
-                {startDate: startDate_2, endDate: endDate_2},
-                {startDate: startDate_3, endDate: endDate_3}
-            ]))
+            fetchHistoricalTabData();
         }
     }, [data]);
 
