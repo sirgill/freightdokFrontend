@@ -42,7 +42,7 @@ function useQuery() {
     return React.useMemo(() => new URLSearchParams(search), [search]);
 }
 
-const BITabs = ({dateRange, fetchHistoricalTabData}) => {
+const BITabs = ({dateRange, fetchHistoricalTabData, getFinancialsTabData}) => {
     const query = useQuery().get('tab');
     const {
         financialTab,
@@ -94,7 +94,9 @@ const BITabs = ({dateRange, fetchHistoricalTabData}) => {
                         />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={'financial'}>
-                        <Financial presentableDateRange={presentableDateRange} />
+                        <Financial presentableDateRange={presentableDateRange}
+                                   getFinancialsTabData={getFinancialsTabData}
+                        />
                     </CustomTabPanel>
                 </Box>
             </Paper>

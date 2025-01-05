@@ -5,7 +5,7 @@ import {DateRangePicker, LoadingComponent} from "../../components/Atoms";
 import moment from "moment";
 import {useDispatch, useSelector} from "react-redux";
 import _ from "lodash";
-import {fetchBI, getHistoricalPerformance} from "../../actions/businessIntelligence.action";
+import {fetchBI, getFinancials, getHistoricalPerformance} from "../../actions/businessIntelligence.action";
 import {Refresh} from "@mui/icons-material";
 import {UserSettings} from "../../components/Atoms/client";
 
@@ -44,11 +44,16 @@ const BITab = (props) => {
     }, [path, history]);
 
     useEffect(() => {
-        fetchBIData()
+        fetchBIData();
+        getFinancialsTabData()
     }, [dateRange]);
 
     const fetchBIData = (refetch = false) => {
         dispatch(fetchBI({startDate: sun.toISOString(), endDate: sat.toISOString()}, refetch ));
+    }
+
+    const getFinancialsTabData = () => {
+        dispatch(getFinancials({startDate: dateRange.startDate.toISOString(), endDate: dateRange.endDate.toISOString()}))
     }
 
     const fetchHistoricalTabData = useCallback(() => {
@@ -69,7 +74,8 @@ const BITab = (props) => {
 
     const onRefresh = (refresh = false) => {
         fetchBIData(refresh);
-        fetchHistoricalTabData(refresh)
+        fetchHistoricalTabData(refresh);
+        getFinancialsTabData(refresh);
     }
 
     return <Stack sx={{height: '100%', pt: 2, gap: {xs: 2, md: 4}, overflow: 'auto'}} className='dashboardRoot'>
@@ -87,6 +93,7 @@ const BITab = (props) => {
                 basePath={path}
                 dateRange={dateRange}
                 fetchHistoricalTabData={fetchHistoricalTabData}
+                getFinancialsTabData={getFinancialsTabData}
             />
         </Suspense>
     </Stack>

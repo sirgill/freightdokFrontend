@@ -5,6 +5,9 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import {getPresentableDateRange} from "../../../../utils/utils";
 import {useSelector} from "react-redux";
 import {memo, useEffect} from "react";
+import {Alert} from "../../../../components/Atoms";
+import {closeBIAlert} from "../../../../actions/businessIntelligence.action";
+import {BI_HISTORICAL_PERFORMANCE_ERROR} from "../../../../actions/types";
 
 const tableConfig = {
     rowCellPadding: 'normal',
@@ -70,7 +73,7 @@ function HistoricalPerformance({dateRange, data, loading}) {
 }
 
 const Historical = ({fetchHistoricalTabData}) => {
-    const {loading, data= []} = useSelector(state => state.businessIntelligence.historicalPerformance);
+    const {loading, data= [], error} = useSelector(state => state.businessIntelligence.historicalPerformance);
 
     useEffect(() => {
         if(!data.length){
@@ -86,6 +89,7 @@ const Historical = ({fetchHistoricalTabData}) => {
     const loadingComp = Array.from({length: 3}, () => <LoadingHistorical />)
 
     return <Widget title='Historical Performance' titleSx={{fontSize: 16, mb: 2}} sx={{border: 'none'}}>
+        <Alert config={error} inStyles={{m:'auto', mb:1, width: 'fit-content'}} onClose={closeBIAlert.bind(null, BI_HISTORICAL_PERFORMANCE_ERROR)} />
         <Grid2 spacing={1} container gap={1} sx={{overflow: 'auto', height: '100%', width: '100%'}}>
             {loading ? loadingComp : comp}
         </Grid2>
