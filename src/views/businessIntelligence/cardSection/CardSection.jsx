@@ -10,13 +10,13 @@ import {useSelector} from "react-redux";
 import _ from "lodash";
 
 const OwnerOperatorCardsConfig = [
-    {title: 'Revenue', id: 'revenue', icon: AttachMoneyIcon, iconStyles: {color: SUCCESS_COLOR} },
+    {title: 'Revenue', id: 'revenue', icon: AttachMoneyIcon, textStyles: {color: SUCCESS_COLOR}, iconStyles: {color: SUCCESS_COLOR} },
     {title: 'Loads', id: 'loadCount', icon: LocalShippingOutlinedIcon, iconStyles: {color: PRIMARY_BLUE}},
     {title: 'Average Rate', id: 'averageRate', icon: TrendingUpOutlinedIcon, iconStyles: {color: 'violet'}},
     {title: 'Total Miles', id: 'totalMiles', icon: MapOutlinedIcon, iconStyles: {color: 'orange'}},
     {title: 'Rate per Mile', id: 'ratePerMile', icon: CalendarTodayOutlinedIcon, iconStyles: {color: 'darkturquoise'}},
 ]
-const Card = ({icon: Icon, title, loading = false, value = '--'}) => {
+const Card = ({icon: Icon, title, loading = false, value = '--', textStyles={}}) => {
     return <Grow in timeout={1000}>
         <Grid container sx={{p: 2, borderRadius: 4, width: {sm: '100%', md: 'fit-content'}, boxShadow: '0px 0px 32px #8898AA26', minWidth: 200}} component={Paper} elevation={0}>
             <Grid item sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}} xs={12}>
@@ -24,7 +24,7 @@ const Card = ({icon: Icon, title, loading = false, value = '--'}) => {
                 {loading ? <Skeleton animation="wave" width={20} height={16} variant="circular" /> : Icon}
             </Grid>
             <Grid item>
-                {loading ? <Skeleton animation="wave" sx={{width: '100%', minWidth: 130}} /> : <Typography fontWeight='bold' variant='h5'>{value}</Typography>}
+                {loading ? <Skeleton animation="wave" sx={{width: '100%', minWidth: 130}} /> : <Typography fontWeight='bold' variant='h5' sx={textStyles}>{value}</Typography>}
             </Grid>
         </Grid>
     </Grow>
@@ -38,8 +38,8 @@ const CardSection = () => {
     const cards = OwnerOperatorCardsConfig.map(config => {
         const Icon = config.icon,
             iconStyles = config.iconStyles || {},
-            {id, title} = config;
-        return <Card title={title} key={id} loading={loading || isRefetching} icon={<Icon sx={iconStyles} />} value={data[id]} />
+            {id, title, textStyles} = config;
+        return <Card title={title} key={id} loading={loading || isRefetching} icon={<Icon sx={iconStyles} />} value={data[id]} textStyles={textStyles} />
     })
 
     return <Box sx={{display: 'flex', gap: 3, flexWrap: 'wrap'}}>

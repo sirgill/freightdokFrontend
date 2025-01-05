@@ -2,11 +2,12 @@ import {Box, Skeleton, Typography} from "@mui/material";
 import Widget from "../../../../layout/Widget";
 import EnhancedTable from "../../../../components/Atoms/table/Table";
 import Grid2 from "@mui/material/Unstable_Grid2";
-import moment from "moment/moment";
 import {getPresentableDateRange} from "../../../../utils/utils";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {memo, useEffect} from "react";
-import {getHistoricalPerformance} from "../../../../actions/businessIntelligence.action";
+import {Alert} from "../../../../components/Atoms";
+import {closeBIAlert} from "../../../../actions/businessIntelligence.action";
+import {BI_HISTORICAL_PERFORMANCE_ERROR} from "../../../../actions/types";
 
 const tableConfig = {
     rowCellPadding: 'normal',
@@ -71,26 +72,12 @@ function HistoricalPerformance({dateRange, data, loading}) {
     </Box>;
 }
 
-const Historical = () => {
-    const startDate = moment().subtract(1, 'weeks').startOf('week');
-    const endDate = moment().subtract(1, 'weeks').endOf('week')
-
-    const startDate_2 = moment().subtract(2, 'weeks').startOf('week')
-    const endDate_2 = moment().subtract(2, 'weeks').endOf('week')
-
-    const startDate_3 = moment().subtract(3, 'weeks').startOf('week');
-    const endDate_3 = moment().subtract(2, 'weeks').endOf('week')
-
-    const dispatch = useDispatch();
-    const {loading, data= []} = useSelector(state => state.businessIntelligence.historicalPerformance);
+const Historical = ({fetchHistoricalTabData}) => {
+    const {loading, data= [], error} = useSelector(state => state.businessIntelligence.historicalPerformance);
 
     useEffect(() => {
         if(!data.length){
-            dispatch(getHistoricalPerformance([
-                {startDate, endDate},
-                {startDate: startDate_2, endDate: endDate_2},
-                {startDate: startDate_3, endDate: endDate_3}
-            ]))
+            fetchHistoricalTabData();
         }
     }, [data]);
 
@@ -102,6 +89,7 @@ const Historical = () => {
     const loadingComp = Array.from({length: 3}, () => <LoadingHistorical />)
 
     return <Widget title='Historical Performance' titleSx={{fontSize: 16, mb: 2}} sx={{border: 'none'}}>
+        <Alert config={error} inStyles={{m:'auto', mb:1, width: 'fit-content'}} onClose={closeBIAlert.bind(null, BI_HISTORICAL_PERFORMANCE_ERROR)} />
         <Grid2 spacing={1} container gap={1} sx={{overflow: 'auto', height: '100%', width: '100%'}}>
             {loading ? loadingComp : comp}
         </Grid2>

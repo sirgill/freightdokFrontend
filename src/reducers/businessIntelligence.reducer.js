@@ -1,11 +1,13 @@
 import {
-    BI_HISTORICAL_PERFORMANCE,
+    BI_FINANCIAL, BI_FINANCIAL_ERROR, BI_FINANCIAL_LOADING,
+    BI_HISTORICAL_PERFORMANCE, BI_HISTORICAL_PERFORMANCE_ERROR,
     BI_HISTORICAL_PERFORMANCE_LOADING,
     FETCH_BI,
     IS_BI_LOADING,
     IS_BI_REFETCHING
 } from "../actions/types";
 
+const error = {show: false, message: null, severity: 'error'}
 const initialState = {
     loading: false,
     isRefetching: false,
@@ -19,7 +21,13 @@ const initialState = {
     },
     historicalPerformance: {
         loading: true,
-        data: []
+        data: [],
+        error
+    },
+    financials: {
+        loading: true,
+        data: {},
+        error
     }
 }
 const businessIntelligence = (state = initialState, {type, payload}) => {
@@ -43,16 +51,49 @@ const businessIntelligence = (state = initialState, {type, payload}) => {
             return {
                 ...state,
                 historicalPerformance: {
+                    ...state.historicalPerformance,
                     loading: payload,
-                    data: state.historicalPerformance.data
                 }
             }
         case BI_HISTORICAL_PERFORMANCE:
             return {
                 ...state,
                 historicalPerformance: {
-                    loading: false,
+                    ...state.historicalPerformance,
                     data: payload
+                }
+            }
+        case BI_HISTORICAL_PERFORMANCE_ERROR:
+            return {
+                ...state,
+                historicalPerformance: {
+                    ...state.historicalPerformance,
+                    error: payload
+                }
+            }
+        case BI_FINANCIAL_LOADING:
+            return {
+                ...state,
+                financials: {
+                    ...state.financials,
+                    loading: payload,
+                }
+            }
+        case BI_FINANCIAL:
+            return {
+                ...state,
+                financials: {
+                    loading: false,
+                    data: payload,
+                    error: null
+                }
+            }
+        case BI_FINANCIAL_ERROR:
+            return {
+                ...state,
+                financials: {
+                    ...state.financials,
+                    error: payload
                 }
             }
         default:

@@ -22,7 +22,9 @@ function CustomTabPanel(props) {
             aria-labelledby={`tab-${index}`}
             {...other}
         >
-            {value === index && <Box sx={{p: 1}}>{children}</Box>}
+            {value === index && <Fade in timeout={500}>
+                <Box sx={{p: 1}}>{children}</Box>
+            </Fade>}
         </Box>
     );
 }
@@ -40,7 +42,7 @@ function useQuery() {
     return React.useMemo(() => new URLSearchParams(search), [search]);
 }
 
-const BITabs = ({dateRange}) => {
+const BITabs = ({dateRange, fetchHistoricalTabData, getFinancialsTabData}) => {
     const query = useQuery().get('tab');
     const {
         financialTab,
@@ -87,10 +89,14 @@ const BITabs = ({dateRange}) => {
                                   presentableDateRange={presentableDateRange}/>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={'historical'}>
-                        <Historical/>
+                        <Historical
+                            fetchHistoricalTabData={fetchHistoricalTabData}
+                        />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={'financial'}>
-                        <Financial presentableDateRange={presentableDateRange} />
+                        <Financial presentableDateRange={presentableDateRange}
+                                   getFinancialsTabData={getFinancialsTabData}
+                        />
                     </CustomTabPanel>
                 </Box>
             </Paper>

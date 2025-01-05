@@ -5,7 +5,7 @@ import {DateRangePicker, LoadingComponent} from "../../components/Atoms";
 import moment from "moment";
 import {useDispatch, useSelector} from "react-redux";
 import _ from "lodash";
-import {fetchBI} from "../../actions/businessIntelligence.action";
+import {fetchBI, getFinancials, getHistoricalPerformance} from "../../actions/businessIntelligence.action";
 import {Refresh} from "@mui/icons-material";
 import {UserSettings} from "../../components/Atoms/client";
 
@@ -44,25 +44,57 @@ const BITab = (props) => {
     }, [path, history]);
 
     useEffect(() => {
-        fetchBIData()
+        fetchBIData();
+        getFinancialsTabData()
     }, [dateRange]);
 
     const fetchBIData = (refetch = false) => {
         dispatch(fetchBI({startDate: sun.toISOString(), endDate: sat.toISOString()}, refetch ));
     }
 
+    const getFinancialsTabData = () => {
+        dispatch(getFinancials({startDate: dateRange.startDate.toISOString(), endDate: dateRange.endDate.toISOString()}))
+    }
+
+    const fetchHistoricalTabData = useCallback(() => {
+        const startDate = moment().subtract(1, 'weeks').startOf('week');
+        const endDate = moment().subtract(1, 'weeks').endOf('week')
+
+        const startDate_2 = moment().subtract(2, 'weeks').startOf('week')
+        const endDate_2 = moment().subtract(2, 'weeks').endOf('week')
+
+        const startDate_3 = moment().subtract(3, 'weeks').startOf('week');
+        const endDate_3 = moment().subtract(3, 'weeks').endOf('week')
+        dispatch(getHistoricalPerformance([
+            {startDate, endDate},
+            {startDate: startDate_2, endDate: endDate_2},
+            {startDate: startDate_3, endDate: endDate_3}
+        ]))
+    }, [dispatch])
+
+    const onRefresh = (refresh = false) => {
+        fetchBIData(refresh);
+        fetchHistoricalTabData(refresh);
+        getFinancialsTabData(refresh);
+    }
+
     return <Stack sx={{height: '100%', pt: 2, gap: {xs: 2, md: 4}, overflow: 'auto'}} className='dashboardRoot'>
         {canViewCards && <Box sx={{textAlign: 'right'}}>
             <DateRangePicker label='Date Range' value={dateRange} pickerProps={{maxDate: sat.toDate()}} onChange={onChange}/>
-            <IconButton title='Refresh' onClick={fetchBIData.bind(null, true)}>
+            <IconButton title='Refresh' onClick={onRefresh.bind(null, true)}>
                 <Refresh className={(isRefetching) ? 'rotateIcon' : undefined}/>
             </IconButton>
         </Box>}
-        <Suspense fallback={<LoadingComponent />}>
+        {canViewCards && <Suspense fallback={<LoadingComponent/>}>
             <CardSection/>
-        </Suspense>
+        </Suspense>}
         <Suspense fallback={<LoadingComponent />}>
-            <BITabs basePath={path} dateRange={dateRange} />
+            <BITabs
+                basePath={path}
+                dateRange={dateRange}
+                fetchHistoricalTabData={fetchHistoricalTabData}
+                getFinancialsTabData={getFinancialsTabData}
+            />
         </Suspense>
     </Stack>
 }

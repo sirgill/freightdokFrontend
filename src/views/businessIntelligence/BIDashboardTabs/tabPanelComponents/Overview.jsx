@@ -1,11 +1,11 @@
-import {Box, Fade, Typography} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Widget from "../../../../layout/Widget";
 import Table from "../../../../components/Atoms/table/Table";
 import _ from "lodash";
-import {readableDateTime} from "../../../../utils/utils";
+import { readableDateTime } from "../../../../utils/utils";
 
 const config = {
-    rowCellPadding:'normal',
+    rowCellPadding: 'normal',
     columns: [
         {
             id: 'loadNumber',
@@ -43,10 +43,10 @@ const config = {
         }
     ]
 }
-const Overview = ({data, loading, isRefetching, presentableDateRange}) => {
-    return <Fade in timeout={1000}>
+const Overview = ({ data, loading, isRefetching, presentableDateRange }) => {
+    return <>
         <Box>
-            <Widget title='Recent Loads' titleSx={{fontSize: 16}} sx={{border: 'none'}}>
+            <Widget title='Recent Loads' titleSx={{ fontSize: 16 }} sx={{ border: 'none' }}>
                 <Typography align='right' fontWeight='bold'>Performance metrics ({presentableDateRange})</Typography>
                 <Box
                     sx={{
@@ -60,12 +60,12 @@ const Overview = ({data, loading, isRefetching, presentableDateRange}) => {
                         }
                     }}
                 >
-                    <Table loading={loading} data={data} config={config} isRefetching={isRefetching}/>
+                    <Table loading={loading} data={data} config={config} isRefetching={isRefetching} />
                 </Box>
-                <Typography color='text.secondary'>Total: {data.length}</Typography>
+                <Typography color='text.secondary'>Total: {data?.length}</Typography>
             </Widget>
         </Box>
-    </Fade>
+    </>
 }
 
 export default Overview;
